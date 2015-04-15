@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+	<table name="VividStoreProduct">
+		<field name="pID" type="I"><key /><unsigned /><autoincrement/></field>
+		<field name="gID" type="I"></field>
+		<field name="cID" type="I"></field>
+		<field name="pName" type="C" size="255"></field>
+		<field name="pDesc" type="X2"></field>
+		<field name="pDetail" type="X2"></field>
+		<field name="pPrice" type="C" size="10"></field>
+		<field name="pFeatured" type="C" size="10"></field>
+		<field name="pQty" type="I"></field>
+		<field name="pQtyUnlim" type="C" size="10"></field>
+		<field name="pTaxable" type="C" size="10"></field>
+		<field name="pfID" type="I"><unsigned /></field>
+		<field name="pActive" type="C" size="10"></field>
+		<field name="pDateAdded" type="T"></field>
+		<field name="pGroup" type="C" size="50"></field>
+		<field name="pShippable" type="I"></field>
+		<field name="pWidth" type="I"></field>
+		<field name="pHeight" type="I"></field>
+		<field name="pLength" type="I"></field>
+		<field name="pWeight" type="I"></field>
+	</table>
+	<table name="VividStoreProductOptionGroup">
+        <field name="pogID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="pID" type="I"></field>
+        <field name="pogName" type="C" size="255"></field>
+        <field name="pogSort" type="I"></field>
+    </table>
+    <table name="VividStoreProductOptionItem">
+        <field name="poiID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="pID" type="I"></field>
+        <field name="pogID" type="I"></field>
+        <field name="poiName" type="C" size="255"></field>
+        <field name="poiSort" type="I"></field>
+    </table>
+	<table name="VividStoreProductImage">
+        <field name="piID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="pID" type="I"></field>
+        <field name="pifID" type="I"></field>
+        <field name="piSort" type="I"></field>
+    </table>
+    <table name="VividStoreDigitalFile">
+        <field name="dfID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="pID" type="I"></field>
+        <field name="dffID" type="I"></field>
+    </table>
+    <table name="VividStoreGroups">
+        <field name="gID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="groupName" type="C" size="100"></field>
+    </table>
+    <table name="VividStoreOrder">
+        <field name="oID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="cID" type="I"></field>
+        <field name="oDate" type="T"></field>
+        <field name="oStatus" type="C" size="50"></field>
+        <field name="pmID" type="I"></field>
+        <field name="smID" type="I"></field>
+        <field name="oShippingTotal" type="C" size="10"></field>
+        <field name="oTax" type="C" size="10"></field>
+        <field name="oTotal" type="C" size="10"></field>
+    </table>
+    <table name="VividStoreOrderItem">
+        <field name="oiID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="pID" type="I"></field>
+        <field name="oID" type="I"></field>
+        <field name="oiProductName" type="C" size="255"></field>
+        <field name="oiPricePaid" type="N" size="10,4"></field>
+        <field name="oiQty" type="I"></field>
+    </table>
+    <table name="VividStoreOrderItemOption">
+        <field name="oioID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="oiID" type="I"></field>
+        <field name="oioKey" type="C" size="255"></field>
+        <field name="oioValue" type="C" size="255"></field>
+    </table>
+    <table name="VividStoreOrderAttributeKeys">
+        <field name="akID" type="I"><key/><unsigned/></field>
+    </table>
+    <table name="VividStoreOrderAttributeValues">
+        <field name="oID" type="I"><key/><unsigned/></field>
+        <field name="akID" type="I"><key/><unsigned/></field>
+        <field name="avID" type="I"><key/><unsigned/></field>
+    </table>
+    <table name="VividStoreProductAttributeKeys">
+        <field name="akID" type="I"><key/><unsigned/></field>
+    </table>
+    <table name="VividStoreProductAttributeValues">
+        <field name="pID" type="I"><key/><unsigned/></field>
+        <field name="akID" type="I"><key/><unsigned/></field>
+        <field name="avID" type="I"><key/><unsigned/></field>
+    </table>
+    <table name="VividStorePaymentMethods">
+        <field name="pmID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="pmHandle" type="C" size="255"></field>
+        <field name="pmName" type="C" size="255"></field>
+        <field name="pmDisplayName" type="C" size="255"></field>
+        <field name="pmEnabled" type="I"></field>
+        <field name="pkgID" type="I"></field>
+    </table>
+</schema>

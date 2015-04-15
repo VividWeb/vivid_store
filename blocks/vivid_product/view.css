@@ -1,0 +1,15 @@
+.product-detail-block {  }
+    .product-detail-block .product-image {  }
+    .product-detail-block .product-group { color: #aaa; font-size: 14px; font-weight: bold; text-transform: uppercase; }
+    .product-detail-block .product-featured { display: inline-block; margin: 0 10px; padding: 3px 8px; background: rgba(0,0,0,0.05); border-radius: 5px;}
+    .product-detail-block .product-name { margin: 10px 0; }
+    .product-detail-block .product-price { display: block; font-size: 22px; margin: 0 0 20px; }
+    .product-detail-block .product-description {  }
+    .product-detail-block .product-dimensions { padding: 10px; background: #eee; background: rgba(0,0,0,0.03); border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .product-detail-block .product-weight {  padding: 10px; background: #eee; background: rgba(0,0,0,0.03); border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .product-detail-block .product-options {  }
+        .product-detail-block .product-options label { display: block; }
+        .product-detail-block .product-options select,  .product-detail-block .product-options input { width: 100%; padding: 15px 15px; border: 1px solid #ccc; font-size: 13px; text-transform: uppercase; font-weight: bold; }
+            .product-detail-block .product-options select option {  }
+    .product-detail-block .product-button-shell {  }
+    .product-detail-block .product-detailed-description {  }

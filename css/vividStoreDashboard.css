@@ -1,0 +1,54 @@
+.btn-dark { background: #555; border-color: #222; color: #fff !important; }
+.btn-dark:hover { background: #444; }
+
+.group-list { margin: 30px 0 50px !important; }
+    
+    .group-list li { margin-bottom: 8px; }
+    .group-name { display: inline-block; padding-right: 30px; width: 180px; }
+    .group-list input[type="text"] { width: 180px; }
+    .group-list .hideme { display: none !important; }
+
+#group-filters { margin: 0 0 30px; }
+
+    #group-filters li a { transition: .2s ease all; }
+    
+
+.vivid-store-side-panel { background: #222; padding: 20px; border-radius: 4px; box-shadow: inset 0 0 20px #222; border: 1px solid #111; margin-bottom: 20px; }
+   
+    .vivid-store-side-panel ul { padding: 0; margin: 0 !important; overflow: auto;}
+        .vivid-store-side-panel ul li { float: left; list-style: none; }
+            .vivid-store-side-panel ul li a { transition: .2s ease all; color: #aaa; display: block; padding: 6px 10px; border-radius: 3px; }
+            .vivid-store-side-panel ul li a.active { background: #3a3a3a; color: #ddd !important; cursor: default; text-decoration: none !important; }
+            .vivid-store-side-panel ul li a:hover { text-decoration: none !important; color: #fff; }
+
+@media (min-width: 768px) {
+.vivid-store-side-panel { padding-bottom: 80px; }
+            .vivid-store-side-panel ul li { float: none; margin-bottom: 8px; }
+            .vivid-store-side-panel ul li a { display: block;  }      
+}
+            
+.store-pane { display: none; }
+.store-pane.active { display: block; }
+
+
+/* Dynamic Image Selector */
+.additional-image { margin-bottom: 20px; background: #f8f8f8; border: 1px solid #ccc; text-align: center; color: #333; }
+    .move-shell { padding: 15px; border-right: 1px solid #ccc; background: #ddd; cursor: move; }
+        .move-shell .fa-arrows { }
+    .select-image { display: block; cursor: pointer; transition: .2s ease all; }
+    .select-image:hover { background: #fff; text-decoration: none !important; }
+        .select-image i { padding: 15px; }
+        .select-image img { max-height: 50px;  }
+    .trash-shell { padding: 15px; border-left: 1px solid #ebccd1; cursor: pointer; }
+    .trash-shell:hover { color: #a94442 !important; }
+        .trash-shell .fa-trash {  }
+
+/* Options */
+#product-options-container {  }
+    .option-group {  }
+    
+        .option-group .panel-heading, .option-group .panel-heading .fa-arrows { cursor: move; }
+        .option-group .panel-heading .fa-arrows { margin: 3px 0 0; }
+        .option-group .panel-heading label { display: block; margin-top: 4px; }
+        
+#tax-rules-group select { margin-bottom: 8px; }
