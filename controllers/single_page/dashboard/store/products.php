@@ -90,7 +90,7 @@ class Products extends DashboardPageController
         $this->set("productgroups",$productgroups);
         
     }
-    public function generate($pID,$templateID)
+    public function generate($pID,$templateID=null)
     {
         VividProduct::getByID($pID)->generatePage($templateID);
         $this->redirect('/dashboard/store/products/edit',$pID);

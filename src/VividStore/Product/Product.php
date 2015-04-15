@@ -166,9 +166,12 @@ class Product extends Object
         $targetCID = $pkg->getConfig()->get('vividstore.productPublishTarget');
         $parentPage = Page::getByID($targetCID);
         $pageType = PageType::getByHandle('store_product');
-        $pageTemplate = PageTemplate::getByHandle('full');
+        $pageTemplate = $pageType->getPageTypeDefaultPageTemplateObject();
         if($templateID){
-            $pageTemplate = PageTemplate::getByID($templateID);
+            $pt = PageTemplate::getByID($templateID);
+            if(is_object($pt)){
+                $pageTemplate = $pt;
+            }
         }
         $productParentPage = $parentPage->add(
             $pageType,
