@@ -29,7 +29,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.4';
+    protected $pkgVersion = '2.0.5';
     
     
     
@@ -98,6 +98,11 @@ class Controller extends Package
         
         $pkg->getConfig()->save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
         
+        //install our blocks
+        BlockTypeSet::add("vivid_store","Store", $pkg);
+        BlockType::installBlockTypeFromPackage('vivid_product_list', $pkg); 
+        BlockType::installBlockTypeFromPackage('vivid_utility_links', $pkg);
+        BlockType::installBlockTypeFromPackage('vivid_product', $pkg);
         
         //install some default blocks for page type.
         $pageType = PageType::getByHandle('store_product');
@@ -119,12 +124,6 @@ class Controller extends Package
             );
             $pageObj->addBlock($bt, 'Main', $data);
         }
-        
-        //install our blocks
-        BlockTypeSet::add("vivid_store","Store", $pkg);
-        BlockType::installBlockTypeFromPackage('vivid_product_list', $pkg); 
-        BlockType::installBlockTypeFromPackage('vivid_utility_links', $pkg);
-        BlockType::installBlockTypeFromPackage('vivid_product', $pkg);
         
         //set our default currency configs
         $pkg->getConfig()->save('vividstore.symbol','$');
