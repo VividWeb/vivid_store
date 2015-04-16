@@ -453,6 +453,9 @@ class Controller extends Package
         
         $bt = BlockType::getByHandle('vivid_product');
         $blocks = $pageObj->getBlocks('Main');
+        if($blocks[0]->getBlockTypeHandle()=="content"){
+            $blocks[0]->deleteBlock();
+        }
         if(count($blocks)<1){
             $data = array(
                 'productLocation'=>'page',
