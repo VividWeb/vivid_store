@@ -104,15 +104,21 @@ class Controller extends Package
         $template = $pageType->getPageTypeDefaultPageTemplateObject();
         $pageObj = $pageType->getPageTypePageTemplateDefaultPageObject($template);
         
-        $bt = BlockType::getByHandle('content');
+        $bt = BlockType::getByHandle('vivid_product');
         $blocks = $pageObj->getBlocks('Main');
-        foreach ($blocks as $b) {
-            $b->deleteBlock();
+        if(count($blocks)<1){
+            $data = array(
+                'productLocation'=>'page',
+                'showProductName'=>1,
+                'showProductDescription'=>1,
+                'showProductDetails'=>1,
+                'showProductPrice'=>1,
+                'showImage'=>1,
+                'showCartButton'=>1,
+                'showGroups'=>1
+            );
+            $pageObj->addBlock($bt, 'Main', $data);
         }
-        $data = array('content'=>'<p>HOLLLY FEECK</p>');
-        $pageObj->addBlock($bt, 'Main', $data);
-        
-        
         
         //install our blocks
         BlockTypeSet::add("vivid_store","Store", $pkg);
