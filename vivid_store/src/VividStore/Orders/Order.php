@@ -77,7 +77,7 @@ class Order extends Object
         }
         
         //add user to Store Customers group
-        $group = Group::getByName('Store Customer');
+        $group = \Group::getByName('Store Customer');
         if (is_object($group) || $group->getGroupID() < 1) {
             $u->enterGroup($group);
         }
