@@ -5,7 +5,6 @@ use Database;
 use File;
 use User;
 use UserInfo;
-use Group;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -40,36 +39,24 @@ class Item extends Object
             $optionGroupID = str_replace("pog","",$optionGroup);
             $optionGroupName = VividProduct::getProductOptionGroupNameByID($optionGroupID);
             $optionValue = VividProduct::getProductOptionValueByID($selectedOption);
-
+            
+            
             $values = array($oiID,$optionGroupName,$optionValue);
             $db->Execute("INSERT INTO VividStoreOrderItemOption(oiID,oioKey,oioValue) values(?,?,?)",$values);
         }
-
-        $u = new User();
-        $uID = $u->getUserID();
-        $ui = UserInfo::getByID($uID);
-
         if($product->hasDigitalDownload()){
             $fileObjs = $product->getProductDownloadFileObjects(); 
             $fileObj = $fileObjs[0];    
             $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
             $pk->setPermissionObject($fileObj);
             $pao = $pk->getPermissionAssignmentObject();
+            $u = new User();
+            $uID = $u->getUserID();
+            $ui = UserInfo::getByID($uID);
             $user = \Concrete\Core\Permission\Access\Entity\UserEntity::getOrCreate($ui);                    
             $pa = $pk->getPermissionAccessObject();
             $pa->addListItem($user);
             $pao->assignPermissionAccess($pa);
-        }
-        if($product->hasUserGroups()){
-            $usergroupstoadd = $product->getProductUserGroups();
-
-            foreach($usergroupstoadd as $id) {
-                $g = Group::getByID($id);
-
-                if ($g) {
-                    $u->enterGroup($g);
-                }
-            }
         }
         
     }    

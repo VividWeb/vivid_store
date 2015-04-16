@@ -36,7 +36,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     
                         <ul>
                             <li><a href="#product-overview" data-pane-toggle class="active"><?=t('Overview')?></a></li>
-                            <li><a href="#product-digital" data-pane-toggle><?=t("Digital Products and User Groups")?></a></li>
+                            <li><a href="#product-digital" data-pane-toggle><?=t("Digital Products")?></a></li>
                             <li><a href="#product-images" data-pane-toggle><?=t('Images')?></a></li>
                             <li><a href="#product-details" data-pane-toggle><?=t('Details')?></a></li>
                             <li><a href="#product-options" data-pane-toggle><?=t('Options')?></a></li>
@@ -103,26 +103,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             <?php echo $form->label("dffID".$i, t("File to download on purchase"));?>
                             <?php echo $al->file('dffID'.$i, 'dffID[]', t('Choose File'), is_object($file)?$file:null)?>
                         </div>
-
-                        <div class="form-group">
-                            <?php echo $form->label("usergroups", t("On purchase add user to user groups"));?>
-                            <div class="ccm-search-field-content ccm-search-field-content-select2">
-                                <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;">
-                                    <?php
-                                    $selectedusergroups = $p->getProductUserGroups();
-                                    foreach ($usergroups as $ugkey=>$uglabel) { ?>
-                                        <option value="<?php echo $ugkey;?>" <?php echo (in_array($ugkey, $selectedusergroups) ? 'selected="selected"' : ''); ?>>  <?php echo $uglabel; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        </div>
-
-                    <script type="text/javascript">
-                        $(function() {
-                            $('#groupselect').select2();
-                        });
-                    </script>
-
                     <?php } 
                     } else { ?>
                         <div class="alert alert-info">
@@ -444,6 +424,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             indexOptionItems();                            
                         }
                         $(function(){
+                            
+                            
                             //Make items sortable. If we re-sort them, re-index them.
                             $(".option-group-item-container").sortable({
                                 handle: ".grabme",

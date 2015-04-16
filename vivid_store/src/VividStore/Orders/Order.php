@@ -10,7 +10,6 @@ use Core;
 use Package;
 use Concrete\Core\Mail\Service as MailService;
 use Session;
-use Events;
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
@@ -18,8 +17,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Item as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
-
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Order extends Object
@@ -76,12 +73,8 @@ class Order extends Object
         //add the order items
         $cart = Session::get('cart');
         foreach($cart as $cartItem){
-            OrderItem::add($cartItem,$oID);
+            OrderItem::add($cartItem,$oID);    
         }
-
-        // create order event and dispatch
-        $event = new OrderEvent($order);
-        Events::dispatch('on_vividstore_order', $event);
         
         //add user to Store Customers group
         $group = Group::getByName('Store Customer');
@@ -99,6 +92,7 @@ class Order extends Object
         }
         $alertEmails = explode(",", $pkgconfig->get('vividstore.notificationemails'));
         $alertEmails = array_map('trim',$alertEmails);
+        
                     
             //receipt
             $mh->from($fromEmail);
@@ -115,20 +109,16 @@ class Order extends Object
             $mh->addParameter("order", $order);
             $mh->load("new_order_notification","vivid_store");
             $mh->sendMail();
+            
         
         Session::set('cart',null);
-
-        return $order;
     }
-
-
     public function remove()
     {
         $db = Database::get();
         $db->Execute("DELETE from VividStoreOrder WHERE oID=?",$this->oID);
         $db->Execute("DELETE from VividStoreOrderItem WHERE oID=?",$this->oID);
     }
-
     public function getOrderItems()
     {
         $db = Database::get();    
@@ -166,17 +156,7 @@ class Order extends Object
     
     public function updateStatus($status)
     {
-        // create copy of order before update
-        $originalOrder = $this;
-
         Database::get()->Execute("UPDATE VividStoreOrder SET oStatus = ? WHERE oID = ?",array($status,$this->oID));
-
-        // update status of current order instance
-        $this->oStatus = $status;
-
-        // create event object, passing in changed and pre-change orders
-        $event = new OrderEvent($this,$originalOrder);
-        Events::dispatch('on_vividstore_order_status_update', $event);
     }
     public function setAttribute($ak, $value)
     {

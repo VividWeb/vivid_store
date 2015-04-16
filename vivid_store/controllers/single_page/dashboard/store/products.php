@@ -11,7 +11,6 @@ use Database;
 use File;
 use Loader;
 use PageType;
-use GroupList;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
@@ -26,9 +25,6 @@ class Products extends DashboardPageController
 {
 
     public function view($gID=null){
-        $v = View::getInstance();
-        $v->requireAsset('select2');
-
         $products = new VividProductList();
         $products->setItemsPerPage(10);
         $products->setGroupID($gID);
@@ -44,6 +40,7 @@ class Products extends DashboardPageController
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
         $grouplist = VividProductGroupList::getGroupList();            
         $this->set("grouplist",$grouplist);
+        
     }
     public function success(){
         $this->set("success",t("Product Added"));
@@ -70,22 +67,7 @@ class Products extends DashboardPageController
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
-        $this->set("productgroups",$productgroups);
-
-        $usergrouparray = array();
-
-        $gl = new GroupList();
-        $gl->setItemsPerPage(1000);
-        $gl->filterByAssignable();
-        $usergroups = $gl->get();
-
-        foreach($usergroups as $ug) {
-            if ( $ug->gName != 'Administrators') {
-                $usergrouparray[$ug->gID] = $ug->gName;
-            }
-        }
-
-        $this->set('usergroups', $usergrouparray);
+        $this->set("productgroups",$productgroups);          
     }
     public function edit($pID)
     {
@@ -105,22 +87,8 @@ class Products extends DashboardPageController
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
-        $this->set("productgroups",$product);
-
-        $usergrouparray = array();
-
-        $gl = new GroupList();
-        $gl->setItemsPerPage(1000);
-        $gl->filterByAssignable();
-        $usergroups = $gl->get();
-
-        foreach($usergroups as $ug) {
-            if ( $ug->gName != 'Administrators') {
-                $usergrouparray[$ug->gID] = $ug->gName;
-            }
-        }
-
-        $this->set('usergroups', $usergrouparray);
+        $this->set("productgroups",$productgroups);
+        
     }
     public function generate($pID,$templateID=null)
     {
@@ -174,7 +142,8 @@ class Products extends DashboardPageController
             $this->error = null; //clear errors
             $this->error = $errors;
             if (!$errors->has()) {
-                $product = VividProduct::save($data);
+                
+                $product = VividProduct::save($data); 
         		$aks = StoreProductKey::getList();
         		foreach($aks as $uak) {
         			$uak->saveAttributeForm($product);				
