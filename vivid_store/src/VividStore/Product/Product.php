@@ -121,7 +121,8 @@ class Product extends Object
                         }
                 }
             }
-            $this->generatePage();
+            $product = Product::getByID($pID);
+            $product->generatePage();
             
         }
 
@@ -147,7 +148,6 @@ class Product extends Object
                 }
             }
         }
-
         $product = Product::getByID($pID);
         return $product;
         
