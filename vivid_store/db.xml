@@ -21,6 +21,8 @@
 		<field name="pHeight" type="I"></field>
 		<field name="pLength" type="I"></field>
 		<field name="pWeight" type="I"></field>
+        <field name="pUserGroups" type="C" size="255">
+        </field>
 	</table>
 	<table name="VividStoreProductOptionGroup">
         <field name="pogID" type="I"><key /><unsigned /><autoincrement/></field>
