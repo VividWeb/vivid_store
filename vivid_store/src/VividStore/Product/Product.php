@@ -43,14 +43,16 @@ class Product extends Object
     public function save($data)
     {
         $db = Database::get();
+        $data['pUserGroups'] = implode(',', $data['pUserGroups']);
+
         if($data['pID']){
         //if we know the pID, we're updating.
                 
-            $pID = $data['pID']; 
-                
+            $pID = $data['pID'];
+
             //update product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pID']);
-            $db->Execute('UPDATE VividStoreProduct SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=? WHERE pID = ?', $vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pUserGroups'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pID']);
+            $db->Execute('UPDATE VividStoreProduct SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pTaxable=?,pfID=?,pUserGroups=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=? WHERE pID = ?', $vals);
             
             //update additional images
             $db->Execute('DELETE from VividStoreProductImage WHERE pID = ?', $data['pID']);
@@ -90,8 +92,8 @@ class Product extends Object
             $now = $dt->getLocalDateTime();
             
             //add product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$now);
-            $db->Execute("INSERT into VividStoreProduct (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pDateAdded) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pUserGroups'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$now);
+            $db->Execute("INSERT into VividStoreProduct (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pTaxable,pfID,pUserGroups,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pDateAdded) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
             
             //add additional images
             $pID = $db->lastInsertId();
@@ -254,6 +256,12 @@ class Product extends Object
             $fileObjects[] = File::getByID($result['dffID']);
         }  
         return $fileObjects;
+    }
+    public function hasUserGroups(){
+        return (bool)trim($this->pUserGroups);
+    }
+    public function getProductUserGroups(){
+        return explode(',', $this->pUserGroups);
     }
     public function getProductImage(){
         $fileObj = $this->getProductImageObj();
