@@ -30,7 +30,7 @@ if($products){
                 <h2 class="product-list-name"><?=$product->getProductName()?></h2>
                 <span class="product-list-price"><?=Price::format($product->getProductPrice())?></span>
                 <?php if($showPageLink){?>
-                <a href="<?=Page::getByID($product->getProductPageID())->getCollectionPath()?>" class="btn btn-default btn-sm"><?=t("More Details")?></a>
+                <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>" class="btn btn-default btn-sm btn-more-details"><?=t("More Details")?></a>
                 <?php } ?>
                 <?php if($showAddToCart){
                     /*
@@ -41,7 +41,7 @@ if($products){
                 ?>
                 <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
                 <input type="hidden" name="quantity" class="product-qty" value="1">
-                <a href="javascript:vividStore.addToCart(<?=$product->getProductID()?>,false)" class="btn btn-primary btn-sm"><?=t("Add to Cart")?></a>
+                <a href="javascript:vividStore.addToCart(<?=$product->getProductID()?>,false)" class="btn btn-primary btn-sm btn-add-to-cart"><?=t("Add to Cart")?></a>
                 <?php } ?>
             
             </form><!-- .product-list-item-inner -->

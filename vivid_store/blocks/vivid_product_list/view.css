@@ -13,4 +13,4 @@
             .product-list-item .product-list-description {  }
             .product-list-item .product-list-name {  }
             .product-list-item .product-list-price { display: block; font-size: 22px; color: #888; margin: 10px 0; } 
-            .product-list-item .btn-more-details { display: block; }
+            .product-list-item .btn-more-details { margin: 5px 0; }
