@@ -83,6 +83,12 @@ class Order extends Object
         $event = new OrderEvent($order);
         Events::dispatch('on_vividstore_order', $event);
         
+        //add user to Store Customers group
+        $group = Group::getByName('Store Customer');
+        if (is_object($group) || $group->getGroupID() < 1) {
+            $u->enterGroup($group);
+        }
+        
         //send out the alerts
         $mh = new MailService();
         $pkg = Package::getByHandle('vivid_store');
