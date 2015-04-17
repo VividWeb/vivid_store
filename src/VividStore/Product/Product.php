@@ -61,6 +61,15 @@ class Product extends Object
                     $db->Execute("INSERT into VividStoreProductImage(pID,pifID,piSort) values(?,?,?)",$vals);
                 }
             }
+
+            //update user groups
+            $db->Execute('DELETE from VividStoreProductUserGroups WHERE pID = ?', $data['pID']);
+            if (!empty($data['pUserGroups'])) {
+                foreach($data['pUserGroups'] as $gID){
+                    $vals = array($data['pID'],$gID);
+                    $db->Execute("INSERT into VividStoreProductUserGroups(pID,gID) values(?,?)",$vals);
+                }
+            }
             
             //update option groups
             $db->Execute('DELETE from VividStoreProductOptionGroup WHERE pID = ?', $data['pID']);
@@ -100,6 +109,14 @@ class Product extends Object
                 for($i=0;$i<$count;$i++){
                     $vals = array($pID,$data['pifID'][$i],$data['piSort'][$i]);
                     $db->Execute("INSERT into VividStoreProductImage(pID,pifID,piSort) values(?,?,?)",$vals);
+                }
+            }
+
+            //update user groups
+            if (!empty($data['pUserGroups'])) {
+                foreach($data['pUserGroups'] as $gID){
+                    $vals = array($pID,$gID);
+                    $db->Execute("INSERT into VividStoreProductUserGroups(pID,gID) values(?,?)",$vals);
                 }
             }
             
@@ -260,6 +277,21 @@ class Product extends Object
             $fileObjects[] = File::getByID($result['dffID']);
         }  
         return $fileObjects;
+    }
+    public function hasUserGroups(){
+        $db = Database::get();
+        $usergroupcount = $db->GetOne("SELECT count(*) as count FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);
+        return ($usergroupcount > 0);
+    }
+    public function getProductUserGroups(){
+        $db = Database::get();
+        $productGroupResult = $db->GetAll("SELECT gID FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);
+        $productGroups = array();
+
+        foreach($productGroupResult as $pg) {
+            $productGroups[] = $pg['gID'];
+        }
+        return $productGroups;
     }
     public function getProductImage(){
         $fileObj = $this->getProductImageObj();
