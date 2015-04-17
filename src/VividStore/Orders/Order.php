@@ -10,10 +10,12 @@ use Core;
 use Package;
 use Concrete\Core\Mail\Service as MailService;
 use Session;
+use Group;
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Item as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
@@ -73,7 +75,19 @@ class Order extends Object
         //add the order items
         $cart = Session::get('cart');
         foreach($cart as $cartItem){
-            OrderItem::add($cartItem,$oID);    
+            OrderItem::add($cartItem,$oID);
+
+            $product = VividProduct::getByID($cartItem['product']['pID']);
+            if($product && $product->hasUserGroups()){
+                $usergroupstoadd = $product->getProductUserGroups();
+
+                foreach($usergroupstoadd as $id) {
+                    $g = Group::getByID($id);
+                    if ($g) {
+                        $u->enterGroup($g);
+                    }
+                }
+            }
         }
         
         //add user to Store Customers group
@@ -81,7 +95,7 @@ class Order extends Object
         if (is_object($group) || $group->getGroupID() < 1) {
             $u->enterGroup($group);
         }
-        
+
         //send out the alerts
         $mh = new MailService();
         $pkg = Package::getByHandle('vivid_store');
