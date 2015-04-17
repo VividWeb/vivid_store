@@ -208,7 +208,13 @@ class Product extends Object
         
     }
     public function getGroupID(){ return $this->gID; }
-    public function getGroupName(){ return ProductGroup::getByID($this->gID)->getGroupName(); }
+    public function getGroupName()
+    {
+        $group = ProductGroup::getByID($this->gID);
+        if(is_object($group)){    
+            return $group->getGroupName(); 
+        }
+    }
     public function isFeatured(){ return $this->pFeatured; }
     public function isActive(){ return $this->pActive; }
     public function isShippable() { return $this->pShippable; }

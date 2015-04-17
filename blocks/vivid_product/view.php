@@ -10,9 +10,11 @@ if(is_object($p)){?>
         <div class="vivid-store-col-2 product-image">
             <?php
                 $imgObj = $p->getProductImageObj();
-                $thumb = Core::make('helper/image')->getThumbnail($imgObj,600,800,true);
+                if(is_object($imgObj)){
+                    $thumb = Core::make('helper/image')->getThumbnail($imgObj,600,800,true);
             ?>
             <img src="<?=$thumb->src?>">
+            <?php } ?>
         </div>
         <div class="vivid-store-col-2">
         <?php } else { ?>
