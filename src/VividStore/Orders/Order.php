@@ -11,6 +11,7 @@ use Package;
 use Concrete\Core\Mail\Service as MailService;
 use Session;
 use Group;
+use Events;
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
@@ -96,6 +97,10 @@ class Order extends Object
             $u->enterGroup($group);
         }
 
+        // create order event and dispatch
+        $event = new OrderEvent($order);
+        Events::dispatch('on_vividstore_order', $event);
+        
         //send out the alerts
         $mh = new MailService();
         $pkg = Package::getByHandle('vivid_store');
@@ -107,7 +112,6 @@ class Order extends Object
         $alertEmails = explode(",", $pkgconfig->get('vividstore.notificationemails'));
         $alertEmails = array_map('trim',$alertEmails);
         
-                    
             //receipt
             $mh->from($fromEmail);
             $mh->to($ui->getUserEmail());
@@ -170,7 +174,16 @@ class Order extends Object
     
     public function updateStatus($status)
     {
+        // create copy of order before update
+        $originalOrder = $this;
+
         Database::get()->Execute("UPDATE VividStoreOrder SET oStatus = ? WHERE oID = ?",array($status,$this->oID));
+
+        // update status of current order instance
+        $this->oStatus = $status;
+        // create event object, passing in changed and pre-change order
+        $event = new OrderEvent($this,$originalOrder);
+        Events::dispatch('on_vividstore_order_status_update', $event);
     }
     public function setAttribute($ak, $value)
     {
