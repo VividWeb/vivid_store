@@ -20,6 +20,7 @@ use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
 use \Concrete\Core\Attribute\Type as AttributeType;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use \Concrete\Core\Utility\Service\Text;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -29,7 +30,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.6';
+    protected $pkgVersion = '2.0.6.15';
     
     
     
@@ -347,6 +348,14 @@ class Controller extends Package
         if(!is_object($fs)){
             FileSet::add("Digital Downloads");
         }
+        
+        //ad flat rate shipping method        
+        $smt = ShippingMethodType::getByHandle('flat_rate');
+        if(!is_object($smt)){
+            ShippingMethodType::add('flat_rate','Flat Rate',$pkg);
+        }
+
+           
     }
 
     public function upgrade()
@@ -497,6 +506,14 @@ class Controller extends Package
         if(!is_object($attrPage) || $attrPage->isError()){
             SinglePage::add('/dashboard/store/products/attributes',$pkg);
         }
+        
+        //Version 2.1
+        
+        $smt = ShippingMethodType::getByHandle('flat_rate');
+        if(!is_object($smt)){
+            ShippingMethodType::add('flat_rate','Flat Rate',$pkg);
+        }
+        
     }
     
     public function registerRoutes()
