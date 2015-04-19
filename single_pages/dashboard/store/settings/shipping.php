@@ -8,9 +8,13 @@ if(in_array($controller->getTask(),$addViews)){
 ?>
     
     
+<form action="<?=URL::to('/dashboard/store/settings/shipping','add_method')?>" method="post">
+
     <div class="row">
         <div class="col-xs-12 col-md-8 col-md-offset-2">
-            <h2><?php echo $smt->getName(); ?></h2>
+        <?php //echo var_dump($smt); ?>
+            <h2><?php echo $smt->getShippingMethodTypeName(); ?></h2>
+            <?php echo $form->hidden('shippingMethodTypeID',$smt->getShippingMethodTypeID()); ?>
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
@@ -35,6 +39,8 @@ if(in_array($controller->getTask(),$addViews)){
         </div>
     </div>
     
+</form>
+    
 <?php } elseif(in_array($controller->getTask(),$editViews)){
 /// Edit Shipping Method View    
 ?>
@@ -47,7 +53,7 @@ if(in_array($controller->getTask(),$addViews)){
         <a href="" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?=t('Add Method')?> <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
             <?php foreach($methodTypes as $smt){?>
-            <li><a href="<?=URL::to('/dashboard/store/settings/shipping/add',$smt->getPaymentMethodTypeID())?>"><?=$smt->getName()?></a></li>
+            <li><a href="<?=URL::to('/dashboard/store/settings/shipping/add',$smt->getShippingMethodTypeID())?>"><?=$smt->getShippingMethodTypeName()?></a></li>
             <?php } ?>
         </ul>
     </div>

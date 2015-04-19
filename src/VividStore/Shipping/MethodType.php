@@ -35,6 +35,8 @@ class MethodType extends Controller
      */
     protected $pkgID;
     
+    private $methodTypeController;
+    
     public function setHandle($handle)
     {
         $this->smtHandle = $handle;
@@ -47,26 +49,42 @@ class MethodType extends Controller
     {
         $this->pkgID = $pkgID;
     }
+    public function setMethodTypeController()
+    {
+        $th = Core::make("helper/text"); 
+        $dir = $this->getMethodTypeDirectory(); 
+        $file = new Filesystem();   
+        $file->requireOnce($dir."controller.php");
+        $namespace = "Concrete\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\src\VividStore\Shipping";
+        
+        $className = $th->camelcase($this->smtHandle)."ShippingMethod";
+        $obj = $namespace.'\\'.$className;
+        $this->methodTypeController = new $obj();
+    }
     
-    public function getPaymentMethodTypeID() { return $this->smtID; }
+    public function getShippingMethodTypeID() { return $this->smtID; }
     public function getHandle(){ return $this->smtHandle; }
-    public function getName() { return $this->smtName; }
+    public function getShippingMethodTypeName() { return $this->smtName; }
     public function getPackageID(){ return $this->pkgID; }    
+    public function getMethodTypeController(){ return $this->methodTypeController; }
     
     public static function getByID($smtID) {
         $db = Database::get();
         $em = $db->getEntityManager();
-        return $em->find('Concrete\Package\VividStore\src\VividStore\Shipping\MethodType', $smtID);
+        $obj = $em->find('Concrete\Package\VividStore\src\VividStore\Shipping\MethodType', $smtID);
+        $obj->setMethodTypeController();
+        return $obj;
     }  
     
     public static function getByHandle($smtHandle){
         $db = Database::get();
         $em = $db->getEntityManager();
-        $shippingMethodType = $em->
+        $obj = $em->
             getRepository('Concrete\Package\VividStore\src\VividStore\Shipping\MethodType')->
             findOneBy(array('smtHandle' => $smtHandle));
-        if (is_object($shippingMethodType)) {
-            return $shippingMethodType;
+        if (is_object($obj)) {
+            $obj->setMethodTypeController();
+            return $obj;
         }
     }
     public static function add($smtHandle,$smtName,$pkg)
@@ -108,23 +126,15 @@ class MethodType extends Controller
         }
         return $dir;
     }
-    public function getMethodTypeController()
-    {
-        $th = Core::make("helper/text"); 
-        $dir = $this->getMethodTypeDirectory(); 
-        $file = new Filesystem();   
-        $file->requireOnce($dir."controller.php");
-        $namespace = "Concrete\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\src\VividStore\Shipping";
-        
-        $className = $th->camelcase($this->smtHandle)."ShippingMethod";
-        $obj = $namespace.'\\'.$className;
-        return new $obj();
-    }
     public function renderDashboardForm()
     {
         $controller = $this->getMethodTypeController();
         $controller->dashboardForm();
         $pkg = Package::getByID($this->pkgID);
         View::element('shipping_method_types/'.$this->smtHandle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
+    }
+    public function addMethod($data)
+    {
+        $this->getMethodTypeController()->addMethodTypeMethod($data);
     }
 }    
