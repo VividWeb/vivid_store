@@ -113,12 +113,12 @@
     <table name="VividStoreShippingMethods">
         <field name="smID" type="I"><key/><unsigned/><autoincrement/></field>
         <field name="smName" type="C" size="255"></field>
+        <field name="smEnabled" type="L"></field>
+        <fi>
     </table>
     <table name="VividStoreFlatRateMethods">
         <field name="frsmID" type="I"><key/><unsigned/><autoincrement/></field>
-        <field name="frsmDisplayName" type="C" size="255"></field>
         <field name="smID" type="I"></field>
-        <field name="frsmEnabled" type="L"></field>
         <field name="baseRate" type="N"></field>
         <field name="perItemRate" type="N"></field>
         <field name="minimumAmount" type="N"></field>

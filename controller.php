@@ -30,7 +30,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.6.15';
+    protected $pkgVersion = '2.0.99.2';
     
     
     
@@ -54,6 +54,7 @@ class Controller extends Package
         SinglePage::add('/dashboard/store/products/',$pkg);
         SinglePage::add('/dashboard/store/products/attributes',$pkg);
         SinglePage::add('/dashboard/store/settings/',$pkg);
+        SinglePage::add('/dashboard/store/settings/shipping',$pkg);
         
         //install our cart/checkout pages
         SinglePage::add('/cart/',$pkg);
@@ -509,9 +510,20 @@ class Controller extends Package
         
         //Version 2.1
         
+        //install shipping methods
         $smt = ShippingMethodType::getByHandle('flat_rate');
         if(!is_object($smt)){
             ShippingMethodType::add('flat_rate','Flat Rate',$pkg);
+        }
+        
+        $smt = ShippingMethodType::getByHandle('free_shipping');
+        if(!is_object($smt)){
+            ShippingMethodType::add('free_shipping','Free Shipping',$pkg);
+        }
+        
+        $shippingMethodsPage = Page::getBypath('/dashboard/store/settings/shipping');
+        if(!is_object($shippingMethodsPage) || $shippingMethodsPage->isError()){
+            SinglePage::add('/dashboard/store/settings/shipping',$pkg);
         }
         
     }
