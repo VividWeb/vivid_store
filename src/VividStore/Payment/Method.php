@@ -70,7 +70,7 @@ class Method extends Controller
         $dir = $this->getMethodDirectory(); 
         $file = new Filesystem();   
         $file->requireOnce($dir."controller.php");
-        $namespace = "Concrete\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\src\VividStore\Payment";
+        $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\src\\VividStore\\Payment";
         
         $className = $th->camelcase($this->pmHandle)."PaymentMethod";
         $namespace = $namespace.'\\'.$className;

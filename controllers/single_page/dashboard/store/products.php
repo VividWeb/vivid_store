@@ -11,6 +11,7 @@ use Database;
 use File;
 use Loader;
 use PageType;
+use GroupList;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
@@ -67,7 +68,21 @@ class Products extends DashboardPageController
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
-        $this->set("productgroups",$productgroups);          
+        $this->set("productgroups",$productgroups);
+
+        $gl = new GroupList();
+        $gl->setItemsPerPage(1000);
+        $gl->filterByAssignable();
+        $usergroups = $gl->get();
+
+        foreach($usergroups as $ug) {
+            if ( $ug->gName != 'Administrators') {
+                $usergrouparray[$ug->gID] = $ug->gName;
+            }
+        }
+
+        $this->set('pageTitle', t('Add Product'));
+        $this->set('usergroups', $usergrouparray);
     }
     public function edit($pID)
     {
@@ -88,6 +103,20 @@ class Products extends DashboardPageController
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
         $this->set("productgroups",$productgroups);
+
+        $gl = new GroupList();
+        $gl->setItemsPerPage(1000);
+        $gl->filterByAssignable();
+        $usergroups = $gl->get();
+
+        foreach($usergroups as $ug) {
+            if ( $ug->gName != 'Administrators') {
+                $usergrouparray[$ug->gID] = $ug->gName;
+            }
+        }
+
+        $this->set('pageTitle', t('Edit Product'));
+        $this->set('usergroups', $usergrouparray);
         
     }
     public function generate($pID,$templateID=null)

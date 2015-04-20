@@ -148,7 +148,7 @@ class Cart
                     }
                     break;
                 case "city":
-                    if($userCity==$storyCity){
+                    if($userCity==$storeCity){
                         $customerIsTaxable = true;
                     }
                     break;
