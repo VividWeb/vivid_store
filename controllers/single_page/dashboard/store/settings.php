@@ -7,7 +7,7 @@ use Database;
 use Package;
 use Core;
 use Loader;
-
+use Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -26,6 +26,7 @@ class Settings extends DashboardPageController
        $this->set("countries",Core::make('helper/lists/countries')->getCountries());
        $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
        $this->set("installedPaymentMethods",PaymentMethod::getMethods());
+       $this->set("orderStatuses",OrderStatus::getAll());
        $pkg = Package::getByHandle('vivid_store');
        $productPublishTarget = $pkg->getConfig()->get('vividstore.productPublishTarget');
        $this->set('productPublishTarget',$productPublishTarget);
@@ -95,6 +96,8 @@ class Settings extends DashboardPageController
                         $pm->setDisplayName($value);
                     }
                 }       
+
+                $this->saveOrderStatuses($args);
                 
                 $this->redirect('/dashboard/store/settings/success');
                 
@@ -102,6 +105,28 @@ class Settings extends DashboardPageController
             
         }//if post
          
+    }
+
+    private function saveOrderStatuses($data) {
+        if (isset($data['osID'])) {
+            foreach ($data['osID'] as $key => $id) {
+                $orderStatus = OrderStatus::getByID($id);
+                $orderStatusSettings = array(
+                    'osName' => ((isset($data['osName'][$key]) && $data['osName'][$key]!='') ?
+                        $data['osName'][$key] : $orderStatus->getReadableHandle()),
+                    'osInformSite' => isset($data['osInformSite'][$key]) ? 1 : 0,
+                    'osInformCustomer' => isset($data['osInformCustomer'][$key]) ? 1 : 0,
+                    'osSortOrder' => $key
+                );
+                $orderStatus->update($orderStatusSettings);
+            }
+            if (isset($data['osIsStartingStatus'])) {
+                OrderStatus::setNewStartingStatus(OrderStatus::getByID($data['osIsStartingStatus'])->getHandle());
+            } else {
+                $orderStatuses = OrderStatus::getAll();
+                OrderStatus::setNewStartingStatus($orderStatuses[0]);
+            }
+        }
     }
     public function validate($args)
     {
@@ -142,6 +167,10 @@ class Settings extends DashboardPageController
             $pm = PaymentMethod::getByID($pmID);
             $controller = $pm->getMethodController();
             $e = $controller->validate($args,$e);
+        }
+
+        if (!isset($args['osName'])) {
+            $e->add(t('You must have at least one Order Status.'));
         }
         return $e;
         
