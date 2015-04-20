@@ -31,7 +31,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.6';
+    protected $pkgVersion = '2.0.7';
     
     
     
@@ -508,10 +508,10 @@ class Controller extends Package
         $table = OrderStatus::getTableName();
         $db = Loader::db();
         $statuses = array(
-            array('osHandle'=>'pending', 'osName'=>'Pending', 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'processing', 'osName'=>'processing', 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'shipped', 'osName'=>'shipped', 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'complete', 'osName'=>'Complete', 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'pending', 'osName'=>t('Pending'), 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'processing', 'osName'=>t('Processing'), 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'shipped', 'osName'=>t('shipped'), 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'complete', 'osName'=>t('Complete'), 'osInformSite'=>1, 'osInformCustomer'=>1),
         );
         foreach ($statuses as $status) {
             $row = $db->GetRow("SELECT * FROM ".$table." WHERE osHandle=?", array($status['osHandle']));

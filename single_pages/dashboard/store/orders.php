@@ -88,7 +88,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
     <h3><?=t("Order Status History")?></h3>
     <hr>
     <div class="row">
-        <div class="col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
+        <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title"><?=t("Update Status")?></h4>
@@ -105,7 +105,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
                 </div>
             </div>
         </div>
-        <div class="col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
+        <div class="col-sm-8">
             <table class="table table-striped">
                 <thead>
                 <tr>
