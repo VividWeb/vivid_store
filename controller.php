@@ -14,12 +14,14 @@ use Group;
 use View;
 use Database;
 use FileSet;
+use Loader;
 use Concrete\Core\Database\Schema\Schema;
 use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
 use \Concrete\Core\Attribute\Type as AttributeType;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Utility\Service\Text;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -347,6 +349,8 @@ class Controller extends Package
         if(!is_object($fs)){
             FileSet::add("Digital Downloads");
         }
+
+        $this->addOrderStatusesToDatabase($pkg);
     }
 
     public function upgrade()
@@ -496,6 +500,27 @@ class Controller extends Package
         $attrPage = Page::getByPath('/dashboard/store/products/attributes');
         if(!is_object($attrPage) || $attrPage->isError()){
             SinglePage::add('/dashboard/store/products/attributes',$pkg);
+        }
+        $this->addOrderStatusesToDatabase($pkg);
+    }
+
+    private function addOrderStatusesToDatabase($pkg) {
+        $table = OrderStatus::getTableName();
+        $db = Loader::db();
+        $statuses = array(
+            array('osHandle'=>'pending', 'osName'=>'Pending', 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'processing', 'osName'=>'processing', 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'shipped', 'osName'=>'shipped', 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'complete', 'osName'=>'Complete', 'osInformSite'=>1, 'osInformCustomer'=>1),
+        );
+        foreach ($statuses as $status) {
+            $row = $db->GetRow("SELECT * FROM ".$table." WHERE osHandle=?", array($status['osHandle']));
+            if (!isset($row['osHandle'])) {
+                OrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer']);
+            } else {
+                $orderStatus = OrderStatus::getByID($row['osID']);
+                $orderStatus->update($status, true);
+            }
         }
     }
     

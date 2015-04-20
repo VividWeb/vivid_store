@@ -12,6 +12,7 @@
                             <li><a href="#settings-tax" data-pane-toggle><?=t('Tax')?></a></li>
                             <li><a href="#settings-shipping" data-pane-toggle><?=t('Shipping')?></a></li>
                             <li><a href="#settings-payments" data-pane-toggle><?=t('Payments')?></a></li>
+                            <li><a href="#settings-order-statuses" data-pane-toggle><?=t('Order Statuses')?></a></li>
                             <li><a href="#settings-notifications" data-pane-toggle><?=t('Notifications')?></a></li>
                             <li><a href="#settings-products" data-pane-toggle><?=t('Products')?></a></li>
                         </ul>
@@ -167,8 +168,62 @@
                     ?>                                    
                     
             
-                </div><!-- #settings-notifications -->
-                
+                </div><!-- #settings-payments -->
+
+                <div class="col-sm-7 store-pane" id="settings-order-statuses">
+
+                    <?php
+                    if(count($orderStatuses)>0){ ?>
+                        <div class="panel panel-default">
+
+                            <table class="table" id="orderStatusTable">
+                                <thead>
+                                <tr>
+                                    <th rowspan="1">&nbsp;</th>
+                                    <th rowspan="1"><?php echo t('Display Name'); ?></th>
+                                    <th rowspan="1"><?php echo t('Default Status'); ?></th>
+                                    <th colspan="2" style="display:none;"><?php echo t('Send Change Notifications to...'); ?></th>
+                                </tr>
+                                <tr style="display:none;">
+                                    <th><?php echo t('Site'); ?></th>
+                                    <th><?php echo t('Customer'); ?></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach($orderStatuses as $orderStatus){?>
+                                    <tr>
+                                        <td class="sorthandle"><input type="hidden" name="osID[]" value="<?php echo $orderStatus->getID(); ?>"><i class="fa fa-arrows-v"></i></td>
+                                        <td><input type="text" name="osName[]" value="<?php echo $orderStatus->getName(); ?>" placeholder="<?php echo $orderStatus->getReadableHandle(); ?>" class="form-control ccm-input-text"></td>
+                                        <td><input type="radio" name="osIsStartingStatus" value="<?php echo $orderStatus->getID(); ?>" <?php echo $orderStatus->isStartingStatus() ? 'checked':''; ?>></td>
+                                        <td style="display:none;"><input type="checkbox" name="osInformSite[]" value="1" <?php echo $orderStatus->getInformSite() ? 'checked':''; ?> class="form-control"></td>
+                                        <td style="display:none;"><input type="checkbox" name="osInformCustomer[]" value="1" <?php echo $orderStatus->getInformCustomer() ? 'checked':''; ?> class="form-control"></td>
+                                    </tr>
+                                <?php } ?>
+                                </tbody>
+                            </table>
+                            <script>
+                                $(function(){
+                                    $('#orderStatusTable TBODY').sortable({
+                                        cursor: 'move',
+                                        opacity: 0.5,
+                                        handle: '.sorthandle'
+                                    });
+
+                                });
+
+                            </script>
+
+                        </div>
+
+                    <?php
+                    } else {
+                        echo t("No Order Statuses are available");
+                    }
+                    ?>
+
+
+                </div><!-- #settings-order-statuses -->
+
                 <div class="col-sm-7 store-pane" id="settings-notifications">
                 
                     <div class="form-group">
