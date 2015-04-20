@@ -108,7 +108,7 @@ ob_start();
                     }
                 }
                 if(count($downloads) > 0){?>
-                    <p><strong><?=t("Your Downloads")?></h3></p>
+                    <p><strong><?=t("Your Downloads")?></strong></p>
                     <p><?=t("Note: You must be logged in to download files")?></p>
                     <ul class="order-downloads">
                     <?php
