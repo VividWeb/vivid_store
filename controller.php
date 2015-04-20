@@ -29,7 +29,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.5';
+    protected $pkgVersion = '2.0.6';
     
     
     
@@ -517,12 +517,12 @@ class Controller extends Package
     public function uninstall()
     {
         $authpm = PaymentMethod::getByHandle('auth_net');
-        if(is_object($pm)){
-            $pm->delete();
+        if(is_object($authpm)){
+            $authpm->delete();
         }
         $invoicepm = PaymentMethod::getByHandle('invoice');
-        if(is_object($pm)){
-            $pm->delete();
+        if(is_object($invoicepm)){
+            $invoicepm->delete();
         }
         parent::uninstall();
     }

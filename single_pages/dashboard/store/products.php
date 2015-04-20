@@ -21,13 +21,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             ?>
             <input type="hidden" name="pID" value="<?=$p->getProductID()?>"/>
             
-            <div class="row">
-                <div class="col-sm-7 col-sm-offset-4">
-                    <h2><?=t('Manage Product')?></h2>    
-                    
-                </div>
-            </div>
-            <hr>
+
             <div class="row">
                 
                 <div class="col-sm-4">
@@ -36,7 +30,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     
                         <ul>
                             <li><a href="#product-overview" data-pane-toggle class="active"><?=t('Overview')?></a></li>
-                            <li><a href="#product-digital" data-pane-toggle><?=t("Digital Products")?></a></li>
+                            <li><a href="#product-digital" data-pane-toggle><?=t("Downloads and User Groups")?></a></li>
                             <li><a href="#product-images" data-pane-toggle><?=t('Images')?></a></li>
                             <li><a href="#product-details" data-pane-toggle><?=t('Details')?></a></li>
                             <li><a href="#product-options" data-pane-toggle><?=t('Options')?></a></li>
@@ -113,7 +107,27 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             ?>
                         </div>
                     <?php } ?>
-                    
+
+                    <div class="form-group">
+                        <?php echo $form->label("usergroups", t("On purchase add user to user groups"));?>
+                        <div class="ccm-search-field-content ccm-search-field-content-select2">
+                            <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;" placeholder="<?php echo t('Select user groups');?>">
+                                <?php
+                                $selectedusergroups = $p->getProductUserGroups();
+                                foreach ($usergroups as $ugkey=>$uglabel) { ?>
+                                    <option value="<?php echo $ugkey;?>" <?php echo (in_array($ugkey, $selectedusergroups) ? 'selected="selected"' : ''); ?>>  <?php echo $uglabel; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        $(function() {
+                            $('#groupselect').select2();
+                        });
+                    </script>
+
+
                 </div><!-- #product-digital -->
                 
                 <div class="col-sm-7 store-pane" id="product-images">
