@@ -15,11 +15,11 @@ class Settings extends DashboardPageController
 {
 
 //    public $error = Loader::helper("validation/error");
-
     public function on_start()
     {
         
     }
+
     public function view(){
        $this->loadFormAssets();
        $this->set("pageSelector",Core::make('helper/form/page_selector'));
@@ -42,7 +42,7 @@ class Settings extends DashboardPageController
     }
     public function success()
     {
-        $this->set('success',t('Settings Saved!'));
+        $this->set('success',t('Settings Saved'));
         $this->view();
     }
     public function failed()
@@ -80,7 +80,8 @@ class Settings extends DashboardPageController
                 $pkg->getConfig()->save('vividstore.notificationemails',$args['notificationEmails']);
                 $pkg->getConfig()->save('vividstore.emailalerts',$args['emailAlert']);
                 $pkg->getConfig()->save('vividstore.productPublishTarget',$args['productPublishTarget']);
-                
+                $pkg->getConfig()->save('vividstore.guestCheckout',$args['guestCheckout']);
+
                 //save payment methods
                 if($args['paymentMethodHandle']){
                     

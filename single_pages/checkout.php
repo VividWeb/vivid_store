@@ -4,12 +4,10 @@
 <div class="clearfix">
 
     <div class="checkout-form-shell">
-        
         <h1><?=t("Checkout")?></h1>
-        
+
         <?php 
-            $u = new User();
-            if(!$u->isLoggedIn()){
+           if ($customer->isGuest() && !$guestCheckout){
         ?>
         <div class="checkout-form-group">
             
@@ -19,25 +17,32 @@
             <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a>
             
         </div>
-        <?php } else { 
-            $ui = UserInfo::getByID($u->getUserID());   
-        ?>
-        
+        <?php } else {   ?>
         <form class="checkout-form-group" id="checkout-form-group-billing" action="">
             
             <h2><?=t("Billing Address")?></h2>
             <div class="checkout-form-group-body col-container clearfix">
+               <?php if ($customer->isGuest()) { ?>
+                <div class="clearfix">
+                   <div class="vivid-store-col-2">
+                            <div class="form-group">
+                                <label for="email"><?=t("Email")?></label>
+                                <?php echo $form->text('email',$customer->getEmail()); ?>
+                            </div>
+                        </div>
+                </div>
+                <?php } ?>
                 <div class="clearfix">
                     <div class="vivid-store-col-2">
                         <div class="form-group">
                             <label for="checkout-billing-first-name"><?=t("First Name")?></label>
-                            <?php echo $form->text('checkout-billing-first-name',$ui->getAttribute("billing_first_name")); ?>
+                            <?php echo $form->text('checkout-billing-first-name',$customer->getValue("billing_first_name")); ?>
                         </div>
                    </div>     
                    <div class="vivid-store-col-2">
                         <div class="form-group">
                             <label for="checkout-billing-last-name"><?=t("Last Name")?></label>
-                            <?php echo $form->text('checkout-billing-last-name',$ui->getAttribute("billing_last_name"),array("required"=>"required")); ?>
+                            <?php echo $form->text('checkout-billing-last-name',$customer->getValue("billing_last_name"),array("required"=>"required")); ?>
                         </div>
                     </div>
                 </div>
@@ -45,39 +50,39 @@
                     <div class="vivid-store-col-2">
                         <div class="form-group">
                             <label for="checkout-billing-phone"><?=t("Phone")?></label>
-                            <?php echo $form->telephone('checkout-billing-phone',$ui->getAttribute("billing_phone"),array("required"=>"required")); ?>
+                            <?php echo $form->telephone('checkout-billing-phone',$customer->getValue("billing_phone"),array("required"=>"required")); ?>
                         </div>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-billing-address-1"><?=t("Address 1")?></label>
-                        <?php echo $form->text('checkout-billing-address-1',$ui->getAttribute("billing_address")->address1,array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-billing-address-1',$customer->getValue("billing_address")->address1,array("required"=>"required")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-billing-address-1"><?=t("Address 2")?></label>
-                        <?php echo $form->text('checkout-billing-address-2',$ui->getAttribute("billing_address")->address2); ?>
+                        <?php echo $form->text('checkout-billing-address-2',$customer->getValue("billing_address")->address2); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-billing-country"><?=t("Country")?></label>
-                        <?php $country = $ui->getAttribute("billing_address")->country; ?>
+                        <?php $country = $customer->getValue("billing_address")->country; ?>
                         <?php echo $form->select('checkout-billing-country',$countries,$country?$country:'US',array("onchange"=>"vividStore.updateBillingStates()")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-billing-city"><?=t("City")?></label>
-                        <?php echo $form->text('checkout-billing-city',$ui->getAttribute("billing_address")->city,array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-billing-city',$customer->getValue("billing_address")->city,array("required"=>"required")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-billing-state"><?=t("State")?></label>
-                        <?php $billingState = $ui->getAttribute("billing_address")->state_province; ?>
+                        <?php $billingState = $customer->getValue("billing_address")->state_province; ?>
                         <?php echo $form->select('checkout-billing-state',$states,$billingState?$billingState:""); ?>
                         <input type="hidden" id="checkout-saved-billing-state" value="<?=$billingState?>">
                     </div>
@@ -85,7 +90,7 @@
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-billing-zip"><?=t("Postal Code")?></label>
-                        <?php echo $form->text('checkout-billing-zip',$ui->getAttribute("billing_address")->postal_code,array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-billing-zip',$customer->getValue("billing_address")->postal_code,array("required"=>"required")); ?>
                     </div>
                 </div>
                 
@@ -114,44 +119,44 @@
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-first-name"><?=t("First Name")?></label>
-                        <?php echo $form->text('checkout-shipping-first-name',$ui->getAttribute("shipping_first_name"),array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-shipping-first-name',$customer->getValue("shipping_first_name"),array("required"=>"required")); ?>
                     </div>
                </div>     
                <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-last-name"><?=t("Last Name")?></label>
-                        <?php echo $form->text('checkout-shipping-last-name',$ui->getAttribute("shipping_last_name"),array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-shipping-last-name',$customer->getValue("shipping_last_name"),array("required"=>"required")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-address-1"><?=t("Address 1")?></label>
-                        <?php echo $form->text('checkout-shipping-address-1',$ui->getAttribute("shipping_address")->address1,array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-shipping-address-1',$customer->getValue("shipping_address")->address1,array("required"=>"required")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-address-1"><?=t("Address 2")?></label>
-                        <?php echo $form->text('checkout-shipping-address-2',$ui->getAttribute("shipping_address")->address2); ?>
+                        <?php echo $form->text('checkout-shipping-address-2',$customer->getValue("shipping_address")->address2); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-country"><?=t("Country")?></label>
-                        <?php $country = $ui->getAttribute("shipping_address")->country; ?>
+                        <?php $country = $customer->getValue("shipping_address")->country; ?>
                         <?php echo $form->select('checkout-shipping-country',$countries,$country?$country:'US',array("onchange"=>"vividStore.updateShippingStates()")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-city"><?=t("City")?></label>
-                        <?php echo $form->text('checkout-shipping-city',$ui->getAttribute("shipping_address")->city,array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-shipping-city',$customer->getValue("shipping_address")->city,array("required"=>"required")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-state"><?=t("State")?></label>
-                        <?php $shippingState = $ui->getAttribute("shipping_address")->state_province; ?>
+                        <?php $shippingState = $customer->getValue("shipping_address")->state_province; ?>
                         <?php echo $form->select('checkout-shipping-state',$states,$shippingState?$shippingState:""); ?>
                         <input type="hidden" id="checkout-saved-shipping-state" value="<?=$shippingState?>">
                     </div>
@@ -159,7 +164,7 @@
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-zip"><?=t("Postal Code")?></label>
-                        <?php echo $form->text('checkout-shipping-zip',$ui->getAttribute("shipping_address")->postal_code,array("required"=>"required")); ?>
+                        <?php echo $form->text('checkout-shipping-zip',$customer->getValue("shipping_address")->postal_code,array("required"=>"required")); ?>
                     </div>
                 </div>
                 

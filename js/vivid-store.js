@@ -200,6 +200,7 @@ vividStore.showPaymentForm();
 
 $("#checkout-form-group-billing").submit(function(e){
         e.preventDefault();
+        var email = $("#email").val();
         var bfName = $("#checkout-billing-first-name").val();
         var blName = $("#checkout-billing-last-name").val();
         var bPhone = $("#checkout-billing-phone").val();
@@ -214,7 +215,7 @@ $("#checkout-form-group-billing").submit(function(e){
         $.ajax({
             url: CHECKOUTURL+"/updater",
             type: 'post',
-            data: {adrType: 'billing', fName: bfName, lName: blName, phone: bPhone, addr1: bAddress1, addr2: bAddress2, count: bCountry, city: bCity, state: bState, postal: bPostal},
+            data: {adrType: 'billing', email: email, fName: bfName, lName: blName, phone: bPhone, addr1: bAddress1, addr2: bAddress2, count: bCountry, city: bCity, state: bState, postal: bPostal},
             //dataType: 'json',
             success: function(result){
                 //var test = null;
@@ -236,7 +237,7 @@ $("#checkout-form-group-billing").submit(function(e){
                         }
                     });
                 } else {
-                    alert($errors.errors);
+                    alert($errors.errors.join('\n'));
                     $('.whiteout').remove();
                 }
             },

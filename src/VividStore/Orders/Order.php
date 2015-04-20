@@ -17,6 +17,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Item as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Order extends Object
@@ -41,9 +42,7 @@ class Order extends Object
         $db = Database::get();
         
         //get who ordered it
-        $u = new User();
-        $uID = $u->getUserID();
-        $ui = UserInfo::getByID($uID);
+        $customer = new Customer();
         
         //what time is it?
         $dt = Core::make('helper/date');
@@ -58,18 +57,20 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
         
         //add the order
-        $vals = array($uID,$now,'pending',$pmID,$shipping,$tax,$total);
+        $vals = array($customer->getUserID(),$now,'pending',$pmID,$shipping,$tax,$total);
         $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTotal) values(?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
-        $order->setAttribute("billing_first_name",$ui->getAttribute("billing_first_name"));
-        $order->setAttribute("billing_last_name",$ui->getAttribute("billing_last_name"));
-        $order->setAttribute("billing_address",$ui->getAttribute("billing_address"));
-        $order->setAttribute("billing_phone",$ui->getAttribute("billing_phone"));
-        $order->setAttribute("shipping_first_name",$ui->getAttribute("shipping_first_name"));
-        $order->setAttribute("shipping_last_name",$ui->getAttribute("shipping_last_name"));
-        $order->setAttribute("shipping_address",$ui->getAttribute("shipping_address"));
-        
+        $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
+        $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));
+        $order->setAttribute("billing_address",$customer->getValue("billing_address"));
+        $order->setAttribute("billing_phone",$customer->getValue("billing_phone"));
+        $order->setAttribute("shipping_first_name",$customer->getValue("shipping_first_name"));
+        $order->setAttribute("shipping_last_name",$customer->getValue("shipping_last_name"));
+        $order->setAttribute("shipping_address",$customer->getValue("shipping_address"));
+
+        $customer->setLastOrderID($oID);
+
         //add the order items
         $cart = Session::get('cart');
         foreach($cart as $cartItem){
@@ -79,7 +80,11 @@ class Order extends Object
         //add user to Store Customers group
         $group = \Group::getByName('Store Customer');
         if (is_object($group) || $group->getGroupID() < 1) {
-            $u->enterGroup($group);
+
+            // At this point if we have products that have
+            if (!$customer->isGuest()) {
+                $customer->getUserInfo()->enterGroup($group);
+            }
         }
         
         //send out the alerts
@@ -96,7 +101,7 @@ class Order extends Object
                     
             //receipt
             $mh->from($fromEmail);
-            $mh->to($ui->getUserEmail());
+            $mh->to($customer->getEmail());
             $mh->addParameter("order", $order);
             $mh->load("order_receipt","vivid_store");
             $mh->sendMail();

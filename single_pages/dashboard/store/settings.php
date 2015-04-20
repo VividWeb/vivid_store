@@ -14,6 +14,7 @@
                             <li><a href="#settings-payments" data-pane-toggle><?=t('Payments')?></a></li>
                             <li><a href="#settings-notifications" data-pane-toggle><?=t('Notifications')?></a></li>
                             <li><a href="#settings-products" data-pane-toggle><?=t('Products')?></a></li>
+                            <li><a href="#settings-customers" data-pane-toggle><?=t('Customers')?></a></li>
                         </ul>
                     
                     </div>
@@ -167,8 +168,9 @@
                     ?>                                    
                     
             
-                </div><!-- #settings-notifications -->
-                
+                </div>
+
+                <!-- #settings-notifications -->
                 <div class="col-sm-7 store-pane" id="settings-notifications">
                 
                     <div class="form-group">
@@ -181,8 +183,9 @@
                         <?php echo $form->text('emailAlert',$pkgconfig->get('vividstore.emailalerts')); ?>
                     </div>
             
-                </div><!-- #settings-notifications -->
-                
+                </div>
+
+                <!-- #settings-products -->
                 <div class="col-sm-7 store-pane" id="settings-products">
                 
                     <div class="form-group">
@@ -190,8 +193,18 @@
                         <?=$pageSelector->selectPage('productPublishTarget',$productPublishTarget)?>
                     </div>
             
-                </div><!-- #settings-shipping -->
-                
+                </div>
+
+                <!-- #settings-customers -->
+                <div class="col-sm-7 store-pane" id="settings-customers">
+
+                    <div class="form-group">
+                        <?php echo $form->label('guestCheckout',t('Allow guest checkout'));?>
+                        <?php echo $form->select('guestCheckout',array('no'=>t('No'),'yes'=>t('Yes')),$pkgconfig->get('vividstore.guestCheckout')); ?>
+                    </div>
+
+                </div>
+
             </div><!-- .row -->
                 
     	    <div class="ccm-dashboard-form-actions-wrapper">
