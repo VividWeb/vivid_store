@@ -6,15 +6,25 @@
     <div class="checkout-form-shell">
         <h1><?=t("Checkout")?></h1>
 
-        <?php 
-           if ($customer->isGuest() && !$guestCheckout){
+        <?php
+            if (($customer->isGuest() || $hasUserGroupProducts) && ($guestCheckout == 'off' || ($guestCheckout == 'option' && $_GET['guest'] != '1'))){
         ?>
         <div class="checkout-form-group">
-            
-            <h2><?=t("Sign in or Register")?></h2>
-            <p><?=t("In order to proceed, you'll need to either register, or login with your existing account.")?></p>
-            <a class="btn btn-default" href="<?=View::url('/login')?>"><?=t("Login")?></a>
+
+            <?php if ($guestCheckout == 'option' && !$hasUserGroupProducts) { ?>
+                <h2><?=t("Sign in, Register or Checkout as Guest")?></h2>
+                <p><?=t("In order to proceed, you'll need to register, sign in or checkout as a guest.")?></p>
+            <?php } else { ?>
+                <h2><?=t("Sign in or Register")?></h2>
+                <p><?=t("In order to proceed, you'll need to either register, or sign in with your existing account.")?></p>
+            <?php } ?>
+
+            <a class="btn btn-default" href="<?=View::url('/login')?>"><?=t("Sign In")?></a>
             <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a>
+
+            <?php if ($guestCheckout == 'option' && !$hasUserGroupProducts) { ?>
+                <a class="btn btn-default" href="<?=View::url('/checkout/?guest=1')?>"><?=t("Checkout as Guest")?></a>
+            <?php } ?>
             
         </div>
         <?php } else {   ?>
@@ -27,7 +37,7 @@
                    <div class="vivid-store-col-2">
                             <div class="form-group">
                                 <label for="email"><?=t("Email")?></label>
-                                <?php echo $form->text('email',$customer->getEmail()); ?>
+                                <?php echo $form->email('email',$customer->getEmail(),array("required"=>"required")); ?>
                             </div>
                         </div>
                 </div>

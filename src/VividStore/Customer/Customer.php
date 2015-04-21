@@ -32,7 +32,14 @@ class Customer
 
     public function getValue($handle) {
         if ($this->isGuest()) {
-            return Session::get($handle);
+
+           $val = Session::get($handle);
+
+            if (is_array($val)) {
+                return (object)$val;
+            }
+
+            return $val;
         } else {
             return $this->ui->getAttribute($handle);
         }
@@ -67,7 +74,7 @@ class Customer
     }
 
     public function setLastOrderID($id){
-        Session::get('lastOrderID', $id);
+        Session::set('lastOrderID', $id);
     }
 
 

@@ -25,7 +25,8 @@ class Checkout extends PageController
 
         $customer = new Customer();
         $this->set('customer', $customer);
-        $this->set('guestCheckout', (bool)$pkg->getConfig()->get('vividstore.guestCheckout'));
+        $this->set('guestCheckout', $pkg->getConfig()->get('vividstore.guestCheckout'));
+        $this->set('hasUserGroupProducts', VividCart::hasUserGroupProducts());
 
         if(VividCart::getTotalItemsInCart() == 0){
             $this->redirect("/cart/");

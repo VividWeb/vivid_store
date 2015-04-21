@@ -29,7 +29,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.6';
+    protected $pkgVersion = '2.0.7';
     
     
     
@@ -142,7 +142,23 @@ class Controller extends Package
         $custSet = $uakc->addSet('customer_info', t('Store Customer Info'), $pkg);
         $text = AttributeType::getByHandle('text');
         $address = AttributeType::getByHandle('address');
-        
+
+        //email
+        $bFirstname = UserAttributeKey::getByHandle('email');
+        if (!is_object($bFirstname)) {
+            UserAttributeKey::add($text,
+                array('akHandle' => 'email',
+                    'akName' => t('Email'),
+                    'akIsSearchable' => false,
+                    'uakProfileEdit' => true,
+                    'uakProfileEditRequired' => false,
+                    'uakRegisterEdit' => false,
+                    'uakProfileEditRequired' => false,
+                    'akCheckedByDefault' => true,
+                    'displayOrder' => '1',
+                ), $pkg)->setAttributeSet($custSet);
+        }
+
         //billing first name
         $bFirstname = UserAttributeKey::getByHandle('billing_first_name');
         if (!is_object($bFirstname)) {
@@ -174,7 +190,7 @@ class Controller extends Package
                     'displayOrder' => '2',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //billing address
         $bAddress = UserAttributeKey::getByHandle('billing_address');
         if (!is_object($bAddress)) {
@@ -190,7 +206,7 @@ class Controller extends Package
                     'displayOrder' => '3',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //billing Phone
         $bPhone = UserAttributeKey::getByHandle('billing_phone');
         if (!is_object($bPhone)) {
@@ -206,7 +222,7 @@ class Controller extends Package
                     'displayOrder' => '4',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //shipping first name
         $sFirstname = UserAttributeKey::getByHandle('shipping_first_name');
         if (!is_object($sFirstname)) {
@@ -238,7 +254,7 @@ class Controller extends Package
                     'displayOrder' => '2',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //shipping address
         $sAddress = UserAttributeKey::getByHandle('shipping_address');
         if (!is_object($sAddress)) {
@@ -254,7 +270,7 @@ class Controller extends Package
                     'displayOrder' => '3',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //create user group    
         $group = Group::getByName('Store Customer');
         if (!$group || $group->getGroupID() < 1) {
@@ -275,7 +291,13 @@ class Controller extends Package
 
             $orderCustSet = $oakc->addSet('order_customer', t('Store Customer Info'), $pkg);        
         }
-        
+        $email = StoreOrderKey::getByHandle('email');
+        if (!is_object($email)) {
+            StoreOrderKey::add($text, array(
+                'akHandle' => 'email',
+                'akName' => t('Email')
+            ), $pkg)->setAttributeSet($orderCustSet);
+        }
         $bFirstname = StoreOrderKey::getByHandle('billing_first_name');
         if (!is_object($bFirstname)) {
             StoreOrderKey::add($text, array(
@@ -284,7 +306,7 @@ class Controller extends Package
             ), $pkg)->setAttributeSet($orderCustSet);
         }
         $bLastname = StoreOrderKey::getByHandle('billing_last_name');
-        if (!is_object($bFirstname)) {
+        if (!is_object($bLastname)) {
             StoreOrderKey::add($text, array(
                 'akHandle' => 'billing_last_name',
                 'akName' => t('Billing Last Name')
@@ -298,7 +320,7 @@ class Controller extends Package
             ), $pkg)->setAttributeSet($orderCustSet);
         }
         $bPhone = StoreOrderKey::getByHandle('billing_phone');
-        if (!is_object($bFirstname)) {
+        if (!is_object($bPhone)) {
             StoreOrderKey::add($text, array(
                 'akHandle' => 'billing_phone',
                 'akName' => t('Billing Phone')
@@ -497,6 +519,24 @@ class Controller extends Package
         if(!is_object($attrPage) || $attrPage->isError()){
             SinglePage::add('/dashboard/store/products/attributes',$pkg);
         }
+
+        /*
+        *  Add email order attribute
+        */
+        $text = AttributeType::getByHandle('text');
+
+        $oakc = AttributeKeyCategory::getByHandle('store_order');
+        $oakc->getByHandle('order_customer');
+
+        $email = StoreOrderKey::getByHandle('email');
+        if (!is_object($email)) {
+            StoreOrderKey::add($text, array(
+                'akHandle' => 'email',
+                'akName' => t('Email')
+            ), $pkg)->setAttributeSet($orderCustSet);
+        }
+
+        parent::upgrade();
     }
     
     public function registerRoutes()

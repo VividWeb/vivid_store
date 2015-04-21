@@ -199,8 +199,12 @@
                 <div class="col-sm-7 store-pane" id="settings-customers">
 
                     <div class="form-group">
-                        <?php echo $form->label('guestCheckout',t('Allow guest checkout'));?>
-                        <?php echo $form->select('guestCheckout',array('no'=>t('No'),'yes'=>t('Yes')),$pkgconfig->get('vividstore.guestCheckout')); ?>
+                        <h3><?php echo t('Guest checkout');?></h3>
+                        <?php $guestCheckout =  $pkgconfig->get('vividstore.guestCheckout'); ?>
+                        <label><?php echo $form->radio('guestCheckout','off', $guestCheckout == 'off' || $guestCheckout == '' ); ?> <?php  echo t('Disabled'); ?></label><br />
+                        <label><?php echo $form->radio('guestCheckout','option',$guestCheckout == 'option'); ?> <?php  echo t('Offer as checkout option'); ?></label><br />
+                        <label><?php echo $form->radio('guestCheckout','always', $guestCheckout == 'always'); ?> <?php  echo t('Always'); ?></label><br />
+
                     </div>
 
                 </div>

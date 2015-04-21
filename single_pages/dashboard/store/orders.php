@@ -7,6 +7,22 @@ defined('C5_EXECUTE') or die("Access Denied.");
     <h3><?=t("Customer Overview")?></h3>
     <hr>
     <div class="row">
+        <div class="col-sm-12">
+            <?php $orderemail = $order->getAttribute("email");
+
+            if ($orderemail) { ?>
+            <h4><?=t("Email")?></h4>
+            <p><a href="mailto:<?=$order->getAttribute("email"); ?>"><?=$order->getAttribute("email"); ?></a></p>
+            <?php } ?>
+
+            <?php
+            $ui = UserInfo::getByID($order->getCustomerID());
+            if ($ui) { ?>
+            <h4><?=t("User")?></h4>
+            <p><a href="<?= View::url('/dashboard/users/search/view/' . $ui->getUserID());?>"><?= $ui->getUserName(); ?></a></p>
+            <?php } ?>
+        </div>
+
         <div class="col-sm-6">
             <h4><?=t("Billing Information")?></h4>
             <p>

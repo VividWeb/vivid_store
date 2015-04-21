@@ -251,6 +251,19 @@ class Cart
         $grandTotal = ($subtotal + $taxtotal + $shippingtotal);
         return Price::format($grandTotal);
     }
+
+    public function hasUserGroupProducts() {
+        if(Session::get('cart')){
+            foreach(Session::get('cart') as $item) {
+                $product = VividProduct::getByID($item['product']['pID']);
+                if ($product->hasUserGroups()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
 
 
