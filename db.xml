@@ -66,6 +66,22 @@
         <field name="oTax" type="C" size="10"></field>
         <field name="oTotal" type="C" size="10"></field>
     </table>
+    <table name="VividStoreOrderStatus">
+        <field name="osID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="osHandle" type="C" size="255"></field>
+        <field name="osName" type="C" size="255"></field>
+        <field name="osInformSite" type="I"></field>
+        <field name="osInformCustomer" type="I"></field>
+        <field name="osIsStartingStatus" type="I"></field>
+        <field name="osSortOrder" type="I"></field>
+    </table>
+    <table name="VividStoreOrderStatusHistory">
+        <field name="oshID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="oID" type="I"></field>
+        <field name="oshStatus" type="C" size="50"></field>
+        <field name="oshDate" type="T"><deftimestamp/></field>
+        <field name="uID" type="I"></field>
+    </table>
     <table name="VividStoreOrderItem">
         <field name="oiID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>

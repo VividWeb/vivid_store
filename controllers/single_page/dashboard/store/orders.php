@@ -4,6 +4,7 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use Core;
 use Package;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
@@ -21,11 +22,13 @@ class Orders extends DashboardPageController
         $this->set('orderList',$paginator->getCurrentPageResults());  
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);     
+        $this->set('orderStatuses', OrderStatus::getList());
     }
     public function order($oID)
     {
         $order = VividOrder::getByID($oID);
         $this->set("order",$order);
+        $this->set('orderStatuses', OrderStatus::getList());
         $pkg = Package::getByHandle('vivid_store');
         $packagePath = $pkg->getRelativePath();
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
