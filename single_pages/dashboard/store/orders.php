@@ -100,27 +100,60 @@ defined('C5_EXECUTE') or die("Access Denied.");
         <strong class="text-large"><?=t("Total")?>:</strong>  <?=$order->getTotal()?><br>
         <strong><?=t("Payment Method")?>:</strong> <?=$order->getPaymentMethodName()?>
     </p>
-    
-    <h3><?=t("Manage Order")?></h3>
+
+    <h3><?=t("Order Status History")?></h3>
     <hr>
     <div class="row">
         <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title"><?=t("Manage Status")?></h4>
+                    <h4 class="panel-title"><?=t("Update Status")?></h4>
                 </div>
                 <div class="panel-body">
-                    
+
                     <form action="<?=View::url("/dashboard/store/orders/updatestatus",$order->getOrderID())?>" method="post">
                         <div class="form-group">
-                            <?php echo $form->select("orderStatus",array("pending"=>"Pending","processing"=>"Processing","shipped"=>t("Shipped"),"complete"=>"Complete"),$order->getStatus());?>
+                            <?php echo $form->select("orderStatus",$orderStatuses,$order->getStatus());?>
                         </div>
                         <input type="submit" class="btn btn-default" value="<?=t("Update")?>">
                     </form>
-                    
+
                 </div>
             </div>
         </div>
+        <div class="col-sm-8">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th><strong><?=t("Status")?></strong></th>
+                    <th><?=t("Date")?></th>
+                    <th><?=t("User")?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $history = $order->getStatusHistory();
+                if($history){
+                    foreach($history as $status){
+                        ?>
+                        <tr>
+                            <td><?=$status->getOrderStatusName()?></td>
+                            <td><?=$status->getDate()?></td>
+                            <td><?=$status->getUserName()?></td>
+                        </tr>
+                    <?php
+                    }
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <h3><?=t("Manage Order")?></h3>
+    <hr>
+    <div class="row">
         <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading">

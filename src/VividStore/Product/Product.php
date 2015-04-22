@@ -14,7 +14,7 @@ use Concrete\Core\Permission\Assignment\FileAssignment;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
-use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductKey as StoreProductKey;
+use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey as StoreProductKey;
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Product extends Object

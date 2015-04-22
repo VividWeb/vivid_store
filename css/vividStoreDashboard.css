@@ -29,6 +29,7 @@
             
 .store-pane { display: none; }
 .store-pane.active { display: block; }
+    .sortable { cursor: move; text-align: center; }
 
 
 /* Dynamic Image Selector */

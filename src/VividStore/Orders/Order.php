@@ -22,6 +22,8 @@ use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrd
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Order extends Object
@@ -61,7 +63,7 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
         
         //add the order
-        $vals = array($customer->getUserID(),$now,'pending',$pmID,$shipping,$tax,$total);
+        $vals = array($uID,$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$total);
         $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTotal) values(?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
@@ -180,16 +182,10 @@ class Order extends Object
     
     public function updateStatus($status)
     {
-        // create copy of order before update
-        $originalOrder = $this;
-
-        Database::get()->Execute("UPDATE VividStoreOrder SET oStatus = ? WHERE oID = ?",array($status,$this->oID));
-
-        // update status of current order instance
-        $this->oStatus = $status;
-        // create event object, passing in changed and pre-change order
-        $event = new OrderEvent($this,$originalOrder);
-        Events::dispatch('on_vividstore_order_status_update', $event);
+        OrderHistory::updateOrderStatusHistory($this, $status);
+    }
+    public function getStatusHistory() {
+        return OrderHistory::getForOrder($this);
     }
     public function setAttribute($ak, $value)
     {
