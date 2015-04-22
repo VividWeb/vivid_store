@@ -63,18 +63,18 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
         
         //add the order
-        $vals = array($uID,$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$total);
+        $vals = array($customer->getUserID(),$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$total);
         $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTotal) values(?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
         $order->setAttribute("email",$customer->getEmail());
         $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
         $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));
-        $order->setAttribute("billing_address",$customer->getValue("billing_address"), 'address');
+        $order->setAttribute("billing_address",$customer->getValueArray("billing_address"));
         $order->setAttribute("billing_phone",$customer->getValue("billing_phone"));
         $order->setAttribute("shipping_first_name",$customer->getValue("shipping_first_name"));
         $order->setAttribute("shipping_last_name",$customer->getValue("shipping_last_name"));
-        $order->setAttribute("shipping_address",$customer->getValue("shipping_address"));
+        $order->setAttribute("shipping_address",$customer->getValueArray("shipping_address"));
 
         $customer->setLastOrderID($oID);
 

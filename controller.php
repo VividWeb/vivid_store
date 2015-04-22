@@ -31,7 +31,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.7';
+    protected $pkgVersion = '2.0.8';
     
     
     
@@ -478,7 +478,7 @@ class Controller extends Package
         
         $bt = BlockType::getByHandle('vivid_product');
         $blocks = $pageObj->getBlocks('Main');
-        if($blocks[0]->getBlockTypeHandle()=="content"){
+        if($blocks[0] && $blocks[0]->getBlockTypeHandle()=="content"){
             $blocks[0]->deleteBlock();
         }
         if(count($blocks)<1){

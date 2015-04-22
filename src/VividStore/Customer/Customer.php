@@ -3,6 +3,7 @@ namespace Concrete\Package\VividStore\src\Vividstore\Customer;
 
 use Session;
 use User;
+use UserInfo;
 
 class Customer
 {
@@ -24,7 +25,7 @@ class Customer
 
     public function setValue($handle, $value) {
         if ($this->isGuest()) {
-            Session::set($handle, $value);
+            Session::set('vivid_' . $handle, $value);
         } else {
             $this->ui->setAttribute($handle, $value);
         }
@@ -32,13 +33,21 @@ class Customer
 
     public function getValue($handle) {
         if ($this->isGuest()) {
-
-           $val = Session::get($handle);
+            $val = Session::get('vivid_' .$handle);
 
             if (is_array($val)) {
                 return (object)$val;
             }
 
+            return $val;
+        } else {
+            return $this->ui->getAttribute($handle);
+        }
+    }
+
+    public function getValueArray($handle) {
+        if ($this->isGuest()) {
+            $val = Session::get('vivid_' .$handle);
             return $val;
         } else {
             return $this->ui->getAttribute($handle);
@@ -59,22 +68,22 @@ class Customer
 
     public function getEmail(){
         if ($this->isGuest()) {
-            return Session::get('email');
+            return Session::get('vivid_email');
         } else {
             return $this->ui->getUserEmail();
         }
     }
 
     public function setEmail($email){
-        Session::set('email', $email);
+        Session::set('vivid_email', $email);
     }
 
     public function getLastOrderID(){
-        Session::get('lastOrderID');
+        return Session::get('vivid_lastOrderID');
     }
 
     public function setLastOrderID($id){
-        Session::set('lastOrderID', $id);
+        Session::set('vivid_lastOrderID', $id);
     }
 
 

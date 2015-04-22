@@ -1,5 +1,5 @@
 <?php defined('C5_EXECUTE') or die(_("Access Denied.")); 
-extract($vars);
+//extract($vars);
 ?>
 <div class="clearfix col-container">
     <div class="vivid-store-col-2">
