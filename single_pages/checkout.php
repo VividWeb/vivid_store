@@ -7,11 +7,11 @@
         <h1><?=t("Checkout")?></h1>
 
         <?php
-            if (($customer->isGuest() || $hasUserGroupProducts) && ($guestCheckout == 'off' || ($guestCheckout == 'option' && $_GET['guest'] != '1'))){
+            if ($customer->isGuest() && ($requiresLogin || $guestCheckout == 'off' || ($guestCheckout == 'option' && $_GET['guest'] != '1'))){
         ?>
         <div class="checkout-form-group">
 
-            <?php if ($guestCheckout == 'option' && !$hasUserGroupProducts) { ?>
+            <?php if ($guestCheckout == 'option' && !$requiresLogin) { ?>
                 <h2><?=t("Sign in, Register or Checkout as Guest")?></h2>
                 <p><?=t("In order to proceed, you'll need to register, sign in or checkout as a guest.")?></p>
             <?php } else { ?>
@@ -22,7 +22,7 @@
             <a class="btn btn-default" href="<?=View::url('/login')?>"><?=t("Sign In")?></a>
             <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a>
 
-            <?php if ($guestCheckout == 'option' && !$hasUserGroupProducts) { ?>
+            <?php if ($guestCheckout == 'option' && !$requiresLogin) { ?>
                 <a class="btn btn-default" href="<?=View::url('/checkout/?guest=1')?>"><?=t("Checkout as Guest")?></a>
             <?php } ?>
             

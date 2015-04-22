@@ -97,7 +97,7 @@ class Cart
     {
         $cart = Session::get('cart');
         unset($cart);
-        Session::set('cart',$cart);
+        Session::set('cart',null);
     }
     public function getSubTotal()
     {
@@ -252,11 +252,11 @@ class Cart
         return Price::format($grandTotal);
     }
 
-    public function hasUserGroupProducts() {
+    public function requiresLogin() {
         if(Session::get('cart')){
             foreach(Session::get('cart') as $item) {
                 $product = VividProduct::getByID($item['product']['pID']);
-                if ($product->hasUserGroups()) {
+                if ($product->hasUserGroups() || $product->hasDigitalDownload()) {
                     return true;
                 }
             }
