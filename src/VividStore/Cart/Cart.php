@@ -204,6 +204,40 @@ class Cart
         //return self::isCustomerTaxable();
         return Price::format($taxtotal);     
     }
+
+    public function getTaxProduct($productID)
+    {
+        $pkg = Package::getByHandle('vivid_store');
+        $pkgconfig = $pkg->getConfig();
+        //first check if tax is enabled in settings
+        if($pkgconfig->get('vividstore.taxenabled') == "yes"){
+            $cart = Session::get('cart');
+
+            if($cart){
+                foreach ($cart as $cartItem){
+                    if ($cartItem['product']['pID'] == $productID) {
+                        $product = VividProduct::getByID($productID);
+                    }
+
+                    if(is_object($product)){
+                        if($product->isTaxable()){
+                            //the product is "Taxable", but is the customer?
+                            if(self::isCustomerTaxable()){
+                                    $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
+                                    $tax = $taxrate *  $product->getProductPrice() ;
+                                    return $tax;
+
+                            }//if customer is taxable
+                        }//if product is taxable
+                    }//if obj
+                }//foreach
+            }//if cart
+        }//if tax enabled
+
+        return Price::format(0);
+    }
+
+
     public function getTotalItemsInCart(){
         $total = 0;    
         if(Session::get('cart')){

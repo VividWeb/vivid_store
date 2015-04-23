@@ -8,18 +8,18 @@ use UserInfo;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 defined('C5_EXECUTE') or die(_("Access Denied."));
-class Item extends Object
+class OrderItem extends Object
 {
     public static function getByID($oiID) {
         $db = Database::get();
         $data = $db->GetRow("SELECT * FROM VividStoreOrderItem WHERE oiID=?",$oiID);
         if(!empty($data)){
-            $item = new Item();
+            $item = new OrderItem();
             $item->setPropertiesFromArray($data);
         }
         return($item instanceof Item) ? $item : false;
     }  
-    public function add($data,$oID)
+    public function add($data,$oID,$tax=0,$taxIncluded=0,$taxName='')
     {
         $db = Database::get();
         $product = VividProduct::getByID($data['product']['pID']);
@@ -30,8 +30,8 @@ class Item extends Object
         $newStock = $inStock - $qty;
         $product->setProductQty($newStock);
         $pID = $product->getProductID();
-        $values = array($oID,$pID,$productName,$productPrice,$qty);
-        $db->Execute("INSERT INTO VividStoreOrderItem(oID,pID,oiProductName,oiPricePaid,oiQty) values(?,?,?,?,?)",$values);
+        $values = array($oID,$pID,$productName,$productPrice,$tax,$taxIncluded,$taxName,$qty);
+        $db->Execute("INSERT INTO VividStoreOrderItem(oID,pID,oiProductName,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) values(?,?,?,?,?,?,?,?)",$values);
         
         $oiID = $db->lastInsertId();
         
