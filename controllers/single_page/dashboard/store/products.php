@@ -30,6 +30,11 @@ class Products extends DashboardPageController
         $products->setItemsPerPage(10);
         $products->setGroupID($gID);
         $products->activeOnly(false);
+
+        if ($this->get('keywords')) {
+            $products->setSearch($this->get('keywords'));
+        }
+
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
         $this->set('products',$paginator->getCurrentPageResults());  
@@ -39,7 +44,7 @@ class Products extends DashboardPageController
         $packagePath = $pkg->getRelativePath();
         $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
-        $grouplist = VividProductGroupList::getGroupList();            
+        $grouplist = VividProductGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         
     }
