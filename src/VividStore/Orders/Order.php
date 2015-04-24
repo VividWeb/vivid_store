@@ -17,13 +17,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Item as OrderItem;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Order extends Object
@@ -57,6 +58,7 @@ class Order extends Object
         //get the price details
         $shipping = VividCart::getShippingTotal();
         $tax = VividCart::getTaxTotal();
+        $taxName = ''; // for future addition
         $total = VividCart::getTotal();
         
         //get payment method
@@ -64,7 +66,7 @@ class Order extends Object
         
         //add the order
         $vals = array($customer->getUserID(),$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$total);
-        $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTotal) values(?,?,?,?,?,?,?)", $vals);
+        $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTaxName,oTotal) values(?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
         $order->setAttribute("email",$customer->getEmail());
@@ -82,7 +84,11 @@ class Order extends Object
         $cart = Session::get('cart');
 
         foreach ($cart as $cartItem) {
-            OrderItem::add($cartItem, $oID);
+            $tax = VividCart::getTaxProduct($cartItem['product']['pID']);
+            $taxIncluded = 0;  // setting 0
+            $taxName = '';  // for future population
+
+            OrderItem::add($cartItem,$oID,$tax,$taxIncluded,$taxName);
             $product = VividProduct::getByID($cartItem['product']['pID']);
             if ($product && $product->hasUserGroups()) {
                 $usergroupstoadd = $product->getProductUserGroups();

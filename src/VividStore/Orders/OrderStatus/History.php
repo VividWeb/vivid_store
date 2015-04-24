@@ -4,7 +4,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus;
 use \Concrete\Core\Foundation\Object as Object;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent;
-use Concrete\Package\VividStore\src\VividStore\Orders\Order;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\Order;
 use Database;
 use Events;
 use User;

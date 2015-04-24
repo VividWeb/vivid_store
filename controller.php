@@ -32,13 +32,10 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Controller extends Package
 {
-
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
     protected $pkgVersion = '2.1';
-    
-    
-    
+
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");
