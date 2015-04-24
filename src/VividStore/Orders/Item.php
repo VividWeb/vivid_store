@@ -55,8 +55,11 @@ class Item extends Object
             $ui = UserInfo::getByID($uID);
             $user = \Concrete\Core\Permission\Access\Entity\UserEntity::getOrCreate($ui);                    
             $pa = $pk->getPermissionAccessObject();
-            $pa->addListItem($user);
-            $pao->assignPermissionAccess($pa);
+            if ($pa) {
+                $pa->addListItem($user);
+                $pao->assignPermissionAccess($pa);
+            }
+
         }
         
     }    

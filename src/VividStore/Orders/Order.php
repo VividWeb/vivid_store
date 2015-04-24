@@ -20,6 +20,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Item as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 
@@ -46,9 +48,7 @@ class Order extends Object
         $db = Database::get();
         
         //get who ordered it
-        $u = new User();
-        $uID = $u->getUserID();
-        $ui = UserInfo::getByID($uID);
+        $customer = new Customer();
         
         //what time is it?
         $dt = Core::make('helper/date');
@@ -63,40 +63,46 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
         
         //add the order
-        $vals = array($uID,$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$total);
+        $vals = array($customer->getUserID(),$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$total);
         $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTotal) values(?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
-        $order->setAttribute("billing_first_name",$ui->getAttribute("billing_first_name"));
-        $order->setAttribute("billing_last_name",$ui->getAttribute("billing_last_name"));
-        $order->setAttribute("billing_address",$ui->getAttribute("billing_address"));
-        $order->setAttribute("billing_phone",$ui->getAttribute("billing_phone"));
-        $order->setAttribute("shipping_first_name",$ui->getAttribute("shipping_first_name"));
-        $order->setAttribute("shipping_last_name",$ui->getAttribute("shipping_last_name"));
-        $order->setAttribute("shipping_address",$ui->getAttribute("shipping_address"));
-        
+        $order->setAttribute("email",$customer->getEmail());
+        $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
+        $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));
+        $order->setAttribute("billing_address",$customer->getValueArray("billing_address"));
+        $order->setAttribute("billing_phone",$customer->getValue("billing_phone"));
+        $order->setAttribute("shipping_first_name",$customer->getValue("shipping_first_name"));
+        $order->setAttribute("shipping_last_name",$customer->getValue("shipping_last_name"));
+        $order->setAttribute("shipping_address",$customer->getValueArray("shipping_address"));
+
+        $customer->setLastOrderID($oID);
+
         //add the order items
         $cart = Session::get('cart');
-        foreach($cart as $cartItem){
-            OrderItem::add($cartItem,$oID);
 
-            $product = VividProduct::getByID($cartItem['product']['pID']);
-            if($product && $product->hasUserGroups()){
-                $usergroupstoadd = $product->getProductUserGroups();
+        if (!$customer->isGuest()) {
+            foreach ($cart as $cartItem) {
+                OrderItem::add($cartItem, $oID);
 
-                foreach($usergroupstoadd as $id) {
-                    $g = Group::getByID($id);
-                    if ($g) {
-                        $u->enterGroup($g);
+                $product = VividProduct::getByID($cartItem['product']['pID']);
+                if ($product && $product->hasUserGroups()) {
+                    $usergroupstoadd = $product->getProductUserGroups();
+
+                    foreach ($usergroupstoadd as $id) {
+                        $g = Group::getByID($id);
+                        if ($g) {
+                            $customer->getUserInfo()->enterGroup($g);
+                        }
                     }
                 }
             }
-        }
-        
-        //add user to Store Customers group
-        $group = \Group::getByName('Store Customer');
-        if (is_object($group) || $group->getGroupID() < 1) {
-            $u->enterGroup($group);
+
+            //add user to Store Customers group
+            $group = \Group::getByName('Store Customer');
+            if (is_object($group) || $group->getGroupID() < 1) {
+                $customer->getUserInfo()->enterGroup($group);
+            }
         }
 
         // create order event and dispatch
@@ -116,7 +122,7 @@ class Order extends Object
         
             //receipt
             $mh->from($fromEmail);
-            $mh->to($ui->getUserEmail());
+            $mh->to($customer->getEmail());
             $mh->addParameter("order", $order);
             $mh->load("order_receipt","vivid_store");
             $mh->sendMail();
@@ -211,7 +217,7 @@ class Order extends Object
                 $av->setAttributeKey($ak);
             }
         }
-        
+
         if ($createIfNotFound) {
             $cnt = 0;
         

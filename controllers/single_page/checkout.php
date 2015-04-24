@@ -9,16 +9,26 @@ use Package;
 use User;
 use UserInfo;
 use Session;
+use Config;
 
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Checkout extends PageController
 {
     public function view()
     {
+        $pkg = Package::getByHandle('vivid_store');
+
+        $customer = new Customer();
+        $this->set('customer', $customer);
+        $guestCheckout = $pkg->getConfig()->get('vividstore.guestCheckout');
+        $this->set('guestCheckout', ($guestCheckout ? $guestCheckout : 'off'));
+        $this->set('requiresLogin', VividCart::requiresLogin());
+
         if(VividCart::getTotalItemsInCart() == 0){
             $this->redirect("/cart/");
         }
@@ -36,7 +46,7 @@ class Checkout extends PageController
                 var CHECKOUTURL = '".View::url('/checkout')."';
             </script>
         ");
-        $pkg = Package::getByHandle('vivid_store');
+
         $packagePath = $pkg->getRelativePath();
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));   
         $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));   

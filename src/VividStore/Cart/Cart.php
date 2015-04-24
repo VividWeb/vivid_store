@@ -97,7 +97,7 @@ class Cart
     {
         $cart = Session::get('cart');
         unset($cart);
-        Session::set('cart',$cart);
+        Session::set('cart',null);
     }
     public function getSubTotal()
     {
@@ -250,6 +250,19 @@ class Cart
         $shippingtotal = Price::getFloat(Cart::getShippingTotal());
         $grandTotal = ($subtotal + $taxtotal + $shippingtotal);
         return Price::format($grandTotal);
+    }
+
+    public function requiresLogin() {
+        if(Session::get('cart')){
+            foreach(Session::get('cart') as $item) {
+                $product = VividProduct::getByID($item['product']['pID']);
+                if ($product->hasUserGroups() || $product->hasDigitalDownload()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
 

@@ -15,6 +15,7 @@
                             <li><a href="#settings-order-statuses" data-pane-toggle><?=t('Order Statuses')?></a></li>
                             <li><a href="#settings-notifications" data-pane-toggle><?=t('Notifications')?></a></li>
                             <li><a href="#settings-products" data-pane-toggle><?=t('Products')?></a></li>
+                            <li><a href="#settings-checkout" data-pane-toggle><?=t('Cart and Checkout')?></a></li>
                         </ul>
                     
                     </div>
@@ -236,8 +237,9 @@
                         <?php echo $form->text('emailAlert',$pkgconfig->get('vividstore.emailalerts')); ?>
                     </div>
             
-                </div><!-- #settings-notifications -->
-                
+                </div>
+
+                <!-- #settings-products -->
                 <div class="col-sm-7 store-pane" id="settings-products">
                 
                     <div class="form-group">
@@ -245,8 +247,24 @@
                         <?=$pageSelector->selectPage('productPublishTarget',$productPublishTarget)?>
                     </div>
             
-                </div><!-- #settings-shipping -->
-                
+                </div>
+
+                <!-- #settings-customers -->
+                <div class="col-sm-7 store-pane" id="settings-checkout">
+
+                    <div class="form-group">
+                        <h3><?php echo t('Guest checkout');?></h3>
+                        <?php $guestCheckout =  $pkgconfig->get('vividstore.guestCheckout');
+                        $guestCheckout = ($guestCheckout ? $guestCheckout : 'off');
+                        ?>
+                        <label><?php echo $form->radio('guestCheckout','off', $guestCheckout == 'off' || $guestCheckout == '' ); ?> <?php  echo t('Disabled'); ?></label><br />
+                        <label><?php echo $form->radio('guestCheckout','option',$guestCheckout == 'option'); ?> <?php  echo t('Offer as checkout option'); ?></label><br />
+                        <label><?php echo $form->radio('guestCheckout','always', $guestCheckout == 'always'); ?> <?php  echo t('Always (unless login required for products in cart)'); ?></label><br />
+
+                    </div>
+
+                </div>
+
             </div><!-- .row -->
                 
     	    <div class="ccm-dashboard-form-actions-wrapper">

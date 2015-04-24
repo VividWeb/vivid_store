@@ -4,7 +4,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 ?>
 <div class="cart-page-cart">
-    
+
     <h1><?=t("Shopping Cart")?></h1>
     
     <input id='cartURL' type='hidden' data-cart-url='<?=View::url("/cart/")?>'>
