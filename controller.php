@@ -23,6 +23,9 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Utility\Service\Text;
+use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
+use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
+
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -79,25 +82,8 @@ class Controller extends Package
         }
         Page::getByPath('/product-detail')->setAttribute('exclude_nav', 1);
         
-        //install product detail page type
-        $template = PageTemplate::getByHandle('full');
-        $pageType = PageType::getByHandle('store_product');
-        if(!is_object($pageType)){
-            PageType::add(
-                array(
-                    'handle' => 'store_product',
-                    'name' => 'Product Page',
-                    'defaultTemplate' => $template,
-                    'allowedTemplates' => 'C',
-                    'templates' => array($template),
-                    'ptLaunchInComposer' => 0,
-                    'ptIsFrequentlyAdded' => 0,
-                    'ptPublishTargetTypeID' => 3
-                ),
-                $pkg
-            );
-        } 
-        
+        $this->installStoreProductPageType($pkg);
+
         $pkg->getConfig()->save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
         
         //install our blocks
@@ -392,25 +378,8 @@ class Controller extends Package
         /*
          * 1. Installs new PageType: store_product
          */
-        $pageType = PageType::getByHandle('store_product');
-        
-        $template = PageTemplate::getByHandle('full');
-        if(!is_object($pageType)){
-            PageType::add(
-                array(
-                    'handle' => 'store_product',
-                    'name' => 'Product Page',
-                    'defaultTemplate' => $template,
-                    'allowedTemplates' => 'C',
-                    'templates' => array($template),
-                    'ptLaunchInComposer' => 0,
-                    'ptIsFrequentlyAdded' => 0,
-                    'ptPublishTargetTypeID' => 3
-                ),
-                $pkg
-            );
-        }  
-        
+        $this->installStoreProductPageType($pkg);
+
         /*
          * 2. Installs a parent page to publish products under
          */
@@ -502,6 +471,27 @@ class Controller extends Package
             SinglePage::add('/dashboard/store/products/attributes',$pkg);
         }
         $this->addOrderStatusesToDatabase($pkg);
+    }
+
+    private function installStoreProductPageType($pkg){
+        //install product detail page type
+        $pageType = PageType::getByHandle('store_product');
+        if(!is_object($pageType)){
+            $template = PageTemplate::getByHandle('full');
+            PageType::add(
+                array(
+                    'handle' => 'store_product',
+                    'name' => 'Product Page',
+                    'defaultTemplate' => $template,
+                    'allowedTemplates' => 'C',
+                    'templates' => array($template),
+                    'ptLaunchInComposer' => 0,
+                    'ptIsFrequentlyAdded' => 0,
+                ),
+                $pkg
+            )->setConfiguredPageTypePublishTargetObject(new PageTypePublishTargetAllConfiguration(PageTypePublishTargetAllType::getByHandle('all')));
+        }
+
     }
 
     private function addOrderStatusesToDatabase($pkg) {
