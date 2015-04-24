@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Orders\OrderStatus;
+namespace Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus;
 
 use \Concrete\Core\Foundation\Object as Object;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;

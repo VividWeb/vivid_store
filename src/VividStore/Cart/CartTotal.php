@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Cart;
+namespace Concrete\Package\VividStore\Src\VividStore\Cart;
 
 use \Concrete\Core\Controller\Controller as RouteController;
 

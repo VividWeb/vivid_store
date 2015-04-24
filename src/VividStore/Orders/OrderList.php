@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Orders;
+namespace Concrete\Package\VividStore\Src\VividStore\Orders;
 
 use Database;
 use Concrete\Core\Search\Pagination\Pagination;
