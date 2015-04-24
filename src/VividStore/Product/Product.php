@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Product;
+namespace Concrete\Package\VividStore\Src\VividStore\Product;
 use Concrete\Core\Foundation\Object as Object;
 use Package;
 use Page;
@@ -160,8 +160,11 @@ class Product extends Object
                     $pao = $pk->getPermissionAssignmentObject();
                     $groupEntity = \Concrete\Core\Permission\Access\Entity\GroupEntity::getOrCreate(\Group::getByID(GUEST_GROUP_ID));                    
                     $pa = $pk->getPermissionAccessObject();
-                    $pa->removeListItem($groupEntity);
-                    $pao->assignPermissionAccess($pa);
+                    if ($pa) {
+                        $pa->removeListItem($groupEntity);
+                        $pao->assignPermissionAccess($pa);
+                    }
+
                 }
             }
         }

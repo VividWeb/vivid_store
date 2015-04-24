@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Payment;
+namespace Concrete\Package\VividStore\Src\VividStore\Payment;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;

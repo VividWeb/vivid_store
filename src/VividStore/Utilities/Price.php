@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Utilities;
+namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 use Package;
 defined('C5_EXECUTE') or die(_("Access Denied."));
 

@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Payment;
+namespace Concrete\Package\VividStore\Src\VividStore\Payment;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;

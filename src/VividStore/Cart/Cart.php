@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Cart;
+namespace Concrete\Package\VividStore\Src\VividStore\Cart;
 
 use Package;
 use User;
@@ -97,7 +97,7 @@ class Cart
     {
         $cart = Session::get('cart');
         unset($cart);
-        Session::set('cart',$cart);
+        Session::set('cart',null);
     }
     public function getSubTotal()
     {
@@ -204,6 +204,40 @@ class Cart
         //return self::isCustomerTaxable();
         return Price::format($taxtotal);     
     }
+
+    public function getTaxProduct($productID)
+    {
+        $pkg = Package::getByHandle('vivid_store');
+        $pkgconfig = $pkg->getConfig();
+        //first check if tax is enabled in settings
+        if($pkgconfig->get('vividstore.taxenabled') == "yes"){
+            $cart = Session::get('cart');
+
+            if($cart){
+                foreach ($cart as $cartItem){
+                    if ($cartItem['product']['pID'] == $productID) {
+                        $product = VividProduct::getByID($productID);
+                    }
+
+                    if(is_object($product)){
+                        if($product->isTaxable()){
+                            //the product is "Taxable", but is the customer?
+                            if(self::isCustomerTaxable()){
+                                    $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
+                                    $tax = $taxrate *  $product->getProductPrice() ;
+                                    return $tax;
+
+                            }//if customer is taxable
+                        }//if product is taxable
+                    }//if obj
+                }//foreach
+            }//if cart
+        }//if tax enabled
+
+        return Price::format(0);
+    }
+
+
     public function getTotalItemsInCart(){
         $total = 0;    
         if(Session::get('cart')){
@@ -250,6 +284,19 @@ class Cart
         $shippingtotal = Price::getFloat(Cart::getShippingTotal());
         $grandTotal = ($subtotal + $taxtotal + $shippingtotal);
         return Price::format($grandTotal);
+    }
+
+    public function requiresLogin() {
+        if(Session::get('cart')){
+            foreach(Session::get('cart') as $item) {
+                $product = VividProduct::getByID($item['product']['pID']);
+                if ($product->hasUserGroups() || $product->hasDigitalDownload()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
 

@@ -23,11 +23,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             
 
             <div class="row">
-                
                 <div class="col-sm-4">
-                    
                     <div class="vivid-store-side-panel">
-                    
                         <ul>
                             <li><a href="#product-overview" data-pane-toggle class="active"><?=t('Overview')?></a></li>
                             <li><a href="#product-digital" data-pane-toggle><?=t("Downloads and User Groups")?></a></li>
@@ -38,9 +35,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             <li><a href="#product-attributes" data-pane-toggle><?=t('Attributes')?></a></li>
                             <li><a href="#product-page" data-pane-toggle><?=t('Detail Page')?></a></li>
                         </ul>
-                    
                     </div>
-                    
                 </div>
                 
                 <div class="col-sm-7 store-pane active" id="product-overview">
@@ -615,70 +610,91 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 	        <a href="<?php echo View::url('/dashboard/store/products/', 'groups')?>" class="btn btn-dark"><?php echo t("Manage Groups")?></a>
             <a href="<?php echo View::url('/dashboard/store/products/', 'add')?>" class="btn btn-primary"><?php echo t("Add Product")?></a>
 	    </div>
-        <?php if($grouplist){?>
-        <ul id="group-filters" class="nav nav-pills">
-            <li><a href="<?php echo View::url('/dashboard/store/products/')?>"><?=t('All Groups')?></a></li>
-            <?php foreach($grouplist as $group){ ?>
-            <li><a href="<?php echo View::url('/dashboard/store/products/', $group->getGroupID())?>"><?=$group->getGroupName()?></a></li>
-            <?php } ?>
-        </ul> 
-        <?php } ?>  
-            
-        <?php if(count($products)>0){?>
-           
-        <table class="table table-striped">
+
+    <div class="ccm-dashboard-content-full">
+        <form role="form" data-search-form="users"   class="form-inline ccm-search-fields">
+            <div class="ccm-search-fields-row">
+                <?php if($grouplist){?>
+                    <ul id="group-filters" class="nav nav-pills">
+                        <li><a href="<?php echo View::url('/dashboard/store/products/')?>"><?=t('All Groups')?></a></li>
+                        <?php foreach($grouplist as $group){ ?>
+                            <li><a href="<?php echo View::url('/dashboard/store/products/', $group->getGroupID())?>"><?=$group->getGroupName()?></a></li>
+                        <?php } ?>
+                    </ul>
+                <?php } ?>
+            </div>
+            <div class="ccm-search-fields-row">
+                <div class="form-group">
+                    <div class="ccm-search-main-lookup-field">
+                        <i class="fa fa-search"></i>
+                        <?php echo $form->search('keywords', $searchRequest['keywords'], array('placeholder' => t('Search Products')))?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ccm-search-fields-row ccm-search-fields-submit">
+                <button type="submit" class="btn btn-primary pull-right"><?php echo t('Search')?></button>
+            </div>
+        </form>
+
+        <table class="ccm-search-results-table">
             <thead>
-                <th><?=t('Primary Image')?></th>
-                <th><?=t('Product Name')?></th>
-                <th><?=t('Quantity')?></th>
-                <th><?=t('Price')?></th>
-                <th><?=t('Featured')?></th>
-                <th><?=t('Group')?></th>
-                <th><?=t('Actions')?></th>
+                <th><a><?=t('Primary Image')?></a></th>
+                <th><a><?=t('Product Name')?></a></th>
+                <th><a><?=t('Quantity')?></a></th>
+                <th><a><?=t('Price')?></a></th>
+                <th><a><?=t('Featured')?></a></th>
+                <th><a><?=t('Group')?></a></th>
+                <th><a><?=t('Actions')?></a></th>
             </thead>
             <tbody>
-                <?php 
-                    foreach($products as $p){
-                ?>
-                <tr>
-                    <td><?php echo $p->getProductImageThumb();?></td>
-                    <td><strong><?=$p->getProductName()?></strong></td>
-                    <td><?=$p->getProductQty()?></td>
-                    <td><?=$p->getFormattedPrice()?></td>
-                    <td>
-                        <?php 
-                            if($p->isFeatured()){
-                                echo "<span class='label label-success'>".t('Featured')."</span>";
-                            }
-                            else{
-                                echo "<span class='label label-default'>".t('Not Featured')."</span>";
-                            }
+
+                <?php if(count($products)>0) {
+                    foreach ($products as $p) {
                         ?>
-                    </td>
-                    <td><?php $group = VividProductGroup::getByID($p->getGroupID()); if(is_object($group)){ ?>
-                        <span class="label label-primary">
-                            <?=$group->getGroupName()?>
+                        <tr>
+                            <td><?php echo $p->getProductImageThumb();?></td>
+                            <td><strong><?= $p->getProductName() ?></strong></td>
+                            <td><?= $p->getProductQty() ?></td>
+                            <td><?= $p->getFormattedPrice() ?></td>
+                            <td>
+                                <?php
+                                if ($p->isFeatured()) {
+                                    echo "<span class='label label-success'>" . t('Featured') . "</span>";
+                                } else {
+                                    echo "<span class='label label-default'>" . t('Not Featured') . "</span>";
+                                }
+                                ?>
+                            </td>
+                            <td><?php $group = VividProductGroup::getByID($p->getGroupID());
+                                if (is_object($group)) { ?>
+                                    <span class="label label-primary">
+                            <?= $group->getGroupName() ?>
                         </span>
-                    <?php } else { ?>
-                        <span class="label label-default"><?=t("None")?></span>
-                    <?php } ?>                                
-                    </td>
-                    <td>
-                        <a class="btn btn-default" href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><i class="fa fa-pencil"></i></a>
-                        <a class="btn btn-danger" href="<?php echo View::url('/dashboard/store/products/delete/', $p->getProductID())?>"><i class="fa fa-trash"></i></a>
-                    </td>
-                </tr>
-                <?php } ?>
+                                <?php } else { ?>
+                                    <span class="label label-default"><?= t("None") ?></span>
+                                <?php } ?>
+                            </td>
+                            <td>
+                                <a class="btn btn-default"
+                                   href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><i
+                                        class="fa fa-pencil"></i></a>
+                                <a class="btn btn-danger"
+                                   href="<?php echo View::url('/dashboard/store/products/delete/', $p->getProductID())?>"><i
+                                        class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    <?php }
+                }?>
             </tbody>
         </table>
         
         <?php if ($paginator->getTotalPages() > 1) { ?>
             <?= $pagination ?>
         <?php } ?>
-        
-        <?php } else { ?>
-            <div class="alert alert-info"><?=t("No Products to See, Yet.")?></div>
-        <?php } ?>
+
+    </div>
+
     <?php } else if (in_array($controller->getTask(),$groupViews)){ ?>
         
         <?php if($grouplist){?>

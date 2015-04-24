@@ -8,22 +8,26 @@ use View;
 use Package;
 use User;
 
-use Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
+
+use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Complete extends PageController
 {
     public function view()
     {
-        $u = new User();
-        $uID = $u->getUserID();
-        $order = VividOrder::getCustomersMostRecentOrderByCID($uID);
+        $customer = new Customer();
+        $order = VividOrder::getByID($customer->getLastOrderID());
+
         if(is_object($order)){
             $this->set("order",$order);
         } else {
             $this->redirect("/cart");
         }
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));   
+        $pkg = Package::getByHandle('vivid_store');
+        $packagePath = $pkg->getRelativePath();
+        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
         $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));   
     }  
     

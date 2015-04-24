@@ -19,22 +19,23 @@ use Concrete\Core\Database\Schema\Schema;
 use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
 use \Concrete\Core\Attribute\Type as AttributeType;
+use AttributeSet;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Utility\Service\Text;
+use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
+use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
+
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Controller extends Package
 {
-
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.7';
-    
-    
-    
+    protected $pkgVersion = '2.1';
+
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");
@@ -79,25 +80,8 @@ class Controller extends Package
         }
         Page::getByPath('/product-detail')->setAttribute('exclude_nav', 1);
         
-        //install product detail page type
-        $template = PageTemplate::getByHandle('full');
-        $pageType = PageType::getByHandle('store_product');
-        if(!is_object($pageType)){
-            PageType::add(
-                array(
-                    'handle' => 'store_product',
-                    'name' => 'Product Page',
-                    'defaultTemplate' => $template,
-                    'allowedTemplates' => 'C',
-                    'templates' => array($template),
-                    'ptLaunchInComposer' => 0,
-                    'ptIsFrequentlyAdded' => 0,
-                    'ptPublishTargetTypeID' => 3
-                ),
-                $pkg
-            );
-        } 
-        
+        $this->installStoreProductPageType($pkg);
+
         $pkg->getConfig()->save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
         
         //install our blocks
@@ -144,7 +128,23 @@ class Controller extends Package
         $custSet = $uakc->addSet('customer_info', t('Store Customer Info'), $pkg);
         $text = AttributeType::getByHandle('text');
         $address = AttributeType::getByHandle('address');
-        
+
+        //email
+        $bFirstname = UserAttributeKey::getByHandle('email');
+        if (!is_object($bFirstname)) {
+            UserAttributeKey::add($text,
+                array('akHandle' => 'email',
+                    'akName' => t('Email'),
+                    'akIsSearchable' => false,
+                    'uakProfileEdit' => true,
+                    'uakProfileEditRequired' => false,
+                    'uakRegisterEdit' => false,
+                    'uakProfileEditRequired' => false,
+                    'akCheckedByDefault' => true,
+                    'displayOrder' => '1',
+                ), $pkg)->setAttributeSet($custSet);
+        }
+
         //billing first name
         $bFirstname = UserAttributeKey::getByHandle('billing_first_name');
         if (!is_object($bFirstname)) {
@@ -176,7 +176,7 @@ class Controller extends Package
                     'displayOrder' => '2',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //billing address
         $bAddress = UserAttributeKey::getByHandle('billing_address');
         if (!is_object($bAddress)) {
@@ -192,7 +192,7 @@ class Controller extends Package
                     'displayOrder' => '3',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //billing Phone
         $bPhone = UserAttributeKey::getByHandle('billing_phone');
         if (!is_object($bPhone)) {
@@ -208,7 +208,7 @@ class Controller extends Package
                     'displayOrder' => '4',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //shipping first name
         $sFirstname = UserAttributeKey::getByHandle('shipping_first_name');
         if (!is_object($sFirstname)) {
@@ -240,7 +240,7 @@ class Controller extends Package
                     'displayOrder' => '2',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //shipping address
         $sAddress = UserAttributeKey::getByHandle('shipping_address');
         if (!is_object($sAddress)) {
@@ -256,7 +256,7 @@ class Controller extends Package
                     'displayOrder' => '3',
                 ), $pkg)->setAttributeSet($custSet);
         }
-        
+
         //create user group    
         $group = Group::getByName('Store Customer');
         if (!$group || $group->getGroupID() < 1) {
@@ -277,7 +277,13 @@ class Controller extends Package
 
             $orderCustSet = $oakc->addSet('order_customer', t('Store Customer Info'), $pkg);        
         }
-        
+        $email = StoreOrderKey::getByHandle('email');
+        if (!is_object($email)) {
+            StoreOrderKey::add($text, array(
+                'akHandle' => 'email',
+                'akName' => t('Email')
+            ), $pkg)->setAttributeSet($orderCustSet);
+        }
         $bFirstname = StoreOrderKey::getByHandle('billing_first_name');
         if (!is_object($bFirstname)) {
             StoreOrderKey::add($text, array(
@@ -286,7 +292,7 @@ class Controller extends Package
             ), $pkg)->setAttributeSet($orderCustSet);
         }
         $bLastname = StoreOrderKey::getByHandle('billing_last_name');
-        if (!is_object($bFirstname)) {
+        if (!is_object($bLastname)) {
             StoreOrderKey::add($text, array(
                 'akHandle' => 'billing_last_name',
                 'akName' => t('Billing Last Name')
@@ -300,7 +306,7 @@ class Controller extends Package
             ), $pkg)->setAttributeSet($orderCustSet);
         }
         $bPhone = StoreOrderKey::getByHandle('billing_phone');
-        if (!is_object($bFirstname)) {
+        if (!is_object($bPhone)) {
             StoreOrderKey::add($text, array(
                 'akHandle' => 'billing_phone',
                 'akName' => t('Billing Phone')
@@ -392,25 +398,8 @@ class Controller extends Package
         /*
          * 1. Installs new PageType: store_product
          */
-        $pageType = PageType::getByHandle('store_product');
-        
-        $template = PageTemplate::getByHandle('full');
-        if(!is_object($pageType)){
-            PageType::add(
-                array(
-                    'handle' => 'store_product',
-                    'name' => 'Product Page',
-                    'defaultTemplate' => $template,
-                    'allowedTemplates' => 'C',
-                    'templates' => array($template),
-                    'ptLaunchInComposer' => 0,
-                    'ptIsFrequentlyAdded' => 0,
-                    'ptPublishTargetTypeID' => 3
-                ),
-                $pkg
-            );
-        }  
-        
+        $this->installStoreProductPageType($pkg);
+
         /*
          * 2. Installs a parent page to publish products under
          */
@@ -456,7 +445,7 @@ class Controller extends Package
         
         $bt = BlockType::getByHandle('vivid_product');
         $blocks = $pageObj->getBlocks('Main');
-        if($blocks[0]->getBlockTypeHandle()=="content"){
+        if($blocks[0] && $blocks[0]->getBlockTypeHandle()=="content"){
             $blocks[0]->deleteBlock();
         }
         if(count($blocks)<1){
@@ -501,7 +490,45 @@ class Controller extends Package
         if(!is_object($attrPage) || $attrPage->isError()){
             SinglePage::add('/dashboard/store/products/attributes',$pkg);
         }
+
+        /*
+        *  Add email order attribute
+        */
+        $text = AttributeType::getByHandle('text');
+
+        $oakc = AttributeKeyCategory::getByHandle('store_order');
+        $orderCustSet = AttributeSet::getByHandle('order_customer');
+
+        $email = StoreOrderKey::getByHandle('email');
+        if (!is_object($email)) {
+            StoreOrderKey::add($text, array(
+                'akHandle' => 'email',
+                'akName' => t('Email')
+            ), $pkg)->setAttributeSet($orderCustSet);
+        }
+        parent::upgrade();
         $this->addOrderStatusesToDatabase($pkg);
+    }
+
+    private function installStoreProductPageType($pkg){
+        //install product detail page type
+        $pageType = PageType::getByHandle('store_product');
+        if(!is_object($pageType)){
+            $template = PageTemplate::getByHandle('full');
+            PageType::add(
+                array(
+                    'handle' => 'store_product',
+                    'name' => 'Product Page',
+                    'defaultTemplate' => $template,
+                    'allowedTemplates' => 'C',
+                    'templates' => array($template),
+                    'ptLaunchInComposer' => 0,
+                    'ptIsFrequentlyAdded' => 0,
+                ),
+                $pkg
+            )->setConfiguredPageTypePublishTargetObject(new PageTypePublishTargetAllConfiguration(PageTypePublishTargetAllType::getByHandle('all')));
+        }
+
     }
 
     private function addOrderStatusesToDatabase($pkg) {

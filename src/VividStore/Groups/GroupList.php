@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Groups;
+namespace Concrete\Package\VividStore\Src\VividStore\Groups;
 use Database;
 use Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as ProductGroup;
 defined('C5_EXECUTE') or die(_("Access Denied."));
