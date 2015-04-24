@@ -46,11 +46,18 @@ class ProductList extends AttributedItemList
         ->select('p.pID')
         ->from('VividStoreProduct','p');
     }
+
+    public function setSearch($search) {
+        $this->search = $search;
+    }
+
     
     public function finalizeQuery(\Doctrine\DBAL\Query\QueryBuilder $query)
     {
+        $paramcount = 0;
+
         if(isset($this->gID) && ($this->gID > 0)){
-            $query->where('gID = ?')->setParameter(0,$this->gID);
+            $query->where('gID = ?')->setParameter($paramcount++,$this->gID);
         }
         switch ($this->sortBy){
             case "alpha":
@@ -71,6 +78,12 @@ class ProductList extends AttributedItemList
         if($this->activeOnly){
             $query->andWhere("pActive = 1");
         }
+
+        if ($this->search) {
+            $query->andWhere('pName like ?')->setParameter($paramcount++,'%'. $this->search. '%');
+        }
+
+
         return $query;
     }
     
