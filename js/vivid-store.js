@@ -265,11 +265,30 @@ $("#checkout-form-group-billing").submit(function(e){
            url: CHECKOUTURL+"/updater",
            type: 'post',
            data: {adrType: 'shipping', fName: sfName, lName: slName, addr1: sAddress1, addr2: sAddress2, count: sCountry, city: sCity, state: sState, postal: sPostal},
-           dataType: 'json',
-           success: function(){
-                $(".whiteout").remove();
-                vividStore.nextPane(obj);   
-           }  
+           //dataType: 'json', 
+           success: function(result){
+                var $errors = JSON.parse(result);
+                if($errors.error == false){
+                    $(".whiteout").remove();
+                    vividStore.nextPane(obj);   
+                    //update tax
+                    $.ajax({
+                        url: CARTURL+"/getTaxTotal",
+                        success: function(taxTotal){
+                            $(".tax-amount").text(taxTotal);
+                        } 
+                    });
+                    $.ajax({
+                        url: CARTURL+"/getTotal",
+                        success: function(total){
+                            $(".total-amount").text(total);
+                        }
+                    });
+                } else {
+                    alert($errors.errors.join('\n'));
+                    $('.whiteout').remove();
+                }
+            },
        });
        
     });

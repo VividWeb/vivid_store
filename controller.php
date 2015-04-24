@@ -19,6 +19,7 @@ use Concrete\Core\Database\Schema\Schema;
 use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
 use \Concrete\Core\Attribute\Type as AttributeType;
+use AttributeSet;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
@@ -34,7 +35,7 @@ class Controller extends Package
 
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.0.8';
+    protected $pkgVersion = '2.1';
     
     
     
@@ -499,7 +500,7 @@ class Controller extends Package
         $text = AttributeType::getByHandle('text');
 
         $oakc = AttributeKeyCategory::getByHandle('store_order');
-        $oakc->getByHandle('order_customer');
+        $orderCustSet = AttributeSet::getByHandle('order_customer');
 
         $email = StoreOrderKey::getByHandle('email');
         if (!is_object($email)) {
@@ -508,7 +509,6 @@ class Controller extends Package
                 'akName' => t('Email')
             ), $pkg)->setAttributeSet($orderCustSet);
         }
-
         parent::upgrade();
         $this->addOrderStatusesToDatabase($pkg);
     }

@@ -18,7 +18,9 @@ class Checkout extends RouteController
     {
         if(isset($_POST)){
             $data = $_POST;
-            $e = $this->validateAddress($data);
+            $billing = false;
+            if ($data['adrType']=='billing'){ $billing=true; }
+            $e = $this->validateAddress($data,$shipping);
             if($e->has()){
                 echo $e->outputJSON();   
             } else {
@@ -83,15 +85,17 @@ class Checkout extends RouteController
         Session::set('shipping_address',$address);
     }
     
-    public function validateAddress($data)
+    public function validateAddress($data,$billing=null)
     {
         $e = Core::make('helper/validation/error');
         $vals = Loader::helper('validation/strings');
         $customer = new Customer();
 
-        if ($customer->isGuest()) {
-            if (!$vals->email($data['email'])) {
-                $e->add(t('You must enter a valid email address'));
+        if($billing){
+            if ($customer->isGuest()) {
+                if (!$vals->email($data['email'])) {
+                    $e->add(t('You must enter a valid email address'));
+                }
             }
         }
 

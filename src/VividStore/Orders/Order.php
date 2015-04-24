@@ -81,23 +81,21 @@ class Order extends Object
         //add the order items
         $cart = Session::get('cart');
 
-        if (!$customer->isGuest()) {
-            foreach ($cart as $cartItem) {
-                OrderItem::add($cartItem, $oID);
-
-                $product = VividProduct::getByID($cartItem['product']['pID']);
-                if ($product && $product->hasUserGroups()) {
-                    $usergroupstoadd = $product->getProductUserGroups();
-
-                    foreach ($usergroupstoadd as $id) {
-                        $g = Group::getByID($id);
-                        if ($g) {
-                            $customer->getUserInfo()->enterGroup($g);
-                        }
+        foreach ($cart as $cartItem) {
+            OrderItem::add($cartItem, $oID);
+            $product = VividProduct::getByID($cartItem['product']['pID']);
+            if ($product && $product->hasUserGroups()) {
+                $usergroupstoadd = $product->getProductUserGroups();
+                foreach ($usergroupstoadd as $id) {
+                    $g = Group::getByID($id);
+                    if ($g) {
+                        $customer->getUserInfo()->enterGroup($g);
                     }
                 }
             }
-
+        }
+        
+        if (!$customer->isGuest()) {
             //add user to Store Customers group
             $group = \Group::getByName('Store Customer');
             if (is_object($group) || $group->getGroupID() < 1) {
