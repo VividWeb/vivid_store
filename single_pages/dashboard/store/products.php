@@ -612,7 +612,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 	    </div>
 
     <div class="ccm-dashboard-content-full">
-        <form role="form" data-search-form="users"   class="form-inline ccm-search-fields">
+        <form role="form" class="form-inline ccm-search-fields">
             <div class="ccm-search-fields-row">
                 <?php if($grouplist){?>
                     <ul id="group-filters" class="nav nav-pills">
@@ -623,18 +623,17 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     </ul>
                 <?php } ?>
             </div>
-            <div class="ccm-search-fields-row">
+            <div class="ccm-search-fields-row ccm-search-fields-submit">
                 <div class="form-group">
                     <div class="ccm-search-main-lookup-field">
                         <i class="fa fa-search"></i>
                         <?php echo $form->search('keywords', $searchRequest['keywords'], array('placeholder' => t('Search Products')))?>
                     </div>
-                </div>
-            </div>
 
-            <div class="ccm-search-fields-row ccm-search-fields-submit">
+                </div>
                 <button type="submit" class="btn btn-primary pull-right"><?php echo t('Search')?></button>
             </div>
+
         </form>
 
         <table class="ccm-search-results-table">
@@ -732,3 +731,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
         </form>
         
     <?php }  ?>
+
+<style>
+    @media (max-width: 992px) {
+        div#ccm-dashboard-content div.ccm-dashboard-content-full {
+            margin-left: -20px !important;
+            margin-right: -20px !important;
+        }
+    }
+</style>

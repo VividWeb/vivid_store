@@ -22,8 +22,37 @@ class OrderList  extends AttributedItemList
     {
         $this->query
         ->select('o.oID')
-        ->from('VividStoreOrder','o')
-        ->orderBy('oID', 'DESC');
+        ->from('VividStoreOrder','o');
+
+    }
+
+    public function finalizeQuery(\Doctrine\DBAL\Query\QueryBuilder $query)
+    {
+        $paramcount = 0;
+
+        if (isset($this->search)) {
+            $this->query->where('oID like ?')->setParameter($paramcount++,'%'. $this->search. '%');
+        }
+
+        if(isset($this->status)){
+            if ($paramcount > 0) {
+                $this->query->andWhere('oStatus = ?')->setParameter($paramcount++,$this->status);
+            } else {
+                $this->query->where('oStatus = ?')->setParameter($paramcount++,$this->status);
+            }
+        }
+
+        $this->query->orderBy('oID', 'DESC');
+
+        return $this->query;
+    }
+
+    public function setSearch($search) {
+        $this->search = $search;
+    }
+
+    public function setStatus($status) {
+        $this->status = $status;
     }
     
     public function getResult($queryRow)
