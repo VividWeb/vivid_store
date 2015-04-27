@@ -24,7 +24,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Order extends Object
