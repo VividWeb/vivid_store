@@ -47,12 +47,10 @@ class Checkout extends PageController
         $taxBased = $pkgconfig->get('vividstore.taxBased');
         $taxlabel = $pkgconfig->get('vividstore.taxName');
 
-
         $this->set('taxlabel',$taxlabel);
-
         $this->set('taxbased',$taxBased);
-        $this->set('hastax', !empty($totals['taxes']));
         $this->set('taxtotal',$totals['taxTotal']);
+
         $this->set('shippingtotal',$totals['shippingTotal']);
         $this->set('total',$totals['total']);
 

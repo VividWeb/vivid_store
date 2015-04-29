@@ -63,6 +63,8 @@
                     <div class="form-group">
                         <label for="taxMatch"><?=t("Tax Name")?></label>
                         <?php echo $form->text('taxName',$pkgconfig->get('vividstore.taxName'));?>
+                        <span class="help-block"><?php  echo t('(optional, will default to \'tax\' if left blank)'); ?></span>
+
                     </div>
 
                         <div class="form-group">

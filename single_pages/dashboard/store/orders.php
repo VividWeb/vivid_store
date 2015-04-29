@@ -97,8 +97,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     </table>
     
     <p>
+        <strong><?=t("Items Subtotal")?>:</strong>  <?= Price::format($order->getSubTotal())?><br>
+        <?php $shipping = $order->getShippingTotal();
+        if ($shipping > 0) { ?>
+        <strong><?=t("Shipping")?>:</strong>  <?= Price::format($shipping)?><br>
+        <?php } ?>
         <strong><?=($order->oTaxName ? $order->oTaxName : t("Tax"))?>:</strong>  <?= Price::format($order->getTaxTotal())?><br>
-        <strong><?=t("Shipping")?>:</strong>  <?= Price::format($order->getShippingTotal())?><br>
         <strong class="text-large"><?=t("Total")?>:</strong>  <?= Price::format($order->getTotal())?><br>
         <strong><?=t("Payment Method")?>:</strong> <?=$order->getPaymentMethodName()?>
     </p>

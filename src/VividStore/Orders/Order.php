@@ -50,6 +50,13 @@ class Order extends Object
         $pkg = Package::getByHandle('vivid_store');
         $pkgconfig = $pkg->getConfig();
 
+        $taxBased = $pkgconfig->get('vividstore.taxBased');
+        $taxlabel = $pkgconfig->get('vividstore.taxName');
+
+        $this->set('taxlabel',$taxlabel);
+
+        $taxCalc = $pkgconfig->get('vividstore.calculation');
+
         $db = Database::get();
         
         //get who ordered it
@@ -61,16 +68,25 @@ class Order extends Object
         
         //get the price details
         $shipping = VividCart::getShippingTotal();
-        $tax = VividCart::getTaxTotal();
+        $taxvalue = VividCart::getTaxTotal();
         $taxName = $pkgconfig->get('vividstore.taxName');
         $total = VividCart::getTotal();
+
+        $tax = 0;
+        $taxIncluded = 0;
+
+        if ($taxCalc == 'extract') {
+            $taxIncluded = $taxvalue;
+        }  else {
+            $tax = $taxvalue;
+        }
         
         //get payment method
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$taxName,$total);
-        $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTaxName,oTotal) values(?,?,?,?,?,?,?,?)", $vals);
+        $vals = array($customer->getUserID(),$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) values(?,?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
         $order->setAttribute("email",$customer->getEmail());
@@ -84,9 +100,6 @@ class Order extends Object
 
         $customer->setLastOrderID($oID);
 
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
-        $taxCalc = $pkgconfig->get('vividstore.calculation');
 
         //add the order items
         $cart = Session::get('cart');
@@ -147,16 +160,22 @@ class Order extends Object
             //receipt
             $mh->from($fromEmail);
             $mh->to($customer->getEmail());
+
             $mh->addParameter("order", $order);
+            $mh->addParameter("taxbased", $taxBased);
+            $mh->addParameter("taxlabel", $taxlabel);
             $mh->load("order_receipt","vivid_store");
             $mh->sendMail();
-            
+
             //order notification
             $mh->from($fromEmail);
             foreach($alertEmails as $alertEmail){
                 $mh->to($alertEmail);
             }
             $mh->addParameter("order", $order);
+            $mh->addParameter("taxbased", $taxBased);
+            $mh->addParameter("taxlabel", $taxlabel);
+
             $mh->load("new_order_notification","vivid_store");
             $mh->sendMail();
             
@@ -198,12 +217,12 @@ class Order extends Object
         $subtotal = 0;
         if($items){
             foreach($items as $item){
-                $subtotal = $subtotal + ($item['oiPricePaid'] * $item['oiQty']);
+                $subtotal = $subtotal + ($item->oiPricePaid * $item->oiQty);
             }
         }
         return $subtotal;
     }
-    public function getTaxTotal() { return $this->oTax; }
+    public function getTaxTotal() { return $this->oTax + $this->oTaxIncluded; }
     public function getShippingTotal() { return $this->oShippingTotal; }
     
     public function updateStatus($status)

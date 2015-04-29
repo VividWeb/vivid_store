@@ -258,13 +258,13 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
         <p>
             <strong><?=t("Items Subtotal")?>:</strong> <?=Price::format($subtotal);?><br>
 
-            <?php if($hastax && $taxbased == 'subtotal') { ?>
+            <?php if($taxtotal > 0 && $taxbased == 'subtotal') { ?>
                 <strong><?=($taxlabel ? $taxlabel : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($taxtotal);?></span><br>
             <?php } ?>
 
             <strong><?=t("Shipping")?>:</strong> <?=Price::format($shippingtotal);?><br>
 
-            <?php if($hastax && $taxbased == 'grandtotal') { ?>
+            <?php if($taxtotal > 0 && $taxbased == 'grandtotal') { ?>
                 <strong><?= ($taxlabel ? $taxlabel : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($taxtotal)?></span><br>
             <?php } ?>
 
