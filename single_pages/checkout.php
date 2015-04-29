@@ -1,4 +1,6 @@
-<?php defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
+<?php
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
 <?php if($controller->getTask() == "view" || $controller->getTask() == "failed"){?>
 
 <div class="clearfix">
@@ -254,11 +256,20 @@
         
         <h2><?=t("Cart Total")?></h2>
         <p>
-            <strong><?=t("Items Subtotal")?>:</strong> <?=$subtotal?><br>
-            <strong><?=t("Tax")?>:</strong> <span class="tax-amount"><?=$taxtotal?></span><br>
-            <strong><?=t("Shipping")?>:</strong> <?=$shippingtotal?>
+            <strong><?=t("Items Subtotal")?>:</strong> <?=Price::format($subtotal);?><br>
+
+            <?php if($taxtotal > 0 && $taxbased == 'subtotal') { ?>
+                <strong><?=($taxlabel ? $taxlabel : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($taxtotal);?></span><br>
+            <?php } ?>
+
+            <strong><?=t("Shipping")?>:</strong> <?=Price::format($shippingtotal);?><br>
+
+            <?php if($taxtotal > 0 && $taxbased == 'grandtotal') { ?>
+                <strong><?= ($taxlabel ? $taxlabel : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($taxtotal)?></span><br>
+            <?php } ?>
+
         </p>
-        <p><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=$total?></span></p>
+        <p><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></p>
         
     </div>
 
