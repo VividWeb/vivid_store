@@ -1,6 +1,6 @@
-<?php 
+<?php
 defined('C5_EXECUTE') or die("Access Denied.");
-
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 $subject = t("New Order Notification");
 
 
@@ -84,8 +84,8 @@ ob_start();
                                 ?>
                             </td>
                             <td><?=$item->getQty()?></td>
-                            <td><?=$item->getPricePaid()?></td>
-                            <td><?=$item->getSubTotal()?></td>
+                            <td><?=Price::format($item->getPricePaid())?></td>
+                            <td><?=Price::format($item->getSubTotal())?></td>
                         </tr>
                       <?php
                             }

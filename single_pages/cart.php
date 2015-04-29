@@ -66,7 +66,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     
     <div class="cart-page-cart-total">        
         <span class="cart-grand-total-label"><?=t("Sub Total")?>:</span>
-        <span class="cart-grand-total-value"><?=$total?></span>        
+        <span class="cart-grand-total-value"><?=Price::format($total)?></span>
     </div>
         
     <div class="cart-page-cart-links">

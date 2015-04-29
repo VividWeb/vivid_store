@@ -1,6 +1,6 @@
 <?php 
 defined('C5_EXECUTE') or die("Access Denied.");
-
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 $subject = t("Order Receipt");
 
 

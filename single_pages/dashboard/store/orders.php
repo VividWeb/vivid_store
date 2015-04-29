@@ -1,5 +1,6 @@
-<?php 
+<?php
 defined('C5_EXECUTE') or die("Access Denied.");
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 ?>
 
 <?php if ($controller->getTask() == 'order'){ ?>
@@ -48,7 +49,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
             </p>
         </div>
     </div>
-    <h3><?=t("Items Orders")?></h3>
+    <h3><?=t("Order Items")?></h3>
     <hr>
     <table class="table table-striped">
         <thead>
@@ -63,6 +64,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
         <tbody>
             <?php 
                 $items = $order->getOrderItems();
+
                 if($items){
                     foreach($items as $item){
               ?>
@@ -83,9 +85,9 @@ defined('C5_EXECUTE') or die("Access Denied.");
                             }
                         ?>
                     </td>
-                    <td><?=$item->getPricePaid()?></td>
+                    <td><?=Price::format($item->getPricePaid())?></td>
                     <td><?=$item->getQty()?></td>
-                    <td><?=$item->getSubTotal()?></td>
+                    <td><?=Price::format($item->getSubTotal())?></td>
                 </tr>
               <?php
                     }
@@ -95,9 +97,9 @@ defined('C5_EXECUTE') or die("Access Denied.");
     </table>
     
     <p>
-        <strong><?=t("Tax")?>:</strong>  <?=$order->getTaxTotal()?><br>
-        <strong><?=t("Shipping")?>:</strong>  <?=$order->getShippingTotal()?><br>
-        <strong class="text-large"><?=t("Total")?>:</strong>  <?=$order->getTotal()?><br>
+        <strong><?=($order->oTaxName ? $order->oTaxName : t("Tax"))?>:</strong>  <?= Price::format($order->getTaxTotal())?><br>
+        <strong><?=t("Shipping")?>:</strong>  <?= Price::format($order->getShippingTotal())?><br>
+        <strong class="text-large"><?=t("Total")?>:</strong>  <?= Price::format($order->getTotal())?><br>
         <strong><?=t("Payment Method")?>:</strong> <?=$order->getPaymentMethodName()?>
     </p>
 
@@ -187,7 +189,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
                 <td><a href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=$order->getOrderID()?></a></td>
                 <td><?=$order->getAttribute('billing_last_name').", ".$order->getAttribute('billing_first_name')?></td>
                 <td><?=$order->getOrderDate()?></td>
-                <td><?=$order->getTotal()?></td>
+                <td><?=Price::format($order->getTotal())?></td>
                 <td><?=ucwords($order->getStatus())?></td>
                 <td><a class="btn btn-primary" href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=t("View")?></a></td>
             </tr>
