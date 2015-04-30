@@ -25,10 +25,8 @@ class Complete extends PageController
         } else {
             $this->redirect("/cart");
         }
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));   
+        $this->addFooterItem(Core::make('helper/html')->javascript('vivid-store.js','vivid_store'));
+        $this->addHeaderItem(Core::make('helper/html')->css('vivid-store.css','vivid_store'));   
     }  
     
 
