@@ -17,7 +17,7 @@ class OrderItem extends Object
             $item = new OrderItem();
             $item->setPropertiesFromArray($data);
         }
-        return($item instanceof Item) ? $item : false;
+        return($item instanceof OrderItem) ? $item : false;
     }  
     public function add($data,$oID,$tax=0,$taxIncluded=0,$taxName='')
     {
@@ -65,14 +65,14 @@ class OrderItem extends Object
     }    
     
     public function getProductName(){ return $this->oiProductName; }
-    public function getPricePaid() { return Price::format($this->oiPricePaid); }
+    public function getPricePaid() { return $this->oiPricePaid; }
     public function getQty() { return $this->oiQty; }
     public function getSubTotal()
     {
         $price = Price::getFloat($this->getPricePaid());
         $qty = $this->getQty();
         $subtotal = $qty * $price;
-        return Price::format($subtotal);
+        return $subtotal;
     }
     public function getProductOptions()
     {

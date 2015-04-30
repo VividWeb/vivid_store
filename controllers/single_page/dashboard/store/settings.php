@@ -73,6 +73,8 @@ class Settings extends DashboardPageController
                 $pkg->getconfig()->save('vividstore.taxMatch',trim($args['taxMatch']));
                 $pkg->getconfig()->save('vividstore.taxBased',trim($args['taxBased']));
                 $pkg->getconfig()->save('vividstore.taxrate',trim($args['taxRate']));
+                $pkg->getconfig()->save('vividstore.taxName',trim($args['taxName']));
+                $pkg->getconfig()->save('vividstore.calculation',trim($args['calculation']));
                 $pkg->getConfig()->save('vividstore.shippingenabled',$args['shippingEnabled']);
                 $pkg->getConfig()->save('vividstore.shippingbase',$args['shippingBasePrice']);
                 $pkg->getConfig()->save('vividstore.shippingitem',$args['shippingItemPrice']);
@@ -125,7 +127,7 @@ class Settings extends DashboardPageController
                 OrderStatus::setNewStartingStatus(OrderStatus::getByID($data['osIsStartingStatus'])->getHandle());
             } else {
                 $orderStatuses = OrderStatus::getAll();
-                OrderStatus::setNewStartingStatus($orderStatuses[0]);
+                OrderStatus::setNewStartingStatus($orderStatuses[0]->getHandle());
             }
         }
     }
@@ -139,12 +141,6 @@ class Settings extends DashboardPageController
         if($args['taxEnabled']=='yes'){
             if(!is_numeric(trim($args['taxRate']))){
                 $e->add(t('Tax Rate must be set, and a number'));
-            }
-            if($args['taxState']==""){
-                $e->add(t('Tax State must be set'));
-            }
-            if($args['taxCity']==""){
-                $e->add(t('Tax City must be set'));
             }
         }
         if($args['shippingEnabled']=='yes'){

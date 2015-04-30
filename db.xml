@@ -63,7 +63,8 @@
         <field name="pmID" type="I"></field>
         <field name="smID" type="I"></field>
         <field name="oShippingTotal" type="C" size="10"></field>
-        <field name="oTax" type="C" size="10"></field>
+        <field name="oTax" type="C" size="10.4"></field>
+        <field name="oTaxIncluded" type="N" size="10.4"></field>
         <field name="oTaxName" type="C" size="255"></field>
         <field name="oTotal" type="C" size="10"></field>
     </table>

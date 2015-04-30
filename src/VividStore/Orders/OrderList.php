@@ -7,7 +7,6 @@ use Concrete\Core\Search\ItemList\Database\AttributedItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 
 use Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
-use Concrete\Package\VividStore\Src\VividStore\Orders\Item as OrderItem;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class OrderList  extends AttributedItemList

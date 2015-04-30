@@ -5,8 +5,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Price
 {
-    
-    public function format($price)
+    public static function format($price)
     {
         $pkg = Package::getByHandle('vivid_store');
         $symbol = $pkg->getConfig()->get('vividstore.symbol');
@@ -19,9 +18,9 @@ class Price
     {
         $pkg = Package::getByHandle('vivid_store');
         $pkgconfig = $pkg->getConfig();
-        $symbol = $pkg->getConfig()->get('vividstore.symbol');
-        $wholeSep = $pkg->getConfig()->get('vividstore.whole');
-        $thousandSep = $pkg->getConfig()->get('vividstore.thousand');
+        $symbol = $pkgconfig->get('vividstore.symbol');
+        $wholeSep = $pkgconfig->get('vividstore.whole');
+        $thousandSep = $pkgconfig->get('vividstore.thousand');
         
         $price = str_replace($wholeSep, ".", $price); // replace whole separator with '.' 
         $price = str_replace($thousandSep, "", $price); //no commas, or spaces or whatevz

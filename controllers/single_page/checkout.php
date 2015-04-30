@@ -35,10 +35,25 @@ class Checkout extends PageController
         $this->set('form',Core::make("helper/form"));
         $this->set("countries",Core::make('helper/lists/countries')->getCountries());
         $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
-        $this->set('subtotal',VividCart::getSubTotal());
-        $this->set('taxtotal',VividCart::getTaxTotal());
-        $this->set('shippingtotal',VividCart::getShippingTotal());
-        $this->set('total',VividCart::getTotal());
+
+        $totals = VividCart::getTotals();
+
+        $pkg = Package::getByHandle('vivid_store');
+        $pkgconfig = $pkg->getConfig();
+
+        $this->set('subtotal',$totals['subTotal']);
+        $this->set('taxes',$totals['taxes']);
+
+        $taxBased = $pkgconfig->get('vividstore.taxBased');
+        $taxlabel = $pkgconfig->get('vividstore.taxName');
+
+        $this->set('taxlabel',$taxlabel);
+        $this->set('taxbased',$taxBased);
+        $this->set('taxtotal',$totals['taxTotal']);
+
+        $this->set('shippingtotal',$totals['shippingTotal']);
+        $this->set('total',$totals['total']);
+
         $this->addHeaderItem("
             <script type=\"text/javascript\">
                 var PRODUCTMODAL = '".View::url('/productmodal')."';

@@ -8,6 +8,7 @@ use Session;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
@@ -114,54 +115,64 @@ class Cart
                 }
             }
         }
-        return Price::format($subtotal);  
+        return $subtotal;
     }
     public function isCustomerTaxable()
     {
         $pkg = Package::getByHandle('vivid_store');
         $pkgconfig = $pkg->getConfig();    
-        $match = $pkgconfig->get('vividstore.taxMatch');
         $taxAddress = $pkgconfig->get('vividstore.taxAddress');
-        $storeCity = $pkgconfig->get('vividstore.taxcity');
-        $storeState = $pkgconfig->get('vividstore.taxstate');
-        $storeCountry = $pkgconfig->get('vividstore.taxcountry');
-        $u = new User();
-        if($u->isLoggedIn()){
-            $ui = UserInfo::getByID($u->getUserID());
-            $customerIsTaxable = false;
-            switch($taxAddress){
-                case "billing":
-                    $userCity = $ui->getAttribute("billing_address")->city; 
-                    $userState = $ui->getAttribute("billing_address")->state_province; 
-                    $userCountry = $ui->getAttribute("billing_address")->country; 
-                    break;
-                case "shipping":
-                    $userCity = $ui->getAttribute("shipping_address")->city; 
-                    $userState = $ui->getAttribute("shipping_address")->state_province; 
-                    $userCountry = $ui->getAttribute("shipping_address")->country; 
-                    break;
-            } 
-            switch($match){
-                case "state":
-                    if($userState==$storeState){
-                        $customerIsTaxable = true;
-                    }
-                    break;
-                case "city":
-                    if($userCity==$storeCity){
-                        $customerIsTaxable = true;
-                    }
-                    break;
-                case "country":
-                    if($userCountry==$storeCountry){
-                        $customerIsTaxable = true;
-                    }
-                    break;
-    
+        $taxCountry = strtolower($pkgconfig->get('vividstore.taxcountry'));
+        $taxState = strtolower(trim($pkgconfig->get('vividstore.taxstate')));
+        $taxCity = strtolower(trim($pkgconfig->get('vividstore.taxcity')));
+        $customer = new Customer;
+
+        $customerIsTaxable = false;
+
+        switch($taxAddress){
+            case "billing":
+                $userCity = strtolower(trim($customer->getValue("billing_address")->city));
+                $userState = strtolower(trim($customer->getValue("billing_address")->state_province));
+                $userCountry = strtolower(trim($customer->getValue("billing_address")->country));
+                break;
+            case "shipping":
+                $userCity = strtolower(trim($customer->getValue("shipping_address")->city));
+                $userState = strtolower(trim($customer->getValue("shipping_address")->state_province));
+                $userCountry = strtolower(trim($customer->getValue("shipping_address")->country));
+                break;
+        }
+
+        if ($userCountry == $taxCountry ) {
+            $customerIsTaxable = true;
+            if ($taxState && $userState != $taxState) {
+                $customerIsTaxable = false;
+            } elseif ($taxCity && $userCity != $taxCity) {
+                $customerIsTaxable = false;
             }
         }
-        return $customerIsTaxable; 
+
+        return $customerIsTaxable;
     }
+
+    public function getTaxes() {
+        $pkg = Package::getByHandle('vivid_store');
+        $pkgconfig = $pkg->getConfig();
+
+        $taxTotal = self::getTaxTotal();
+        $taxName = $pkgconfig->get('vividstore.taxName');
+        $taxCalc = $pkgconfig->get('vividstore.calculation');
+        $taxBased = $pkgconfig->get('vividstore.taxBased');
+
+        $taxes = array();
+
+        if (self::isCustomerTaxable()) {
+            $taxes[] = array('name'=>$taxName,'taxamount'=>$taxTotal,'calculation'=>$taxCalc, 'based'=>$taxBased);
+        }
+
+        return $taxes;
+    }
+
+
     public function getTaxTotal()
     {
         $pkg = Package::getByHandle('vivid_store');
@@ -177,12 +188,17 @@ class Cart
                     $product = VividProduct::getByID($pID);
                     if(is_object($product)){
                         if($product->isTaxable()){
-                            //the product is "Taxable", but is the customer?
-                            if(self::isCustomerTaxable()){
-                                switch($pkgconfig->get('vividstore.taxBased')){
+                            $taxCalc = $pkgconfig->get('vividstore.calculation');
+
+                            if ($taxCalc == 'extract') {
+                                $taxrate =  10 / ($pkgconfig->get('vividstore.taxrate') + 100);
+                            }  else {
+                                $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
+                            }
+
+                            switch($pkgconfig->get('vividstore.taxBased')){
                                     case "subtotal":
                                         $productSubTotal = $product->getProductPrice() * $qty; 
-                                        $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
                                         $tax = $taxrate * $productSubTotal;
                                         $taxtotal = $taxtotal + $tax;
                                         break;
@@ -190,19 +206,18 @@ class Cart
                                         $productSubTotal = $product->getProductPrice() * $qty; 
                                         $shippingTotal = Price::getFloat(self::getShippingTotal());
                                         $taxableTotal = $productSubTotal + $shippingTotal;
-                                        $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
                                         $tax = $taxrate * $taxableTotal;
                                         $taxtotal = $taxtotal + $tax;
                                         break;
                                 }
-                            }//if customer is taxable
+
                         }//if product is taxable
                     }//if obj
                 }//foreach
             }//if cart
         }//if tax enabled
         //return self::isCustomerTaxable();
-        return Price::format($taxtotal);     
+        return $taxtotal;
     }
 
     public function getTaxProduct($productID)
@@ -214,17 +229,23 @@ class Cart
             $cart = Session::get('cart');
 
             if($cart){
+                $taxCalc = $pkgconfig->get('vividstore.calculation');
+
+                if ($taxCalc == 'extract') {
+                    $taxrate =  10 / ($pkgconfig->get('vividstore.taxrate') + 100);
+                }  else {
+                    $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
+                }
+
                 foreach ($cart as $cartItem){
                     if ($cartItem['product']['pID'] == $productID) {
                         $product = VividProduct::getByID($productID);
                     }
-
                     if(is_object($product)){
                         if($product->isTaxable()){
                             //the product is "Taxable", but is the customer?
                             if(self::isCustomerTaxable()){
-                                    $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
-                                    $tax = $taxrate *  $product->getProductPrice() ;
+                                    $tax = $taxrate * $product->getProductPrice() ;
                                     return $tax;
 
                             }//if customer is taxable
@@ -234,9 +255,8 @@ class Cart
             }//if cart
         }//if tax enabled
 
-        return Price::format(0);
+        return 0;
     }
-
 
     public function getTotalItemsInCart(){
         $total = 0;    
@@ -275,16 +295,44 @@ class Cart
             }
             
         }
-        return Price::format($shippingTotal);
+        return $shippingTotal;
     }
+
     public function getTotal()
     {
-        $subtotal = Price::getFloat(Cart::getSubTotal());
-        $taxtotal = Price::getFloat(Cart::getTaxTotal()); 
-        $shippingtotal = Price::getFloat(Cart::getShippingTotal());
-        $grandTotal = ($subtotal + $taxtotal + $shippingtotal);
-        return Price::format($grandTotal);
+        $subTotal = Price::getFloat(Cart::getSubTotal());
+        $taxTotal = 0;
+        $taxes = self::getTaxes();
+
+        foreach($taxes as $tax) {
+
+            if ($tax['calculation'] != 'extract') {
+                $taxTotal += $tax['taxamount'];
+            }
+        }
+
+        $shippingTotal = Price::getFloat(Cart::getShippingTotal());
+        $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
+        return $grandTotal;
     }
+
+    // returns an array of formatted cart totals
+    public function getTotals() {
+        $subTotal = Price::getFloat(Cart::getSubTotal());
+        $taxes = self::getTaxes();
+        $taxTotal = 0;
+        $includedTaxTotal = 0;
+
+        foreach($taxes as $tax) {
+            $taxTotal += $tax['taxamount'];
+        }
+
+        $shippingTotal = Price::getFloat(Cart::getShippingTotal());
+        $total = ($subTotal + $taxTotal + $shippingTotal);
+
+        return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$taxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
+    }
+
 
     public function requiresLogin() {
         if(Session::get('cart')){
