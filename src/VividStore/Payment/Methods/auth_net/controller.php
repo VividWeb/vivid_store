@@ -5,6 +5,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 use Package;
 use Core;
+use Config;
 use AuthorizeNetAIM;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -12,26 +13,21 @@ class AuthNetPaymentMethod extends PaymentMethod
 {
     public function dashboardForm()
     {
-        $pkg = Package::getByHandle("vivid_store");
-        $pkgconfig = $pkg->getConfig();
-        $this->set('authnetLoginID',$pkgconfig->get('vividstore.authnetLoginID'));
-        $this->set('authnetTransactionKey',$pkgconfig->get('vividstore.authnetTransactionKey'));
-        $this->set('authnetCurrency',$pkgconfig->get('vividstore.authnetCurrency'));
-        $this->set('authnetTestmode',$pkgconfig->get('vividstore.authnetTestmode'));
+        $this->set('authnetLoginID',Config::get('vividstore.authnetLoginID'));
+        $this->set('authnetTransactionKey',Config::get('vividstore.authnetTransactionKey'));
+        $this->set('authnetCurrency',Config::get('vividstore.authnetCurrency'));
+        $this->set('authnetTestmode',Config::get('vividstore.authnetTestmode'));
         $this->set('form',Core::make("helper/form"));
         $form = Core::make("helper/form");
-        $authnetLoginID = $pkgconfig->get('vividstore.authnetLoginID');
+        $authnetLoginID = Config::get('vividstore.authnetLoginID');
     }
     
     public function save($data)
     {
-         
-        $pkg = Package::getByHandle("vivid_store");
-        $pkg->getConfig()->save('vividstore.authnetLoginID',$data['authnetLoginID']);
-        $pkg->getConfig()->save('vividstore.authnetTransactionKey',$data['authnetTransactionKey']);
-        $pkg->getConfig()->save('vividstore.authnetCurrency',$data['authnetCurrency']);
-        $pkg->getConfig()->save('vividstore.authnetTestmode',$data['authnetTestmode']);
-        
+        Config::save('vividstore.authnetLoginID',$data['authnetLoginID']);
+        Config::save('vividstore.authnetTransactionKey',$data['authnetTransactionKey']);
+        Config::save('vividstore.authnetCurrency',$data['authnetCurrency']);
+        Config::save('vividstore.authnetTestmode',$data['authnetTestmode']);
     }
     
     public function validate($args,$e)
@@ -65,12 +61,10 @@ class AuthNetPaymentMethod extends PaymentMethod
     {
         $dir = $this->getMethodDirectory();
         require_once $dir.'anet_php_sdk/AuthorizeNet.php';
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
         $METHOD_TO_USE = "AIM";
-        define("AUTHORIZENET_API_LOGIN_ID",$pkgconfig->get('vividstore.authnetLoginID'));    // Add your API LOGIN ID
-        define("AUTHORIZENET_TRANSACTION_KEY",$pkgconfig->get('vividstore.authnetTransactionKey')); // Add your API transaction key
-        define("AUTHORIZENET_SANDBOX",$pkgconfig->get('vividstore.authnetTestmode'));       // Set to false to test against production
+        define("AUTHORIZENET_API_LOGIN_ID",Config::get('vividstore.authnetLoginID'));    // Add your API LOGIN ID
+        define("AUTHORIZENET_TRANSACTION_KEY",Config::get('vividstore.authnetTransactionKey')); // Add your API transaction key
+        define("AUTHORIZENET_SANDBOX",Config::get('vividstore.authnetTestmode'));       // Set to false to test against production
         define("TEST_REQUEST", "FALSE");           // You may want to set to true if testing against production
         //define("AUTHORIZENET_MD5_SETTING","");                // Add your MD5 Setting.
         //$site_root = ""; // Add the URL to your site

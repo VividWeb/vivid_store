@@ -25,7 +25,7 @@ class Checkout extends PageController
 
         $customer = new Customer();
         $this->set('customer', $customer);
-        $guestCheckout = $pkg->getConfig()->get('vividstore.guestCheckout');
+        $guestCheckout = Config::get('vividstore.guestCheckout');
         $this->set('guestCheckout', ($guestCheckout ? $guestCheckout : 'off'));
         $this->set('requiresLogin', VividCart::requiresLogin());
 
@@ -38,14 +38,11 @@ class Checkout extends PageController
 
         $totals = VividCart::getTotals();
 
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
-
         $this->set('subtotal',$totals['subTotal']);
         $this->set('taxes',$totals['taxes']);
 
-        $taxBased = $pkgconfig->get('vividstore.taxBased');
-        $taxlabel = $pkgconfig->get('vividstore.taxName');
+        $taxBased = Config::get('vividstore.taxBased');
+        $taxlabel = Config::get('vividstore.taxName');
 
         $this->set('taxlabel',$taxlabel);
         $this->set('taxbased',$taxBased);

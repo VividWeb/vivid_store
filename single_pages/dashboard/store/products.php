@@ -6,6 +6,7 @@ $addViews = array('add','edit','save');
 $groupViews = array('groups','groupadded','addgroup');
 $attributeViews = array('attributes','attributeadded','attributeremoved');
 
+use \Config;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
@@ -518,7 +519,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                 <div class="input-group" >
                                     <?php $weight = $p->getProductWeight(); ?>
                                     <?=$form->text('pWeight',$weight?$weight:'0')?>
-                                    <div class="input-group-addon"><?=$pkgconfig->get('vividstore.weightUnit')?></div>
+                                    <div class="input-group-addon"><?=Config::get('vividstore.weightUnit')?></div>
                                 </div>
                             </div>
                         </div>
@@ -529,7 +530,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                     <div class="input-group" >
                                         <?php $length = $p->getDimensions('l'); ?>
                                         <?=$form->text('pLength',$length?$length:'0')?>
-                                        <div class="input-group-addon"><?=$pkgconfig->get('vividstore.sizeUnit')?></div>
+                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="width: 30%;">
@@ -537,7 +538,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                     <div class="input-group" >
                                         <?php $width = $p->getDimensions('w'); ?>
                                         <?=$form->text('pWidth',$width?$width:'0')?>
-                                        <div class="input-group-addon"><?=$pkgconfig->get('vividstore.sizeUnit')?></div>
+                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="width: 30%;">
@@ -545,7 +546,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                     <div class="input-group">
                                         <?php $height = $p->getDimensions('h'); ?>
                                         <?=$form->text('pHeight',$height?$height:'0')?>
-                                        <div class="input-group-addon"><?=$pkgconfig->get('vividstore.sizeUnit')?></div>
+                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
                                     </div>
                                 </div>
                             </div>
