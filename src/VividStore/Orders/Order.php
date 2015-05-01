@@ -12,6 +12,7 @@ use Concrete\Core\Mail\Service as MailService;
 use Session;
 use Group;
 use Events;
+use Config;
 
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
@@ -47,15 +48,12 @@ class Order extends Object
     }
     public function add($data,$pm)
     {
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
-
-        $taxBased = $pkgconfig->get('vividstore.taxBased');
-        $taxlabel = $pkgconfig->get('vividstore.taxName');
+        $taxBased = Config::get('vividstore.taxBased');
+        $taxlabel = Config::get('vividstore.taxName');
 
         $this->set('taxlabel',$taxlabel);
 
-        $taxCalc = $pkgconfig->get('vividstore.calculation');
+        $taxCalc = Config::get('vividstore.calculation');
 
         $db = Database::get();
         
@@ -69,7 +67,7 @@ class Order extends Object
         //get the price details
         $shipping = VividCart::getShippingTotal();
         $taxvalue = VividCart::getTaxTotal();
-        $taxName = $pkgconfig->get('vividstore.taxName');
+        $taxName = Config::get('vividstore.taxName');
         $total = VividCart::getTotal();
 
         $tax = 0;
@@ -149,12 +147,12 @@ class Order extends Object
         //send out the alerts
         $mh = new MailService();
         $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
-        $fromEmail = $pkgconfig->get('vividstore.emailalerts');
+
+        $fromEmail = Config::get('vividstore.emailalerts');
         if(!$fromEmail){
             $fromEmail = "store@".$_SERVER['SERVER_NAME'];
         }
-        $alertEmails = explode(",", $pkgconfig->get('vividstore.notificationemails'));
+        $alertEmails = explode(",", Config::get('vividstore.notificationemails'));
         $alertEmails = array_map('trim',$alertEmails);
         
             //receipt

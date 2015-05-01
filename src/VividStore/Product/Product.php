@@ -9,6 +9,7 @@ use Database;
 use File;
 use Core;
 use User;
+use Config;
 
 use Concrete\Core\Permission\Assignment\FileAssignment;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
@@ -183,7 +184,7 @@ class Product extends Object
     }
     public function generatePage($templateID=null){
         $pkg = Package::getByHandle('vivid_store');
-        $targetCID = $pkg->getConfig()->get('vividstore.productPublishTarget');
+        $targetCID = Config::get('vividstore.productPublishTarget');
         $parentPage = Page::getByID($targetCID);
         $pageType = PageType::getByHandle('store_product');
         $pageTemplate = $pageType->getPageTypeDefaultPageTemplateObject();

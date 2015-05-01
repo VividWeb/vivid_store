@@ -15,6 +15,7 @@ use View;
 use Database;
 use FileSet;
 use Loader;
+use Config;
 use Concrete\Core\Database\Schema\Schema;
 use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
@@ -34,7 +35,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.1.1';
+    protected $pkgVersion = '2.1.2';
 
     public function getPackageDescription()
     {
@@ -82,8 +83,8 @@ class Controller extends Package
         
         $this->installStoreProductPageType($pkg);
 
-        $pkg->getConfig()->save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
-        
+        Config::save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
+
         //install our blocks
         BlockTypeSet::add("vivid_store","Store", $pkg);
         BlockType::installBlockTypeFromPackage('vivid_product_list', $pkg); 
@@ -112,13 +113,13 @@ class Controller extends Package
         }
         
         //set our default currency configs
-        $pkg->getConfig()->save('vividstore.symbol','$');
-        $pkg->getConfig()->save('vividstore.whole','.');
-        $pkg->getConfig()->save('vividstore.thousand',',');
-        
+        Config::save('vividstore.symbol','$');
+        Config::save('vividstore.whole','.');
+        Config::save('vividstore.thousand',',');
+
         //set defaults for shipping
-        $pkg->getConfig()->save('vividstore.sizeUnit','in');
-        $pkg->getConfig()->save('vividstore.weightUnit','lb');
+        Config::save('vividstore.sizeUnit','in');
+        Config::save('vividstore.weightUnit','l');
         
         //user attributes for customers
         $uakc = AttributeKeyCategory::getByHandle('user');
@@ -405,7 +406,7 @@ class Controller extends Package
          */
         
         //first check and make sure the config isn't set. 
-        $publishTarget = $pkg->getConfig()->get('vividstore.productPublishTarget');
+        $publishTarget = Config::get('vividstore.productPublishTarget');
         if($publishTarget < 1 || empty($publishTarget)){
             //if not, install the proudct detail page if needed.    
             $productParentPage = Page::getByPath('/product-detail');
@@ -425,7 +426,7 @@ class Controller extends Package
                 Page::getByPath('/product-detail')->setAttribute('exclude_nav', 1);
             }
             //set the config to publish under the new page.            
-            $pkg->getConfig()->save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
+            Config::save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
         }
         
         /*
@@ -465,13 +466,13 @@ class Controller extends Package
         /*
          * 5. Measurement Units.
          */
-        $sizeUnits = $pkg->getConfig()->get('vividstore.sizeUnit');
+        $sizeUnits = Config::get('vividstore.sizeUnit');
         if(empty($sizeUnits)){
-            $pkg->getConfig()->save('vividstore.sizeUnit','in');
+            Config::save('vividstore.sizeUnit','in');
         }
-        $weightUnits = $pkg->getConfig()->get('vividstore.weightUnit');
+        $weightUnits = Config::get('vividstore.weightUnit');
         if(empty($weightUnits)){
-            $pkg->getConfig()->save('vividstore.weightUnit','lb');
+            Config::save('vividstore.weightUnit','lb');
         }
         
         /*
@@ -508,6 +509,20 @@ class Controller extends Package
         }
         parent::upgrade();
         $this->addOrderStatusesToDatabase($pkg);
+
+        // convert legacy config items to current config storage
+        // applies for version 2.1.1 and below
+        $db = Database::get();
+        $configitems = $db->GetAll("SELECT * FROM Config WHERE configGroup='vividstore'");
+
+        if (!empty($configitems)) {
+            foreach($configitems as $config) {
+                Config::save('vividstore.' . $config['configItem'],  $config['configValue']);
+            }
+
+            $db->Execute("DELETE FROM Config WHERE configGroup='vividstore'");
+        }
+
     }
 
     private function installStoreProductPageType($pkg){
