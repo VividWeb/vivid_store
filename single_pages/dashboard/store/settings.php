@@ -148,20 +148,22 @@
                             
                                 <div class="panel-heading"><?=$pm->getPaymentMethodName()?></div>
                                 <div class="panel-body">
-                                    <div class="form-group">
+                                    <div class="form-group paymentMethodEnabled">
                                         <input type="hidden" name="paymentMethodHandle[<?=$pm->getPaymentMethodID()?>]" value="<?=$pm->getPaymentMethodHandle()?>">
                                         <label><?=t("Enabled")?></label>
                                         <?php
                                             echo $form->select("paymentMethodEnabled[".$pm->getPaymentMethodID()."]", array(0=>"No",1=>"Yes"),$pm->isEnabled());
                                         ?>
                                     </div>
-                                    <div class="form-group">
-                                        <label><?=t("Display Name (on checkout)")?></label>
-                                        <?php echo $form->text('paymentMethodDisplayName['.$pm->getPaymentMethodID().']',$pm->getPaymentMethodDisplayName()); ?>
+                                    <div id="paymentMethodForm-<?php echo $pm->getPaymentMethodID(); ?>" style="display:<?php echo $pm->isEnabled() ? 'block':'none'; ?>">
+                                        <div class="form-group">
+                                            <label><?=t("Display Name (on checkout)")?></label>
+                                            <?php echo $form->text('paymentMethodDisplayName['.$pm->getPaymentMethodID().']',$pm->getPaymentMethodDisplayName()); ?>
+                                        </div>
+                                        <?php
+                                            $pm->renderDashboardForm();
+                                        ?>
                                     </div>
-                                    <?php
-                                        $pm->renderDashboardForm();
-                                    ?>
                                 </div>
                             
                             </div>
@@ -173,7 +175,18 @@
                         }
                     ?>                                    
                     
-            
+                    <script>
+                        $(function(){
+                            $('.paymentMethodEnabled SELECT').on('change',function(){
+                                $this = $(this);
+                                if ($this.val()==1) {
+                                    $this.parent().next().slideDown();
+                                } else {
+                                    $this.parent().next().slideUp();
+                                }
+                            });
+                        });
+                    </script>
                 </div><!-- #settings-payments -->
 
                 <div class="col-sm-7 store-pane" id="settings-order-statuses">
