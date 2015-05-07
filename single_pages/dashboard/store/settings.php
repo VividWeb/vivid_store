@@ -42,63 +42,85 @@
                 <div class="col-sm-7 store-pane" id="settings-tax" data-states-utility="<?=View::url('/checkout/getstates')?>">
                 
                     <h3><?=t("Tax Configuration")?></h3>
-                        <div class="row">
-                        <div class="col-xs-6">
+
+                    <div class="row">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <?php echo $form->label('taxEnabled',t('Enable Tax')); ?>
                                 <?php echo $form->select('taxEnabled',array('no'=>t('No'),'yes'=>t('Yes')),$pkgconfig->get('vividstore.taxenabled')); ?>
                             </div>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label for="taxName"><?=t("Tax Label")?></label>
+                                <?php echo $form->text('taxName',$pkgconfig->get('vividstore.taxName'));?>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <?php echo $form->label('taxRate',t('Tax Rate %')); ?>
-                                <div class="input-group" style="width: 150px;">
+                                <div class="input-group">
                                     <?php echo $form->text('taxRate',$pkgconfig->get('vividstore.taxrate')); ?>
                                     <div class="input-group-addon">%</div>
                                 </div>
                             </div>
                         </div>
-                        </div>
-
+                    </div>
+                    
                     <div class="form-group">
-                        <label for="taxMatch"><?=t("Tax Name")?></label>
-                        <?php echo $form->text('taxName',$pkgconfig->get('vividstore.taxName'));?>
-                        <span class="help-block"><?php  echo t('(optional, will default to \'tax\' if left blank)'); ?></span>
-
+                        <label for="calculation"><?=t("Are Prices Entered with Tax Included?")?></label>
+                        <?php echo $form->select('calculation',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),$pkgconfig->get('vividstore.calculation')); ?>
                     </div>
 
-                        <div class="form-group">
-                            <label for="taxMatch"><?=t("Based on the")?></label>
-                            <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),$pkgconfig->get('vividstore.taxBased')); ?>
+                    <div class="form-group">
+                        <label for="taxBased"><?=t("Tax is Based on the")?></label>
+                        <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),$pkgconfig->get('vividstore.taxBased')); ?>
+                    </div>
+                    
+                    <h3><?=t("When to Charge Tax")?></h3>
+                   
+                    <div class="row">
+                        
+                        <div class="col-sm-5">
+                   
+                            <div class="form-group">
+                                <label for="taxAddress" class="control-label"><?=t("If the Customers...")?></label>
+                                <?php echo $form->select('taxAddress',array('shipping'=>t("Shipping Address"),'billing'=>t("Billing Address")),$pkgconfig->get('vividstore.taxAddress')); ?>
+                            </div>
+                        
+                        </div>
+                        
+                        <div class="col-sm-7">
+                        
+                            <p><strong><?=t("Matches...")?></strong></p>
+                            <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="taxCountry" class="col-sm-5 control-label"><?=t("Country")?> <small class="text-muted"><?=t("Required")?></small></label>
+                                <div class="col-sm-7">
+                                    <?php $country = $pkgconfig->get('vividstore.taxcountry'); ?>
+                                    <?php echo $form->select('taxCountry',$countries,$country?$country:'US',array("onchange"=>"updateTaxStates()")); ?>    
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="taxState" class="col-sm-5 control-label"><?=t("Region")?> <small class="text-muted"><?=t("Optional")?></small></label>
+                                <div class="col-sm-7">
+                                    <?php $state = $pkgconfig->get('vividstore.taxstate'); ?>
+                                    <?php echo $form->select('taxState',$states,$state?$state:"", array('disabled'=>'disabled','class'=>"form-control")); ?>
+                                    <?php echo $form->hidden("savedTaxState",$state); ?>
+                                </div>
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="taxState" class="col-sm-5 control-label"><?=t("City")?> <small class="text-muted"><?=t("Optional")?></small></label>
+                                <div class="col-sm-7">
+                                    <?php echo $form->text('taxCity',$pkgconfig->get('vividstore.taxcity'));?>
+                                </div>
+                            </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="taxMatch"><?=t("Tax is")?></label>
-                            <?php echo $form->select('calculation',array('add'=>t("Calculated from total and added to order"),'extract'=>t("Already in product prices, only display as component of total")),$pkgconfig->get('vividstore.calculation')); ?>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="taxAddress"><?=t("Tax is applicable if")?></label>
-                            <?php echo $form->select('taxAddress',array('shipping'=>t("Shipping Address"),'billing'=>t("Billing Address")),$pkgconfig->get('vividstore.taxAddress')); ?>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="taxCountry"><?=t("Matches the Country")?></label>
-                            <?php $country = $pkgconfig->get('vividstore.taxcountry'); ?>
-                            <?php echo $form->select('taxCountry',$countries,$country?$country:'US',array("onchange"=>"updateTaxStates()")); ?>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="taxState"><?=t("And optionally the State/Region")?></label>
-                            <?php $state = $pkgconfig->get('vividstore.taxstate'); ?>
-                            <?php echo $form->select('taxState',$states,$state?$state:"", array('disabled'=>'disabled','class'=>"form-control")); ?>
-                            <?php echo $form->hidden("savedTaxState",$state); ?>
-                        </div>
-
-                        <div class="form-group">
-                            <?=$form->label('taxCity',t("And optionally the City"))?>
-                            <?php echo $form->text('taxCity',$pkgconfig->get('vividstore.taxcity'));?>
-                        </div>
+                    </div>
 
                 </div>
                                 
