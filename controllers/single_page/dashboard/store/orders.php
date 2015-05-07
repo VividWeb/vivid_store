@@ -13,16 +13,33 @@ defined('C5_EXECUTE') or die("Access Denied.");
 class Orders extends DashboardPageController
 {
 
-    public function view()
+    public function view($status = '')
     {
-        $orderList = new OrderList();       
+        $orderList = new OrderList();
+
+        if ($this->get('keywords')) {
+            $orderList->setSearch($this->get('keywords'));
+        }
+
+        if ($status) {
+            $orderList->setStatus($status);
+        }
+
         $orderList->setItemsPerPage(20);
+
         $paginator = $orderList->getPagination();
         $pagination = $paginator->renderDefaultView();
         $this->set('orderList',$paginator->getCurrentPageResults());  
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);     
         $this->set('orderStatuses', OrderStatus::getList());
+        $pkg = Package::getByHandle('vivid_store');
+        $packagePath = $pkg->getRelativePath();
+        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
+        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
+
+        $this->set('statuses', OrderStatus::getAll());
+
     }
     public function order($oID)
     {
