@@ -11,22 +11,33 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
         <?php
             if ($customer->isGuest() && ($requiresLogin || $guestCheckout == 'off' || ($guestCheckout == 'option' && $_GET['guest'] != '1'))){
         ?>
-        <div class="checkout-form-group">
+        <div class="checkout-form-group" id="checkout-form-group-signin">
 
-            <?php if ($guestCheckout == 'option' && !$requiresLogin) { ?>
-                <h2><?=t("Sign in, Register or Checkout as Guest")?></h2>
-                <p><?=t("In order to proceed, you'll need to register, sign in or checkout as a guest.")?></p>
-            <?php } else { ?>
-                <h2><?=t("Sign in or Register")?></h2>
-                <p><?=t("In order to proceed, you'll need to either register, or sign in with your existing account.")?></p>
-            <?php } ?>
-
-            <a class="btn btn-default" href="<?=View::url('/login')?>"><?=t("Sign In")?></a>
-            <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a>
-
-            <?php if ($guestCheckout == 'option' && !$requiresLogin) { ?>
-                <a class="btn btn-default" href="<?=View::url('/checkout/?guest=1')?>"><?=t("Checkout as Guest")?></a>
-            <?php } ?>
+            <?php 
+                if ($guestCheckout == 'option' && !$requiresLogin) { 
+                    $introTitle = t("Sign in, Register or Checkout as Guest");
+                } else { 
+                    $introTitle = t("Sign in or Register");
+                } 
+            ?>
+            
+            <h2><?=$introTitle?></h2>
+            <div class="checkout-form-group-body col-container clearfix">
+                
+                <div class="vivid-store-col-2">
+                    <p><?=t("In order to proceed, you'll need to either register, or sign in with your existing account.")?></p>
+                    <a class="btn btn-default" href="<?=View::url('/login')?>"><?=t("Sign In")?></a>
+                    <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a>    
+                </div>
+                <?php if ($guestCheckout == 'option' && !$requiresLogin) { ?>
+                <div class="vivid-store-col-2">
+                    <p><?=t("Or optionally, you may choose to checkout as a guest.")?></p>
+                        <a class="btn btn-default" href="<?=View::url('/checkout/?guest=1')?>"><?=t("Checkout as Guest")?></a>
+                    
+                </div>
+                <?php } ?>
+                
+            </div>
             
         </div>
         <?php } else {   ?>
@@ -34,16 +45,6 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
             
             <h2><?=t("Billing Address")?></h2>
             <div class="checkout-form-group-body col-container clearfix">
-               <?php if ($customer->isGuest()) { ?>
-                <div class="clearfix">
-                   <div class="vivid-store-col-2">
-                            <div class="form-group">
-                                <label for="email"><?=t("Email")?></label>
-                                <?php echo $form->email('email',$customer->getEmail(),array("required"=>"required")); ?>
-                            </div>
-                        </div>
-                </div>
-                <?php } ?>
                 <div class="clearfix">
                     <div class="vivid-store-col-2">
                         <div class="form-group">
@@ -59,6 +60,14 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
                     </div>
                 </div>
                 <div class="clearfix">
+                    <?php if ($customer->isGuest()) { ?>
+                    <div class="vivid-store-col-2">
+                        <div class="form-group">
+                            <label for="email"><?=t("Email")?></label>
+                            <?php echo $form->email('email',$customer->getEmail(),array("required"=>"required")); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <div class="vivid-store-col-2">
                         <div class="form-group">
                             <label for="checkout-billing-phone"><?=t("Phone")?></label>
