@@ -27,13 +27,14 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
                 <div class="vivid-store-col-2">
                     <p><?=t("In order to proceed, you'll need to either register, or sign in with your existing account.")?></p>
                     <a class="btn btn-default" href="<?=View::url('/login')?>"><?=t("Sign In")?></a>
-                    <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a>    
+                    <?php if (Config::get('concrete.user.registration.enabled')) { ?>
+                    <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a> 
+                    <?php } ?>   
                 </div>
                 <?php if ($guestCheckout == 'option' && !$requiresLogin) { ?>
                 <div class="vivid-store-col-2">
                     <p><?=t("Or optionally, you may choose to checkout as a guest.")?></p>
-                        <a class="btn btn-default" href="<?=View::url('/checkout/?guest=1')?>"><?=t("Checkout as Guest")?></a>
-                    
+                    <a class="btn btn-default" href="<?=View::url('/checkout/?guest=1')?>"><?=t("Checkout as Guest")?></a>
                 </div>
                 <?php } ?>
                 
