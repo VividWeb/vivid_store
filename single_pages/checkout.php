@@ -265,17 +265,22 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
         
         <h2><?=t("Cart Total")?></h2>
         <p>
-            <strong><?=t("Items Subtotal")?>:</strong> <?=Price::format($subtotal);?><br>
-
-            <?php if($taxtotal > 0 && $taxbased == 'subtotal') { ?>
-                <strong><?=($taxlabel ? $taxlabel : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($taxtotal);?></span><br>
-            <?php } ?>
-
+            <strong><?=t("Items Subtotal")?>:</strong> <?=Price::format($subtotal);?>
+            <?php if($calculation == 'extract'){
+                echo '<small class="text-muted">'.t("inc. taxes")."</small>";
+            }?>
+            <br>
+            <span id="taxes">
+                <?php 
+                if($taxtotal > 0){
+                    foreach($taxes as $tax){?>
+                        <strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span><br>
+                <?php 
+                    } 
+                }
+                ?>
+            </span>
             <strong><?=t("Shipping")?>:</strong> <?=Price::format($shippingtotal);?><br>
-
-            <?php if($taxtotal > 0 && $taxbased == 'grandtotal') { ?>
-                <strong><?= ($taxlabel ? $taxlabel : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($taxtotal)?></span><br>
-            <?php } ?>
 
         </p>
         <p><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></p>
