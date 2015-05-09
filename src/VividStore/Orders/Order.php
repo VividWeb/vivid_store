@@ -67,9 +67,11 @@ class Order extends Object
         
         //get the price details
         $shipping = VividCart::getShippingTotal();
+        $shipping = Price::formatFloat($shipping);
         $taxvalue = VividCart::getTaxTotal();
         $taxName = $pkgconfig->get('vividstore.taxName');
         $total = VividCart::getTotal();
+        $total = Price::formatFloat($total);
 
         $tax = 0;
         $taxIncluded = 0;
@@ -79,6 +81,7 @@ class Order extends Object
         }  else {
             $tax = $taxvalue;
         }
+        $tax = Price::formatFloat($tax);
         
         //get payment method
         $pmID = $pm->getPaymentMethodID();

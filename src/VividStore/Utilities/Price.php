@@ -14,7 +14,13 @@ class Price
         $thousandSep = $pkg->getConfig()->get('vividstore.thousand');
         $price = $symbol . number_format($price, 2, $wholeSep, $thousandSep);
         return $price;
-    }   
+    }  
+    public static function formatFloat($price)
+    {
+        $price = floatval($price);
+        $price = number_format($price, 2, ".","");
+        return $price;
+    } 
     public function getFloat($price)
     {
         $pkg = Package::getByHandle('vivid_store');
