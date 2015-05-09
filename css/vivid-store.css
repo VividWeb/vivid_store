@@ -8,8 +8,9 @@
 /* Framework Agnostic Column Grid */
 .col-container { margin-left: -15px; margin-right: -15px; }
 .col-container .form-group { margin-bottom: 0; }
-.vivid-store-col-1, .vivid-store-col-2, .vivid-store-col-3, .vivid-store-col-4, .vivid-store-col-5 { -moz-box-sizing: border-box; box-sizing: border-box; padding: 15px; float: left; }
+.vivid-store-col-1, .vivid-store-col-2, .vivid-store-col-3, .vivid-store-col-4, .vivid-store-col-5 { -moz-box-sizing: border-box; box-sizing: border-box; padding: 15px; }
 @media (min-width:768px){
+.vivid-store-col-1, .vivid-store-col-2, .vivid-store-col-3, .vivid-store-col-4, .vivid-store-col-5 { float: left; }
 .vivid-store-col-1 { width: 100%; }
 .vivid-store-col-2 { width: 50%; }
 .vivid-store-col-3 { width: 33%; }
@@ -50,7 +51,7 @@
         .cart-page-cart-list li.cart-page-cart-list-item.striped {  }
             .cart-page-cart-list li.cart-page-cart-list-item > * { float: left; padding: 0 10px; -moz-box-sizing: border-box; box-sizing: border-box; }
             .cart-page-cart-list li.cart-page-cart-list-item .cart-item-label {  }            
-            .cart-page-cart-list li.cart-page-cart-list-item .cart-list-thumb { width: 30%; }
+            .cart-page-cart-list li.cart-page-cart-list-item .cart-list-thumb { width: 30%; min-height: 50px; }
             .cart-page-cart-list li.cart-page-cart-list-item .cart-list-product-name { width: 40%; font-weight: bold; }
             .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-price { width: 30%; text-align: right; }
             .cart-page-cart-list li.cart-page-cart-list-item .cart-list-product-qty { width: 35%; margin-top: 10px; }
@@ -84,7 +85,8 @@
     .checkout-form-group { margin: 0 0 5px; }
         .checkout-form-group h2 { padding: 8px 15px; background: #f8f8f8; font-size: 16px !important; margin: 0 !important; }
         .checkout-form-group-body { padding: 20px 0; display: none; }
-        #checkout-form-group-billing .checkout-form-group-body { display: block; }
+        #checkout-form-group-billing .checkout-form-group-body,
+        #checkout-form-group-signin .checkout-form-group-body { display: block; }
         
         .checkout-form-group-buttons { text-align: right; padding: 0 15px;}
     
