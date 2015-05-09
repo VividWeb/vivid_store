@@ -7,11 +7,12 @@ class Price
 {
     public static function format($price)
     {
+        $price = floatval($price);
         $pkg = Package::getByHandle('vivid_store');
         $symbol = $pkg->getConfig()->get('vividstore.symbol');
         $wholeSep = $pkg->getConfig()->get('vividstore.whole');
         $thousandSep = $pkg->getConfig()->get('vividstore.thousand');
-        $price = $symbol . number_format(floatval($price), 2, $wholeSep, $thousandSep);
+        $price = $symbol . number_format($price, 2, $wholeSep, $thousandSep);
         return $price;
     }   
     public function getFloat($price)
