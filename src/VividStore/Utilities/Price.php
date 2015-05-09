@@ -7,7 +7,6 @@ class Price
 {
     public static function format($price)
     {
-        $price = floatval($price);
         $pkg = Package::getByHandle('vivid_store');
         $symbol = $pkg->getConfig()->get('vividstore.symbol');
         $wholeSep = $pkg->getConfig()->get('vividstore.whole');
