@@ -44,7 +44,7 @@ class ProductList extends AttributedItemList
     {
         $this->query
         ->select('p.pID')
-        ->from('VividStoreProduct','p');
+        ->from('VividStoreProducts','p');
     }
 
     public function setSearch($search) {

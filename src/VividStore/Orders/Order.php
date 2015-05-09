@@ -32,7 +32,7 @@ class Order extends Object
 {
     public static function getByID($oID) {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreOrder WHERE oID=?",$oID);
+        $data = $db->GetRow("SELECT * FROM VividStoreOrders WHERE oID=?",$oID);
         if(!empty($data)){
             $order = new Order();
             $order->setPropertiesFromArray($data);
@@ -42,7 +42,7 @@ class Order extends Object
     public function getCustomersMostRecentOrderByCID($cID)
     {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreOrder WHERE cID=? ORDER BY oID DESC",$cID); 
+        $data = $db->GetRow("SELECT * FROM VividStoreOrders WHERE cID=? ORDER BY oID DESC",$cID);
         return Order::getByID($data['oID']);
     }
     public function add($data,$pm)
@@ -85,10 +85,11 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
-        $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) values(?,?,?,?,?,?,?,?,?)", $vals);
+        $vals = array($customer->getUserID(),$now,$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $db->Execute("INSERT INTO VividStoreOrders (cID,oDate,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
+        $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
         $order->setAttribute("email",$customer->getEmail());
         $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
         $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));
@@ -99,7 +100,6 @@ class Order extends Object
         $order->setAttribute("shipping_address",$customer->getValueArray("shipping_address"));
 
         $customer->setLastOrderID($oID);
-
 
         //add the order items
         $cart = Session::get('cart');
@@ -185,13 +185,13 @@ class Order extends Object
     public function remove()
     {
         $db = Database::get();
-        $db->Execute("DELETE from VividStoreOrder WHERE oID=?",$this->oID);
-        $db->Execute("DELETE from VividStoreOrderItem WHERE oID=?",$this->oID);
+        $db->Execute("DELETE FROM VividStoreOrders WHERE oID=?",$this->oID);
+        $db->Execute("DELETE FROM VividStoreOrderItems WHERE oID=?",$this->oID);
     }
     public function getOrderItems()
     {
         $db = Database::get();    
-        $rows = $db->GetAll("SELECT * FROM VividStoreOrderItem WHERE oID=?",$this->oID);
+        $rows = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$this->oID);
         $items = array();
 
         foreach($rows as $row){
@@ -254,7 +254,7 @@ class Order extends Object
         $db = Database::get();
         $av = false;
         $v = array($this->getOrderID(), $ak->getAttributeKeyID());
-        $avID = $db->GetOne("select avID from VividStoreOrderAttributeValues where oID = ? and akID = ?", $v);
+        $avID = $db->GetOne("SELECT avID FROM VividStoreOrderAttributeValues WHERE oID = ? AND akID = ?", $v);
         if ($avID > 0) {
             $av = StoreOrderValue::getByID($avID);
             if (is_object($av)) {
@@ -268,7 +268,7 @@ class Order extends Object
         
             // Is this avID in use ?
             if (is_object($av)) {
-                $cnt = $db->GetOne("select count(avID) from VividStoreOrderAttributeValues where avID = ?", $av->getAttributeValueID());
+                $cnt = $db->GetOne("SELECT COUNT(avID) FROM VividStoreOrderAttributeValues WHERE avID = ?", $av->getAttributeValueID());
             }
             
             if ((!is_object($av)) || ($cnt > 1)) {

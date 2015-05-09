@@ -11,7 +11,7 @@ use User;
 
 class History extends Object
 {
-    public static $table = 'VividStoreOrderStatusHistory';
+    public static $table = 'VividStoreOrderStatusHistories';
 
     public function getOrderID() {
         return $this->oID;
@@ -106,7 +106,7 @@ class History extends Object
         );
         $db->Execute($statusHistorySql, $statusHistoryValues);
 
-        $updateOrderSql = "UPDATE VividStoreOrder SET oStatus = ? WHERE oID = ?";
+        $updateOrderSql = "UPDATE VividStoreOrders SET oStatus = ? WHERE oID = ?";
         $updateOrderValues = array(
             $newOrderStatus->getHandle(),
             $order->getOrderID()

@@ -26,6 +26,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Utility\Service\Text;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -34,7 +35,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.1.1';
+    protected $pkgVersion = '2.1.1.0.0.2';
 
     public function getPackageDescription()
     {
@@ -356,19 +357,18 @@ class Controller extends Package
             FileSet::add("Digital Downloads");
         }
 
-        $this->addOrderStatusesToDatabase($pkg);
+        Installer::addOrderStatusesToDatabase($pkg);
     }
 
     public function upgrade()
     {
-        
-        if(version_compare(APP_VERSION,'5.7.4', '<')){
-            //because it's pretty much broke otherwise.    
-            $this->refreshDatabase();
-        }
-        
+
         $pkg = Package::getByHandle('vivid_store');
-                
+
+        Installer::renameDatabaseTables($pkg);
+        Installer::refreshDatabase($pkg);
+
+
         /** Version 1.1 ***********************************************/
         /**************************************************************/
         /*
@@ -507,7 +507,7 @@ class Controller extends Package
             ), $pkg)->setAttributeSet($orderCustSet);
         }
         parent::upgrade();
-        $this->addOrderStatusesToDatabase($pkg);
+        Installer::addOrderStatusesToDatabase($pkg);
     }
 
     private function installStoreProductPageType($pkg){
@@ -531,26 +531,6 @@ class Controller extends Package
 
     }
 
-    private function addOrderStatusesToDatabase($pkg) {
-        $table = OrderStatus::getTableName();
-        $db = Loader::db();
-        $statuses = array(
-            array('osHandle'=>'pending', 'osName'=>t('Pending'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'processing', 'osName'=>t('Processing'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'shipped', 'osName'=>t('shipped'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'complete', 'osName'=>t('Complete'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-        );
-        foreach ($statuses as $status) {
-            $row = $db->GetRow("SELECT * FROM ".$table." WHERE osHandle=?", array($status['osHandle']));
-            if (!isset($row['osHandle'])) {
-                OrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer']);
-            } else {
-                $orderStatus = OrderStatus::getByID($row['osID']);
-                $orderStatus->update($status, true);
-            }
-        }
-    }
-    
     public function registerRoutes()
     {        
         Route::register('/cart/getSubTotal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getSubTotal');
@@ -579,25 +559,6 @@ class Controller extends Package
         parent::uninstall();
     }
 
-    public function refreshDatabase()
-    {
-        if (file_exists($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
-            $db = Database::get();
-            $db->beginTransaction();
-            $parser = Schema::getSchemaParser(simplexml_load_file($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
-            $parser->setIgnoreExistingTables(false);
-            $toSchema = $parser->parse($db);
-            $fromSchema = $db->getSchemaManager()->createSchema();
-            $comparator = new \Doctrine\DBAL\Schema\Comparator();
-            $schemaDiff = $comparator->compare($fromSchema, $toSchema);
-            $saveQueries = $schemaDiff->toSaveSql($db->getDatabasePlatform());
-            foreach ($saveQueries as $query) {
-                $db->query($query);
-            }
-            $db->commit();
-        }    
-    }
-  
 
 }
 ?>
