@@ -15,18 +15,13 @@ class Cart
 {
     public function add($data)
     {
-        //take our jQuery serialized data, and make it an associative array    
         $product = array();
-        parse_str($data['data'],$product);
-        
-        $product['pID'] = (int) $product['pID'];
-        $product['quantity'] = (int) $product['quantity'];
-        
+
         //now, build a nicer "cart item"
         $cartItem = array();
         $cartItem['product'] = array(
-            "pID"=>$product['pID'],
-            "qty"=>$product['quantity']
+            "pID"=>(int) $data['pID'],
+            "qty"=>(int) $data['quantity']
         );
         unset($product['pID']);
         unset($product['quantity']);
