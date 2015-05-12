@@ -5,6 +5,3 @@ thumbs.db
 /.settings/
 /.buildpath
 /nbproject/private/
-/nbproject/project.properties
-/nbproject/project.xml
-.gitignore
