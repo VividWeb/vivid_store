@@ -26,7 +26,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 
-
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Order extends Object
 {
@@ -68,9 +67,11 @@ class Order extends Object
         
         //get the price details
         $shipping = VividCart::getShippingTotal();
+        $shipping = Price::formatFloat($shipping);
         $taxvalue = VividCart::getTaxTotal();
         $taxName = $pkgconfig->get('vividstore.taxName');
         $total = VividCart::getTotal();
+        $total = Price::formatFloat($total);
 
         $tax = 0;
         $taxIncluded = 0;
@@ -80,15 +81,17 @@ class Order extends Object
         }  else {
             $tax = $taxvalue;
         }
+        $tax = Price::formatFloat($tax);
         
         //get payment method
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,OrderStatus::getStartingStatus()->getHandle(),$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
-        $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,oStatus,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) values(?,?,?,?,?,?,?,?,?)", $vals);
+        $vals = array($customer->getUserID(),$now,$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $db->Execute("INSERT INTO VividStoreOrder(cID,oDate,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
+        $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
         $order->setAttribute("email",$customer->getEmail());
         $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
         $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));

@@ -154,11 +154,14 @@ class Cart
         return $customerIsTaxable;
     }
 
-    public function getTaxes() {
+    public function getTaxes($formatted=false) {
         $pkg = Package::getByHandle('vivid_store');
         $pkgconfig = $pkg->getConfig();
 
         $taxTotal = self::getTaxTotal();
+        if($formatted){
+            $taxTotal = Price::format($taxTotal);
+        }
         $taxName = $pkgconfig->get('vividstore.taxName');
         $taxCalc = $pkgconfig->get('vividstore.calculation');
         $taxBased = $pkgconfig->get('vividstore.taxBased');
@@ -305,7 +308,6 @@ class Cart
         $taxes = self::getTaxes();
 
         foreach($taxes as $tax) {
-
             if ($tax['calculation'] != 'extract') {
                 $taxTotal += $tax['taxamount'];
             }
@@ -328,8 +330,9 @@ class Cart
         }
 
         $shippingTotal = Price::getFloat(Cart::getShippingTotal());
-        $total = ($subTotal + $taxTotal + $shippingTotal);
-
+        //$total = ($subTotal + $taxTotal + $shippingTotal);
+        $total = self::getTotal();
+        
         return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$taxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
     }
 

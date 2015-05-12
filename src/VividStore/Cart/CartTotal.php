@@ -19,7 +19,7 @@ class CartTotal extends RouteController
     }
     public function getTaxTotal()
     {
-        echo Price::format(VividCart::getTaxTotal());
+        echo json_encode(VividCart::getTaxes(true));
     }
     public function getTotalItems()
     {

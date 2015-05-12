@@ -1,6 +1,8 @@
 .btn-dark { background: #555; border-color: #222; color: #fff !important; }
 .btn-dark:hover { background: #444; }
 
+.redactor-editor { padding: 15px; }
+
 .group-list { margin: 30px 0 50px !important; }
     
     .group-list li { margin-bottom: 8px; }

@@ -34,7 +34,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.1.1';
+    protected $pkgVersion = '2.1';
 
     public function getPackageDescription()
     {
@@ -119,6 +119,9 @@ class Controller extends Package
         //set defaults for shipping
         $pkg->getConfig()->save('vividstore.sizeUnit','in');
         $pkg->getConfig()->save('vividstore.weightUnit','lb');
+        
+        //tax label
+        $pkg->getconfig()->save('vividstore.taxName',t('Tax'));
         
         //user attributes for customers
         $uakc = AttributeKeyCategory::getByHandle('user');
@@ -537,7 +540,7 @@ class Controller extends Package
         $statuses = array(
             array('osHandle'=>'pending', 'osName'=>t('Pending'), 'osInformSite'=>1, 'osInformCustomer'=>1),
             array('osHandle'=>'processing', 'osName'=>t('Processing'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'shipped', 'osName'=>t('shipped'), 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'shipped', 'osName'=>t('Shipped'), 'osInformSite'=>1, 'osInformCustomer'=>1),
             array('osHandle'=>'complete', 'osName'=>t('Complete'), 'osInformSite'=>1, 'osInformCustomer'=>1),
         );
         foreach ($statuses as $status) {

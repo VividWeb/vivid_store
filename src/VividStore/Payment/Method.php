@@ -66,16 +66,12 @@ class Method extends Controller
     
     protected function setMethodController()
     {
-        $th = Core::make("helper/text"); 
-        $dir = $this->getMethodDirectory(); 
-        $file = new Filesystem();   
-        $file->requireOnce($dir."controller.php");
-        $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\src\\VividStore\\Payment";
+        $th = Core::make("helper/text");
+        $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\Src\\VividStore\\Payment\\Methods\\".$th->camelcase($this->pmHandle);
         
         $className = $th->camelcase($this->pmHandle)."PaymentMethod";
         $namespace = $namespace.'\\'.$className;
         $this->methodController = new $namespace();
-        //return $class;
     }
     public function getMethodController(){ return $this->methodController; }
 

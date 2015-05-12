@@ -176,33 +176,74 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     
     
 <?php } else { ?>
-<table class="table table-striped">
-    <thead>
-        <th><?=t("Order %s","#")?></th>
-        <th><?=t("Customer Name")?></th>
-        <th><?=t("Order Date")?></th>
-        <th><?=t("Total")?></th>
-        <th><?=t("Status")?></th>
-        <th><?=t("View")?></th>
-    </thead>
-    <tbody>
-        <?php
-            foreach($orderList as $order){
-        ?>
-            <tr>
-                <td><a href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=$order->getOrderID()?></a></td>
-                <td><?=$order->getAttribute('billing_last_name').", ".$order->getAttribute('billing_first_name')?></td>
-                <td><?=$order->getOrderDate()?></td>
+
+    <div class="ccm-dashboard-header-buttons">
+    </div>
+
+<div class="ccm-dashboard-content-full">
+    <form role="form" class="form-inline ccm-search-fields">
+        <div class="ccm-search-fields-row">
+            <?php if($statuses){?>
+                <ul id="group-filters" class="nav nav-pills">
+                    <li><a href="<?php echo View::url('/dashboard/store/orders/')?>"><?=t('All Statuses')?></a></li>
+                    <?php foreach($statuses as $status){ ?>
+                        <li><a href="<?php echo View::url('/dashboard/store/orders/', $status->getHandle())?>"><?=$status->getReadableHandle();?></a></li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
+        </div>
+
+
+        <div class="ccm-search-fields-row ccm-search-fields-submit">
+            <div class="form-group">
+                <div class="ccm-search-main-lookup-field">
+                    <i class="fa fa-search"></i>
+                    <?php echo $form->search('keywords', $searchRequest['keywords'], array('placeholder' => t('Search Orders')))?>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary pull-right"><?php echo t('Search')?></button>
+
+        </div>
+
+    </form>
+
+    <table class="ccm-search-results-table">
+        <thead>
+            <th><a><?=t("Order %s","#")?></a></th>
+            <th><a><?=t("Customer Name")?></a></th>
+            <th><a><?=t("Order Date")?></a></th>
+            <th><a><?=t("Total")?></a></th>
+            <th><a><?=t("Status")?></a></th>
+            <th><a><?=t("View")?></a></th>
+        </thead>
+        <tbody>
+            <?php
+                foreach($orderList as $order){
+            ?>
+                <tr>
+                    <td><a href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=$order->getOrderID()?></a></td>
+                    <td><?=$order->getAttribute('billing_last_name').", ".$order->getAttribute('billing_first_name')?></td>
+                    <td><?=$order->getOrderDate()?></td>
                 <td><?=Price::format($order->getTotal())?></td>
-                <td><?=ucwords($order->getStatus())?></td>
-                <td><a class="btn btn-primary" href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=t("View")?></a></td>
-            </tr>
-        <?php } ?>
-    </tbody>
-</table>
+                    <td><?=ucwords($order->getStatus())?></td>
+                    <td><a class="btn btn-primary" href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=t("View")?></a></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
 
 <?php if ($paginator->getTotalPages() > 1) { ?>
     <?= $pagination ?>
 <?php } ?>
 
 <?php } ?>
+
+<style>
+    @media (max-width: 992px) {
+        div#ccm-dashboard-content div.ccm-dashboard-content-full {
+            margin-left: -20px !important;
+            margin-right: -20px !important;
+        }
+    }
+</style>
