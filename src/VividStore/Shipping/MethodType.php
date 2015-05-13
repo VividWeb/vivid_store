@@ -17,7 +17,10 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  */
 class MethodType extends Controller
 {
-    /** @Id @Column(type="integer") @GeneratedValue **/
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue(strategy="NONE")
+     */
     protected $smtID;
     
     /**
@@ -53,9 +56,9 @@ class MethodType extends Controller
     {
         $th = Core::make("helper/text"); 
         $dir = $this->getMethodTypeDirectory(); 
-        $file = new Filesystem();   
-        $file->requireOnce($dir."controller.php");
-        $namespace = "Concrete\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\src\VividStore\Shipping";
+        //$file = new Filesystem();   
+        //$file->requireOnce($dir."controller.php");
+        $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\Src\\VividStore\\Shipping\\Methods";
         
         $className = $th->camelcase($this->smtHandle)."ShippingMethod";
         $obj = $namespace.'\\'.$className;

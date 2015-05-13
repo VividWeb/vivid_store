@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Shipping;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Methods;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use Package;
 use Core;
@@ -11,9 +11,13 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  * @Entity
  * @Table(name="VividStoreFlatRateMethods")
  */
-class FlatRateShippingMethod extends ShippingMethodType
+class FlatRateShippingMethod 
 {
-    /** @Id @Column(type="integer") @GeneratedValue **/
+    /**
+     * @Id 
+     * @Column(name="smtmID",type="integer",nullable=false)
+     * @GeneratedValue(strategy="AUTO")
+     */
     protected $smtmID;
     
     /**
@@ -93,5 +97,3 @@ class FlatRateShippingMethod extends ShippingMethodType
     }
         
 }
-
-return __NAMESPACE__;
