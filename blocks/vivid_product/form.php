@@ -52,11 +52,11 @@ $(function(){
 
 <div class="form-group">
     <?=$form->label('productLocation',t("Choose a Product to show"))?>
-    <?=$form->select('productLocation',array('page'=>'Find product associated with this page','search'=>'Search a product'),$productLocation,array('onChange'=>'updateProductLocation();'))?>
+    <?=$form->select('productLocation',array('page'=>t('Find product associated with this page'),'search'=>t('Search a product')),$productLocation,array('onChange'=>'updateProductLocation();'))?>
 </div>
 
 <div class="form-group" id="product-search">
-    <?=$form->label('productSearch','Search for a product')?>
+    <?=$form->label('productSearch',t('Search for a product'))?>
     <?=$form->text('productSearch')?>
     <?=$form->hidden('pID',$pID)?>
     <div id="product-search-results">

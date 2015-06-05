@@ -312,7 +312,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                         <input type="text" class="form-control" name="pogName[]" value="<%=pogName%>">    
                                     </div>
                                     <div class="col-xs-4 text-right">
-                                        <a href="javascript:addOptionItem(<%=sort%>)" data-group="<%=sort%>" class="btn btn-default btn-add-option-item"><i data-toggle="tooltip" data-placement="top" title="<?=t('Add Option to the Group')?>" class="fa fa-plus"></i></span>
+                                        <a href="javascript:addOptionItem(<%=sort%>)" data-group="<%=sort%>" class="btn btn-default btn-add-option-item"><i data-toggle="tooltip" data-placement="top" title="<?=t('Add Option to the Group')?>" class="fa fa-plus"></i></a>
                                         <a href="javascript:deleteOptionGroup(<%=sort%>)" class="btn btn-delete-item btn-danger"><i data-toggle="tooltip" data-placement="top" title="<?=t('Delete the Option Group')?>" class="fa fa-trash"></i></a>
                                     </div>
                                 </div>
@@ -562,8 +562,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <?php 
                             $page = Page::getByID($p->getProductPageID());
                             if(!$page->isError()){ ?>
-                            <strong><?=t("Detail Page is set to: ")?><a href="<?=$page->getCollectionLink()?>" target="_blank"><?=$page->getCollectionName()?></a></strong>
-                            
+                            <strong><?=t("Detail Page is set to: %s%s%s", '<a href="'.$page->getCollectionLink().'" target="_blank">', $page->getCollectionName(), '</a>')?></strong>
+
                         <?php } else { ?>
                             
                             <div class="alert alert-warning">
