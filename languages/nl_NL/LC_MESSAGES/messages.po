@@ -363,7 +363,7 @@ msgstr "Achternaam Factuur"
 #: vivid_store/single_pages/checkout.php:28
 #: vivid_store/single_pages/dashboard/store/settings.php:78
 msgid "Billing Address"
-msgstr Factuur Adres"
+msgstr "Factuur Adres"
 
 #: vivid_store/controller.php:187 vivid_store/controller.php:292
 msgid "Billing Phone"
