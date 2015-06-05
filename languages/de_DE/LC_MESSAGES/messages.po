@@ -1,36 +1,33 @@
 msgid ""
-msgstr "Project-Id-Version: vivid_store 2.1\n"
+msgstr ""
+"Project-Id-Version: vivid_store 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-05 11:36+0000\n"
-"PO-Revision-Date: 2015-05-01 05:03+0900\n"
-"Last-Translator: Tao Sasaki <tao@xross-cube.com>\n"
+"PO-Revision-Date: 2015-06-05 13:42+0100\n"
+"Last-Translator: Remo Laubacher <remo.laubacher@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl_NL\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Basepath: ../../../../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Language: nl_NL\n"
-"X-Poedit-Language: Dutch\n"
-"X-Poedit-Country: Netherlands\n"
-"X-Generator: Poedit 1.7.6\n"
-"X-Poedit-KeywordsList: t\n"
-"X-Poedit-SearchPath-0: vivid_store\n"
+"X-Language: de_DE\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: packages/vivid_store/controller.php:41
 msgid "Add a Store to your Site"
-msgstr "Voeg een webshop toe aan de site"
+msgstr ""
 
 #: packages/vivid_store/controller.php:46
 msgid "Vivid Store"
-msgstr "Vivid Store"
+msgstr ""
 
 #: packages/vivid_store/controller.php:74
 #: packages/vivid_store/controller.php:422
 msgid "Product Detail"
-msgstr "Product Detail"
+msgstr "Produktdetail"
 
 #: packages/vivid_store/controller.php:124
 #: packages/vivid_store/mail/new_order_notification.php:102
@@ -42,12 +39,12 @@ msgstr "Product Detail"
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:105
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:12
 msgid "Tax"
-msgstr "BTW"
+msgstr "MwSt."
 
 #: packages/vivid_store/controller.php:131
 #: packages/vivid_store/controller.php:281
 msgid "Store Customer Info"
-msgstr "Winkel klant info"
+msgstr ""
 
 #: packages/vivid_store/controller.php:140
 #: packages/vivid_store/controller.php:287
@@ -55,148 +52,148 @@ msgstr "Winkel klant info"
 #: packages/vivid_store/single_pages/checkout.php:67
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:15
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 #: packages/vivid_store/controller.php:156
 #: packages/vivid_store/controller.php:294
 msgid "Billing First Name"
-msgstr "Voornaam Factuur"
+msgstr ""
 
 #: packages/vivid_store/controller.php:172
 #: packages/vivid_store/controller.php:301
 msgid "Billing Last Name"
-msgstr "Achternaam Factuur"
+msgstr ""
 
 #: packages/vivid_store/controller.php:188
 #: packages/vivid_store/controller.php:308
 #: packages/vivid_store/single_pages/checkout.php:47
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:88
 msgid "Billing Address"
-msgstr "Factuur Adres"
+msgstr ""
 
 #: packages/vivid_store/controller.php:204
 #: packages/vivid_store/controller.php:315
 msgid "Billing Phone"
-msgstr "Telfoonnummer Factuur"
+msgstr ""
 
 #: packages/vivid_store/controller.php:220
 #: packages/vivid_store/controller.php:322
 msgid "Shipping First Name"
-msgstr "Voornaam Ontvanger"
+msgstr ""
 
 #: packages/vivid_store/controller.php:236
 #: packages/vivid_store/controller.php:329
 msgid "Shipping Last Name"
-msgstr "Achternaam Ontvanger"
+msgstr ""
 
 #: packages/vivid_store/controller.php:252
 #: packages/vivid_store/controller.php:336
 #: packages/vivid_store/single_pages/checkout.php:129
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:88
 msgid "Shipping Address"
-msgstr "Verzend Adres"
+msgstr ""
 
 #: packages/vivid_store/controller.php:266
 msgid "Registered Customer in your store"
-msgstr "Geregistreerde Klanten in jouw winkel"
+msgstr ""
 
 #: packages/vivid_store/controller.php:541
 msgid "Pending"
-msgstr "In Afwachting"
+msgstr "Ausstehend"
 
 #: packages/vivid_store/controller.php:542
 msgid "Processing"
-msgstr "In Verwerking"
+msgstr "In Bearbeitung"
 
 #: packages/vivid_store/controller.php:543
 msgid "Shipped"
-msgstr ""
+msgstr "Versendet"
 
 #: packages/vivid_store/controller.php:544
 msgid "Complete"
-msgstr "Afgerond"
+msgstr "Erledigt"
 
 #: packages/vivid_store/blocks/vivid_product/controller.php:22
 msgid "Add a Product to the Page"
-msgstr "Voeg een product toe aan de pagina"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/controller.php:27
 msgid "Product"
-msgstr "Product"
+msgstr "Produkt"
 
 #: packages/vivid_store/blocks/vivid_product/controller.php:50
 #: packages/vivid_store/blocks/vivid_product_list/controller.php:72
 #: packages/vivid_store/blocks/vivid_utility_links/controller.php:42
 msgid "Quantity must be greater than zero"
-msgstr "Aantal moet groter zijn dan nul"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:51
 msgid "Product to include"
-msgstr "Product om mee te nemen"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:54
 msgid "Choose a Product to show"
-msgstr "Kies een product om te tonen"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:68
 msgid "Selected Product:"
-msgstr "Geselecteerd product:"
+msgstr "Ausgewähltes Produkt:"
 
 #: packages/vivid_store/blocks/vivid_product/form.php:74
 msgid "What would you like to show"
-msgstr "Wat zou je willen tonen"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:81
 msgid "Show Product Name"
-msgstr "Toon Product Naam"
+msgstr "Produktname anzeigen"
 
 #: packages/vivid_store/blocks/vivid_product/form.php:87
 msgid "Show Short Description"
-msgstr "Toon Samenvatting"
+msgstr "Kurzbeschreibung anzeigen"
 
 #: packages/vivid_store/blocks/vivid_product/form.php:93
 msgid "Show Product Details"
-msgstr "Toon Product Details"
+msgstr "Produktdetails anzeigen"
 
 #: packages/vivid_store/blocks/vivid_product/form.php:99
 msgid "Show Price"
-msgstr "Toon Prijs"
+msgstr "Preis anzeigen"
 
 #: packages/vivid_store/blocks/vivid_product/form.php:105
 msgid "Show Weight"
-msgstr "Toon Gewicht"
+msgstr "Gewicht anzeigen"
 
 #: packages/vivid_store/blocks/vivid_product/form.php:113
 msgid "Show Product Image"
-msgstr "Toon Product Plaatje"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:119
 msgid "Show \"Add to Cart\" Button"
-msgstr "Toon \"Voeg toe aan winkelwagen\" Knop"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:125
 msgid "Show if it's featured"
-msgstr "Toon of het uitgelicht is"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:131
 msgid "Show Group Product is in"
-msgstr "Toon de productgroep"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:137
 msgid "Show Dimensions"
-msgstr "Toon Formaat"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/form.php:145
 msgid "Add to Cart Button Text"
-msgstr "Voeg toe aan Winkelwagen Knop Tekst"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/view.php:30
 msgid "Featured Item"
-msgstr "Uitgelicht Item"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/view.php:50
 msgid "Dimensions"
-msgstr "Formaat"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product/view.php:58
 #: packages/vivid_store/single_pages/dashboard/store/products.php:517
@@ -209,52 +206,52 @@ msgstr "Gewicht"
 #: packages/vivid_store/single_pages/dashboard/store/products.php:256
 #: packages/vivid_store/single_pages/dashboard/store/products.php:643
 msgid "Quantity"
-msgstr "Aantal"
+msgstr "Menge"
 
 #: packages/vivid_store/blocks/vivid_product/view.php:92
 #: packages/vivid_store/blocks/vivid_product_list/view.php:44
 #: packages/vivid_store/elements/product_modal.php:44
 msgid "Add to Cart"
-msgstr "Voeg toe aan Winkelwagen"
+msgstr "zum Warenkorb hinzufügen"
 
 #: packages/vivid_store/blocks/vivid_product/view.php:99
 msgid "Product Details"
-msgstr "Product Details"
+msgstr "Produktdetails"
 
 #: packages/vivid_store/blocks/vivid_product/view.php:107
 msgid "We can't seem to find this product at the moment"
-msgstr "We kunnen dit product momenteel niet vinden"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/controller.php:22
 msgid "Add a Product List for Vivid Store"
-msgstr "Voeg een Vivid Store Productenlijst toe"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/controller.php:27
 msgid "Product List"
-msgstr "Product Lijst"
+msgstr "Produktliste"
 
 #: packages/vivid_store/blocks/vivid_product_list/controller.php:94
 msgid "Max Products must be at least 1"
-msgstr "Maximum aantal Producten moet minstens 1 zijn"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/controller.php:97
 msgid "Max Product must be a whole number"
-msgstr "Maximum aantal Producten moet een geheel getal zijn"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:3
 msgid "Product Arrangement"
-msgstr "Product Arrangement"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:5
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:72
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:106
 #: packages/vivid_store/single_pages/dashboard/store/products.php:674
 msgid "None"
-msgstr "Geen"
+msgstr "keine"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:13
 msgid "Sort Order"
-msgstr "Sorteer Volgorde"
+msgstr "Sortierung"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:14
 msgid "Alphabetical"
@@ -262,221 +259,221 @@ msgstr "Alphabetisch"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:14
 msgid "Recently Added"
-msgstr "Recent Toegevoegd"
+msgstr "Kürzlich hinzugefügt"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:20
 msgid "Filter by Group"
-msgstr "Filter op Groep"
+msgstr "Nach Gruppen filtern"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:26
 msgid "Pagination"
-msgstr "Pagination"
+msgstr "Paginierung"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:30
 msgid "Products per Row"
-msgstr "Producten per Rij"
+msgstr "Produkte pro Zeile"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:36
 msgid "Max Number of Products"
-msgstr "Maximum aantal producten"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:44
 msgid "Show Pagination"
-msgstr "Toon Pagination"
+msgstr "Paginierung anzeigen"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:48
 msgid "Display Options"
-msgstr "Toon Opties"
+msgstr "Optionen anzeigen"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:50
 msgid "Show Featured"
-msgstr "Toon Uitgelicht"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:55
 msgid "Show Both Featured &amp; Non-featured"
-msgstr "Toon Uitgelicht &amp; niet uitgelicht"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:61
 msgid "Featured Only"
-msgstr "Alleen Uitgelicht"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:67
 msgid "Non-Featured Only"
-msgstr "Alleen niet Uitgelicht"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:71
 msgid "Show:"
-msgstr "Toon："
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:78
 msgid "Quickview Link (Modal Window)"
-msgstr "Quickview Link (Modal Window)"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:84
 msgid "Page Link"
-msgstr "Pagina Link"
+msgstr "Seitenlink"
 
 #: packages/vivid_store/blocks/vivid_product_list/form.php:90
 msgid "Add to Cart Button"
-msgstr "Voeg toe aan Winkelwagen knop"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/view.php:22
 msgid "Quick View"
-msgstr "Quick View"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/view.php:33
 msgid "More Details"
-msgstr "Meer Details"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_product_list/view.php:71
 msgid "No Products Available"
-msgstr "Geen Producten Beschikbaar"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/controller.php:23
 msgid "Add your cart links for Vivid Store"
-msgstr "Winkelwagen links van Vivid Store Toevoegen"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/controller.php:28
 msgid "Utility Links"
-msgstr "Utility Links"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/controller.php:56
 msgid "Cart Label must be set"
-msgstr "Winkelwagen Label moet ingevuld zijn"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/controller.php:59
 msgid "Cart Link Label exceeds 255 characters"
-msgstr "Winkelwagen link tekst is langer dan 255 characters"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/controller.php:62
 msgid "Cart Items Label exceeds 255 characters"
-msgstr "Winkelwagen items tekst is langer dan 255 characters"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/form.php:6
 msgid "Show Amount of Items in Cart"
-msgstr "Toon hoeveelheid Items in de winkelwagen"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/form.php:13
 msgid "Show Sign-in Link"
-msgstr "Toon Login-in Link"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/form.php:17
 #: packages/vivid_store/blocks/vivid_utility_links/form.php:21
 msgid "Cart Link Label"
-msgstr "Winkelwagen Link Tekst"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/form.php:18
 msgid "View Cart"
-msgstr "Toon Winkelwagen"
+msgstr "Warenkorb anzeigen"
 
 #: packages/vivid_store/blocks/vivid_utility_links/form.php:22
 msgid "Items in Cart"
-msgstr "Items in winkelwagen"
+msgstr ""
 
 #: packages/vivid_store/blocks/vivid_utility_links/view.php:6
 msgid "Welcome back"
-msgstr "Welkom terug"
+msgstr "Willkommen zurück"
 
 #: packages/vivid_store/blocks/vivid_utility_links/view.php:9
 msgid "Welcome back,"
-msgstr "Welkom terug,"
+msgstr "Willkommen zurück,"
 
 #: packages/vivid_store/blocks/vivid_utility_links/view.php:13
 #: packages/vivid_store/single_pages/checkout.php:29
 msgid "Sign In"
-msgstr "Log in"
+msgstr "Anmelden"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products/attributes.php:46
 msgid "Attribute Deleted."
-msgstr "Attribuut Verwijderd"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products/attributes.php:51
 msgid "Attribute Created."
-msgstr "Attribuut Aangemaakt"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products/attributes.php:56
 msgid "Attribute Updated."
-msgstr "Attribuut Geupdate"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products/attributes.php:65
 msgid "Invalid attribute ID."
-msgstr "Invalide attribuut ID"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/orders.php:55
 msgid "Order Removed"
-msgstr "Bestelling Verwijderd"
+msgstr "Auftrag entfernt"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:52
 msgid "Product Added"
-msgstr "Product Toegevoegd"
+msgstr "Produkt hinzugefügt"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:58
 msgid "Product Updated"
-msgstr "Product Geüpdate"
+msgstr "Produkt aktualisiert"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:62
 msgid "Product Removed"
-msgstr "Product Verwijderd"
+msgstr "Produkt entfernt"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:68
 #: packages/vivid_store/single_pages/dashboard/store/products/attributes.php:36
 msgid "Add"
-msgstr "Toevoegen"
+msgstr "Hinzufügen"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:89
 #: packages/vivid_store/single_pages/dashboard/store/products.php:611
 msgid "Add Product"
-msgstr "Voeg Product Toe"
+msgstr "Produkt hinzufügen"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:95
 #: packages/vivid_store/single_pages/cart.php:40
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:124
 msgid "Update"
-msgstr "Update"
+msgstr "Aktualisieren"
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:123
 msgid "Edit Product"
-msgstr "Bewerk Product"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:198
 msgid "You must have a Product Name"
-msgstr "Je moet een productnaam hebben"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:201
 msgid "Keep the Product name under 255 Characters"
-msgstr "Houd de productnaam onder 255 Characters"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:204
 msgid "The Price must be set, and numeric"
-msgstr "De prijs moet aangegeven en numeriek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:207
 msgid "The Quantity must be set, and numeric"
-msgstr "Het aantal moet aangegeven en numekiek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:210
 msgid "The Product Width must be a number"
-msgstr "De product Breedte moet numeriek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:213
 msgid "The Product Height must be a number"
-msgstr "De product Hoogte moet numeriek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:216
 msgid "The Product Length must be a number"
-msgstr "De product Lengte moet numeriek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:219
 msgid "The Product Weight must be a number"
-msgstr "Het product gewicht moet numeriek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:263
 msgid "You did not enter anything for the Group Name"
-msgstr "Je hebt geen groepsnaam ingevuld"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/products.php:266
 msgid "Keep the Group Name under 100 Characters"
-msgstr "Houd de groepsnaam on de 100 characters"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/settings.php:46
 msgid "Settings Saved"
@@ -484,99 +481,99 @@ msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/settings.php:139
 msgid "You must set a currency symbol"
-msgstr "Je dient een valutata symbool aan te geven"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/settings.php:143
 msgid "Tax Rate must be set, and a number"
-msgstr "BTW tarief moet ingevuld en numeriek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/settings.php:148
 msgid "Shipping Base Rate must be set, and a number"
-msgstr "Verzendkosten moeten aangegeven en numeriek zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/settings.php:151
 msgid "Shipping Base Rate must be set, and a number (even if just zero)"
-msgstr "Verzendkosten moeten aangegeven en numeriek zijn (eventueel 0)"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/settings.php:161
 msgid "At least one payment method must be enabled"
-msgstr "Minstens 1 betaalmethode moet geactiveerd zijn"
+msgstr ""
 
 #: packages/vivid_store/controllers/single_page/dashboard/store/settings.php:170
 msgid "You must have at least one Order Status."
-msgstr "Je moet minstens 1 bestel status hebben."
+msgstr ""
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:7
 msgid "Credit Card Number"
-msgstr "Credit Card Nummer"
+msgstr ""
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:16
 msgid "Month"
-msgstr "Maand"
+msgstr "Monat"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:18
 msgid "Jan"
-msgstr "01"
+msgstr "Jan"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:19
 msgid "Feb"
-msgstr "02"
+msgstr "Feb"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:20
 msgid "Mar"
-msgstr "03"
+msgstr "Mar"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:21
 msgid "Apr"
-msgstr "04"
+msgstr "Apr"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:22
 msgid "May"
-msgstr "05"
+msgstr "Mai"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:23
 msgid "Jun"
-msgstr "06"
+msgstr "Jun"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:24
 msgid "Jul"
-msgstr "07"
+msgstr "Jul"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:25
 msgid "Aug"
-msgstr "08"
+msgstr "Aug"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:26
 msgid "Sep"
-msgstr "09"
+msgstr "Sep"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:27
 msgid "Oct"
-msgstr "10"
+msgstr "Okt"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:28
 msgid "Nov"
-msgstr "11"
+msgstr "Nov"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:29
 msgid "Dec"
-msgstr "12"
+msgstr "Dez"
 
 #: packages/vivid_store/elements/auth_net/checkout_form.php:33
 msgid "Year"
-msgstr "Jaar"
+msgstr "Jahr"
 
 #: packages/vivid_store/elements/auth_net/dashboard_form.php:6
 msgid "Test Mode"
-msgstr "Test Modus"
+msgstr ""
 
 #: packages/vivid_store/elements/auth_net/dashboard_form.php:11
 msgid "Auth.net Login ID"
-msgstr "Auth.net Login ID"
+msgstr ""
 
 #: packages/vivid_store/elements/auth_net/dashboard_form.php:16
 msgid "Auth.net Transaction Key"
-msgstr "Auth.net Transactie Sleutel"
+msgstr ""
 
 #: packages/vivid_store/elements/invoice/checkout_form.php:5
 msgid "An invoice will be sent to you upon ordering"
@@ -584,37 +581,37 @@ msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:4
 msgid "New Order Notification"
-msgstr "Melding Nieuwe Bestelling"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:19
 msgid "An order has been placed!"
-msgstr "Er is een nieuwe bestelling gedaan!"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:21
 #: packages/vivid_store/mail/order_receipt.php:21
 msgid "Order"
-msgstr "Bestelling"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:22
 msgid "An order has been placed on your website."
-msgstr "Er is een bestelling gedaan op je website"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:26
 #: packages/vivid_store/mail/order_receipt.php:26
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:28
 msgid "Billing Information"
-msgstr "Factuur Informatie"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:38
 #: packages/vivid_store/mail/order_receipt.php:38
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:40
 msgid "Shipping Information"
-msgstr "Verzend Informatie"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:52
 #: packages/vivid_store/mail/order_receipt.php:52
 msgid "Order Details"
-msgstr "Details Bestelling"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:56
 #: packages/vivid_store/mail/order_receipt.php:56
@@ -622,19 +619,19 @@ msgstr "Details Bestelling"
 #: packages/vivid_store/single_pages/dashboard/store/products.php:44
 #: packages/vivid_store/single_pages/dashboard/store/products.php:642
 msgid "Product Name"
-msgstr "Product Naam"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:57
 #: packages/vivid_store/mail/order_receipt.php:57
 #: packages/vivid_store/single_pages/dashboard/store/products.php:33
 #: packages/vivid_store/single_pages/dashboard/store/products.php:297
 msgid "Options"
-msgstr "Opties"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:58
 #: packages/vivid_store/mail/order_receipt.php:58
 msgid "Qty"
-msgstr "Aantal"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:59
 #: packages/vivid_store/mail/order_receipt.php:59
@@ -642,13 +639,13 @@ msgstr "Aantal"
 #: packages/vivid_store/single_pages/dashboard/store/products.php:249
 #: packages/vivid_store/single_pages/dashboard/store/products.php:644
 msgid "Price"
-msgstr "Prijs"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:60
 #: packages/vivid_store/mail/order_receipt.php:60
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:61
 msgid "Subtotal"
-msgstr "Subtotaal"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:105
 #: packages/vivid_store/mail/order_receipt.php:132
@@ -658,7 +655,7 @@ msgstr "Subtotaal"
 #: packages/vivid_store/single_pages/dashboard/store/products.php:34
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:13
 msgid "Shipping"
-msgstr "Verzenden"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:111
 #: packages/vivid_store/mail/order_receipt.php:138
@@ -666,75 +663,75 @@ msgstr "Verzenden"
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:106
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:215
 msgid "Total"
-msgstr "Totaal"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:133
 msgid "Order #:"
-msgstr "Bestel #:"
+msgstr ""
 
 #: packages/vivid_store/mail/new_order_notification.php:135
 msgid "A new order has been placed on your website"
-msgstr "Er is een nieuwe bestelling gedaan op je website"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:4
 msgid "Order Receipt"
-msgstr "Bestel bevestiging"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:19
 msgid "Your Order"
-msgstr "Jouw Bestelling"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:22
 msgid "Thanks for your order! Below are the details of your order."
-msgstr "Bedankt voor je bestelling! Hieronder staan de details van jouw bestelling."
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:111
 #: packages/vivid_store/single_pages/checkout/complete.php:19
 msgid "Your Downloads"
-msgstr "Jouw Downloads"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:112
 msgid "Note: You must be logged in to download files"
-msgstr "Note: Je moet ingelogd zijn om bestanden te downloaden"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:160
 #, php-format
 msgid "Order #%s has been received"
-msgstr "Bestelling#%s is ontvangen"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:162
 msgid "BILLING INFORMATION"
-msgstr "FACTUUR INFORMATIE"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:170
 msgid "SHIPPING INFORMATION"
-msgstr "VERZEND INFORMATIE"
+msgstr ""
 
 #: packages/vivid_store/mail/order_receipt.php:178
 msgid "ORDER ITEMS"
-msgstr "BESTELLING"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout/complete.php:2
 #, php-format
 msgid "Order #%s is Complete"
-msgstr "Bestelling #%s is afgerond"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout/complete.php:4
 msgid "Thank you for your order. A receipt should be emailed to you shortly."
-msgstr "Bedankt voor je bestelling. U krijgt via email een bevestiging."
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products/attributes.php:29
 msgid "Add Attribute"
-msgstr "Attribuut toevoegen"
+msgstr "Attribut hinzufügen"
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:8
 msgid "Customer Overview"
-msgstr "Klanten overzicht"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:22
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:136
 msgid "User"
-msgstr "Gebruiker"
+msgstr "Benutzer"
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:52
 msgid "Order Items"
@@ -742,24 +739,24 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:58
 msgid "Product Options"
-msgstr "Product Opties"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:269
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:100
 msgid "Items Subtotal"
-msgstr "Subtotaal"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:107
 msgid "Payment Method"
-msgstr "Betaal Methode"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:110
 msgid "Order Status History"
-msgstr "Bestel status Historie"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:116
 msgid "Update Status"
-msgstr "Update Status"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:134
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:216
@@ -772,15 +769,15 @@ msgstr "Datum"
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:160
 msgid "Manage Order"
-msgstr "Beheer Bestelling"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:166
 msgid "Order Options"
-msgstr "Bestel opties"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:170
 msgid "Delete Order"
-msgstr "Verwijder bestelling"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:188
 msgid "All Statuses"
@@ -793,37 +790,37 @@ msgstr ""
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:204
 #: packages/vivid_store/single_pages/dashboard/store/products.php:634
 msgid "Search"
-msgstr ""
+msgstr "Suchen"
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:212
 #, php-format
 msgid "Order %s"
-msgstr "Bestelling %s"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:213
 msgid "Customer Name"
-msgstr "Klant Naam"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:214
 msgid "Order Date"
-msgstr "Bestel Datum"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:217
 #: packages/vivid_store/single_pages/dashboard/store/orders.php:229
 msgid "View"
-msgstr "Bekijk"
+msgstr "Anzeigen"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:29
 msgid "Overview"
-msgstr "Overzicht"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:30
 msgid "Downloads and User Groups"
-msgstr "Downloads en gebruikersgroepen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:31
 msgid "Images"
-msgstr "Plaatjes"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:32
 msgid "Details"
@@ -831,61 +828,61 @@ msgstr "Details"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:35
 msgid "Attributes"
-msgstr "Attrivbuten"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:36
 msgid "Detail Page"
-msgstr "Detail Pagina"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:48
 msgid "Short Description"
-msgstr "Samenvatting"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:64
 msgid "Product Details (Long Description)"
-msgstr "Product Details (Omschrijving)"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:92
 msgid "File to download on purchase"
-msgstr "Bestand om te downloaden na aanschaf"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:93
 msgid "Choose File"
-msgstr "Kies Bestand"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:101
 #, php-format
 msgid "In order to have digital downloads, you need to %sturn on advanced permissions%s."
-msgstr "Om downloads te hebben moet je %s geadvanceerde permissies aanzetten %s"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:107
 msgid "On purchase add user to user groups"
-msgstr "Gebruiker in groep zetten na aanschaf"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:109
 msgid "Select user groups"
-msgstr "Selecteerd gebruikersgroepen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:131
 msgid "Primary Product Image"
-msgstr "Primair Product Plaatje"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:133
 #: packages/vivid_store/single_pages/dashboard/store/products.php:159
 msgid "Choose Image"
-msgstr "Kies plaatje"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:137
 msgid "Additional Images"
-msgstr "Verdere Plaatjes"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:142
 msgid "Add Image"
-msgstr "Voeg plaatje toe"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:265
 msgid "Taxable"
-msgstr "BTW plichtig"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:266
 #: packages/vivid_store/single_pages/dashboard/store/products.php:288
@@ -893,7 +890,7 @@ msgstr "BTW plichtig"
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:50
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:149
 msgid "No"
-msgstr "Nee"
+msgstr "Nein"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:266
 #: packages/vivid_store/single_pages/dashboard/store/products.php:288
@@ -906,106 +903,106 @@ msgstr "Ja"
 #: packages/vivid_store/single_pages/dashboard/store/products.php:271
 #: packages/vivid_store/single_pages/dashboard/store/products.php:272
 msgid "Active"
-msgstr "Actief"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:272
 msgid "Inactive"
-msgstr "Inactief"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:280
 #: packages/vivid_store/single_pages/dashboard/store/products.php:646
 msgid "Group"
-msgstr "Groep"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:287
 msgid "Featured Product"
-msgstr "Uitgelicht product"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:301
 msgid "Add Option Group"
-msgstr "Voeg Optie Groep toe"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:309
 msgid "Group Name:"
-msgstr "Groepsnaam:"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:315
 msgid "Add Option to the Group"
-msgstr "Voeg Optie toe aan de Groep"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:316
 msgid "Delete the Option Group"
-msgstr "Verwijder de Optiegroep"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:391
 msgid "Option"
-msgstr "Optie"
+msgstr "Option"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:482
 msgid "While you can set and assign attributes, they're are currently only able to be accessed programmatically"
-msgstr "While you can set and assign attributes, they're are currently only able to be accessed programmatically"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:501
 msgid "You have't created product attributes"
-msgstr "Je hebt geen product attributen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:510
 msgid "Product is Shippable"
-msgstr "Product is verzendbaar"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:528
 msgid "Length"
-msgstr "Lente"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:536
 msgid "Width"
-msgstr "Breedte"
+msgstr "Breite"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:544
 msgid "Height"
-msgstr "Hoogte"
+msgstr "Zielhöhe"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:565
 msgid "Detail Page is set to: "
-msgstr "Detail pagina is: "
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:570
 msgid "We're not sure why, but this product doesn't seem to have a Page that correlates to it."
-msgstr "We weten niet waarom, maar dit product heeft geen pagina"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:574
 msgid "Page Template"
-msgstr "Pagina Template"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:578
 msgid "Generate a Product Page"
-msgstr "Genereer een product pagina"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:586
 msgid "When you create a product, we'll make a page for that product. For now though, there's nothing to see here."
-msgstr "Wanneer je een product aanmaakt, maken wij een pagina hiervoor. Voor nuis er echter niet te zien."
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store.php:8
 #: packages/vivid_store/single_pages/dashboard/store/products.php:597
 msgid "Cancel"
-msgstr "Annuleren"
+msgstr "Abbrechen"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:598
 #, php-format
 msgid "%s Product"
-msgstr "%s Product"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:609
 msgid "Manage Attributes"
-msgstr "Beheer Attributen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:610
 msgid "Manage Groups"
-msgstr "Beheer Groepen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:619
 msgid "All Groups"
-msgstr "Alle Groepen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:630
 msgid "Search Products"
@@ -1013,60 +1010,60 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:641
 msgid "Primary Image"
-msgstr "Primaire Plaatje"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:645
 #: packages/vivid_store/single_pages/dashboard/store/products.php:662
 msgid "Featured"
-msgstr "Uitgelicht"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:647
 msgid "Actions"
-msgstr "Acties"
+msgstr "Aktionen"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:664
 msgid "Not Featured"
-msgstr "Niet Uitgelicht"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:700
 msgid "Groups"
-msgstr "Groepen"
+msgstr "Gruppen"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:720
 msgid "You have not added a group yet"
-msgstr "Je hebt nog geen groepen toegevoegd"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:724
 msgid "Add a Group"
-msgstr "Voeg een groep toe"
+msgstr "Gruppe hinzuügen"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:727
 msgid "Group Name"
-msgstr "Groepsnaam"
+msgstr "Gruppenname"
 
 #: packages/vivid_store/single_pages/dashboard/store/products.php:730
 msgid "Add Group"
-msgstr "Groep toevoegen"
+msgstr "Gruppe hinzufügen"
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:11
 msgid "Currency"
-msgstr "Valuta"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:14
 msgid "Payments"
-msgstr "Betalingen"
+msgstr "Zahlungen"
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:15
 msgid "Order Statuses"
-msgstr "Bestel Statussen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:16
 msgid "Notifications"
-msgstr "Notificaties"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:17
 msgid "Products"
-msgstr "Producten"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:18
 msgid "Cart and Checkout"
@@ -1074,17 +1071,17 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:28
 msgid "Currency Symbol"
-msgstr "Valuta Symbool"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:32
 #, php-format
 msgid "Thousands Separator %se.g. , or a space%s"
-msgstr "Duizendtallen Separator %se.g. , of een spatie%s"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:36
 #, php-format
 msgid "Whole Number Separator %se.g. period or a comma%s"
-msgstr "Decimalen %se.g. punt of komma%s"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:44
 msgid "Tax Configuration"
@@ -1092,7 +1089,7 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:49
 msgid "Enable Tax"
-msgstr "BTW Aanzetten"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:55
 msgid "Tax Label"
@@ -1100,7 +1097,7 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:61
 msgid "Tax Rate %"
-msgstr "BTW Tarief %"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:71
 msgid "Are Prices Entered with Tax Included?"
@@ -1120,11 +1117,11 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:77
 msgid "Product Total"
-msgstr "Product Totaal"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:77
 msgid "Product Total + Shipping"
-msgstr "Product Totaal + Verzendkosten"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:80
 msgid "When to Charge Tax"
@@ -1146,11 +1143,11 @@ msgstr "Land"
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:98
 msgid "Required"
-msgstr ""
+msgstr "Erforderlich"
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:106
 msgid "Region"
-msgstr ""
+msgstr "Region"
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:106
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:115
@@ -1161,7 +1158,7 @@ msgstr ""
 #: packages/vivid_store/single_pages/checkout.php:174
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:115
 msgid "City"
-msgstr "Plaats"
+msgstr "Stadt"
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:129
 msgid "Terminology"
@@ -1169,89 +1166,89 @@ msgstr "Terminologie"
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:133
 msgid "Units for Weight"
-msgstr "Gewichts eenheid"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:134
 msgid "lb"
-msgstr "lb"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:134
 msgid "kg"
-msgstr "kg"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:139
 msgid "Units for Size"
-msgstr "Formaat eenheid"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:140
 msgid "in"
-msgstr "in"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:140
 msgid "cm"
-msgstr "cm"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:145
 msgid "Settings"
-msgstr "Instellingen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:148
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:175
 msgid "Enabled"
-msgstr "Beschikbaar"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:152
 msgid "Base Price"
-msgstr "Basis Prijs"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:156
 msgid "Additional Price Per Item"
-msgstr "Extra Prijs Per Item"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:182
 msgid "Display Name (on checkout)"
-msgstr "Toon Naam (tijdens afrekenen)"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:196
 msgid "No Payment Methods are Installed"
-msgstr "Geen betaal methodes geinstalleerd"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:224
 msgid "Display Name"
-msgstr "Toon Naam"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:225
 msgid "Default Status"
-msgstr "Standaard Status"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:226
 msgid "Send Change Notifications to..."
-msgstr "Send verander notificaties naar..."
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:229
 msgid "Site"
-msgstr "Site"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:230
 msgid "Customer"
-msgstr "Klant"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:261
 msgid "No Order Statuses are available"
-msgstr "Geen nieuwe bestel Satussen beschikbaar"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:271
 #, php-format
 msgid "Enter Emails to Notify of New Orders %sseparate multiple emails with commas%s"
-msgstr "Geef aan welke email adressen een bestel notificatie moeten krijgen %smeerdere emails met een commas%s"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:276
 msgid "Email address to send alerts from"
-msgstr "Email addres om notificaties vandaan te sturen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:286
 msgid "Page to Publish Product Pages Under"
-msgstr "Pagina om productpagina's onder te publiceren"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:296
 msgid "Guest checkout"
@@ -1271,37 +1268,37 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store/settings.php:312
 msgid "Save Settings"
-msgstr "Instellingen Opslaan"
+msgstr ""
 
 #: packages/vivid_store/single_pages/dashboard/store.php:3
 #: packages/vivid_store/single_pages/dashboard/store.php:9
 msgid "Add Location"
-msgstr "Locatie toevoegen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/cart.php:8
 msgid "Shopping Cart"
-msgstr "Winkelwagen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/cart.php:36
 msgid "Quantity:"
-msgstr "Aantal:"
+msgstr ""
 
 #: packages/vivid_store/single_pages/cart.php:41
 msgid "Remove"
-msgstr "Verwijder"
+msgstr ""
 
 #: packages/vivid_store/single_pages/cart.php:68
 msgid "Sub Total"
-msgstr "Subtotaal"
+msgstr ""
 
 #: packages/vivid_store/single_pages/cart.php:73
 msgid "Clear Cart"
-msgstr "Winkelwagen Opschonen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/cart.php:74
 #: packages/vivid_store/single_pages/checkout.php:9
 msgid "Checkout"
-msgstr "Afrekenen"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:18
 msgid "Sign in, Register or Checkout as Guest"
@@ -1309,7 +1306,7 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:20
 msgid "Sign in or Register"
-msgstr "Inloggen of Registreren"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:28
 msgid "In order to proceed, you'll need to either register, or sign in with your existing account."
@@ -1317,7 +1314,7 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:31
 msgid "Register"
-msgstr "Registreren"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:36
 msgid "Or optionally, you may choose to checkout as a guest."
@@ -1330,66 +1327,66 @@ msgstr ""
 #: packages/vivid_store/single_pages/checkout.php:52
 #: packages/vivid_store/single_pages/checkout.php:143
 msgid "First Name"
-msgstr "Voornaam"
+msgstr "Vorname"
 
 #: packages/vivid_store/single_pages/checkout.php:58
 #: packages/vivid_store/single_pages/checkout.php:149
 msgid "Last Name"
-msgstr "Achternaam"
+msgstr "Nachname"
 
 #: packages/vivid_store/single_pages/checkout.php:74
 msgid "Phone"
-msgstr "Telefoonnummer"
+msgstr "Telefon"
 
 #: packages/vivid_store/single_pages/checkout.php:81
 #: packages/vivid_store/single_pages/checkout.php:155
 msgid "Address 1"
-msgstr "Adres 1"
+msgstr "Adresse 1"
 
 #: packages/vivid_store/single_pages/checkout.php:87
 #: packages/vivid_store/single_pages/checkout.php:161
 msgid "Address 2"
-msgstr "Adres 2"
+msgstr "Adresse 2"
 
 #: packages/vivid_store/single_pages/checkout.php:106
 #: packages/vivid_store/single_pages/checkout.php:180
 msgid "State"
-msgstr "Provincie"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:114
 #: packages/vivid_store/single_pages/checkout.php:188
 msgid "Postal Code"
-msgstr "Postcode"
+msgstr "PLZ"
 
 #: packages/vivid_store/single_pages/checkout.php:120
 #: packages/vivid_store/single_pages/checkout.php:195
 msgid "Next"
-msgstr "Volgende"
+msgstr "Weiter"
 
 #: packages/vivid_store/single_pages/checkout.php:136
 msgid "Same as Billing Address"
-msgstr "Hetzelfde als factuur informatie"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:194
 #: packages/vivid_store/single_pages/checkout.php:253
 msgid "Previous"
-msgstr "Terug"
+msgstr "Zurück"
 
 #: packages/vivid_store/single_pages/checkout.php:205
 msgid "Shipping Method"
-msgstr "Verzend Methode"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:212
 msgid "Payment"
-msgstr "Betaling"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:254
 msgid "Complete Order"
-msgstr "Bestelling Afronden"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:267
 msgid "Cart Total"
-msgstr "Totaal"
+msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:271
 msgid "inc. taxes"
@@ -1397,15 +1394,15 @@ msgstr ""
 
 #: packages/vivid_store/single_pages/checkout.php:287
 msgid "Grand Total"
-msgstr "Totaal"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Payment/Methods/AuthNet/AuthNetPaymentMethod.php:42
 msgid "Transaction Key must be set"
-msgstr "Transactie Sleuten moet toegevoegd zijn"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Payment/Methods/AuthNet/AuthNetPaymentMethod.php:45
 msgid "Login ID must be set"
-msgstr "Login ID moet aangegeven zijn"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:97
 msgid "You must enter a valid email address"
@@ -1413,43 +1410,43 @@ msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:103
 msgid "You must enter a first name"
-msgstr "Je moet een voornaam opgeven"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:106
 msgid "Your First Name is quite long. Please keep it under 30 characters"
-msgstr "Je voornaam is lang. Gelieve deze onder de 30 characters te houden"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:109
 msgid "You must enter a Last Name"
-msgstr "Je moet een achternaam opgeven"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:112
 msgid "That is a long Last Name. Please keep it under 30 characters"
-msgstr "Je achternaam is lang. Gelieve deze onder de 30 characters te houden"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:115
 msgid "You must enter an address"
-msgstr "Je moet een adres opgeven"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:118
 msgid "That is a long street name. Please keep it under 50 characters"
-msgstr "Je straatnaam is lang. Gelieve deze onder de 50 characters te houden"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:121
 msgid "You must enter a Country"
-msgstr "Je moet een land opgeven"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:124
 msgid "You did not select a Country from the list."
-msgstr "Je hebt geen lang opgegeven uit de lijst"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:127
 msgid "You must enter a City"
-msgstr "Je moet een plaatsnaam opgeven"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:130
 msgid "You must enter a valid City"
-msgstr "Je moet een geldige plaats opgeven"
+msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:133
 #: packages/vivid_store/src/VividStore/Utilities/Checkout.php:136
@@ -1458,52 +1455,4 @@ msgstr ""
 
 #: packages/vivid_store/src/VividStore/Utilities/ProductFinder.php:36
 msgid "I can't find a product by that name"
-msgstr "Ik kan geen product vinden met die naam"
-
-#~ msgid "Access Denied."
-#~ msgstr "Toegang Geweigerd"
-
-#~ msgid "shipped"
-#~ msgstr "Verzonden"
-
-#~ msgid "Settings Saved!"
-#~ msgstr "Installingen Opgeslagen"
-
-#~ msgid "Tax State must be set"
-#~ msgstr "BTW Land moet aangegeven zijn"
-
-#~ msgid "Tax City must be set"
-#~ msgstr "BTW Stad moet aangegeven zijn"
-
-#~ msgid "In order to proceed, you'll need to either register, or login with your existing account."
-#~ msgstr "Om verder te kunnen gaan moet je je registreren, of inloggenグインしてください。"
-
-#~ msgid "Login"
-#~ msgstr "Inloggen"
-
-#~ msgid "Items Orders"
-#~ msgstr "Bestelde Items"
-
-#~ msgid "No Products to See, Yet."
-#~ msgstr "Geen producten te zien, voor nu."
-
-#~ msgid "Your Store Location"
-#~ msgstr "Jouw winkel Locatie"
-
-#~ msgid "State/Region"
-#~ msgstr "Provincie"
-
-#~ msgid "Tax Rules"
-#~ msgstr "BTW Regels"
-
-#~ msgid "I charge sales tax if the"
-#~ msgstr "Ik reken BTW wanneer"
-
-#~ msgid "matches our"
-#~ msgstr "gelijk is aan"
-
-#~ msgid "based on the"
-#~ msgstr "gebasseerd op"
-
-#~ msgid "You must enter a valid Zip"
-#~ msgstr "Je moet een valide postcode opgeven"
+msgstr ""
