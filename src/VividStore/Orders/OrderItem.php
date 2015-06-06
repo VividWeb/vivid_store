@@ -12,7 +12,7 @@ class OrderItem extends Object
 {
     public static function getByID($oiID) {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreOrderItem WHERE oiID=?",$oiID);
+        $data = $db->GetRow("SELECT * FROM VividStoreOrderItems WHERE oiID=?",$oiID);
         if(!empty($data)){
             $item = new OrderItem();
             $item->setPropertiesFromArray($data);
@@ -31,7 +31,7 @@ class OrderItem extends Object
         $product->setProductQty($newStock);
         $pID = $product->getProductID();
         $values = array($oID,$pID,$productName,$productPrice,$tax,$taxIncluded,$taxName,$qty);
-        $db->Execute("INSERT INTO VividStoreOrderItem(oID,pID,oiProductName,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) values(?,?,?,?,?,?,?,?)",$values);
+        $db->Execute("INSERT INTO VividStoreOrderItems (oID,pID,oiProductName,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) VALUES (?,?,?,?,?,?,?,?)",$values);
         
         $oiID = $db->lastInsertId();
         
@@ -42,7 +42,7 @@ class OrderItem extends Object
             
             
             $values = array($oiID,$optionGroupName,$optionValue);
-            $db->Execute("INSERT INTO VividStoreOrderItemOption(oiID,oioKey,oioValue) values(?,?,?)",$values);
+            $db->Execute("INSERT INTO VividStoreOrderItemOptions (oiID,oioKey,oioValue) VALUES (?,?,?)",$values);
         }
         if($product->hasDigitalDownload()){
             $fileObjs = $product->getProductDownloadFileObjects(); 
@@ -76,18 +76,18 @@ class OrderItem extends Object
     }
     public function getProductOptions()
     {
-        return Database::get()->GetAll("SELECT * FROM VividStoreOrderItemOption WHERE oiID=?",$this->oiID);
+        return Database::get()->GetAll("SELECT * FROM VividStoreOrderItemOptions WHERE oiID=?",$this->oiID);
     }
     public function getProductOptionGroupNameByID($id)
     {
         $db = Database::get();
-        $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroup WHERE pogID=?",$id);
+        $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroups WHERE pogID=?",$id);
         return $optionGroup['pogName'];
     }
      public function getProductOptionValueByID($id)
     {
         $db = Database::get();
-        $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItem WHERE poiID=?",$id);
+        $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
         return $optionItem['poiName'];
     }
     public function getProductObject($pID = null)

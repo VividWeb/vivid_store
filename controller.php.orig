@@ -36,7 +36,11 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
+<<<<<<< HEAD
     protected $pkgVersion = '2.1';
+=======
+    protected $pkgVersion = '2.1.1.0.0.2';
+>>>>>>> e6f20d419e8103f9d05ecec2c558fbb6fbbf3af3
 
     public function getPackageDescription()
     {
@@ -511,7 +515,8 @@ class Controller extends Package
             ), $pkg)->setAttributeSet($orderCustSet);
         }
         parent::upgrade();
-        Installer::addOrderStatusesToDatabase($pkg);
+<<<<<<< HEAD
+        $this->addOrderStatusesToDatabase($pkg);
 
         // convert legacy config items to current config storage
         // applies for version 2.1.1 and below
@@ -526,6 +531,9 @@ class Controller extends Package
             $db->Execute("DELETE FROM Config WHERE configGroup='vividstore'");
         }
 
+=======
+        Installer::addOrderStatusesToDatabase($pkg);
+>>>>>>> e6f20d419e8103f9d05ecec2c558fbb6fbbf3af3
     }
 
     private function installStoreProductPageType($pkg){
@@ -549,7 +557,29 @@ class Controller extends Package
 
     }
 
+<<<<<<< HEAD
+    private function addOrderStatusesToDatabase($pkg) {
+        $table = OrderStatus::getTableName();
+        $db = Loader::db();
+        $statuses = array(
+            array('osHandle'=>'pending', 'osName'=>t('Pending'), 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'processing', 'osName'=>t('Processing'), 'osInformSite'=>1, 'osInformCustomer'=>1),
             array('osHandle'=>'shipped', 'osName'=>t('Shipped'), 'osInformSite'=>1, 'osInformCustomer'=>1),
+            array('osHandle'=>'complete', 'osName'=>t('Complete'), 'osInformSite'=>1, 'osInformCustomer'=>1),
+        );
+        foreach ($statuses as $status) {
+            $row = $db->GetRow("SELECT * FROM ".$table." WHERE osHandle=?", array($status['osHandle']));
+            if (!isset($row['osHandle'])) {
+                OrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer']);
+            } else {
+                $orderStatus = OrderStatus::getByID($row['osID']);
+                $orderStatus->update($status, true);
+            }
+        }
+    }
+    
+=======
+>>>>>>> e6f20d419e8103f9d05ecec2c558fbb6fbbf3af3
     public function registerRoutes()
     {        
         Route::register('/cart/getSubTotal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getSubTotal');
