@@ -549,7 +549,6 @@ class Controller extends Package
 
     }
 
-            array('osHandle'=>'shipped', 'osName'=>t('Shipped'), 'osInformSite'=>1, 'osInformCustomer'=>1),
     public function registerRoutes()
     {        
         Route::register('/cart/getSubTotal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getSubTotal');

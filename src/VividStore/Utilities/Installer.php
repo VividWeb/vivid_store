@@ -69,7 +69,7 @@ class Installer
         $statuses = array(
             array('osHandle' => 'pending', 'osName' => t('Pending'), 'osInformSite' => 1, 'osInformCustomer' => 1),
             array('osHandle' => 'processing', 'osName' => t('Processing'), 'osInformSite' => 1, 'osInformCustomer' => 1),
-            array('osHandle' => 'shipped', 'osName' => t('shipped'), 'osInformSite' => 1, 'osInformCustomer' => 1),
+            array('osHandle' => 'shipped', 'osName' => t('Shipped'), 'osInformSite' => 1, 'osInformCustomer' => 1),
             array('osHandle' => 'complete', 'osName' => t('Complete'), 'osInformSite' => 1, 'osInformCustomer' => 1),
         );
         foreach ($statuses as $status) {
