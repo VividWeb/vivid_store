@@ -8,7 +8,7 @@ use Database;
 class OrderStatus extends Object
 {
 
-    static protected $table = "VividStoreOrderStatus";
+    static protected $table = "VividStoreOrderStatuses";
     protected $osID, $osHandle, $osName, $osInformSite, $osInformCustomer, $osSortOrder;
 
     static public function getTableName()

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <schema version="0.3">
-	<table name="VividStoreProduct">
+	<table name="VividStoreProducts">
 		<field name="pID" type="I"><key /><unsigned /><autoincrement/></field>
 		<field name="gID" type="I"></field>
 		<field name="cID" type="I"></field>
@@ -22,26 +22,26 @@
 		<field name="pLength" type="I"></field>
 		<field name="pWeight" type="I"></field>
 	</table>
-	<table name="VividStoreProductOptionGroup">
+	<table name="VividStoreProductOptionGroups">
         <field name="pogID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="pogName" type="C" size="255"></field>
         <field name="pogSort" type="I"></field>
     </table>
-    <table name="VividStoreProductOptionItem">
+    <table name="VividStoreProductOptionItems">
         <field name="poiID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="pogID" type="I"></field>
         <field name="poiName" type="C" size="255"></field>
         <field name="poiSort" type="I"></field>
     </table>
-	<table name="VividStoreProductImage">
+	<table name="VividStoreProductImages">
         <field name="piID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="pifID" type="I"></field>
         <field name="piSort" type="I"></field>
     </table>
-    <table name="VividStoreDigitalFile">
+    <table name="VividStoreDigitalFiles">
         <field name="dfID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="dffID" type="I"></field>
@@ -55,7 +55,7 @@
         <field name="pID" type="I"></field>
         <field name="gID" type="I"></field>
     </table>
-    <table name="VividStoreOrder">
+    <table name="VividStoreOrders">
         <field name="oID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="cID" type="I"></field>
         <field name="oDate" type="T"></field>
@@ -68,7 +68,7 @@
         <field name="oTaxName" type="C" size="255"></field>
         <field name="oTotal" type="C" size="10"></field>
     </table>
-    <table name="VividStoreOrderStatus">
+    <table name="VividStoreOrderStatuses">
         <field name="osID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="osHandle" type="C" size="255"></field>
         <field name="osName" type="C" size="255"></field>
@@ -77,14 +77,14 @@
         <field name="osIsStartingStatus" type="I"></field>
         <field name="osSortOrder" type="I"></field>
     </table>
-    <table name="VividStoreOrderStatusHistory">
+    <table name="VividStoreOrderStatusHistories">
         <field name="oshID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="oID" type="I"></field>
         <field name="oshStatus" type="C" size="50"></field>
         <field name="oshDate" type="T"><deftimestamp/></field>
         <field name="uID" type="I"></field>
     </table>
-    <table name="VividStoreOrderItem">
+    <table name="VividStoreOrderItems">
         <field name="oiID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="oID" type="I"></field>
@@ -95,7 +95,7 @@
         <field name="oiTaxName" type="C" size="255"></field>
         <field name="oiQty" type="I"></field>
     </table>
-    <table name="VividStoreOrderItemOption">
+    <table name="VividStoreOrderItemOptions">
         <field name="oioID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="oiID" type="I"></field>
         <field name="oioKey" type="C" size="255"></field>

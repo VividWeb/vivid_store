@@ -96,7 +96,7 @@ class Method extends Controller
         $pm = self::getByHandle($pmHandle);
         if(!($pm instanceof Method)){
             $vals = array($pmHandle,$pmName,$pmDisplayName,$pkgID);
-            $db->Execute("INSERT INTO VividStorePaymentMethods (pmHandle,pmName,pmDisplayName,pkgID) values(?,?,?,?)", $vals);
+            $db->Execute("INSERT INTO VividStorePaymentMethods (pmHandle,pmName,pmDisplayName,pkgID) VALUES (?,?,?,?)", $vals);
             $pm = self::getByHandle($pmHandle);        
             if($enabled){
                 $pm->setEnabled(1);
