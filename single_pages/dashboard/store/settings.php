@@ -56,7 +56,7 @@ use \Config;
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <label for="taxName"><?=t("Tax Label")?></label>
-                                <?php echo $form->text('taxName',$pkgconfig->get('vividstore.taxName'));?>
+                                <?php echo $form->text('taxName',Config::get('vividstore.taxName'));?>
                             </div>
                         </div>
                         <div class="col-xs-4">
@@ -72,17 +72,19 @@ use \Config;
                     
                     <div class="form-group">
                         <label for="calculation"><?=t("Are Prices Entered with Tax Included?")?></label>
-                        <?php echo $form->text('taxName',Config::get('vividstore.taxName'));?>
+                        <?php echo $form->select('calculation',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),Config::get('vividstore.calculation')); ?>
                     </div>
 
                     <div class="form-group">
                         <label for="taxBased"><?=t("Tax is Based on the")?></label>
-                            <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),Config::get('vividstore.taxBased')); ?>
+                        <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),Config::get('vividstore.taxBased')); ?>
                     </div>
                     
                     <h3><?=t("When to Charge Tax")?></h3>
-                   
-                            <?php echo $form->select('calculation',array('add'=>t("Calculated from total and added to order"),'extract'=>t("Already in product prices, only display as component of total")),Config::get('vividstore.calculation')); ?>
+                    
+                    <?php echo $form->select('calculation',array('add'=>t("Calculated from total and added to order"),'extract'=>t("Already in product prices, only display as component of total")),Config::get('vividstore.calculation')); ?>
+                    
+                    <div class="row">
                         
                         <div class="col-sm-5">
                    
@@ -99,14 +101,17 @@ use \Config;
                             <div class="form-horizontal">
                             <div class="form-group">
                                 <label for="taxCountry" class="col-sm-5 control-label"><?=t("Country")?> <small class="text-muted"><?=t("Required")?></small></label>
-                            <?php $country = Config::get('vividstore.taxcountry'); ?>
+                                <div class="col-sm-7">    
+                                    <?php $country = Config::get('vividstore.taxcountry'); ?>
                                     <?php echo $form->select('taxCountry',$countries,$country?$country:'US',array("onchange"=>"updateTaxStates()")); ?>    
                                 </div>
                             </div>
                             
+                            
                             <div class="form-group">
                                 <label for="taxState" class="col-sm-5 control-label"><?=t("Region")?> <small class="text-muted"><?=t("Optional")?></small></label>
-                            <?php $state = Config::get('vividstore.taxstate'); ?>
+                                <div class="col-sm-7"> 
+                                    <?php $state = Config::get('vividstore.taxstate'); ?>
                                     <?php echo $form->select('taxState',$states,$state?$state:"", array('disabled'=>'disabled','class'=>"form-control")); ?>
                                     <?php echo $form->hidden("savedTaxState",$state); ?>
                                 </div>
@@ -114,7 +119,8 @@ use \Config;
         
                             <div class="form-group">
                                 <label for="taxState" class="col-sm-5 control-label"><?=t("City")?> <small class="text-muted"><?=t("Optional")?></small></label>
-                            <?php echo $form->text('taxCity',Config::get('vividstore.taxcity'));?>
+                                <div class="col-sm-7"> 
+                                    <?php echo $form->text('taxCity',Config::get('vividstore.taxcity'));?>
                                 </div>
                             </div>
                             </div>
