@@ -21,7 +21,7 @@ class OrderList  extends AttributedItemList
     {
         $this->query
         ->select('o.oID')
-        ->from('VividStoreOrders','o')
+        ->from('VividStoreOrders','o');
 
     }
 
