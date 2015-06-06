@@ -92,7 +92,7 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
                     <div class="form-group">
                         <label for="checkout-billing-country"><?=t("Country")?></label>
                         <?php $country = $customer->getValue("billing_address")->country; ?>
-                        <?php echo $form->select('checkout-billing-country',$countries,$country?$country:'US',array("onchange"=>"vividStore.updateBillingStates()")); ?>
+                        <?php echo $form->select('checkout-billing-country',$billingCountries,$country?$country:($defaultBillingCountry ? $defaultBillingCountry : 'US'),array("onchange"=>"vividStore.updateBillingStates()")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
@@ -166,7 +166,7 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
                     <div class="form-group">
                         <label for="checkout-shipping-country"><?=t("Country")?></label>
                         <?php $country = $customer->getValue("shipping_address")->country; ?>
-                        <?php echo $form->select('checkout-shipping-country',$countries,$country?$country:'US',array("onchange"=>"vividStore.updateShippingStates()")); ?>
+                        <?php echo $form->select('checkout-shipping-country',$shippingCountries,$country?$country: ($defaultShippingCountry ? $defaultShippingCountry : 'US'),array("onchange"=>"vividStore.updateShippingStates()")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">
