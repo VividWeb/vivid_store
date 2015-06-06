@@ -32,17 +32,28 @@ class Cart extends PageController
     public function add()
     {
         $data = $this->post();
-        VividCart::add($data);             
+        VividCart::add($data);
+        $product = VividProduct::getByID($data['pID']);
+        $returndata = array('success'=>true,'quantity'=>(int)$data['quantity'],'product'=>$product);
+        echo json_encode($returndata);
+        exit();
+
     }
     public function update()
     {
         $data = $this->post();
         VividCart::update($data);
+        $returndata = array('success'=>true);
+        echo json_encode($returndata);
+        exit();
     }
     public function remove()
     {
         $instanceID = $_POST['instance'];
         VividCart::remove($instanceID);
+        $returndata = array('success'=>true);
+        echo json_encode($returndata);
+        exit();
     }
     public function clear()
     {
