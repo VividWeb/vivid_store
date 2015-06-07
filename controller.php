@@ -15,6 +15,7 @@ use View;
 use Database;
 use FileSet;
 use Loader;
+use Config;
 use Concrete\Core\Database\Schema\Schema;
 use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
@@ -26,6 +27,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Utility\Service\Text;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -34,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.1';
+    protected $pkgVersion = '2.1.0.90';
 
     public function getPackageDescription()
     {
@@ -82,8 +84,8 @@ class Controller extends Package
         
         $this->installStoreProductPageType($pkg);
 
-        $pkg->getConfig()->save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
-        
+        Config::save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
+
         //install our blocks
         BlockTypeSet::add("vivid_store","Store", $pkg);
         BlockType::installBlockTypeFromPackage('vivid_product_list', $pkg); 
@@ -112,13 +114,13 @@ class Controller extends Package
         }
         
         //set our default currency configs
-        $pkg->getConfig()->save('vividstore.symbol','$');
-        $pkg->getConfig()->save('vividstore.whole','.');
-        $pkg->getConfig()->save('vividstore.thousand',',');
-        
+        Config::save('vividstore.symbol','$');
+        Config::save('vividstore.whole','.');
+        Config::save('vividstore.thousand',',');
+
         //set defaults for shipping
-        $pkg->getConfig()->save('vividstore.sizeUnit','in');
-        $pkg->getConfig()->save('vividstore.weightUnit','lb');
+        Config::save('vividstore.sizeUnit','in');
+        Config::save('vividstore.weightUnit','l');
         
         //tax label
         $pkg->getconfig()->save('vividstore.taxName',t('Tax'));
@@ -359,19 +361,18 @@ class Controller extends Package
             FileSet::add("Digital Downloads");
         }
 
-        $this->addOrderStatusesToDatabase($pkg);
+        Installer::addOrderStatusesToDatabase($pkg);
     }
 
     public function upgrade()
     {
-        
-        if(version_compare(APP_VERSION,'5.7.4', '<')){
-            //because it's pretty much broke otherwise.    
-            $this->refreshDatabase();
-        }
-        
+
         $pkg = Package::getByHandle('vivid_store');
-                
+
+        Installer::renameDatabaseTables($pkg);
+        Installer::refreshDatabase($pkg);
+
+
         /** Version 1.1 ***********************************************/
         /**************************************************************/
         /*
@@ -408,7 +409,7 @@ class Controller extends Package
          */
         
         //first check and make sure the config isn't set. 
-        $publishTarget = $pkg->getConfig()->get('vividstore.productPublishTarget');
+        $publishTarget = Config::get('vividstore.productPublishTarget');
         if($publishTarget < 1 || empty($publishTarget)){
             //if not, install the proudct detail page if needed.    
             $productParentPage = Page::getByPath('/product-detail');
@@ -428,7 +429,7 @@ class Controller extends Package
                 Page::getByPath('/product-detail')->setAttribute('exclude_nav', 1);
             }
             //set the config to publish under the new page.            
-            $pkg->getConfig()->save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
+            Config::save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
         }
         
         /*
@@ -468,13 +469,13 @@ class Controller extends Package
         /*
          * 5. Measurement Units.
          */
-        $sizeUnits = $pkg->getConfig()->get('vividstore.sizeUnit');
+        $sizeUnits = Config::get('vividstore.sizeUnit');
         if(empty($sizeUnits)){
-            $pkg->getConfig()->save('vividstore.sizeUnit','in');
+            Config::save('vividstore.sizeUnit','in');
         }
-        $weightUnits = $pkg->getConfig()->get('vividstore.weightUnit');
+        $weightUnits = Config::get('vividstore.weightUnit');
         if(empty($weightUnits)){
-            $pkg->getConfig()->save('vividstore.weightUnit','lb');
+            Config::save('vividstore.weightUnit','lb');
         }
         
         /*
@@ -510,7 +511,21 @@ class Controller extends Package
             ), $pkg)->setAttributeSet($orderCustSet);
         }
         parent::upgrade();
-        $this->addOrderStatusesToDatabase($pkg);
+        Installer::addOrderStatusesToDatabase($pkg);
+
+        // convert legacy config items to current config storage
+        // applies for version 2.1.1 and below
+        $db = Database::get();
+        $configitems = $db->GetAll("SELECT * FROM Config WHERE configGroup='vividstore'");
+
+        if (!empty($configitems)) {
+            foreach($configitems as $config) {
+                Config::save('vividstore.' . $config['configItem'],  $config['configValue']);
+            }
+
+            $db->Execute("DELETE FROM Config WHERE configGroup='vividstore'");
+        }
+
     }
 
     private function installStoreProductPageType($pkg){
@@ -534,26 +549,6 @@ class Controller extends Package
 
     }
 
-    private function addOrderStatusesToDatabase($pkg) {
-        $table = OrderStatus::getTableName();
-        $db = Loader::db();
-        $statuses = array(
-            array('osHandle'=>'pending', 'osName'=>t('Pending'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'processing', 'osName'=>t('Processing'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'shipped', 'osName'=>t('Shipped'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-            array('osHandle'=>'complete', 'osName'=>t('Complete'), 'osInformSite'=>1, 'osInformCustomer'=>1),
-        );
-        foreach ($statuses as $status) {
-            $row = $db->GetRow("SELECT * FROM ".$table." WHERE osHandle=?", array($status['osHandle']));
-            if (!isset($row['osHandle'])) {
-                OrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer']);
-            } else {
-                $orderStatus = OrderStatus::getByID($row['osID']);
-                $orderStatus->update($status, true);
-            }
-        }
-    }
-    
     public function registerRoutes()
     {        
         Route::register('/cart/getSubTotal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getSubTotal');
@@ -582,25 +577,6 @@ class Controller extends Package
         parent::uninstall();
     }
 
-    public function refreshDatabase()
-    {
-        if (file_exists($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
-            $db = Database::get();
-            $db->beginTransaction();
-            $parser = Schema::getSchemaParser(simplexml_load_file($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
-            $parser->setIgnoreExistingTables(false);
-            $toSchema = $parser->parse($db);
-            $fromSchema = $db->getSchemaManager()->createSchema();
-            $comparator = new \Doctrine\DBAL\Schema\Comparator();
-            $schemaDiff = $comparator->compare($fromSchema, $toSchema);
-            $saveQueries = $schemaDiff->toSaveSql($db->getDatabasePlatform());
-            foreach ($saveQueries as $query) {
-                $db->query($query);
-            }
-            $db->commit();
-        }    
-    }
-  
 
 }
 ?>

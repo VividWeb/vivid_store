@@ -21,7 +21,8 @@ class OrderList  extends AttributedItemList
     {
         $this->query
         ->select('o.oID')
-        ->from('VividStoreOrders','o');
+<<<<<<< HEAD
+        ->from('VividStoreOrder','o');
 
     }
 
@@ -52,6 +53,10 @@ class OrderList  extends AttributedItemList
 
     public function setStatus($status) {
         $this->status = $status;
+=======
+        ->from('VividStoreOrders','o')
+        ->orderBy('oID', 'DESC');
+>>>>>>> e6f20d419e8103f9d05ecec2c558fbb6fbbf3af3
     }
     
     public function getResult($queryRow)

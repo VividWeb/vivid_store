@@ -7,7 +7,8 @@ use Database;
 use Package;
 use Core;
 use Loader;
-use Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
+use Config;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -27,8 +28,7 @@ class Settings extends DashboardPageController
        $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
        $this->set("installedPaymentMethods",PaymentMethod::getMethods());
        $this->set("orderStatuses",OrderStatus::getAll());
-       $pkg = Package::getByHandle('vivid_store');
-       $productPublishTarget = $pkg->getConfig()->get('vividstore.productPublishTarget');
+       $productPublishTarget = Config::get('vividstore.productPublishTarget');
        $this->set('productPublishTarget',$productPublishTarget);
     }
     public function loadFormAssets()
@@ -53,8 +53,7 @@ class Settings extends DashboardPageController
     public function save()
     {
         $this->view();
-        $pkg = Package::getByHandle('vivid_store');
-        $args = $this->post();   
+        $args = $this->post();
         
         if ($this->isPost()) {
             $errors = $this->validate($args);
@@ -62,28 +61,28 @@ class Settings extends DashboardPageController
             
             if (!$errors->has()) {
                 
-                $pkg->getConfig()->save('vividstore.symbol',$args['symbol']);
-                $pkg->getConfig()->save('vividstore.whole',$args['whole']);
-                $pkg->getConfig()->save('vividstore.thousand',$args['thousand']);
-                $pkg->getConfig()->save('vividstore.taxenabled',$args['taxEnabled']);
-                $pkg->getConfig()->save('vividstore.taxcountry',$args['taxCountry']);
-                $pkg->getConfig()->save('vividstore.taxstate',$args['taxState']);
-                $pkg->getconfig()->save('vividstore.taxcity',trim($args['taxCity']));
-                $pkg->getconfig()->save('vividstore.taxAddress',trim($args['taxAddress']));
-                $pkg->getconfig()->save('vividstore.taxMatch',trim($args['taxMatch']));
-                $pkg->getconfig()->save('vividstore.taxBased',trim($args['taxBased']));
-                $pkg->getconfig()->save('vividstore.taxrate',trim($args['taxRate']));
-                $pkg->getconfig()->save('vividstore.taxName',trim($args['taxName']));
-                $pkg->getconfig()->save('vividstore.calculation',trim($args['calculation']));
-                $pkg->getConfig()->save('vividstore.shippingenabled',$args['shippingEnabled']);
-                $pkg->getConfig()->save('vividstore.shippingbase',$args['shippingBasePrice']);
-                $pkg->getConfig()->save('vividstore.shippingitem',$args['shippingItemPrice']);
-                $pkg->getConfig()->save('vividstore.weightUnit',$args['weightUnit']);
-                $pkg->getConfig()->save('vividstore.sizeUnit',$args['sizeUnit']);
-                $pkg->getConfig()->save('vividstore.notificationemails',$args['notificationEmails']);
-                $pkg->getConfig()->save('vividstore.emailalerts',$args['emailAlert']);
-                $pkg->getConfig()->save('vividstore.productPublishTarget',$args['productPublishTarget']);
-                $pkg->getConfig()->save('vividstore.guestCheckout',$args['guestCheckout']);
+                Config::save('vividstore.symbol',$args['symbol']);
+                Config::save('vividstore.whole',$args['whole']);
+                Config::save('vividstore.thousand',$args['thousand']);
+                Config::save('vividstore.taxenabled',$args['taxEnabled']);
+                Config::save('vividstore.taxcountry',$args['taxCountry']);
+                Config::save('vividstore.taxstate',$args['taxState']);
+                Config::save('vividstore.taxcity',trim($args['taxCity']));
+                Config::save('vividstore.taxAddress',trim($args['taxAddress']));
+                Config::save('vividstore.taxMatch',trim($args['taxMatch']));
+                Config::save('vividstore.taxBased',trim($args['taxBased']));
+                Config::save('vividstore.taxrate',trim($args['taxRate']));
+                Config::save('vividstore.taxName',trim($args['taxName']));
+                Config::save('vividstore.calculation',trim($args['calculation']));
+                Config::save('vividstore.shippingenabled',$args['shippingEnabled']);
+                Config::save('vividstore.shippingbase',$args['shippingBasePrice']);
+                Config::save('vividstore.shippingitem',$args['shippingItemPrice']);
+                Config::save('vividstore.weightUnit',$args['weightUnit']);
+                Config::save('vividstore.sizeUnit',$args['sizeUnit']);
+                Config::save('vividstore.notificationemails',$args['notificationEmails']);
+                Config::save('vividstore.emailalerts',$args['emailAlert']);
+                Config::save('vividstore.productPublishTarget',$args['productPublishTarget']);
+                Config::save('vividstore.guestCheckout',$args['guestCheckout']);
 
                 //save payment methods
                 if($args['paymentMethodHandle']){

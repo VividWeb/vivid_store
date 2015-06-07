@@ -161,7 +161,6 @@ class Products extends DashboardPageController
             $templates[$pt->getPageTemplateID()] = $pt->getPageTemplateName();
         }
         $this->set('pageTemplates',$templates);
-        $this->set("pkgconfig",$pkg->getConfig());
     }
     public function save()
     {

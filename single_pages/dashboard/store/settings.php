@@ -1,4 +1,7 @@
-<?php defined('C5_EXECUTE') or die("Access Denied.");?>
+<?php defined('C5_EXECUTE') or die("Access Denied.");
+
+use \Config;
+?>
 	    <form method="post" action="<?=$view->action('save')?>">
 	        
             <div class="row">
@@ -26,15 +29,15 @@
                     
                     <div class="form-group">
                         <?php echo $form->label('symbol',t('Currency Symbol')); ?>
-                        <?php echo $form->text('symbol',$pkgconfig->get('vividstore.symbol'),array("style"=>"width:60px;"));?>
+                        <?php echo $form->text('symbol',Config::get('vividstore.symbol'),array("style"=>"width:60px;"));?>
                     </div>
                     <div class="form-group">
                         <?php echo $form->label('thousand',t('Thousands Separator %se.g. , or a space%s', "<small>", "</small>")); ?>
-                        <?php echo $form->text('thousand',$pkgconfig->get('vividstore.thousand'),array("style"=>"width:60px;"));?>
+                        <?php echo $form->text('thousand',Config::get('vividstore.thousand'),array("style"=>"width:60px;"));?>
                     </div>
                     <div class="form-group">
                         <?php echo $form->label('whole',t('Whole Number Separator %se.g. period or a comma%s', "<small>", "</small>")); ?>
-                        <?php echo $form->text('whole',$pkgconfig->get('vividstore.whole'),array("style"=>"width:60px;")); ?>
+                        <?php echo $form->text('whole',Config::get('vividstore.whole'),array("style"=>"width:60px;")); ?>
                     </div>
             
                 </div><!-- #settings-currency -->
@@ -47,20 +50,20 @@
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <?php echo $form->label('taxEnabled',t('Enable Tax')); ?>
-                                <?php echo $form->select('taxEnabled',array('no'=>t('No'),'yes'=>t('Yes')),$pkgconfig->get('vividstore.taxenabled')); ?>
+                                <?php echo $form->select('taxEnabled',array('no'=>t('No'),'yes'=>t('Yes')),Config::get('vividstore.taxenabled')); ?>
                             </div>
                         </div>
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <label for="taxName"><?=t("Tax Label")?></label>
-                                <?php echo $form->text('taxName',$pkgconfig->get('vividstore.taxName'));?>
+                                <?php echo $form->text('taxName',Config::get('vividstore.taxName'));?>
                             </div>
                         </div>
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <?php echo $form->label('taxRate',t('Tax Rate %')); ?>
                                 <div class="input-group">
-                                    <?php echo $form->text('taxRate',$pkgconfig->get('vividstore.taxrate')); ?>
+                                    <?php echo $form->text('taxRate',Config::get('vividstore.taxrate')); ?>
                                     <div class="input-group-addon">%</div>
                                 </div>
                             </div>
@@ -69,23 +72,25 @@
                     
                     <div class="form-group">
                         <label for="calculation"><?=t("Are Prices Entered with Tax Included?")?></label>
-                        <?php echo $form->select('calculation',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),$pkgconfig->get('vividstore.calculation')); ?>
+                        <?php echo $form->select('calculation',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),Config::get('vividstore.calculation')); ?>
                     </div>
 
                     <div class="form-group">
                         <label for="taxBased"><?=t("Tax is Based on the")?></label>
-                        <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),$pkgconfig->get('vividstore.taxBased')); ?>
+                        <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),Config::get('vividstore.taxBased')); ?>
                     </div>
                     
                     <h3><?=t("When to Charge Tax")?></h3>
-                   
+                    
+                    <?php echo $form->select('calculation',array('add'=>t("Calculated from total and added to order"),'extract'=>t("Already in product prices, only display as component of total")),Config::get('vividstore.calculation')); ?>
+                    
                     <div class="row">
                         
                         <div class="col-sm-5">
                    
                             <div class="form-group">
                                 <label for="taxAddress" class="control-label"><?=t("If the Customers...")?></label>
-                                <?php echo $form->select('taxAddress',array('shipping'=>t("Shipping Address"),'billing'=>t("Billing Address")),$pkgconfig->get('vividstore.taxAddress')); ?>
+                            <?php echo $form->select('taxAddress',array('shipping'=>t("Shipping Address"),'billing'=>t("Billing Address")),Config::get('vividstore.taxAddress')); ?>
                             </div>
                         
                         </div>
@@ -96,16 +101,17 @@
                             <div class="form-horizontal">
                             <div class="form-group">
                                 <label for="taxCountry" class="col-sm-5 control-label"><?=t("Country")?> <small class="text-muted"><?=t("Required")?></small></label>
-                                <div class="col-sm-7">
-                                    <?php $country = $pkgconfig->get('vividstore.taxcountry'); ?>
+                                <div class="col-sm-7">    
+                                    <?php $country = Config::get('vividstore.taxcountry'); ?>
                                     <?php echo $form->select('taxCountry',$countries,$country?$country:'US',array("onchange"=>"updateTaxStates()")); ?>    
                                 </div>
                             </div>
                             
+                            
                             <div class="form-group">
                                 <label for="taxState" class="col-sm-5 control-label"><?=t("Region")?> <small class="text-muted"><?=t("Optional")?></small></label>
-                                <div class="col-sm-7">
-                                    <?php $state = $pkgconfig->get('vividstore.taxstate'); ?>
+                                <div class="col-sm-7"> 
+                                    <?php $state = Config::get('vividstore.taxstate'); ?>
                                     <?php echo $form->select('taxState',$states,$state?$state:"", array('disabled'=>'disabled','class'=>"form-control")); ?>
                                     <?php echo $form->hidden("savedTaxState",$state); ?>
                                 </div>
@@ -113,8 +119,8 @@
         
                             <div class="form-group">
                                 <label for="taxState" class="col-sm-5 control-label"><?=t("City")?> <small class="text-muted"><?=t("Optional")?></small></label>
-                                <div class="col-sm-7">
-                                    <?php echo $form->text('taxCity',$pkgconfig->get('vividstore.taxcity'));?>
+                                <div class="col-sm-7"> 
+                                    <?php echo $form->text('taxCity',Config::get('vividstore.taxcity'));?>
                                 </div>
                             </div>
                             </div>
@@ -131,13 +137,13 @@
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <?php echo $form->label('weightUnit',t('Units for Weight'));?>
-                                <?php echo $form->select('weightUnit',array('lb'=>t('lb'),'kg'=>t('kg')),$pkgconfig->get('vividstore.weightUnit'));?>
+                                <?php echo $form->select('weightUnit',array('lb'=>t('lb'),'kg'=>t('kg')),Config::get('vividstore.weightUnit'));?>
                             </div>
                         </div> 
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <?php echo $form->label('sizeUnit',t('Units for Size'));?>
-                                <?php echo $form->select('sizeUnit',array('in'=>t('in'),'cm'=>t('cm')),$pkgconfig->get('vividstore.sizeUnit'));?>
+                                <?php echo $form->select('sizeUnit',array('in'=>t('in'),'cm'=>t('cm')),Config::get('vividstore.sizeUnit'));?>
                             </div>
                         </div>                        
                     </div>
@@ -146,15 +152,15 @@
                     
                     <div class="form-group">
                         <?php echo $form->label('shippingEnabled',t('Enabled'));?>
-                        <?php echo $form->select('shippingEnabled',array('no'=>t('No'),'yes'=>t('Yes')),$pkgconfig->get('vividstore.shippingenabled'));?>
+                        <?php echo $form->select('shippingEnabled',array('no'=>t('No'),'yes'=>t('Yes')),Config::get('vividstore.shippingenabled'));?>
                     </div>
                     <div class="form-group">
                         <?php echo $form->label('shippingBasePrice',t('Base Price')); ?>
-                        <?php echo $form->text('shippingBasePrice',$pkgconfig->get('vividstore.shippingbase'),array('style'=>'width:100px')); ?>
+                        <?php echo $form->text('shippingBasePrice',Config::get('vividstore.shippingbase'),array('style'=>'width:100px')); ?>
                     </div>
                     <div class="form-group">
                         <?php echo $form->label('shippingItemPrice',t('Additional Price Per Item')); ?>
-                        <?php echo $form->text('shippingItemPrice',$pkgconfig->get('vividstore.shippingitem'),array('style'=>'width:100px')); ?>
+                        <?php echo $form->text('shippingItemPrice',Config::get('vividstore.shippingitem'),array('style'=>'width:100px')); ?>
                     </div>
                     
             
@@ -269,12 +275,12 @@
                 
                     <div class="form-group">
                         <?php echo $form->label('notificationEmails',t('Enter Emails to Notify of New Orders %sseparate multiple emails with commas%s', '<small class="text-muted">','</small>')); ?>
-                        <?php echo $form->text('notificationEmails',$pkgconfig->get('vividstore.notificationemails'));?>
+                        <?php echo $form->text('notificationEmails',Config::get('vividstore.notificationemails'));?>
                     </div>
                     
                     <div class="form-group">
                         <?php echo $form->label('emailAlert',t('Email address to send alerts from'));?>
-                        <?php echo $form->text('emailAlert',$pkgconfig->get('vividstore.emailalerts')); ?>
+                        <?php echo $form->text('emailAlert',Config::get('vividstore.emailalerts')); ?>
                     </div>
             
                 </div>
@@ -294,7 +300,7 @@
 
                     <div class="form-group">
                         <h3><?php echo t('Guest checkout');?></h3>
-                        <?php $guestCheckout =  $pkgconfig->get('vividstore.guestCheckout');
+                        <?php $guestCheckout =  Config::get('vividstore.guestCheckout');
                         $guestCheckout = ($guestCheckout ? $guestCheckout : 'off');
                         ?>
                         <label><?php echo $form->radio('guestCheckout','off', $guestCheckout == 'off' || $guestCheckout == '' ); ?> <?php  echo t('Disabled'); ?></label><br />

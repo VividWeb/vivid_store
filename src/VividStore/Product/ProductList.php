@@ -44,7 +44,7 @@ class ProductList extends AttributedItemList
     {
         $this->query
         ->select('p.pID')
-        ->from('VividStoreProduct','p');
+        ->from('VividStoreProducts','p');
     }
 
     public function setSearch($search) {
@@ -69,10 +69,10 @@ class ProductList extends AttributedItemList
         }
         switch ($this->featured){
             case "featured":
-                $query->andWhere("pFeatured = 'yes'");
+                $query->andWhere("pFeatured = 1");
                 break;
             case "nonfeatured":
-                $query->andWhere("pFeatured = 'no'");
+                $query->andWhere("pFeatured = 0");
                 break;
         }
         if($this->activeOnly){

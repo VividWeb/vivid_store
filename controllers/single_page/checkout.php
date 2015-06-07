@@ -10,6 +10,8 @@ use User;
 use UserInfo;
 use Session;
 use Config;
+use Loader;
+use UserAttributeKey;
 
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
@@ -25,7 +27,7 @@ class Checkout extends PageController
 
         $customer = new Customer();
         $this->set('customer', $customer);
-        $guestCheckout = $pkg->getConfig()->get('vividstore.guestCheckout');
+        $guestCheckout = Config::get('vividstore.guestCheckout');
         $this->set('guestCheckout', ($guestCheckout ? $guestCheckout : 'off'));
         $this->set('requiresLogin', VividCart::requiresLogin());
 
@@ -33,19 +35,71 @@ class Checkout extends PageController
             $this->redirect("/cart/");
         }
         $this->set('form',Core::make("helper/form"));
-        $this->set("countries",Core::make('helper/lists/countries')->getCountries());
+
+        $allcountries = Core::make('helper/lists/countries')->getCountries();
+
+        $db = Loader::db();
+
+        $ak = UserAttributeKey::getByHandle('billing_address');
+        $row = $db->GetRow(
+            'select akHasCustomCountries, akDefaultCountry from atAddressSettings where akID = ?',
+            array($ak->getAttributeKeyID())
+        );
+
+        $defaultBillingCountry = $row['akDefaultCountry'];
+
+        if ($row['akHasCustomCountries'] == 1) {
+            $availableBillingCountries = $db->GetCol(
+                'select country from atAddressCustomCountries where akID = ?',
+                array($ak->getAttributeKeyID())
+            );
+
+            $billingCountries = array();
+            foreach($availableBillingCountries as $countrycode) {
+                $billingCountries[$countrycode] = $allcountries[$countrycode];
+            }
+        } else {
+            $billingCountries =  $allcountries;
+        }
+
+        $ak = UserAttributeKey::getByHandle('shipping_address');
+        $row = $db->GetRow(
+            'select akHasCustomCountries, akDefaultCountry from atAddressSettings where akID = ?',
+            array($ak->getAttributeKeyID())
+        );
+
+        $defaultShippingCountry = $row['akDefaultCountry'];
+
+        if ($row['akHasCustomCountries'] == 1) {
+            $availableShippingCountries = $db->GetCol(
+                'select country from atAddressCustomCountries where akID = ?',
+                array($ak->getAttributeKeyID())
+            );
+
+            $shippingCountries = array();
+            foreach($availableShippingCountries as $countrycode) {
+                $shippingCountries[$countrycode] = $allcountries[$countrycode];
+            }
+        } else {
+            $shippingCountries = $allcountries;
+        }
+
+
+        $this->set("billingCountries",$billingCountries);
+        $this->set("shippingCountries",$shippingCountries);
+
+        $this->set("defaultBillingCountry",$defaultBillingCountry);
+        $this->set("defaultShippingCountry",$defaultShippingCountry);
+
         $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
 
         $totals = VividCart::getTotals();
 
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
-
         $this->set('subtotal',$totals['subTotal']);
         $this->set('taxes',$totals['taxes']);
 
-        $calculation = $pkgconfig->get('vividstore.calculation');
-        $this->set('calculation',$calculation);
+        $taxBased = Config::get('vividstore.taxBased');
+        $taxlabel = Config::get('vividstore.taxName');
         
         $this->set('taxtotal',$totals['taxTotal']);
 

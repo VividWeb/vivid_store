@@ -9,6 +9,7 @@ use Database;
 use File;
 use Core;
 use User;
+use Config;
 
 use Concrete\Core\Permission\Assignment\FileAssignment;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
@@ -23,13 +24,13 @@ class Product extends Object
     public static function getByID($pID) 
     {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreProduct WHERE pID=?",$pID);
+        $data = $db->GetRow("SELECT * FROM VividStoreProducts WHERE pID=?",$pID);
         return self::load($data);
     }  
     public static function getByCollectionID($cID)
     {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreProduct WHERE cID=?",$cID);
+        $data = $db->GetRow("SELECT * FROM VividStoreProducts WHERE cID=?",$cID);
         return self::load($data);
     }
     public function load($data)
@@ -50,43 +51,43 @@ class Product extends Object
                 
             //update product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pID']);
-            $db->Execute('UPDATE VividStoreProduct SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=? WHERE pID = ?', $vals);
+            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=? WHERE pID = ?', $vals);
             
             //update additional images
-            $db->Execute('DELETE from VividStoreProductImage WHERE pID = ?', $data['pID']);
+            $db->Execute('DELETE FROM VividStoreProductImages WHERE pID = ?', $data['pID']);
             $count = count($data['pifID']);
             if($count>0){
                 for($i=0;$i<$count;$i++){
                     $vals = array($data['pID'],$data['pifID'][$i],$data['piSort'][$i]);
-                    $db->Execute("INSERT into VividStoreProductImage(pID,pifID,piSort) values(?,?,?)",$vals);
+                    $db->Execute("INSERT INTO VividStoreProductImages (pID,pifID,piSort) VALUES (?,?,?)",$vals);
                 }
             }
 
             //update user groups
-            $db->Execute('DELETE from VividStoreProductUserGroups WHERE pID = ?', $data['pID']);
+            $db->Execute('DELETE FROM VividStoreProductUserGroups WHERE pID = ?', $data['pID']);
             if (!empty($data['pUserGroups'])) {
                 foreach($data['pUserGroups'] as $gID){
                     $vals = array($data['pID'],$gID);
-                    $db->Execute("INSERT into VividStoreProductUserGroups(pID,gID) values(?,?)",$vals);
+                    $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
             
             //update option groups
-            $db->Execute('DELETE from VividStoreProductOptionGroup WHERE pID = ?', $data['pID']);
-            $db->Execute('DELETE from VividStoreProductOptionItem WHERE pID = ?', $data['pID']);
+            $db->Execute('DELETE FROM VividStoreProductOptionGroups WHERE pID = ?', $data['pID']);
+            $db->Execute('DELETE FROM VividStoreProductOptionItems WHERE pID = ?', $data['pID']);
             $count = count($data['pogSort']);
             $ii=0;//set counter for items
             if($count>0){
                 for($i=0;$i<$count;$i++){
                     $vals = array($data['pID'],$data['pogName'][$i],$data['pogSort'][$i]);
-                    $db->Execute("INSERT into VividStoreProductOptionGroup(pID,pogName,pogSort) values(?,?,?)",$vals);                    
+                    $db->Execute("INSERT INTO VividStoreProductOptionGroups (pID,pogName,pogSort) VALUES (?,?,?)",$vals);
                         //add option items
                         $pogID = $db->lastInsertId();
                         $itemsInGroup = count($data['optGroup'.$i]);
                         if($itemsInGroup>0){
                             for($gi=0;$gi<$itemsInGroup;$gi++,$ii++){
                                 $vals = array($data['pID'],$pogID,$data['poiName'][$ii],$data['poiSort'][$ii]);
-                                $db->Execute("INSERT into VividStoreProductOptionItem(pID,pogID,poiName,poiSort) values(?,?,?,?)",$vals);
+                                $db->Execute("INSERT INTO VividStoreProductOptionItems (pID,pogID,poiName,poiSort) VALUES (?,?,?,?)",$vals);
                             }
                         }
                 }
@@ -100,7 +101,7 @@ class Product extends Object
             
             //add product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$now);
-            $db->Execute("INSERT into VividStoreProduct (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pDateAdded) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
             
             //add additional images
             $pID = $db->lastInsertId();
@@ -108,7 +109,7 @@ class Product extends Object
             if($count>0){
                 for($i=0;$i<$count;$i++){
                     $vals = array($pID,$data['pifID'][$i],$data['piSort'][$i]);
-                    $db->Execute("INSERT into VividStoreProductImage(pID,pifID,piSort) values(?,?,?)",$vals);
+                    $db->Execute("INSERT INTO VividStoreProductImages (pID,pifID,piSort) VALUES (?,?,?)",$vals);
                 }
             }
 
@@ -116,7 +117,7 @@ class Product extends Object
             if (!empty($data['pUserGroups'])) {
                 foreach($data['pUserGroups'] as $gID){
                     $vals = array($pID,$gID);
-                    $db->Execute("INSERT into VividStoreProductUserGroups(pID,gID) values(?,?)",$vals);
+                    $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
             
@@ -126,14 +127,14 @@ class Product extends Object
             if($count>0){
                 for($i=0;$i<$count;$i++){
                     $vals = array($pID,$data['pogName'][$i],$data['pogSort'][$i]);
-                    $db->Execute("INSERT into VividStoreProductOptionGroup(pID,pogName,pogSort) values(?,?,?)",$vals);
+                    $db->Execute("INSERT INTO VividStoreProductOptionGroups (pID,pogName,pogSort) VALUES (?,?,?)",$vals);
                         //add option items
                         $pogID = $db->lastInsertId();
                         $itemsInGroup = count($data['optGroup'.$i]);
                         if($itemsInGroup>0){
                             for($gi=0;$gi<$itemsInGroup;$gi++,$ii++){
                                 $vals = array($pID,$pogID,$data['poiName'][$ii],$data['poiSort'][$ii]);
-                                $db->Execute("INSERT into VividStoreProductOptionItem(pID,pogID,poiName,poiSort) values(?,?,?,?)",$vals);
+                                $db->Execute("INSERT INTO VividStoreProductOptionItems (pID,pogID,poiName,poiSort) VALUES (?,?,?,?)",$vals);
                             }
                         }
                 }
@@ -144,13 +145,13 @@ class Product extends Object
         }
 
         //save files
-        $db->Execute("DELETE FROM VividStoreDigitalFile WHERE pID=?",$pID);
+        $db->Execute("DELETE FROM VividStoreDigitalFiles WHERE pID=?",$pID);
         $u = User::getByUserID(1);
         $ui = \UserInfo::getByID($u->getUserID());
         if($data['dffID']){
             foreach($data['dffID'] as $dffID){
                 if($dffID){
-                    $db->Execute("INSERT into VividStoreDigitalFile(dffID,pID) values(?,?)",array($dffID,$pID));
+                    $db->Execute("INSERT INTO VividStoreDigitalFiles(dffID,pID) VALUES (?,?)",array($dffID,$pID));
                     $fileObj = File::getByID($dffID);
                     $fs = \FileSet::getByName("Digital Downloads");
                     $fs->addFileToSet($fileObj);
@@ -176,14 +177,14 @@ class Product extends Object
     public function remove()
     {
         $db = Database::get();
-        $db->Execute("DELETE from VividStoreProduct WHERE pID=?",$this->pID);
-        $db->Execute("DELETE from VividStoreProductImage WHERE pID=?",$this->pID);
-        $db->Execute("DELETE from VividStoreProductOptionGroup WHERE pID=?",$this->pID);
-        $db->Execute("DELETE from VividStoreProductOptionItem WHERE pID=?",$this->pID);
+        $db->Execute("DELETE FROM VividStoreProducts WHERE pID=?",$this->pID);
+        $db->Execute("DELETE FROM VividStoreProductImages WHERE pID=?",$this->pID);
+        $db->Execute("DELETE FROM VividStoreProductOptionGroups WHERE pID=?",$this->pID);
+        $db->Execute("DELETE FROM VividStoreProductOptionItems WHERE pID=?",$this->pID);
     }
     public function generatePage($templateID=null){
         $pkg = Package::getByHandle('vivid_store');
-        $targetCID = $pkg->getConfig()->get('vividstore.productPublishTarget');
+        $targetCID = Config::get('vividstore.productPublishTarget');
         $parentPage = Page::getByID($targetCID);
         $pageType = PageType::getByHandle('store_product');
         $pageTemplate = $pageType->getPageTypeDefaultPageTemplateObject();
@@ -209,7 +210,7 @@ class Product extends Object
     {
         $db = Database::get();
         $vals = array($cID,$this->pID);
-        $db->Execute('UPDATE VividStoreProduct SET cID=? WHERE pID = ?', $vals);
+        $db->Execute('UPDATE VividStoreProducts SET cID=? WHERE pID = ?', $vals);
             
     }
     public function getProductID(){ return $this->pID; }
@@ -270,7 +271,7 @@ class Product extends Object
     public function getProductDownloadFileIDs() 
     {
         $db = Database::get();
-        $results = $db->GetAll("SELECT dffID FROM VividStoreDigitalFile WHERE pID=?",$this->pID);
+        $results = $db->GetAll("SELECT dffID FROM VividStoreDigitalFiles WHERE pID=?",$this->pID);
         return $results;
     }
     public function getProductDownloadFileObjects(){
@@ -283,7 +284,7 @@ class Product extends Object
     }
     public function hasUserGroups(){
         $db = Database::get();
-        $usergroupcount = $db->GetOne("SELECT count(*) as count FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);
+        $usergroupcount = $db->GetOne("SELECT COUNT(*) AS userGroupCount FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);
         return ($usergroupcount > 0);
     }
     public function getProductUserGroups(){
@@ -312,36 +313,36 @@ class Product extends Object
     public function setProductQty($qty)
     {  
         $db = Database::get();
-        $db->Execute("UPDATE VividStoreProduct SET pQty=? WHERE pID=?",array($qty,$this->pID));
+        $db->Execute("UPDATE VividStoreProducts SET pQty=? WHERE pID=?",array($qty,$this->pID));
     }
     public function getProductImages()
     {
         $db = Database::get();
-        $productImages = $db->GetAll("SELECT * FROM VividStoreProductImage WHERE pID=?",$this->pID);
+        $productImages = $db->GetAll("SELECT * FROM VividStoreProductImages WHERE pID=?",$this->pID);
         return $productImages;
     }
     public function getProductOptionGroups()
     {
         $db = Database::get();
-        $optionGroups = $db->GetAll("SELECT * FROM VividStoreProductOptionGroup WHERE pID=? ORDER BY pogSort",$this->pID);
+        $optionGroups = $db->GetAll("SELECT * FROM VividStoreProductOptionGroups WHERE pID=? ORDER BY pogSort",$this->pID);
         return $optionGroups;
     }
     public function getProductOptionGroupNameByID($id)
     {
         $db = Database::get();
-        $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroup WHERE pogID=?",$id);
+        $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroups WHERE pogID=?",$id);
         return $optionGroup['pogName'];
     }
     public function getProductOptionItems()
     {
         $db = Database::get();
-        $optionItems = $db->GetAll("SELECT * FROM VividStoreProductOptionItem WHERE pID=? ORDER BY poiSort",$this->pID);
+        $optionItems = $db->GetAll("SELECT * FROM VividStoreProductOptionItems WHERE pID=? ORDER BY poiSort",$this->pID);
         return $optionItems;
     } 
      public function getProductOptionValueByID($id)
     {
         $db = Database::get();
-        $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItem WHERE poiID=?",$id);
+        $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
         return $optionItem['poiName'];
     }
     public function setAttribute($ak, $value)
@@ -366,7 +367,7 @@ class Product extends Object
         $db = Database::get();
         $av = false;
         $v = array($this->getProductID(), $ak->getAttributeKeyID());
-        $avID = $db->GetOne("select avID from VividStoreProductAttributeValues where pID = ? and akID = ?", $v);
+        $avID = $db->GetOne("SELECT avID FROM VividStoreProductAttributeValues WHERE pID=? AND akID=?", $v);
         if ($avID > 0) {
             $av = StoreProductValue::getByID($avID);
             if (is_object($av)) {
@@ -380,7 +381,7 @@ class Product extends Object
         
             // Is this avID in use ?
             if (is_object($av)) {
-                $cnt = $db->GetOne("select count(avID) from VividStoreProductAttributeValues where avID = ?", $av->getAttributeValueID());
+                $cnt = $db->GetOne("SELECT COUNT(avID) FROM VividStoreProductAttributeValues WHERE avID=?", $av->getAttributeValueID());
             }
             
             if ((!is_object($av)) || ($cnt > 1)) {

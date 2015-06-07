@@ -49,7 +49,7 @@ if(is_object($p)){?>
             <div class="product-dimensions">
                 <strong><?=t("Dimensions")?>:</strong>
                 <?=$p->getDimensions()?>
-                <?php echo Package::getByHandle('vivid_store')->getConfig()->get('vividstore.sizeUnit'); ?>
+                <?php echo Config::get('vividstore.sizeUnit'); ?>
             </div>
             <?php } ?>
             
@@ -57,7 +57,7 @@ if(is_object($p)){?>
             <div class="product-weight">
                 <strong><?=t("Weight")?>:</strong>
                 <?=$p->getProductWeight()?>
-                <?php echo Package::getByHandle('vivid_store')->getConfig()->get('vividstore.weightUnit'); ?>
+                <?php echo Config::get('vividstore.weightUnit'); ?>
             </div>
             <?php } ?>
             
