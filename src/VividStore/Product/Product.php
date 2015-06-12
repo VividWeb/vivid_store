@@ -151,7 +151,7 @@ class Product extends Object
         if($data['dffID']){
             foreach($data['dffID'] as $dffID){
                 if($dffID){
-                    $db->Execute("INSERT INTO VividStoreDigitalFile(dffID,pID) VALUES (?,?)",array($dffID,$pID));
+                    $db->Execute("INSERT INTO VividStoreDigitalFiles(dffID,pID) VALUES (?,?)",array($dffID,$pID));
                     $fileObj = File::getByID($dffID);
                     $fs = \FileSet::getByName("Digital Downloads");
                     $fs->addFileToSet($fileObj);
