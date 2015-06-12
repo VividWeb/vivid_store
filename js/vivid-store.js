@@ -51,7 +51,7 @@ exitModal: function(){
             vividStore.waiting();
             $.ajax({ 
                 url: CARTURL+"/add",
-                data: {data: cereal},
+                data: cereal,
                 type: 'post',
                 success: function() {
                     $(".whiteout").remove();

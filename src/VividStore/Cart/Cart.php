@@ -16,18 +16,13 @@ class Cart
 {
     public function add($data)
     {
-        //take our jQuery serialized data, and make it an associative array    
         $product = array();
-        parse_str($data['data'],$product);
-        
-        $product['pID'] = (int) $product['pID'];
-        $product['quantity'] = (int) $product['quantity'];
-        
+
         //now, build a nicer "cart item"
         $cartItem = array();
         $cartItem['product'] = array(
-            "pID"=>$product['pID'],
-            "qty"=>$product['quantity']
+            "pID"=>(int) $data['pID'],
+            "qty"=>(int) $data['quantity']
         );
         unset($product['pID']);
         unset($product['quantity']);
@@ -309,18 +304,21 @@ class Cart
     public function getTotals() {
         $subTotal = Price::getFloat(Cart::getSubTotal());
         $taxes = self::getTaxes();
-        $taxTotal = 0;
+        $addedTaxTotal = 0;
         $includedTaxTotal = 0;
 
         foreach($taxes as $tax) {
-            $taxTotal += $tax['taxamount'];
+            if ($tax['calculation'] != 'extract') {
+                $addedTaxTotal += $tax['taxamount'];
+            } else {
+                $includedTaxTotal += $tax['taxamount'];
+            }
         }
 
         $shippingTotal = Price::getFloat(Cart::getShippingTotal());
-        //$total = ($subTotal + $taxTotal + $shippingTotal);
-        $total = self::getTotal();
-        
-        return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$taxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
+        $total = ($subTotal + $addedTaxTotal + $shippingTotal);
+
+        return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
     }
 
 
