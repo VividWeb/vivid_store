@@ -123,7 +123,7 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
             </div>
             
         </form>
-        
+        <?php if ($shippingEnabled) { ?>
         <form class="checkout-form-group" id="checkout-form-group-shipping">
             
             <h2><?=t("Shipping Address")?></h2>
@@ -198,7 +198,6 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
             </div>
             
         </form>
-        
         <!--
         <div class="checkout-form-group" id="checkout-form-group-shipping-method">
             
@@ -206,7 +205,8 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
             
         </div>
         -->
-        
+      <?php } ?>
+
         <form class="checkout-form-group" id="checkout-form-group-payment" method="post" action="<?=View::url('/checkout/submit')?>">
             
             <h2><?=t("Payment")?></h2>
@@ -281,8 +281,9 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
                 }
                 ?>
             </span>
+            <?php if ($shippingEnabled) { ?>
             <strong><?=t("Shipping")?>:</strong> <?=Price::format($shippingtotal);?><br>
-
+            <?php } ?>
         </p>
         <p><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></p>
         
