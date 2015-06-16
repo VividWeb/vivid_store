@@ -46,7 +46,10 @@ class History extends Object
     }
 
     public function getUserName() {
-        return $this->getUser()->getUserName();
+        $u = $this->getUser();
+        if($u){    
+            return $u->getUserName();
+        }
     }
 
     private static function getTableName()
