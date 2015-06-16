@@ -1,6 +1,7 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 ?>
 
 <?php if ($controller->getTask() == 'order'){ ?>
@@ -28,25 +29,18 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <h4><?=t("Billing Information")?></h4>
             <p>
                 <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
-                <?=$order->getAttribute("billing_address")->address1?><br>
-                <?php if($order->getAttribute("billing_address")->address2){
-                    echo $order->getAttribute("billing_address")->address2 . "<br>";
-                } ?>
-                <?=$order->getAttribute("billing_address")->city?>, <?=$order->getAttribute("billing_address")->state_province?> <?=$order->getAttribute("billing_address")->postal_code?><br>
-                <?=$order->getAttribute("billing_phone")?>
+                <?=$order->getAttributeValueObject(StoreOrderKey::getByHandle('billing_address'))->getValue('displaySanitized', 'display'); ?>
+                <br /> <br /><?php echo t('Phone'); ?>: <?=$order->getAttribute("billing_phone")?>
             </p>
         </div>
         <div class="col-sm-6">
+            <?php if ($order->getAttribute("shipping_address")->address1) { ?>
             <h4><?=t("Shipping Information")?></h4>
             <p>
                 <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?><br>
-                <?=$order->getAttribute("shipping_address")->address1?><br>
-                <?php if($order->getAttribute("shipping_address")->address2){
-                    echo $order->getAttribute("shipping_address")->address2 . "<br>";
-                } ?>
-                <?=$order->getAttribute("shipping_address")->city?>, <?=$order->getAttribute("shipping_address")->state_province?> <?=$order->getAttribute("shipping_address")->postal_code?><br>
-                
+                <?=$order->getAttributeValueObject(StoreOrderKey::getByHandle('shipping_address'))->getValue('displaySanitized', 'display'); ?>
             </p>
+            <?php } ?>
         </div>
     </div>
     <h3><?=t("Order Items")?></h3>
