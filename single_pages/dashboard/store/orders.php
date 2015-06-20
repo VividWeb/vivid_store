@@ -48,7 +48,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
     <table class="table table-striped">
         <thead>
             <tr>
-                <th><strong><?=t("Product Name")?></strong></th>
+                <th><strong><?=t("Product Name / Code")?></strong></th>
                 <th><?=t("Product Options")?></th>
                 <th><?=t("Price")?></th>
                 <th><?=t("Quantity")?></th>
@@ -63,7 +63,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                     foreach($items as $item){
               ?>
                 <tr>
-                    <td><?=$item->getProductName()?></td>
+                    <td><?=$item->getProductName()?> <?php $code = $item->getProductCode(); echo ($code ? '('. $code . ')' :'');?></td>
                     <td>
                         <?php
                             $options = $item->getProductOptions();

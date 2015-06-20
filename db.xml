@@ -5,6 +5,7 @@
 		<field name="gID" type="I"></field>
 		<field name="cID" type="I"></field>
 		<field name="pName" type="C" size="255"></field>
+        <field name="pCode" type="C" size="255"></field>
 		<field name="pDesc" type="X2"></field>
 		<field name="pDetail" type="X2"></field>
 		<field name="pPrice" type="C" size="10"></field>
@@ -89,6 +90,7 @@
         <field name="pID" type="I"></field>
         <field name="oID" type="I"></field>
         <field name="oiProductName" type="C" size="255"></field>
+        <field name="oiProductCode" type="C" size="255"></field>
         <field name="oiPricePaid" type="N" size="10.4"></field>
         <field name="oiTax" type="N" size="10.4"></field>
         <field name="oiTaxIncluded" type="N" size="10.4"></field>

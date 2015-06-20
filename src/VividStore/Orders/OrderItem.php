@@ -24,14 +24,17 @@ class OrderItem extends Object
         $db = Database::get();
         $product = VividProduct::getByID($data['product']['pID']);
         $productName = $product->getProductName();
+
+        // may be replaced in future if product variations have different SKUs
+        $productCode = $product->getProductCode();
         $productPrice = Price::getFloat($product->getFormattedPrice());
         $qty = $data['product']['qty'];
         $inStock = $product->getProductQty();
         $newStock = $inStock - $qty;
         $product->setProductQty($newStock);
         $pID = $product->getProductID();
-        $values = array($oID,$pID,$productName,$productPrice,$tax,$taxIncluded,$taxName,$qty);
-        $db->Execute("INSERT INTO VividStoreOrderItems (oID,pID,oiProductName,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) VALUES (?,?,?,?,?,?,?,?)",$values);
+        $values = array($oID,$pID,$productName,$productCode,$productPrice,$tax,$taxIncluded,$taxName,$qty);
+        $db->Execute("INSERT INTO VividStoreOrderItems (oID,pID,oiProductName,oiProductCode,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) VALUES (?,?,?,?,?,?,?,?,?)",$values);
         
         $oiID = $db->lastInsertId();
         
@@ -65,6 +68,7 @@ class OrderItem extends Object
     }    
     
     public function getProductName(){ return $this->oiProductName; }
+    public function getProductCode(){ return $this->oiProductCode; }
     public function getPricePaid() { return $this->oiPricePaid; }
     public function getQty() { return $this->oiQty; }
     public function getSubTotal()
