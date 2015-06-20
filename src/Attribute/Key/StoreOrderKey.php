@@ -7,7 +7,7 @@ use Package;
 use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Core\Attribute\Key\Key as Key;
-defined('C5_EXECUTE') or die(_("Access Denied."));
+
 class StoreOrderKey extends Key {
 
     public function getAttributes($oID, $method = 'getValue') {

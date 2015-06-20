@@ -28,12 +28,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <div class="vivid-store-side-panel">
                         <ul>
                             <li><a href="#product-overview" data-pane-toggle class="active"><?=t('Overview')?></a></li>
-                            <li><a href="#product-digital" data-pane-toggle><?=t("Downloads and User Groups")?></a></li>
-                            <li><a href="#product-images" data-pane-toggle><?=t('Images')?></a></li>
-                            <li><a href="#product-details" data-pane-toggle><?=t('Details')?></a></li>
-                            <li><a href="#product-options" data-pane-toggle><?=t('Options')?></a></li>
                             <li><a href="#product-shipping" data-pane-toggle><?=t('Shipping')?></a></li>
+                            <li><a href="#product-images" data-pane-toggle><?=t('Images')?></a></li>
+                            <li><a href="#product-options" data-pane-toggle><?=t('Options')?></a></li>
                             <li><a href="#product-attributes" data-pane-toggle><?=t('Attributes')?></a></li>
+                            <li><a href="#product-digital" data-pane-toggle><?=t("Downloads and User Groups")?></a></li>
                             <li><a href="#product-page" data-pane-toggle><?=t('Detail Page')?></a></li>
                         </ul>
                     </div>
@@ -46,204 +45,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <?php echo $form->text("pName", $p->getProductName());?>
                     </div>
                     <div class="form-group">
-                        <?php echo $form->label("pDesc", t("Short Description"));?><br>
-                        <textarea class="redactor-content" name="pDesc" id="pDesc" style="display:none;"><?=$p->getProductDesc()?></textarea>
-                        <script type="text/javascript">
-                            $(function(){
-                                $('#pDesc').redactor({
-                                    minHeight: '100',
-                                    'concrete5': {
-                                        filemanager: <?php echo $fp->canAccessFileManager()?>,
-                                        sitemap: <?php echo $tp->canAccessSitemap()?>,
-                                        lightbox: true
-                                    }
-                                });
-                            });
-                        </script>
-                    </div>
-                    <div class="form-group">
-                        <?php echo $form->label("pDesc", t("Product Details (Long Description)"));?><br>
-                        <textarea class="redactor-content" name="pDetail" id="pDetail" style="display:none;"><?=$p->getProductDetail()?></textarea>
-                        <script type="text/javascript">
-                            $(function(){
-                                $('#pDetail').redactor({
-                                    minHeight: '200',
-                                    'concrete5': {
-                                        filemanager: <?php echo $fp->canAccessFileManager()?>,
-                                        sitemap: <?php echo $tp->canAccessSitemap()?>,
-                                        lightbox: true
-                                    }
-                                });
-                            });
-                        </script>
-                    </div>
-                    
-            
-                </div><!-- #product-overview -->
-                
-                <div class="col-sm-7 store-pane" id="product-digital">
-                    
-                    <?php if (Config::get('concrete.permissions.model') != 'simple') { ?>
-                    <?php
-                    $files = $p->getProductDownloadFileObjects();
-                    for($i=0;$i<1;$i++){
-                        $file = $files[$i];
-                    ?>  
-                        <div class="form-group">
-                            <?php echo $form->label("dffID".$i, t("File to download on purchase"));?>
-                            <?php echo $al->file('dffID'.$i, 'dffID[]', t('Choose File'), is_object($file)?$file:null)?>
-                        </div>
-                    <?php } 
-                    } else { ?>
-                        <div class="alert alert-info">
-                            <?php
-                                $a = '<a href="'.URL::to('/dashboard/system/permissions/advanced').'"><strong>';
-                                $aa = '</strong></a>';
-                                echo t("In order to have digital downloads, you need to %sturn on advanced permissions%s.",$a,$aa);
-                            ?>
-                        </div>
-                    <?php } ?>
-
-                    <div class="form-group">
-                        <?php echo $form->label("usergroups", t("On purchase add user to user groups"));?>
-                        <div class="ccm-search-field-content ccm-search-field-content-select2">
-                            <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;" placeholder="<?php echo t('Select user groups');?>">
-                                <?php
-                                $selectedusergroups = $p->getProductUserGroups();
-                                foreach ($usergroups as $ugkey=>$uglabel) { ?>
-                                    <option value="<?php echo $ugkey;?>" <?php echo (in_array($ugkey, $selectedusergroups) ? 'selected="selected"' : ''); ?>>  <?php echo $uglabel; ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
+                        <?php echo $form->label("pName", t("Product Code/SKU"));?>
+                        <?php echo $form->text("pCode", $p->getProductCode());?>
                     </div>
 
-                    <script type="text/javascript">
-                        $(function() {
-                            $('#groupselect').select2();
-                        });
-                    </script>
-
-
-                </div><!-- #product-digital -->
-                
-                <div class="col-sm-7 store-pane" id="product-images">
-            
-                    <div class="form-group">
-                        <?php echo $form->label('pfID',t("Primary Product Image")); ?>
-                        <?php $pfID = $p->getProductImageID(); ?>
-                        <?php echo $al->image('ccm-image', 'pfID', t('Choose Image'), $pfID?File::getByID($pfID):null); ?>
-                    </div>
-                    
-                    <!--
-                    <h4><?=t('Additional Images')?></h4>
-                    
-                    <div id="additional-images-container"></div>
-                    
-                    <div class="clearfix">
-                        <span class="btn btn-default" id="btn-add-image"><?=t('Add Image')?></span>
-                    </div>
-                    --->
-                    
-                    <!-- THE TEMPLATE WE'LL USE FOR EACH IMAGE -->
-                    <script type="text/template" id="image-template">   
-                        <div class="additional-image clearfix" data-order="<%=sort%>">
-                            <div class="move-shell pull-left text-center">
-                                <i class="fa fa-arrows"></i>
-                            </div>
-                            <a href="javascript:deleteImage(<%=sort%>)" class="trash-shell bg-danger text-danger pull-right">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                            <a href="javascript:chooseImage(<%=sort%>);" class="select-image pull" id="select-image-<%=sort%>">
-                                <% if (thumb.length > 0) { %>
-                                    <img src="<%= thumb %>" />
-                                <% } else { %>
-                                    <i class="fa fa-picture-o"></i> <?=t('Choose Image');?>
-                                <% } %>
-                            </a>
-                            
-                            <input type="hidden" name="pifID[]" class="image-fID" value="<%=pifID%>" />                           
-                            <input type="hidden" name="piSort" value="<%=sort%>" class="image-sort">
-                        </div><!-- .additional-image -->
-                    </script>
-                    <script type="text/javascript">
-                        var chooseImage = function(i){
-                            var imgShell = $('#select-image-'+i);
-                            ConcreteFileManager.launchDialog(function (data) {
-                                ConcreteFileManager.getFileDetails(data.fID, function(r) {
-                                    jQuery.fn.dialog.hideLoader();
-                                    var file = r.files[0];
-                                    imgShell.html(file.resultsThumbnailImg);
-                                    imgShell.next('.image-fID').val(file.fID);
-                                });
-                            });
-                        };
-                        function deleteImage(id){
-                            $(".additional-image[data-order='"+id+"']").remove();
-                        }
-                        $(function(){
-                            function indexItems(){
-                                $('#additional-images-container .additional-image').each(function(i) {
-                                    $(this).find('.image-sort').val(i);
-                                    $(this).attr("data-order",i);
-                                });
-                            };
-                            
-                            //Make items sortable. If we re-sort them, re-index them.
-                            $("#additional-images-container").sortable({
-                                handle: ".move-shell",
-                                update: function(){
-                                    indexItems();
-                                }
-                            });
-                        
-                            //Define container and items
-                            var itemsContainer = $('#additional-images-container');
-                            var itemTemplate = _.template($('#image-template').html());
-                            
-                            //load up images
-                            <?php 
-                            if($images) {
-                                foreach ($images as $image) { 
-                            ?>
-                            itemsContainer.append(itemTemplate({
-                                
-                                pifID: '<?php echo $image['pifID'] ?>',
-                                <?php if($image['pifID']) { ?>
-                                thumb: '<?php echo File::getByID($image['pifID'])->getThumbnailURL('file_manager_listing');?>',
-                                <?php } else { ?>
-                                thumb: '',
-                                <?php } ?>
-                                sort: '<?=$image['piSort'] ?>'
-                            }));
-                            <?php 
-                                }
-                            }
-                            ?>    
-                            
-                            //add item
-                            $('#btn-add-image').click(function(){            
-                                
-                                //Use the template to create a new item.
-                                var temp = $(".additional-image").length;
-                                temp = (temp);
-                                itemsContainer.append(itemTemplate({
-                                    //vars to pass to the template
-                                    pifID: '',
-                                    thumb: '',                
-                                    sort: temp
-                                }));           
-                                
-                                //Init Index
-                                indexItems();
-                            });  
-                        });  
-                
-                    </script>
-            
-                </div><!-- #product-overview -->
-                
-                <div class="col-sm-7 store-pane" id="product-details">
-            
                     <div class="row">
                         <div class="col-xs-6">
                             <div class="form-group">
@@ -273,15 +78,15 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                 <?php echo $form->select("pActive", array('1'=>t('Active'),'0'=>t('Inactive')), $p->isActive());?>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                     <div class="row">
                         <?php if($productgroups){?>
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <?php echo $form->label('gID',t('Group'));?>
-                                <?php echo $form->select('gID',$productgroups,$p->getGroupID());?>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <?php echo $form->label('gID',t('Group'));?>
+                                    <?php echo $form->select('gID',$productgroups,$p->getGroupID());?>
+                                </div>
                             </div>
-                        </div>
                         <?php } ?>
                         <div class="col-xs-6">
                             <div class="form-group">
@@ -289,10 +94,215 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                 <?php echo $form->select("pFeatured",array('0'=>t('No'),'1'=>t('Yes')), $p->isFeatured());?>
                             </div>
                         </div>
-                    </div>                 
+                    </div>
+
+                    <div class="form-group">
+                        <?php echo $form->label("pDesc", t("Short Description"));?><br>
+                        <textarea class="redactor-content" name="pDesc" id="pDesc" style="display:none;"><?=$p->getProductDesc()?></textarea>
+                        <script type="text/javascript">
+                            $(function(){
+                                $('#pDesc').redactor({
+                                    minHeight: '100',
+                                    'concrete5': {
+                                        filemanager: <?php echo $fp->canAccessFileManager()?>,
+                                        sitemap: <?php echo $tp->canAccessSitemap()?>,
+                                        lightbox: true
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+
+                    <div class="form-group">
+                        <?php echo $form->label("pDesc", t("Product Details (Long Description)"));?><br>
+                        <textarea class="redactor-content" name="pDetail" id="pDetail" style="display:none;"><?=$p->getProductDetail()?></textarea>
+                        <script type="text/javascript">
+                            $(function(){
+                                $('#pDetail').redactor({
+                                    minHeight: '200',
+                                    'concrete5': {
+                                        filemanager: <?php echo $fp->canAccessFileManager()?>,
+                                        sitemap: <?php echo $tp->canAccessSitemap()?>,
+                                        lightbox: true
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                    
             
-                </div><!-- #product-details -->
+                </div><!-- #product-overview -->
+
+
+                <div class="col-sm-7 store-pane" id="product-shipping">
+
+                    <div class="form-group">
+                        <?php echo $form->label("pShippable", t("Product is Shippable"));?>
+                        <?php echo $form->select("pShippable",array('1'=>t('Yes'),'0'=>t('No')), $p->isShippable());?>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <?php echo $form->label("pWeight", t("Weight"));?>
+                                <div class="input-group" >
+                                    <?php $weight = $p->getProductWeight(); ?>
+                                    <?=$form->text('pWeight',$weight?$weight:'0')?>
+                                    <div class="input-group-addon"><?=Config::get('vividstore.weightUnit')?></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-inline">
+                                <div class="form-group" style="width: 30%;">
+                                    <?php echo $form->label("pLength", t("Length"));?>
+                                    <div class="input-group" >
+                                        <?php $length = $p->getDimensions('l'); ?>
+                                        <?=$form->text('pLength',$length?$length:'0')?>
+                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="width: 30%;">
+                                    <?php echo $form->label("pWidth", t("Width"));?>
+                                    <div class="input-group" >
+                                        <?php $width = $p->getDimensions('w'); ?>
+                                        <?=$form->text('pWidth',$width?$width:'0')?>
+                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="width: 30%;">
+                                    <?php echo $form->label("pHeight", t("Height"));?>
+                                    <div class="input-group">
+                                        <?php $height = $p->getDimensions('h'); ?>
+                                        <?=$form->text('pHeight',$height?$height:'0')?>
+                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div><!-- #product-shipping -->
+
+                <div class="col-sm-7 store-pane" id="product-images">
+
+                    <div class="form-group">
+                        <?php echo $form->label('pfID',t("Primary Product Image")); ?>
+                        <?php $pfID = $p->getProductImageID(); ?>
+                        <?php echo $al->image('ccm-image', 'pfID', t('Choose Image'), $pfID?File::getByID($pfID):null); ?>
+                    </div>
+
+                    <!--
+                    <h4><?=t('Additional Images')?></h4>
+
+                    <div id="additional-images-container"></div>
+
+                    <div class="clearfix">
+                        <span class="btn btn-default" id="btn-add-image"><?=t('Add Image')?></span>
+                    </div>
+                    --->
+
+                    <!-- THE TEMPLATE WE'LL USE FOR EACH IMAGE -->
+                    <script type="text/template" id="image-template">
+                        <div class="additional-image clearfix" data-order="<%=sort%>">
+                            <div class="move-shell pull-left text-center">
+                                <i class="fa fa-arrows"></i>
+                            </div>
+                            <a href="javascript:deleteImage(<%=sort%>)" class="trash-shell bg-danger text-danger pull-right">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                            <a href="javascript:chooseImage(<%=sort%>);" class="select-image pull" id="select-image-<%=sort%>">
+                                <% if (thumb.length > 0) { %>
+                                <img src="<%= thumb %>" />
+                                <% } else { %>
+                                <i class="fa fa-picture-o"></i> <?=t('Choose Image');?>
+                                <% } %>
+                            </a>
+
+                            <input type="hidden" name="pifID[]" class="image-fID" value="<%=pifID%>" />
+                            <input type="hidden" name="piSort" value="<%=sort%>" class="image-sort">
+                        </div><!-- .additional-image -->
+                    </script>
+                    <script type="text/javascript">
+                        var chooseImage = function(i){
+                            var imgShell = $('#select-image-'+i);
+                            ConcreteFileManager.launchDialog(function (data) {
+                                ConcreteFileManager.getFileDetails(data.fID, function(r) {
+                                    jQuery.fn.dialog.hideLoader();
+                                    var file = r.files[0];
+                                    imgShell.html(file.resultsThumbnailImg);
+                                    imgShell.next('.image-fID').val(file.fID);
+                                });
+                            });
+                        };
+                        function deleteImage(id){
+                            $(".additional-image[data-order='"+id+"']").remove();
+                        }
+                        $(function(){
+                            function indexItems(){
+                                $('#additional-images-container .additional-image').each(function(i) {
+                                    $(this).find('.image-sort').val(i);
+                                    $(this).attr("data-order",i);
+                                });
+                            };
+
+                            //Make items sortable. If we re-sort them, re-index them.
+                            $("#additional-images-container").sortable({
+                                handle: ".move-shell",
+                                update: function(){
+                                    indexItems();
+                                }
+                            });
+
+                            //Define container and items
+                            var itemsContainer = $('#additional-images-container');
+                            var itemTemplate = _.template($('#image-template').html());
+
+                            //load up images
+                            <?php
+                            if($images) {
+                                foreach ($images as $image) {
+                            ?>
+                            itemsContainer.append(itemTemplate({
+
+                                pifID: '<?php echo $image['pifID'] ?>',
+                                <?php if($image['pifID']) { ?>
+                                thumb: '<?php echo File::getByID($image['pifID'])->getThumbnailURL('file_manager_listing');?>',
+                                <?php } else { ?>
+                                thumb: '',
+                                <?php } ?>
+                                sort: '<?=$image['piSort'] ?>'
+                            }));
+                            <?php
+                                }
+                            }
+                            ?>
+
+                            //add item
+                            $('#btn-add-image').click(function(){
+
+                                //Use the template to create a new item.
+                                var temp = $(".additional-image").length;
+                                temp = (temp);
+                                itemsContainer.append(itemTemplate({
+                                    //vars to pass to the template
+                                    pifID: '',
+                                    thumb: '',
+                                    sort: temp
+                                }));
+
+                                //Init Index
+                                indexItems();
+                            });
+                        });
+
+                    </script>
+
+                </div><!-- #product-images -->
                 
+
+
                 <div class="col-sm-7 store-pane" id="product-options">
                     
                     <h4><?=t('Options')?></h4>
@@ -505,56 +515,52 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 
                 </div>
                 
-                <div class="col-sm-7 store-pane" id="product-shipping">
-                    
-                    <div class="form-group">
-                        <?php echo $form->label("pShippable", t("Product is Shippable"));?>
-                        <?php echo $form->select("pShippable",array('1'=>t('Yes'),'0'=>t('No')), $p->isShippable());?>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-xs-6">
+
+
+                <div class="col-sm-7 store-pane" id="product-digital">
+
+                    <?php if (Config::get('concrete.permissions.model') != 'simple') { ?>
+                        <?php
+                        $files = $p->getProductDownloadFileObjects();
+                        for($i=0;$i<1;$i++){
+                            $file = $files[$i];
+                            ?>
                             <div class="form-group">
-                                <?php echo $form->label("pWeight", t("Weight"));?>
-                                <div class="input-group" >
-                                    <?php $weight = $p->getProductWeight(); ?>
-                                    <?=$form->text('pWeight',$weight?$weight:'0')?>
-                                    <div class="input-group-addon"><?=Config::get('vividstore.weightUnit')?></div>
-                                </div>
+                                <?php echo $form->label("dffID".$i, t("File to download on purchase"));?>
+                                <?php echo $al->file('dffID'.$i, 'dffID[]', t('Choose File'), is_object($file)?$file:null)?>
                             </div>
+                        <?php }
+                    } else { ?>
+                        <div class="alert alert-info">
+                            <?php
+                            $a = '<a href="'.URL::to('/dashboard/system/permissions/advanced').'"><strong>';
+                            $aa = '</strong></a>';
+                            echo t("In order to have digital downloads, you need to %sturn on advanced permissions%s.",$a,$aa);
+                            ?>
                         </div>
-                        <div class="col-xs-6">
-                            <div class="form-inline">
-                               <div class="form-group" style="width: 30%;">
-                                    <?php echo $form->label("pLength", t("Length"));?>
-                                    <div class="input-group" >
-                                        <?php $length = $p->getDimensions('l'); ?>
-                                        <?=$form->text('pLength',$length?$length:'0')?>
-                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
-                                    </div>
-                                </div>
-                                <div class="form-group" style="width: 30%;">
-                                     <?php echo $form->label("pWidth", t("Width"));?>
-                                    <div class="input-group" >
-                                        <?php $width = $p->getDimensions('w'); ?>
-                                        <?=$form->text('pWidth',$width?$width:'0')?>
-                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
-                                    </div>
-                                </div>
-                                <div class="form-group" style="width: 30%;">
-                                     <?php echo $form->label("pHeight", t("Height"));?>
-                                    <div class="input-group">
-                                        <?php $height = $p->getDimensions('h'); ?>
-                                        <?=$form->text('pHeight',$height?$height:'0')?>
-                                        <div class="input-group-addon"><?=Config::get('vividstore.sizeUnit')?></div>
-                                    </div>
-                                </div>
-                            </div>
+                    <?php } ?>
+
+                    <div class="form-group">
+                        <?php echo $form->label("usergroups", t("On purchase add user to user groups"));?>
+                        <div class="ccm-search-field-content ccm-search-field-content-select2">
+                            <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;" placeholder="<?php echo t('Select user groups');?>">
+                                <?php
+                                $selectedusergroups = $p->getProductUserGroups();
+                                foreach ($usergroups as $ugkey=>$uglabel) { ?>
+                                    <option value="<?php echo $ugkey;?>" <?php echo (in_array($ugkey, $selectedusergroups) ? 'selected="selected"' : ''); ?>>  <?php echo $uglabel; ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
-                        
                     </div>
-                
-                </div>
+
+                    <script type="text/javascript">
+                        $(function() {
+                            $('#groupselect').select2();
+                        });
+                    </script>
+
+
+                </div><!-- #product-digital -->
                 
                 <div class="col-sm-7 store-pane" id="product-page">
                     
@@ -641,6 +647,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <thead>
                 <th><a><?=t('Primary Image')?></a></th>
                 <th><a><?=t('Product Name')?></a></th>
+                <th><a><?=t('Code')?></a></th>
                 <th><a><?=t('Quantity')?></a></th>
                 <th><a><?=t('Price')?></a></th>
                 <th><a><?=t('Featured')?></a></th>
@@ -655,6 +662,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <tr>
                             <td><?php echo $p->getProductImageThumb();?></td>
                             <td><strong><?= $p->getProductName() ?></strong></td>
+                            <td><?= $p->getProductCode() ?></td>
                             <td><?= $p->getProductQty() ?></td>
                             <td><?= $p->getFormattedPrice() ?></td>
                             <td>
