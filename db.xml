@@ -128,6 +128,8 @@
 
     <table name="VividStoreDiscountRules">
         <field name="drID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="drName" type="C" size="255"></field>
+        <field name="drDeleted" type="T"></field>
     </table>
 
     <table name="VividStoreDiscountCodes">
