@@ -125,4 +125,16 @@
         <field name="pmEnabled" type="I"></field>
         <field name="pkgID" type="I"></field>
     </table>
+
+    <table name="VividStoreDiscountRules">
+        <field name="drID" type="I"><key /><unsigned /><autoincrement/></field>
+    </table>
+
+    <table name="VividStoreDiscountCodes">
+        <field name="dcID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="drID" type="I"><key/><unsigned/></field>
+        <field name="dcCode" type="C" size="255"></field>
+        <field name="dcUsed" type="T"></field>
+    </table>
+
 </schema>
