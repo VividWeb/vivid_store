@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.2';
+    protected $pkgVersion = '2.2.1.3';
 
     public function getPackageDescription()
     {
@@ -57,6 +57,7 @@ class Controller extends Package
         SinglePage::add('/dashboard/store/orders/',$pkg);
         SinglePage::add('/dashboard/store/products/',$pkg);
         SinglePage::add('/dashboard/store/products/attributes',$pkg);
+        SinglePage::add('/dashboard/store/discounts/',$pkg);
         SinglePage::add('/dashboard/store/settings/',$pkg);
         
         //install our cart/checkout pages
@@ -338,7 +339,7 @@ class Controller extends Package
                 'akName' => t('Shipping Address')
             ), $pkg)->setAttributeSet($orderCustSet);
         }
-        
+
         //create custom attribute category for products
         $pakc = AttributeKeyCategory::getByHandle('store_product');
         if (!is_object($pakc)) {
@@ -348,13 +349,13 @@ class Controller extends Package
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('number'));
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('address'));
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('boolean'));
-            $pakc->associateAttributeKeyType(AttributeType::getByHandle('date_time'));       
+            $pakc->associateAttributeKeyType(AttributeType::getByHandle('date_time'));
         }
-        
-        //install payment gateways 
+
+        //install payment gateways
         PaymentMethod::add('auth_net','Authorize .NET',$pkg);
         PaymentMethod::add('invoice','Invoice',$pkg,null,true);
-        
+
         //create fileset to place digital downloads
         $fs = FileSet::getByName('Digital Downloads');
         if(!is_object($fs)){
@@ -367,6 +368,8 @@ class Controller extends Package
     public function upgrade()
     {
 
+        parent::upgrade();
+
         $pkg = Package::getByHandle('vivid_store');
 
         Installer::renameDatabaseTables($pkg);
@@ -377,15 +380,15 @@ class Controller extends Package
         /**************************************************************/
         /*
          * 1. Installs new payment method: Invoice
-         * 
+         *
          */
-        
+
         $invoicePM = PaymentMethod::getByHandle('invoice');
         if(!is_object($invoicePM)){
             PaymentMethod::add('invoice','Invoice',$pkg);
         }
-        
-        
+
+
         /** Version 2.0 ***********************************************/
         /**************************************************************/
         /*
@@ -396,9 +399,9 @@ class Controller extends Package
          * 5. Give default for measurement units
          * 6. Install a fileset for digital downloads
          * 7. Install product attributes
-         * 
-         */        
-        
+         *
+         */
+
         /*
          * 1. Installs new PageType: store_product
          */
@@ -407,11 +410,11 @@ class Controller extends Package
         /*
          * 2. Installs a parent page to publish products under
          */
-        
-        //first check and make sure the config isn't set. 
+
+        //first check and make sure the config isn't set.
         $publishTarget = Config::get('vividstore.productPublishTarget');
         if($publishTarget < 1 || empty($publishTarget)){
-            //if not, install the proudct detail page if needed.    
+            //if not, install the proudct detail page if needed.
             $productParentPage = Page::getByPath('/product-detail');
             if ($productParentPage->isError()) {
                 $home = Page::getByID(HOME_CID);
@@ -428,10 +431,10 @@ class Controller extends Package
                 );
                 Page::getByPath('/product-detail')->setAttribute('exclude_nav', 1);
             }
-            //set the config to publish under the new page.            
+            //set the config to publish under the new page.
             Config::save('vividstore.productPublishTarget',$productParentPage->getCollectionID());
         }
-        
+
         /*
          * 3. Install Product Block
          */
@@ -439,14 +442,14 @@ class Controller extends Package
         if(!is_object($productBlock)){
             BlockType::installBlockTypeFromPackage('vivid_product', $pkg);
         }
-        
+
         /*
          * 3. Install Product PageType Defaults
          */
         $pageType = PageType::getByHandle('store_product');
         $template = $pageType->getPageTypeDefaultPageTemplateObject();
         $pageObj = $pageType->getPageTypePageTemplateDefaultPageObject($template);
-        
+
         $bt = BlockType::getByHandle('vivid_product');
         $blocks = $pageObj->getBlocks('Main');
         if($blocks[0] && $blocks[0]->getBlockTypeHandle()=="content"){
@@ -465,7 +468,7 @@ class Controller extends Package
             );
             $pageObj->addBlock($bt, 'Main', $data);
         }
-        
+
         /*
          * 5. Measurement Units.
          */
@@ -477,22 +480,27 @@ class Controller extends Package
         if(empty($weightUnits)){
             Config::save('vividstore.weightUnit','lb');
         }
-        
+
         /*
          * 6. Fileset for digital downloads
          */
         $fs = FileSet::getByName('Digital Downloads');
         if(!is_object($fs)){
             FileSet::add("Digital Downloads");
-        }     
-        
+        }
+
         /*
-         * 7. Product Attributes page 
-         */   
-         
+         * 7. Add dashboard pages
+         */
+
         $attrPage = Page::getByPath('/dashboard/store/products/attributes');
         if(!is_object($attrPage) || $attrPage->isError()){
             SinglePage::add('/dashboard/store/products/attributes',$pkg);
+        }
+
+        $discountsPage = Page::getByPath('/dashboard/store/discounts');
+        if(!is_object($discountsPage) || $discountsPage->isError()){
+            SinglePage::add('/dashboard/store/discounts',$pkg);
         }
 
         /*
@@ -510,7 +518,7 @@ class Controller extends Package
                 'akName' => t('Email')
             ), $pkg)->setAttributeSet($orderCustSet);
         }
-        parent::upgrade();
+
         Installer::addOrderStatusesToDatabase($pkg);
 
         // convert legacy config items to current config storage
