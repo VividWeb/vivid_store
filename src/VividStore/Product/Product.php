@@ -181,6 +181,12 @@ class Product extends Object
         $db->Execute("DELETE FROM VividStoreProductImages WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionGroups WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionItems WHERE pID=?",$this->pID);
+        
+        //delete page from sitemap
+        $page = Page::getByID($this->cID);
+        if(is_object($page)){
+            $page->delete();
+        }
     }
     public function generatePage($templateID=null){
         $pkg = Package::getByHandle('vivid_store');

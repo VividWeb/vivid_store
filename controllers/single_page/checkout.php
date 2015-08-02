@@ -105,6 +105,7 @@ class Checkout extends PageController
 
         $this->set('shippingtotal',$totals['shippingTotal']);
         $this->set('total',$totals['total']);
+        $this->set('shippingEnabled', VividCart::isShippable());
 
         $this->addHeaderItem("
             <script type=\"text/javascript\">
