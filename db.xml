@@ -55,8 +55,8 @@
         <field name="gID" type="I"></field>
     </table>
     <table name="VividStoreProductLocations">
-        <field name="pID" type="I"></field>
-        <field name="cID" type="I"></field>
+        <field name="pID" type="I"><key /></field>
+        <field name="cID" type="I"><key /></field>
     </table>
     <table name="VividStoreProductUserGroups">
         <field name="pugID" type="I"><key /><unsigned /><autoincrement/></field>
