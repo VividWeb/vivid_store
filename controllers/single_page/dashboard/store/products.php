@@ -102,6 +102,7 @@ class Products extends DashboardPageController
         $this->set("images",$product->getProductImages());
         $this->set("groups",$product->getProductOptionGroups()); 
         $this->set('optItems',$product->getProductOptionItems());
+        $this->set('pages', $product->getProductPages());
         
         //populate "Groups" select box options
         $grouplist = VividProductGroupList::getGroupList();         

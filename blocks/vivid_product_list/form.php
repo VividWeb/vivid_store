@@ -8,12 +8,15 @@
         } 
     ?>
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-12">
             <div class="form-group">
-                <?php echo $form->label('sortOrder',t('Sort Order'));?>
-                <?php echo $form->select('sortOrder',array('alpha'=>t("Alphabetical"),'date'=>t('Recently Added')),$sortOrder);?>
+                <?php echo $form->label('filter',t('List'));?>
+                <?php echo $form->select('filter',array('all'=>t("All products"),'page'=>t('Products associated with this page'),'page_children'=>t('Products associated with this page and child pages')),$filter);?>
             </div>
         </div>
+    </div>
+
+    <div class="row">
         <?php if($productgroups){?>
         <div class="col-xs-6">
             <div class="form-group">
@@ -22,7 +25,19 @@
             </div>
         </div>
         <?php } ?>
+
+        <div class="col-xs-6">
+            <div class="form-group">
+                <?php echo $form->label('sortOrder',t('Sort Order'));?>
+                <?php echo $form->select('sortOrder',array('alpha'=>t("Alphabetical"),'date'=>t('Recently Added')),$sortOrder);?>
+            </div>
+        </div>
+
     </div>
+
+
+
+
     <legend><?=t('Pagination')?></legend>
     <div class="row">
         <div class="col-xs-6">
