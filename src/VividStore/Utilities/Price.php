@@ -26,11 +26,11 @@ class Price
         $symbol = Config::get('vividstore.symbol');
         $wholeSep = Config::get('vividstore.whole');
         $thousandSep = Config::get('vividstore.thousand');
-        
-        $price = str_replace($wholeSep, ".", $price); // replace whole separator with '.' 
-        $price = str_replace($thousandSep, "", $price); //no commas, or spaces or whatevz
+
         $price = str_replace($symbol, "", $price);
-        
+        $price = str_replace($thousandSep, "", $price); //no commas, or spaces or whatevz
+        $price = str_replace($wholeSep, ".", $price); // replace whole separator with '.' 
+
         return $price;
     }
     
