@@ -255,6 +255,18 @@ class Cart
         }
         return $total;
     }
+
+    public function isShippable() {
+        foreach(Session::get('cart') as $item){
+            //check if items are shippable
+            $product = VividProduct::getByID($item['product']['pID']);
+            if($product->isShippable()){
+               return true; // return as soon as we have shippable product
+            }
+        }
+        return false;
+    }
+
     public function getShippingTotal(){
         $shippingenabled = Config::get('vividstore.shippingenabled');
         if($shippingenabled=="yes"){
