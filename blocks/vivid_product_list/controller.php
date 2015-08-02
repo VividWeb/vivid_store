@@ -4,6 +4,7 @@ use \Concrete\Core\Block\BlockController;
 use Package;
 use Core;
 use View;
+use Page;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
@@ -43,6 +44,16 @@ class Controller extends BlockController
     {
         
         $products = new VividProductList();
+
+        if ($this->filter == 'page' || $this->filter == 'page_children') {
+            $page = Page::getCurrentPage();
+            $products->setCID($page->getCollectionID());
+
+            if ($this->filter == 'page_children') {
+                $products->setCIDs($page->getCollectionChildrenArray());
+            }
+        }
+
         $products->setItemsPerPage($this->maxProducts);
         $products->setGroupID($this->gID);
         $products->setFeatureType($this->showFeatured);

@@ -50,6 +50,14 @@
         <field name="gID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="groupName" type="C" size="100"></field>
     </table>
+    <table name="VividStoreProductGroups">
+        <field name="pID" type="I"></field>
+        <field name="gID" type="I"></field>
+    </table>
+    <table name="VividStoreProductLocations">
+        <field name="pID" type="I"></field>
+        <field name="cID" type="I"></field>
+    </table>
     <table name="VividStoreProductUserGroups">
         <field name="pugID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
