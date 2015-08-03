@@ -135,12 +135,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 
                 <div class="form-group" id="page_pickers">
-                    <div class="">
+                    <div class="page_picker">
                         <?php echo $ps->selectPage('cID[]', $pages[0]['cID'] ?  $pages[0]['cID'] : false); ?>
                     </div>
 
                     <?php for($i = 1; $i < 7; $i++) { ?>
-                        <div class="<?= ($pages[$i -1]['cID']  ? '' : 'picker_hidden' ); ?>">
+                        <div class="page_picker <?= ($pages[$i -1]['cID']  ? '' : 'picker_hidden' ); ?>">
                             <?php echo $ps->selectPage('cID[]',  $pages[$i]['cID'] ?  $pages[$i]['cID'] : false); ?>
                         </div>
 
@@ -156,7 +156,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             Concrete.event.bind('SitemapSelectPage', function(e, data) {
                                 if (data.instance == instance) {
                                     Concrete.event.unbind(e);
-                                    $('#page_pickers .picker_hidden').first().removeClass('picker_hidden');
+
+                                    if ($('.page_picker :input[value="0"]').length == $('.picker_hidden :input[value="0"]').length) {
+                                        $('#page_pickers .picker_hidden').first().removeClass('picker_hidden');
+                                    }
+
+
                                 }
                             });
                         });

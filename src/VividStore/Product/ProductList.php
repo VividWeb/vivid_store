@@ -90,6 +90,7 @@ class ProductList extends AttributedItemList
 
         if (is_array($this->cIDs) && !empty($this->cIDs)) {
             $query->innerJoin('p', 'VividStoreProductLocations', 'l', 'p.pID = l.pID and l.cID in (' .  implode(',',$this->cIDs). ')');
+            $query->groupBy('p.pID');
         }
 
 

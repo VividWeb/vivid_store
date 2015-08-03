@@ -174,7 +174,7 @@ class Product extends Object
 
         foreach($data['cID'] as $cID) {
             if ($cID > 0) {
-                $db->Execute("INSERT INTO VividStoreProductLocations(pID,cID) VALUES (?,?)",array($pID,(int)$cID));
+                $db->Execute("REPLACE INTO VividStoreProductLocations(pID,cID) VALUES (?,?)",array($pID,(int)$cID));
             }
         }
 
