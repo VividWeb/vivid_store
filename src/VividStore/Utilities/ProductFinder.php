@@ -24,7 +24,7 @@ class ProductFinder extends Controller
         } else {
             $query = $_POST['query'];
             $db = Database::get();
-            $results = $db->query('SELECT * FROM VividStoreProduct WHERE pName LIKE "%'.$query.'%"');
+            $results = $db->query('SELECT * FROM VividStoreProducts WHERE pName LIKE "%'.$query.'%"');
             
             if($results){ 
             foreach($results as $result){ ?>
