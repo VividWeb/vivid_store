@@ -56,6 +56,13 @@ exitModal: function(){
                 success: function() {
                     $(".whiteout").remove();
                     $.ajax({
+                        url: CARTURL+'/getmodal',
+                        success: function(data){
+                            vividStore.craftProductModal(data);
+                        }
+                    });
+
+                    $.ajax({
                        url: CARTURL+'/getTotalItems',
                        success: function(itemCount){
                            $(".vivid-store-utility-links .items-counter").text(itemCount);
