@@ -43,13 +43,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                             </div>
                             <div class="cart-list-product-qty">
                                 <span class="cart-item-label"><?=t("Quantity:")?></span>
-<!--                                <input type="number" max="--><?//=$product->getProductQty()?><!--" min="1" value="--><?//=$qty?><!--" style="width: 50px;">-->
-                                <?= $qty?>
+                                <input type="number" max="<?=$product->getProductQty()?>" min="1" value="<?=$qty?>" style="width: 50px;">
                             </div>
-<!--                            <div class="cart-list-item-links">-->
-<!--                                <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(--><?//=$k?><!--);">--><?//=t("Update")?><!--</a>-->
-<!--                                <a class="btn-cart-list-remove"  href="javascript:vividStore.removeItem(--><?//=$k?><!--);">--><?//=t("Remove")?><!--</a>-->
-<!--                            </div>-->
+                            <div class="cart-list-item-links">
+                                <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(<?=$k?>, true);"><?=t("Update")?></a>
+                                <a class="btn-cart-list-remove"  href="javascript:vividStore.removeItem(<?=$k?>, true);"><?=t("Remove")?></a>
+                            </div>
                             <?php if($cartItem['productAttributes']){?>
                                 <div class="cart-list-item-attributes">
                                     <?php foreach($cartItem['productAttributes'] as $groupID => $valID){

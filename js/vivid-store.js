@@ -32,8 +32,6 @@ exitModal: function(){
        $("body").append("<div class='whiteout'>"+content+"</div>"); 
     },
 
-
-
 //SHOPPING CART
 
     displayCart: function(res) {
@@ -89,7 +87,7 @@ exitModal: function(){
     },
     
     //Update Item in Cart
-    updateItem: function(instanceID){
+    updateItem: function(instanceID, modal){
         var qty = $("*[data-instance-id='"+instanceID+"']").find(".cart-list-product-qty input").val();
         vividStore.waiting();
         $.ajax({ 
@@ -104,10 +102,15 @@ exitModal: function(){
                         $(".whiteout").remove();
                     }
                 });
+
                 $.ajax({
                    url: CARTURL+'/getTotalItems',
                    success: function(itemCount){
                        $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                       if (modal) {
+                           vividStore.displayCart();
+                       }
                    } 
                 });
             }
@@ -115,7 +118,7 @@ exitModal: function(){
     },
     
     //Remove Item in Cart
-    removeItem: function(instanceID){
+    removeItem: function(instanceID, modal){
         vividStore.waiting();
         $.ajax({ 
             url: CARTURL+"/remove",
@@ -130,10 +133,19 @@ exitModal: function(){
                         $("*[data-instance-id='"+instanceID+"']").remove();
                     }
                 });
+
                  $.ajax({
                    url: CARTURL+'/getTotalItems',
                    success: function(itemCount){
                        $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                       if (itemCount == 0) {
+                           $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+                       }
+
+                       if (modal) {
+                           vividStore.displayCart();
+                       }
                    } 
                 });
             }
