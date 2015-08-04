@@ -70,8 +70,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     </div>
         
     <div class="cart-page-cart-links">
+        <?php if ($cart  && !empty($cart)) { ?>
         <a class="btn-cart-page-clear" href="javascript:vividStore.clearCart()"><?=t('Clear Cart')?></a>
         <a class="btn-cart-page-checkout" href="<?=View::url('/checkout')?>"><?=t('Checkout')?></a>
+        <?php } ?>
     </div>
     
 </div>

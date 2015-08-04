@@ -20,9 +20,9 @@ class CartModal extends RouteController
         $total = VividCart::getSubTotal();
 
         if(Filesystem::exists(DIR_BASE.'/application/elements/cart_modal.php')){
-            View::element('cart_modal',array('cart'=>$cart,'total'=>$total));
+            View::element('cart_modal',array('cart'=>$cart,'total'=>$total, 'actiondata'=>$this->post()));
         } else {
-            View::element('cart_modal',array('cart'=>$cart,'total'=>$total),'vivid_store');
+            View::element('cart_modal',array('cart'=>$cart,'total'=>$total,'actiondata'=>$this->post()),'vivid_store');
         }
     }
     

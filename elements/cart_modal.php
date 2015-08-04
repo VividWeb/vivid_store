@@ -5,8 +5,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 ?>
 <div class="cart-modal clearfix" id="cart-modal">
     <div class="cart-page-cart">
+        <?php if (isset($actiondata) and !empty($actiondata)) { ?>
 
-        <h1><?=t("Shopping Cart")?></h1>
+            <?php if($actiondata['success']) { ?>
+                <p class="alert alert-success"><strong><?= $actiondata['product']['pName']; ?></strong> <?= t('has been added to your cart');?></p>
+            <?php } else { ?>
+                <p class="alert alert-warning"><?= t('The item was not added to your cart');?></p>
+            <?php } ?>
+        <?php } ?>
+
+        <h2><?=t("Shopping Cart")?></h2>
 
         <input id='cartURL' type='hidden' data-cart-url='<?=View::url("/cart/")?>'>
 
@@ -35,12 +43,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                             </div>
                             <div class="cart-list-product-qty">
                                 <span class="cart-item-label"><?=t("Quantity:")?></span>
-                                <input type="number" max="<?=$product->getProductQty()?>" min="1" value="<?=$qty?>" style="width: 50px;">
+<!--                                <input type="number" max="--><?//=$product->getProductQty()?><!--" min="1" value="--><?//=$qty?><!--" style="width: 50px;">-->
+                                <?= $qty?>
                             </div>
-                            <div class="cart-list-item-links">
-                                <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(<?=$k?>);"><?=t("Update")?></a>
-                                <a class="btn-cart-list-remove"  href="javascript:vividStore.removeItem(<?=$k?>);"><?=t("Remove")?></a>
-                            </div>
+<!--                            <div class="cart-list-item-links">-->
+<!--                                <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(--><?//=$k?><!--);">--><?//=t("Update")?><!--</a>-->
+<!--                                <a class="btn-cart-list-remove"  href="javascript:vividStore.removeItem(--><?//=$k?><!--);">--><?//=t("Remove")?><!--</a>-->
+<!--                            </div>-->
                             <?php if($cartItem['productAttributes']){?>
                                 <div class="cart-list-item-attributes">
                                     <?php foreach($cartItem['productAttributes'] as $groupID => $valID){
@@ -65,14 +74,23 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             ?>
         </ul>
 
+
+        <?php if ($cart  && !empty($cart)) { ?>
         <div class="cart-page-cart-total">
             <span class="cart-grand-total-label"><?=t("Sub Total")?>:</span>
             <span class="cart-grand-total-value"><?=Price::format($total)?></span>
         </div>
+        <?php } else { ?>
+        <p class="alert alert-info"><?= t('Your cart is empty'); ?></p>
+        <?php } ?>
+
 
         <div class="cart-page-cart-links">
-            <a class="btn-cart-page-clear" href="javascript:vividStore.clearCart()"><?=t('Clear Cart')?></a>
-            <a class="btn-cart-page-checkout" href="<?=View::url('/checkout')?>"><?=t('Checkout')?></a>
+            <a class="btn-cart-modal-continue" href="javascript:vividStore.exitModal()"><?=t("Continue Shopping")?></a>
+            <?php if ($cart  && !empty($cart)) { ?>
+            <a class="btn-cart-modal-clear" href="javascript:vividStore.clearCart(true)"><?=t('Clear Cart')?></a>
+            <a class="btn-cart-modal-checkout" href="<?=View::url('/checkout')?>"><?=t('Checkout')?></a>
+            <?php } ?>
         </div>
 
     </div>

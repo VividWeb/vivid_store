@@ -1,6 +1,5 @@
 var vividStore = {
 
-
 waiting: function(){
     $("body").append("<div class='whiteout'><div class='vivid-store-spinner'><i class='fa fa-spinner fa-spin'></i></div></div>");
 },
@@ -32,11 +31,22 @@ exitModal: function(){
     craftProductModal: function(content){
        $("body").append("<div class='whiteout'>"+content+"</div>"); 
     },
-    
 
 
 
 //SHOPPING CART
+
+    displayCart: function(res) {
+        $.ajax({
+            type: "POST",
+            data: res,
+            url: CARTURL+'/getmodal',
+            success: function(data){
+                vividStore.craftProductModal(data);
+            }
+        });
+    },
+
 
     //Add Item to Cart
     addToCart: function(pID, modal){
@@ -53,19 +63,22 @@ exitModal: function(){
                 url: CARTURL+"/add",
                 data: cereal,
                 type: 'post',
-                success: function() {
+                success: function(data) {
+
+                    var res = jQuery.parseJSON(data);
+
                     $(".whiteout").remove();
-                    $.ajax({
-                        url: CARTURL+'/getmodal',
-                        success: function(data){
-                            vividStore.craftProductModal(data);
-                        }
-                    });
+
+                    vividStore.displayCart(res);
 
                     $.ajax({
                        url: CARTURL+'/getTotalItems',
                        success: function(itemCount){
                            $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                           if (itemCount > 0) {
+                               $(".vivid-store-utility-links").removeClass('vivid-cart-empty');
+                           }
                        } 
                     });
                 }
@@ -128,7 +141,7 @@ exitModal: function(){
     },
     
     //Clear the Cart
-    clearCart: function(){
+    clearCart: function(modal){
          $.ajax({ 
              url: CARTURL+"/clear",
              success: function() {
@@ -138,6 +151,13 @@ exitModal: function(){
                         $(".cart-grand-total-value").text(total);
                         $(".cart-page-cart-list-item").remove();
                         $(".whiteout").remove();
+                        $(".vivid-store-utility-links .items-counter").text(0);
+                        $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+
+                        if (modal) {
+                            vividStore.displayCart();
+                        }
+
                     }
                  });                 
              }
