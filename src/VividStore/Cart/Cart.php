@@ -81,7 +81,13 @@ class Cart
         $instanceID = $data['instance'];
         $qty = $data['pQty'];        
         $cart = Session::get('cart');
-        $cart[$instanceID]['product']['qty']=$qty;
+
+        if ($qty > 0) {
+            $cart[$instanceID]['product']['qty']=$qty;
+        } else {
+            $this->remove($instanceID);
+        }
+
         Session::set('cart',$cart);
     }
     public function remove($instanceID)
