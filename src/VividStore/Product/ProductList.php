@@ -16,6 +16,7 @@ class ProductList extends AttributedItemList
     protected $sortBy = "alpha";
     protected $featured = "all";
     protected $activeOnly = true;
+    protected $cIDs = array();
     
     public function setGroupID($gID)
     {
@@ -25,6 +26,14 @@ class ProductList extends AttributedItemList
     public function setSortBy($sort)
     {
         $this->sortBy = $sort;
+    }
+
+    public function setCID($cID) {
+        $this->cIDs[] = $cID;
+    }
+
+    public function setCIDs($cIDs) {
+        $this->cIDs = array_merge($this->cIDs, array_values($cIDs));
     }
     
     public function setFeatureType($type)
@@ -79,10 +88,15 @@ class ProductList extends AttributedItemList
             $query->andWhere("pActive = 1");
         }
 
+        if (is_array($this->cIDs) && !empty($this->cIDs)) {
+            $query->innerJoin('p', 'VividStoreProductLocations', 'l', 'p.pID = l.pID and l.cID in (' .  implode(',',$this->cIDs). ')');
+            $query->groupBy('p.pID');
+        }
+
+
         if ($this->search) {
             $query->andWhere('pName like ?')->setParameter($paramcount++,'%'. $this->search. '%');
         }
-
 
         return $query;
     }

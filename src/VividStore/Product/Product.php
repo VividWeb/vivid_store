@@ -169,6 +169,15 @@ class Product extends Object
                 }
             }
         }
+
+        $db->Execute("DELETE FROM VividStoreProductLocations where pID = ?",array($pID));
+
+        foreach($data['cID'] as $cID) {
+            if ($cID > 0) {
+                $db->Execute("REPLACE INTO VividStoreProductLocations(pID,cID) VALUES (?,?)",array($pID,(int)$cID));
+            }
+        }
+
         $product = Product::getByID($pID);
         return $product;
         
@@ -344,13 +353,22 @@ class Product extends Object
         $db = Database::get();
         $optionItems = $db->GetAll("SELECT * FROM VividStoreProductOptionItems WHERE pID=? ORDER BY poiSort",$this->pID);
         return $optionItems;
-    } 
+    }
+
+    public function getProductPages()
+    {
+        $db = Database::get();
+        $pages = $db->GetAll("SELECT cID FROM VividStoreProductLocations WHERE pID=?",$this->pID);
+        return $pages;
+    }
+
      public function getProductOptionValueByID($id)
     {
         $db = Database::get();
         $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
         return $optionItem['poiName'];
     }
+
     public function setAttribute($ak, $value)
     {
         if (!is_object($ak)) {

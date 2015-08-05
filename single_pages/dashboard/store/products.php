@@ -5,6 +5,7 @@ $listViews = array('view','updated','removed','success');
 $addViews = array('add','edit','save');
 $groupViews = array('groups','groupadded','addgroup');
 $attributeViews = array('attributes','attributeadded','attributeremoved');
+$ps = Core::make('helper/form/page_selector');
 
 use \Config;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
@@ -28,6 +29,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <div class="vivid-store-side-panel">
                     <ul>
                         <li><a href="#product-overview" data-pane-toggle class="active"><?=t('Overview')?></a></li>
+                        <li><a href="#product-categories" data-pane-toggle><?=t('Categories')?></a></li>
                         <li><a href="#product-shipping" data-pane-toggle><?=t('Shipping')?></a></li>
                         <li><a href="#product-images" data-pane-toggle><?=t('Images')?></a></li>
                         <li><a href="#product-options" data-pane-toggle><?=t('Options')?></a></li>
@@ -127,6 +129,53 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 
             </div><!-- #product-overview -->
+
+            <div class="col-sm-7 store-pane" id="product-categories">
+                <h4><?=t('Categorized under pages')?></h4>
+
+
+                <div class="form-group" id="page_pickers">
+                    <div class="page_picker">
+                        <?php echo $ps->selectPage('cID[]', $pages[0]['cID'] ?  $pages[0]['cID'] : false); ?>
+                    </div>
+
+                    <?php for($i = 1; $i < 7; $i++) { ?>
+                        <div class="page_picker <?= ($pages[$i -1]['cID']  ? '' : 'picker_hidden' ); ?>">
+                            <?php echo $ps->selectPage('cID[]',  $pages[$i]['cID'] ?  $pages[$i]['cID'] : false); ?>
+                        </div>
+
+                    <?php } ?>
+
+                </div>
+
+
+                <script>
+                    $(document).ready(function(){
+                        Concrete.event.bind('ConcreteSitemap', function(e, instance) {
+                            var instance = instance;
+                            Concrete.event.bind('SitemapSelectPage', function(e, data) {
+                                if (data.instance == instance) {
+                                    Concrete.event.unbind(e);
+
+                                    if ($('.page_picker :input[value="0"]').length == $('.picker_hidden :input[value="0"]').length) {
+                                        $('#page_pickers .picker_hidden').first().removeClass('picker_hidden');
+                                    }
+
+
+                                }
+                            });
+                        });
+
+                    });
+
+                </script>
+
+                <style>
+                    .picker_hidden {
+                        display: none;
+                    }
+                </style>
+            </div><!-- #product-categories -->
 
 
             <div class="col-sm-7 store-pane" id="product-shipping">

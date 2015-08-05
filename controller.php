@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.2';
+    protected $pkgVersion = '2.2.3';
 
     public function getPackageDescription()
     {
