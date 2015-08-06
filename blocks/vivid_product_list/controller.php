@@ -6,7 +6,6 @@ use Core;
 use View;
 use Page;
 use Database;
-use Log;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
