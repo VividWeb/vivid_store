@@ -8,6 +8,8 @@
 		<field name="sortOrder" type="C" size="30"></field>
 		<field name="gID" type="I"><unsigned/></field>
 		<field name="filter" type="C" size="30"></field>
+		<field name="filterCID" type="I"><unsigned/></field>
+		<field name="groupMatchAny" type="L"></field>
 		<field name="maxProducts" type="I"><unsigned/></field>
 		<field name="productsPerRow" type="I"><unsigned/></field>
 		<field name="showPagination" type="I"><unsigned/></field>
@@ -16,4 +18,10 @@
 		<field name="showPageLink" type="I"><unsigned/></field>
 		<field name="showAddToCart" type="I"><unsigned/></field>
 	</table>
+
+	<table name="btVividStoreProductListGroups">
+		<field name="bID" type="I"><unsigned /></field>
+		<field name="gID" type="I"><unsigned/></field>
+	</table>
+
 </schema>
