@@ -333,9 +333,27 @@ class Product extends Object
     public function getProductImages()
     {
         $db = Database::get();
-        $productImages = $db->GetAll("SELECT * FROM VividStoreProductImages WHERE pID=?",$this->pID);
+        $productImages = $db->GetAll("SELECT * FROM VividStoreProductImages WHERE pID=? ORDER BY piSort",$this->pID);
         return $productImages;
     }
+
+    public function getProductImagesObjects(){
+        $objects = array();
+        $images = $this->getProductImages();
+
+        foreach($images as $img) {
+            if ($img['pifID'] > 0) {
+                $fileObj = File::getByID($img['pifID']);
+
+                if ($fileObj) {
+                    $objects[]= $fileObj;
+                }
+            }
+        }
+
+        return $objects;
+    }
+
     public function getProductOptionGroups()
     {
         $db = Database::get();

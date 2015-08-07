@@ -237,15 +237,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <?php echo $al->image('ccm-image', 'pfID', t('Choose Image'), $pfID?File::getByID($pfID):null); ?>
                 </div>
 
-                <!--
-                    <h4><?=t('Additional Images')?></h4>
 
-                    <div id="additional-images-container"></div>
+                <h4><?=t('Additional Images')?></h4>
 
-                    <div class="clearfix">
-                        <span class="btn btn-default" id="btn-add-image"><?=t('Add Image')?></span>
-                    </div>
-                    --->
+                <div id="additional-images-container"></div>
+
+                <div class="clearfix">
+                    <span class="btn btn-default" id="btn-add-image"><?=t('Add Image')?></span>
+                </div>
 
                 <!-- THE TEMPLATE WE'LL USE FOR EACH IMAGE -->
                 <script type="text/template" id="image-template">
@@ -265,7 +264,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         </a>
 
                         <input type="hidden" name="pifID[]" class="image-fID" value="<%=pifID%>" />
-                        <input type="hidden" name="piSort" value="<%=sort%>" class="image-sort">
+                        <input type="hidden" name="piSort[]" value="<%=sort%>" class="image-sort">
                     </div><!-- .additional-image -->
                 </script>
                 <script type="text/javascript">
@@ -306,6 +305,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         //load up images
                         <?php
                         if($images) {
+                            $count = 0;
                             foreach ($images as $image) {
                         ?>
                         itemsContainer.append(itemTemplate({
@@ -316,7 +316,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             <?php } else { ?>
                             thumb: '',
                             <?php } ?>
-                            sort: '<?=$image['piSort'] ?>'
+                            sort: '<?=$count++ ?>'
                         }));
                         <?php
                             }
