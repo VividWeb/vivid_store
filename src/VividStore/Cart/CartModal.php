@@ -16,7 +16,7 @@ class CartModal extends RouteController
         
     public function getCartModal()
     {
-        $cart = Session::get('cart');
+        $cart = VividCart::getCart();
         $total = VividCart::getSubTotal();
 
         if(Filesystem::exists(DIR_BASE.'/application/elements/cart_modal.php')){

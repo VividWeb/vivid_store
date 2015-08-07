@@ -17,7 +17,7 @@ class Cart extends PageController
 {
     public function view()
     {
-        $this->set('cart',Session::get('cart')); 
+        $this->set('cart',VividCart::getCart());
         $this->set('total',VividCart::getSubTotal());
         $this->addHeaderItem("
             <script type=\"text/javascript\">

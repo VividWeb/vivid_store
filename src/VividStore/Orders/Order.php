@@ -102,7 +102,7 @@ class Order extends Object
         $customer->setLastOrderID($oID);
 
         //add the order items
-        $cart = Session::get('cart');
+        $cart = VividCart::getCart();
 
         foreach ($cart as $cartItem) {
             $taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']);
