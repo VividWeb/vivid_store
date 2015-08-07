@@ -23,10 +23,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         
         <li class="cart-page-cart-list-item clearfix<?=$classes?>" data-instance-id="<?=$k?>" data-product-id="<?=$pID?>">
             <div class="cart-list-thumb">
-                <?=$product->getProductImageThumb()?>
+                <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>">
+                    <?=$product->getProductImageThumb()?>
+                </a>
             </div>
             <div class="cart-list-product-name">
-                <?=$product->getProductName()?>
+                <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>">
+                    <?=$product->getProductName()?>
+                </a>
             </div>
             
             <div class="cart-list-item-price">
