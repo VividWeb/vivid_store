@@ -98,6 +98,11 @@ class Products extends DashboardPageController
         
         //get the product
         $product = VividProduct::getByID($pID);
+
+        if (!$product) {
+            $this->redirect('/dashboard/store/products/');
+        }
+
         $this->set('p',$product);
         $this->set("images",$product->getProductImages());
         $this->set("groups",$product->getProductOptionGroups()); 
