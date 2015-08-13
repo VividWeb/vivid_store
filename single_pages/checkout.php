@@ -263,8 +263,19 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
     </div><!-- .checkout-form-shell -->
     
     <div class="checkout-cart-view">
-        
-        <h2><?=t("Cart Total")?></h2>
+        <h2><?=t("Your Cart")?></h2>
+
+        <?php
+        $cart = Session::get('cart');
+
+        if(\Illuminate\Filesystem\Filesystem::exists(DIR_BASE.'/application/elements/cart_list.php')){
+            View::element('cart_list',array('cart'=>$cart));
+        } else {
+            View::element('cart_list',array('cart'=>$cart),'vivid_store');
+        }
+        ?>
+
+
         <p>
             <strong><?=t("Items Subtotal")?>:</strong> <?=Price::format($subtotal);?>
             <?php if($calculation == 'extract'){

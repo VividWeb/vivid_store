@@ -80,6 +80,23 @@
      .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links a { padding: 5px 15px; }
 }
 
+.checkout-cart-list {
+    padding: 0;
+}
+
+
+
+.checkout-cart-list .checkout-cart-item {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+ }
+
+.checkout-cart-list .cart-list-thumb {
+    float: left;
+    margin-right: 10px;
+}
+
 /* Checkout Page */
 .checkout-form-shell {  }
 
@@ -95,7 +112,6 @@
     .checkout-form-shell { float: left; width: 70%; }   
 }
 
-.checkout-cart-view { display: none; }
 @media (min-width: 768px) {
     .checkout-cart-view { display: block; float: right; width: 25%; }
 }
