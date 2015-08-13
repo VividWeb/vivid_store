@@ -23,7 +23,8 @@ class Cart
         if (!isset(self::$cart)) {
             $cart = Session::get('cart');
             if(!is_array($cart)) {
-               $cart = Session::set('cart',array());
+               Session::set('cart',array());
+               $cart = array();
             }
 
             $db = Database::get();
