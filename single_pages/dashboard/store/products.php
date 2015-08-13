@@ -7,6 +7,7 @@ $groupViews = array('groups','groupadded','addgroup');
 $attributeViews = array('attributes','attributeadded','attributeremoved');
 $ps = Core::make('helper/form/page_selector');
 
+
 use \Config;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
@@ -93,14 +94,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     </div>
                 </div>
                 <div class="row">
-                    <?php if($productgroups){?>
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <?php echo $form->label('gID',t('Group'));?>
-                                <?php echo $form->select('gID',$productgroups,$p->getGroupID());?>
-                            </div>
-                        </div>
-                    <?php } ?>
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pFeatured", t("Featured Product"));?>
@@ -149,7 +142,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <div class="col-sm-7 store-pane" id="product-categories">
                 <h4><?=t('Categorized under pages')?></h4>
 
-
                 <div class="form-group" id="page_pickers">
                     <div class="page_picker">
                         <?php echo $ps->selectPage('cID[]', $pages[0]['cID'] ?  $pages[0]['cID'] : false); ?>
@@ -161,12 +153,22 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         </div>
 
                     <?php } ?>
+                </div>
 
+                <h4><?=t('In product groups')?></h4>
+                <div class="ccm-search-field-content ccm-search-field-content-select2">
+                    <select multiple="multiple" name="pProductGroups[]" class="existing-select2 select2-select" style="width: 100%">
+                        <?php foreach ($productgroups as $pgkey=>$pglabel) { ?>
+                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $pgroups) ? 'selected="selected"' : ''); ?>>  <?php echo $pglabel; ?></option>
+                        <?php } ?>
+                    </select>
                 </div>
 
 
                 <script>
                     $(document).ready(function(){
+                        $('.existing-select2').select2();
+
                         Concrete.event.bind('ConcreteSitemap', function(e, instance) {
                             var instance = instance;
                             Concrete.event.bind('SitemapSelectPage', function(e, data) {
@@ -183,7 +185,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         });
 
                     });
-
                 </script>
 
                 <style>
@@ -710,8 +711,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <th><a><?=t('Quantity')?></a></th>
             <th><a><?=t('Price')?></a></th>
             <th><a><?=t('Featured')?></a></th>
-            <th><a><?=t('Group')?></a></th>
-            <th><a><?=t('Edit')?></a></th>
+            <th><a><?=t('Groups')?></a></th>
+            <th><a><?=t('Actions')?></a></th>
             </thead>
             <tbody>
 
@@ -732,13 +733,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             }
                             ?>
                         </td>
-                        <td><?php $group = VividProductGroup::getByID($p->getGroupID());
-                            if (is_object($group)) { ?>
-                                <span class="label label-primary">
-                            <?= $group->getGroupName() ?>
-                        </span>
-                            <?php } else { ?>
-                                <span class="label label-default"><?= t("None") ?></span>
+                        <td>
+                            <?php $productgroups = $p->getProductGroups();
+                            foreach($productgroups as $pg) { ?>
+                                <span class="label label-primary"><?= $pg; ?></span>
+                             <?php } ?>
+
+                            <?php if (empty($productgroups)) { ?>
+                                <em><?= t('None');?></em>
                             <?php } ?>
                         </td>
                         <td>

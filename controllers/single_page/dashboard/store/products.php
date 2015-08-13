@@ -68,8 +68,7 @@ class Products extends DashboardPageController
         $this->set("actionType",t("Add")); 
         
         $grouplist = VividProductGroupList::getGroupList();            
-        $this->set("grouplist",$grouplist);   
-        $productgroups = array("0"=>t("None"));
+        $this->set("grouplist",$grouplist);
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
@@ -105,13 +104,13 @@ class Products extends DashboardPageController
 
         $this->set('p',$product);
         $this->set("images",$product->getProductImages());
-        $this->set("groups",$product->getProductOptionGroups()); 
+        $this->set("groups",$product->getProductOptionGroups());
         $this->set('optItems',$product->getProductOptionItems());
         $this->set('pages', $product->getProductPages());
-        
+        $this->set('pgroups', $product->getProductGroupIDs());
+
         //populate "Groups" select box options
-        $grouplist = VividProductGroupList::getGroupList();         
-        $productgroups = array("0"=>t("None"));
+        $grouplist = VividProductGroupList::getGroupList();
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
