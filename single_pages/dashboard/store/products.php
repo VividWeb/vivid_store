@@ -14,16 +14,32 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 ?>
 
-<?php if (in_array($controller->getTask(),$addViews)){ //if adding a product ?>
+<?php if (in_array($controller->getTask(),$addViews)){ //if adding or editing a product
+    if(!is_object($p)) {
+        $p = new VividProduct(); //does nothing other than shutup errors.}
+    }
+
+    $pID = $p->getProductID()
+ ?>
+
+    <?php if ($pID > 0) { ?>
+    <div class="ccm-dashboard-header-buttons">
+        <form method="post" id="delete" action="<?php echo View::url('/dashboard/store/products/delete/', $pID)?>" >
+            <button class="btn btn-danger"><?php echo t("Delete Product")?></button>
+        </form>
+
+        <script type="text/javascript">
+        $(function(){
+            $('#delete').submit(function() {
+                return confirm('<?= t("Are you sure you want to delete this product?"); ?>');
+            });
+        });
+        </script>
+    </div>
+    <?php } ?>
 
     <form method="post" action="<?=$view->action('save')?>">
-
-        <?php if(!is_object($p)){
-            $p = new VividProduct(); //does nothing other than shutup errors.
-        }
-        ?>
         <input type="hidden" name="pID" value="<?=$p->getProductID()?>"/>
-
 
         <div class="row">
             <div class="col-sm-4">
@@ -731,9 +747,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             <a class="btn btn-default"
                                href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><i
                                     class="fa fa-pencil"></i></a>
-                            <a class="btn btn-danger"
-                               href="<?php echo View::url('/dashboard/store/products/delete/', $p->getProductID())?>"><i
-                                    class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 <?php }
