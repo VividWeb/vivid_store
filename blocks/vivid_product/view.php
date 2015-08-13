@@ -13,8 +13,20 @@ if(is_object($p)){?>
                 if(is_object($imgObj)){
                     $thumb = Core::make('helper/image')->getThumbnail($imgObj,600,800,true);
             ?>
-            <img src="<?=$thumb->src?>">
+            <img class="primary-image" src="<?=$thumb->src?>">
             <?php } ?>
+
+            <?php
+            $images = $p->getProductImagesObjects();
+
+            foreach($images as $secondaryimage) {
+                 if(is_object($secondaryimage)) {
+                     $thumb = Core::make('helper/image')->getThumbnail($secondaryimage, 300, 300, true);
+                  ?>
+                     <img class="secondary-image" src="<?=$thumb->src?>">
+                <?php }
+            }
+            ?>
         </div>
         <div class="vivid-store-col-2">
         <?php } else { ?>
