@@ -71,6 +71,15 @@ class Product extends Object
                     $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
+
+            //update product groups
+            $db->Execute('DELETE FROM VividStoreProductGroups WHERE pID = ?', $data['pID']);
+            if (!empty($data['pProductGroups'])) {
+                foreach($data['pProductGroups'] as $gID){
+                    $vals = array($pID,$gID);
+                    $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
+                }
+            }
             
             //update option groups
             $db->Execute('DELETE FROM VividStoreProductOptionGroups WHERE pID = ?', $data['pID']);
@@ -113,13 +122,22 @@ class Product extends Object
                 }
             }
 
-            //update user groups
+            //insert user groups
             if (!empty($data['pUserGroups'])) {
                 foreach($data['pUserGroups'] as $gID){
                     $vals = array($pID,$gID);
                     $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
+
+            //insert product groups
+            if (!empty($data['pProductGroups'])) {
+                foreach($data['pProductGroups'] as $gID){
+                    $vals = array($pID,$gID);
+                    $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
+                }
+            }
+
             
             //add option groups
             $count = count($data['pogSort']);
@@ -368,6 +386,30 @@ class Product extends Object
         $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
         return $optionItem['poiName'];
     }
+
+
+    public function getProductGroupIDs()
+    {
+        $db = Database::get();
+        $groups = $db->GetAll("SELECT gID FROM VividStoreProductGroups WHERE pID=?",$this->pID);
+        $values = array();
+        foreach($groups as $g) {
+            $values[] = $g['gID'];
+        }
+        return $values;
+    }
+
+    public function getProductGroups()
+    {
+        $db = Database::get();
+        $groups = $db->GetAll("SELECT pg.gID, groupName  FROM VividStoreProductGroups pg INNER JOIN VividStoreGroups g on pg.gID = g.gID WHERE pID=?",$this->pID);
+        $values = array();
+        foreach($groups as $g) {
+            $values[$g['gID']] = $g['groupName'];
+        }
+        return $values;
+    }
+
 
     public function setAttribute($ak, $value)
     {
