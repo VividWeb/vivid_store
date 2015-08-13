@@ -21,9 +21,9 @@ class Cart
 
         // this acts as a singleton, in that it wil only fetch the cart form the session and check it for validity once per request
         if (!isset(self::$cart)) {
-            $cart = Session::get('cart');
+            $cart = Session::get('vividstore.cart');
             if(!is_array($cart)) {
-               Session::set('cart',array());
+               Session::set('vividstore.cart',array());
                $cart = array();
             }
 
@@ -43,7 +43,7 @@ class Cart
             }
 
             if ($removal) {
-                Session::set('cart', $checkeditems);
+                Session::set('vividstore.cart', $checkeditems);
             }
 
             self::$cart = $checkeditems;
@@ -103,12 +103,12 @@ class Cart
             //we have a match, update the qty
             $cart = self::getCart();
             $cart[$exists]['product']['qty'] += $cartItem['product']['qty'];
-            Session::set('cart',$cart);
+            Session::set('vividstore.cart',$cart);
         }
         else {
             $cart = self::getCart();
             $cart[] = $cartItem;
-            Session::set('cart',$cart);
+            Session::set('vividstore.cart',$cart);
         }
     }
     public function update($data)
@@ -123,19 +123,19 @@ class Cart
             $this->remove($instanceID);
         }
 
-        Session::set('cart',$cart);
+        Session::set('vividstore.cart',$cart);
     }
     public function remove($instanceID)
     {
         $cart = self::getCart();
         unset($cart[$instanceID]);
-        Session::set('cart',$cart);
+        Session::set('vividstore.cart',$cart);
     }
     public function clear()
     {
         $cart = self::getCart();
         unset($cart);
-        Session::set('cart',null);
+        Session::set('vividstore.cart',null);
     }
     public function getSubTotal()
     {
