@@ -1,190 +1,13 @@
 <?php
-defined('C5_EXECUTE') or die(_("Access Denied."));
-/**
- * Classes for the various AuthorizeNet data types.
+
+/*
+ * This file is part of the AuthorizeNet PHP-SDK package.
  *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
+ * For the full copyright and license information, please view the License.pdf
+ * file that was distributed with this source code.
  */
 
-
-/**
- * A class that contains all fields for a CIM Customer Profile.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetCustomer
-{
-    public $merchantCustomerId;
-    public $description;
-    public $email;
-    public $paymentProfiles = array();
-    public $shipToList = array();
-    public $customerProfileId;
-    
-}
- 
-/**
- * A class that contains all fields for a CIM Address.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetAddress
-{
-    public $firstName;
-    public $lastName;
-    public $company;
-    public $address;
-    public $city;
-    public $state;
-    public $zip;
-    public $country;
-    public $phoneNumber;
-    public $faxNumber;
-    public $customerAddressId;
-}
-
-/**
- * A class that contains all fields for a CIM Payment Profile.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetPaymentProfile
-{
-    
-    public $customerType;
-    public $billTo;
-    public $payment;
-    public $customerPaymentProfileId;
-    
-    public function __construct()
-    {
-        $this->billTo = new AuthorizeNetAddress;
-        $this->payment = new AuthorizeNetPayment;
-    }
-
-}
-
-/**
- * A class that contains all fields for a CIM Payment Type.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetPayment
-{
-    public $creditCard;
-    public $bankAccount;
-    
-    public function __construct()
-    {
-        $this->creditCard = new AuthorizeNetCreditCard;
-        $this->bankAccount = new AuthorizeNetBankAccount;
-    }
-}
-
-/**
- * A class that contains all fields for a CIM Transaction.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetTransaction
-{
-    public $amount;
-    public $tax;
-    public $shipping;
-    public $duty;
-    public $lineItems = array();
-    public $customerProfileId;
-    public $customerPaymentProfileId;
-    public $customerShippingAddressId;
-    public $creditCardNumberMasked;
-    public $bankRoutingNumberMasked;
-    public $bankAccountNumberMasked;
-    public $order;
-    public $taxExempt;
-    public $recurringBilling;
-    public $cardCode;
-    public $splitTenderId;
-    public $approvalCode;
-    public $transId;
-    
-    public function __construct()
-    {
-        $this->tax = (object)array();
-        $this->tax->amount = "";
-        $this->tax->name = "";
-        $this->tax->description = "";
-        
-        $this->shipping = (object)array();
-        $this->shipping->amount = "";
-        $this->shipping->name = "";
-        $this->shipping->description = "";
-        
-        $this->duty = (object)array();
-        $this->duty->amount = "";
-        $this->duty->name = "";
-        $this->duty->description = "";
-        
-        // line items
-        
-        $this->order = (object)array();
-        $this->order->invoiceNumber = "";
-        $this->order->description = "";
-        $this->order->purchaseOrderNumber = "";
-    }
-    
-}
-
-/**
- * A class that contains all fields for a CIM Transaction Line Item.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetLineItem
-{
-    public $itemId;
-    public $name;
-    public $description;
-    public $quantity;
-    public $unitPrice;
-    public $taxable;
-
-}
-
-/**
- * A class that contains all fields for a CIM Credit Card.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetCreditCard
-{
-    public $cardNumber;
-    public $expirationDate;
-    public $cardCode;
-}
-
-/**
- * A class that contains all fields for a CIM Bank Account.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetCIM
- */
-class AuthorizeNetBankAccount
-{
-    public $accountType;
-    public $routingNumber;
-    public $accountNumber;
-    public $nameOnAccount;
-    public $echeckType;
-    public $bankName;
-}
+namespace AuthorizeNet\Common\Type;
 
 /**
  * A class that contains all fields for an AuthorizeNet ARB Subscription.
@@ -192,9 +15,8 @@ class AuthorizeNetBankAccount
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetARB
  */
-class AuthorizeNet_Subscription
+class Subscription
 {
-
     public $name;
     public $intervalLength;
     public $intervalUnit;
@@ -234,7 +56,7 @@ class AuthorizeNet_Subscription
     public $shipToState;
     public $shipToZip;
     public $shipToCountry;
-    
+
     public function getXml()
     {
         $xml = "<subscription>
@@ -296,7 +118,7 @@ class AuthorizeNet_Subscription
         <country>{$this->shipToCountry}</country>
     </shipTo>
 </subscription>";
-        
+
         $xml_clean = "";
         // Remove any blank child elements
         foreach (preg_split("/(\r?\n)/", $xml) as $key => $line) {
@@ -304,7 +126,7 @@ class AuthorizeNet_Subscription
                 $xml_clean .= $line . "\n";
             }
         }
-        
+
         // Remove any blank parent elements
         $element_removed = 1;
         // Recursively repeat if a change is made
@@ -315,10 +137,9 @@ class AuthorizeNet_Subscription
                 $element_removed = 1;
             }
         }
-        
+
         // Remove any blank lines
         // $xml_clean = preg_replace('/\r\n[\s]+\r\n/','',$xml_clean);
         return $xml_clean;
     }
 }
-

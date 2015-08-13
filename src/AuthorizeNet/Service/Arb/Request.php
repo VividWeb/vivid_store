@@ -1,30 +1,33 @@
 <?php
-defined('C5_EXECUTE') or die(_("Access Denied."));
-/**
- * Easily interact with the Authorize.Net ARB XML API.
+
+/*
+ * This file is part of the AuthorizeNet PHP-SDK package.
  *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetARB
- * @link       http://www.authorize.net/support/ARB_guide.pdf ARB Guide
+ * For the full copyright and license information, please view the License.pdf
+ * file that was distributed with this source code.
  */
 
+namespace AuthorizeNet\Service\Arb;
+
+use AuthorizeNet\Common\Type\Subscription;
+use AuthorizeNet\Common\Request as BaseRequest;
+use AuthorizeNet\Service\Arb\Response;
 
 /**
  * A class to send a request to the ARB XML API.
  *
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetARB
+ * @link       http://www.authorize.net/support/ARB_guide.pdf ARB Guide
  */
- use AuthorizeNetRequest;
-class AuthorizeNetARB extends AuthorizeNetRequest
+class Request extends BaseRequest
 {
-
     const LIVE_URL = "https://api.authorize.net/xml/v1/request.api";
     const SANDBOX_URL = "https://apitest.authorize.net/xml/v1/request.api";
 
     private $_request_type;
     private $_request_payload;
-    
+
     /**
      * Optional. Used if the merchant wants to set a reference ID.
      *
@@ -34,7 +37,7 @@ class AuthorizeNetARB extends AuthorizeNetRequest
     {
         $this->_request_payload = ($refId ? "<refId>$refId</refId>" : "");
     }
-    
+
     /**
      * Create an ARB subscription
      *
@@ -42,13 +45,14 @@ class AuthorizeNetARB extends AuthorizeNetRequest
      *
      * @return AuthorizeNetARB_Response
      */
-    public function createSubscription(AuthorizeNet_Subscription $subscription)
+    public function createSubscription(Subscription $subscription)
     {
         $this->_request_type = "CreateSubscriptionRequest";
         $this->_request_payload .= $subscription->getXml();
+
         return $this->_sendRequest();
     }
-    
+
     /**
      * Update an ARB subscription
      *
@@ -57,11 +61,12 @@ class AuthorizeNetARB extends AuthorizeNetRequest
      *
      * @return AuthorizeNetARB_Response
      */
-    public function updateSubscription($subscriptionId, AuthorizeNet_Subscription $subscription)
+    public function updateSubscription($subscriptionId, Subscription $subscription)
     {
         $this->_request_type = "UpdateSubscriptionRequest";
         $this->_request_payload .= "<subscriptionId>$subscriptionId</subscriptionId>";
         $this->_request_payload .= $subscription->getXml();
+
         return $this->_sendRequest();
     }
 
@@ -76,6 +81,7 @@ class AuthorizeNetARB extends AuthorizeNetRequest
     {
         $this->_request_type = "GetSubscriptionStatusRequest";
         $this->_request_payload .= "<subscriptionId>$subscriptionId</subscriptionId>";
+
         return $this->_sendRequest();
     }
 
@@ -90,21 +96,22 @@ class AuthorizeNetARB extends AuthorizeNetRequest
     {
         $this->_request_type = "CancelSubscriptionRequest";
         $this->_request_payload .= "<subscriptionId>$subscriptionId</subscriptionId>";
+
         return $this->_sendRequest();
     }
-    
+
      /**
      *
      *
      * @param string $response
-     * 
+     *
      * @return AuthorizeNetARB_Response
      */
     protected function _handleResponse($response)
     {
-        return new AuthorizeNetARB_Response($response);
+        return new Response($response);
     }
-    
+
     /**
      * @return string
      */
@@ -112,7 +119,7 @@ class AuthorizeNetARB extends AuthorizeNetRequest
     {
         return ($this->_sandbox ? self::SANDBOX_URL : self::LIVE_URL);
     }
-    
+
     /**
      * Prepare the XML document for posting.
      */
@@ -129,33 +136,4 @@ class AuthorizeNetARB extends AuthorizeNetRequest
 </ARB{$this->_request_type}>
 XML;
     }
-    
-}
-
-
-/**
- * A class to parse a response from the ARB XML API.
- *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetARB
- */
-class AuthorizeNetARB_Response extends AuthorizeNetXMLResponse
-{
-
-    /**
-     * @return int
-     */
-    public function getSubscriptionId()
-    {
-        return $this->_getElementContents("subscriptionId");
-    }
-    
-    /**
-     * @return string
-     */
-    public function getSubscriptionStatus()
-    {
-        return $this->_getElementContents("Status");
-    }
-
 }

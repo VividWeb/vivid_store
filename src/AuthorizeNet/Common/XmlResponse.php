@@ -1,11 +1,13 @@
 <?php
-defined('C5_EXECUTE') or die(_("Access Denied."));
-/**
- * Base class for the AuthorizeNet ARB & CIM Responses.
+
+/*
+ * This file is part of the AuthorizeNet PHP-SDK package.
  *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetXML
+ * For the full copyright and license information, please view the License.pdf
+ * file that was distributed with this source code.
  */
+
+namespace AuthorizeNet\Common;
 
 /**
  * Base class for the AuthorizeNet ARB & CIM Responses.
@@ -13,9 +15,8 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetXML
  */
-class AuthorizeNetXMLResponse
+class XmlResponse
 {
-
     public $xml; // Holds a SimpleXML Element with response.
 
     /**
@@ -28,12 +29,12 @@ class AuthorizeNetXMLResponse
         $this->response = $response;
         if ($response) {
             $this->xml = @simplexml_load_string($response);
-            
+
             // Remove namespaces for use with XPath.
             $this->xpath_xml = @simplexml_load_string(preg_replace('/ xmlns:xsi[^>]+/','',$response));
         }
     }
-    
+
     /**
      * Was the transaction successful?
      *
@@ -43,7 +44,7 @@ class AuthorizeNetXMLResponse
     {
         return ($this->getResultCode() == "Ok");
     }
-    
+
     /**
      * Run an xpath query on the cleaned XML response
      *
@@ -54,7 +55,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->xpath_xml->xpath($path);
     }
-    
+
     /**
      * Was there an error?
      *
@@ -67,14 +68,14 @@ class AuthorizeNetXMLResponse
 
     /**
      * @return string
-     */    
+     */
     public function getErrorMessage()
     {
-        return "Error: {$this->getResultCode()} 
+        return "Error: {$this->getResultCode()}
         Message: {$this->getMessageText()}
-        {$this->getMessageCode()}";    
+        {$this->getMessageCode()}";
     }
-    
+
     /**
      * @return string
      */
@@ -82,7 +83,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("refId");
     }
-    
+
     /**
      * @return string
      */
@@ -90,7 +91,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("resultCode");
     }
-    
+
     /**
      * @return string
      */
@@ -98,7 +99,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("code");
     }
-    
+
     /**
      * @return string
      */
@@ -106,14 +107,14 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("text");
     }
-    
+
     /**
      * Grabs the contents of a unique element.
      *
      * @param  string
      * @return string
      */
-    protected function _getElementContents($elementName) 
+    protected function _getElementContents($elementName)
     {
         $start = "<$elementName>";
         $end = "</$elementName>";
@@ -122,8 +123,8 @@ class AuthorizeNetXMLResponse
         } else {
             $start_position = strpos($this->response, $start)+strlen($start);
             $end_position = strpos($this->response, $end);
+
             return substr($this->response, $start_position, $end_position-$start_position);
         }
     }
-
 }

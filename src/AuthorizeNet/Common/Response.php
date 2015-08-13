@@ -1,12 +1,13 @@
 <?php
-defined('C5_EXECUTE') or die(_("Access Denied."));
-/**
- * Base class for the AuthorizeNet AIM & SIM Responses.
+
+/*
+ * This file is part of the AuthorizeNet PHP-SDK package.
  *
- * @package    AuthorizeNet
- * @subpackage    AuthorizeNetResponse
+ * For the full copyright and license information, please view the License.pdf
+ * file that was distributed with this source code.
  */
 
+namespace AuthorizeNet\Common;
 
 /**
  * Parses an AuthorizeNet Response.
@@ -14,14 +15,13 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  * @package AuthorizeNet
  * @subpackage    AuthorizeNetResponse
  */
-class AuthorizeNetResponse
+class Response
 {
-
     const APPROVED = 1;
     const DECLINED = 2;
     const ERROR = 3;
     const HELD = 4;
-    
+
     public $approved;
     public $declined;
     public $error;
@@ -72,5 +72,4 @@ class AuthorizeNetResponse
     public $requested_amount;
     public $balance_on_card;
     public $response; // The response string from AuthorizeNet.
-
 }

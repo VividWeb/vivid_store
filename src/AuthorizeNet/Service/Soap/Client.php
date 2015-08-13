@@ -1,12 +1,13 @@
 <?php
-defined('C5_EXECUTE') or die(_("Access Denied."));
-/**
- * A simple wrapper for the SOAP API as well as a helper function
- * to generate a documentation file from the WSDL.
+
+/*
+ * This file is part of the AuthorizeNet PHP-SDK package.
  *
- * @package    AuthorizeNet
- * @subpackage AuthorizeNetSoap
+ * For the full copyright and license information, please view the License.pdf
+ * file that was distributed with this source code.
  */
+
+namespace AuthorizeNet\Service\Soap;
 
 /**
  * A simple wrapper for the SOAP API as well as a helper function
@@ -16,14 +17,14 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  * @subpackage AuthorizeNetSoap
  * @todo       Make the doc file a usable class.
  */
-class AuthorizeNetSOAP extends SoapClient
+class Client extends \SoapClient
 {
     const WSDL_URL = "https://api.authorize.net/soap/v1/Service.asmx?WSDL";
     const LIVE_URL = "https://api.authorize.net/soap/v1/Service.asmx";
     const SANDBOX_URL = "https://apitest.authorize.net/soap/v1/Service.asmx";
-    
+
     public $sandbox;
-    
+
     /**
      * Constructor
      */
@@ -32,7 +33,7 @@ class AuthorizeNetSOAP extends SoapClient
         parent::__construct(self::WSDL_URL);
         $this->__setLocation(self::SANDBOX_URL);
     }
-    
+
     /**
      * Switch between the sandbox or production gateway.
      *
@@ -58,9 +59,10 @@ class AuthorizeNetSOAP extends SoapClient
                 $string .= $type ."\n";
             }
         }
+
         return $string;
     }
-    
+
     /**
      * Get all methods as PHP Code.
      * @return string
@@ -77,9 +79,10 @@ class AuthorizeNetSOAP extends SoapClient
                 $functions[$sig[1]] = true;
             }
         }
+
         return $string;
     }
-    
+
     /**
      * Create a file from the WSDL for reference.
      */
@@ -92,9 +95,7 @@ class AuthorizeNetSOAP extends SoapClient
         $string .= " */\n";
         $string .= "class AuthorizeNetSOAP\n";
         $string .= "{\n" . $this->getSoapMethods() . "\n}\n\n" . $this->getSoapTypes() ."\n\n ?>";
+
         return file_put_contents($path, $string);
     }
-    
-    
-    
 }
