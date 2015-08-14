@@ -147,7 +147,7 @@ class Controller extends BlockController
         if (!empty($filtergroups)) {
             foreach($filtergroups as $gID){
                 $vals = array($this->bID,(int)$gID);
-                Log::addEntry($vals);
+                //Log::addEntry($vals);
                 $db->Execute("INSERT INTO btVividStoreProductListGroups (bID,gID) VALUES (?,?)",$vals);
             }
         }
