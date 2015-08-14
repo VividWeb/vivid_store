@@ -4,6 +4,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 ?>
 <div class="cart-modal clearfix" id="cart-modal">
+    <a href="javascript:vividStore.exitModal()" class="product-modal-exit">x</a>
     <div class="cart-page-cart">
         <?php if (isset($actiondata) and !empty($actiondata)) { ?>
 

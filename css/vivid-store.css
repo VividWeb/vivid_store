@@ -33,6 +33,7 @@
             .product-modal-thumb img { max-width: 100%; height: auto; }
         .product-modal-info-shell { float: left; width: 50%; margin-left: 10%; position: relative;}
             .product-modal-exit { position: absolute; font-size: 18px; right: 0px; top: 0px; color: #ccc; cursor: pointer; }
+            .cart-modal .product-modal-exit { right: 15px; top: 5px; }
             .product-modal-exit:hover { color: #888; text-decoration: none; }
             .product-modal-title { display: block; font-size: 22px; padding: 10px 0 0; }
             .product-modal-price { display: block; font-size: 16px; }
