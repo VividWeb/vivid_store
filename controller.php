@@ -37,7 +37,9 @@ class Controller extends Package
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
     protected $pkgVersion = '2.2.3';
-
+    protected $pkgAutoloaderRegistries = array(
+        'src/AuthorizeNet' => '\AuthorizeNet'
+    );
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");

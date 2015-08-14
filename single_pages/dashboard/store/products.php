@@ -159,7 +159,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <div class="ccm-search-field-content ccm-search-field-content-select2">
                     <select multiple="multiple" name="pProductGroups[]" class="existing-select2 select2-select" style="width: 100%">
                         <?php foreach ($productgroups as $pgkey=>$pglabel) { ?>
-                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $pgroups) ? 'selected="selected"' : ''); ?>>  <?php echo $pglabel; ?></option>
+                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $productgroups) ? 'selected="selected"' : ''); ?>>  <?php echo $pglabel; ?></option>
                         <?php } ?>
                     </select>
                 </div>

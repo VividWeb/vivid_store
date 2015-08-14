@@ -6,7 +6,7 @@ use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 use Package;
 use Core;
 use Config;
-use AuthorizeNetAIM;
+use \AuthorizeNet\Service\Aim as AuthorizeNetAIM;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class AuthNetPaymentMethod extends PaymentMethod
@@ -60,7 +60,7 @@ class AuthNetPaymentMethod extends PaymentMethod
     public function submitPayment()
     {
         $dir = $this->getMethodDirectory();
-        require_once $dir.'anet_php_sdk/AuthorizeNet.php';
+        //require_once $dir.'anet_php_sdk/AuthorizeNet.php';
         $METHOD_TO_USE = "AIM";
         define("AUTHORIZENET_API_LOGIN_ID",Config::get('vividstore.authnetLoginID'));    // Add your API LOGIN ID
         define("AUTHORIZENET_TRANSACTION_KEY",Config::get('vividstore.authnetTransactionKey')); // Add your API transaction key
