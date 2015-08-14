@@ -13,18 +13,27 @@ if(is_object($p)){?>
                 if(is_object($imgObj)){
                     $thumb = Core::make('helper/image')->getThumbnail($imgObj,600,800,true);
             ?>
-            <img class="primary-image" src="<?=$thumb->src?>">
+            <div class="product-primary-image">
+                <a href="<?=$imgObj->getRelativePath()?>" class="product-thumb">
+                    <img src="<?=$thumb->src?>">
+                </a>
+            </div>
             <?php } ?>
 
             <?php
             $images = $p->getProductImagesObjects();
-
-            foreach($images as $secondaryimage) {
-                 if(is_object($secondaryimage)) {
-                     $thumb = Core::make('helper/image')->getThumbnail($secondaryimage, 300, 300, true);
-                  ?>
-                     <img class="secondary-image" src="<?=$thumb->src?>">
-                <?php }
+            if(count($images)>0){
+                echo '<div class="product-additional-images">';
+                foreach($images as $secondaryimage) {
+                     if(is_object($secondaryimage)) {
+                         $thumb = Core::make('helper/image')->getThumbnail($secondaryimage, 300, 300, true);
+                      ?>
+                      
+                      <a class="product-thumb" href="<?=$secondaryimage->getRelativePath()?>"><img src="<?=$thumb->src?>"></a>
+                      
+                    <?php }
+                }
+                echo '</div>';
             }
             ?>
         </div>
@@ -114,6 +123,14 @@ if(is_object($p)){?>
     </div>
     
 </form>
+<script type="text/javascript">
+$(function() {
+    $('.product-thumb').magnificPopup({
+        type:'image',
+        gallery:{enabled:true}
+    });
+});
+</script>
    
 <?php } else { ?>
     <div class="alert alert-info"><?=t("We can't seem to find this product at the moment")?></div>
