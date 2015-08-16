@@ -1,5 +1,6 @@
 <?php
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as Cart;
 defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
 <?php if($controller->getTask() == "view" || $controller->getTask() == "failed"){?>
 
@@ -266,7 +267,7 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
         <h2><?=t("Your Cart")?></h2>
 
         <?php
-        $cart = Session::get('cart');
+        $cart = Cart::getCart();
 
         if(\Illuminate\Filesystem\Filesystem::exists(DIR_BASE.'/application/elements/cart_list.php')){
             View::element('cart_list',array('cart'=>$cart));
