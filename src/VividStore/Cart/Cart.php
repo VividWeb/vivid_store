@@ -55,6 +55,10 @@ class Cart
     public function add($data)
     {
         $product = array();
+        parse_str($data['data'],$product);
+
+        $product['pID'] = (int) $product['pID'];
+        $product['quantity'] = (int) $product['quantity'];
 
         //now, build a nicer "cart item"
         $cartItem = array();
