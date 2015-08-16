@@ -145,19 +145,26 @@ class Checkout extends PageController
             //so we'll force invoice.
             $pm = PaymentMethod::getByHandle('invoice');
         }
-        $payment = $pm->submitPayment();
-        if($payment['error']==1){
+        if($payment->external == true){
             $pmsess = Session::get('paymentMethod');  
             $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
             Session::set('paymentMethod',$pmsess);
-            $pesess = Session::get('paymentErrors');
-            $pesess = $payment['errorMessage'];
-            Session::set('paymentErrors',$pesess);
-            $this->redirect("/checkout/failed#payment");
+            $this->redirect('/checkout/external');
         } else {
-            VividOrder::add($data,$pm);    
-            $this->redirect('/checkout/complete');
-        }  
+            $payment = $pm->submitPayment();
+            if($payment['error']==1){
+                $pmsess = Session::get('paymentMethod');  
+                $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
+                Session::set('paymentMethod',$pmsess);
+                $pesess = Session::get('paymentErrors');
+                $pesess = $payment['errorMessage'];
+                Session::set('paymentErrors',$pesess);
+                $this->redirect("/checkout/failed#payment");
+            } else {
+                VividOrder::add($data,$pm);    
+                $this->redirect('/checkout/complete');
+            }  
+        }
     }
     public function validate()
     {
