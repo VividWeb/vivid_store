@@ -54,7 +54,6 @@ class Cart
 
     public function add($data)
     {
-        $product = array();
 
         //now, build a nicer "cart item"
         $cartItem = array();
@@ -62,11 +61,11 @@ class Cart
             "pID"=>(int) $data['pID'],
             "qty"=>(int) $data['quantity']
         );
-        unset($product['pID']);
-        unset($product['quantity']);
+        unset($data['pID']);
+        unset($data['quantity']);
         
         //since we removed the ID/qty, we're left with just the attributes
-        $cartItem['productAttributes'] = $product; 
+        $cartItem['productAttributes'] = $data;
         
         /*
          * We need to add the item to the cart, however, first we need to do some comparisons.
