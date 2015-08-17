@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.2.3';
+    protected $pkgVersion = '2.2.3.1';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet'
     );
@@ -529,6 +529,11 @@ class Controller extends Package
 
                 $db->Execute("DELETE FROM Config WHERE configGroup='vividstore'");
             }
+        }
+        
+        $paypalPM = PaymentMethod::getByHandle('paypal_standard');
+        if (!is_object($paypalPM)) {
+            PaymentMethod::add('paypal_standard', 'PayPal Standard', $pkg);
         }
 
         parent::upgrade();

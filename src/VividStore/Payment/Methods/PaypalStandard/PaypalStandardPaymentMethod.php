@@ -5,11 +5,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 use Package;
 use Core;
+use Config;
+
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
+
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class PaypalStandardPaymentMethod extends PaymentMethod
 {
     public $external = true;
+    
     public function dashboardForm()
     {
         $this->set('paypalEmail',Config::get('vividstore.paypalEmail'));
@@ -33,12 +38,35 @@ class PaypalStandardPaymentMethod extends PaymentMethod
     {
         //nada
     }
+    public function redirectForm()
+    {
+        $customer = new Customer();
+        $totals = VividCart::getTotals();
+        $paypalEmail = Config::get('vividstore.paypalEmail');
+        $this->set('paypalEmail',$paypalEmail);
+        $this->set('siteName',Config::get('concrete.site'));
+        $this->set('customer', $customer);
+        $this->set('total',$totals['total']);
+        $this->set('notifyURL',$this->action('complete'));
+    }
     
     public function submitPayment()
     {
         
         //nothing to do except return true
         return true;
+        
+    }
+    public function getAction()
+    {
+        if(Config::get('vividstore.paypalTestMode')==true){
+            return "https://www.sandbox.paypal.com/cgi-bin/webscr";
+        } else {
+            return "https://www.paypal.com/cgi-bin/webscr";
+        }
+    }
+    public function validateCompletion($data)
+    {
         
     }
 

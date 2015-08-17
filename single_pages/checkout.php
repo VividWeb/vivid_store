@@ -302,6 +302,17 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
 
 </div>
 
+<?php } elseif($controller->getTask() == "external") { ?>
+    <form id="checkout-redirect-form" action="<?=$action?>" method="post">
+        <?php 
+        $pm->renderRedirectForm(); ?>
+        <input type="submit" class="btn btn-primary" value="<?=t('Click Here if You\'re not Redirected')?>">
+    </form>
+    <script type="text/javascript">
+        $(function(){
+           //$("#checkout-redirect-form").submit(); 
+        });
+    </script>
 <?php } else { ?>
     Hey. How did you get here?
 <?php } ?>

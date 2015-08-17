@@ -2,4 +2,4 @@
 extract($vars);
 ?>
 
-<p><?=t("Click Next to Proceed to the PayPal Website.")?></p>
+<p><?=t("Click \"Complete Order\" to Proceed to the PayPal Website.")?></p>
