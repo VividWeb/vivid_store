@@ -267,9 +267,11 @@ $("#checkout-form-group-billing").submit(function(e){
                         url: CARTURL+"/getTaxTotal",
                         success: function(results){
                             var taxes = JSON.parse(results);
-                            $("#taxes").html("");  
+                            $("#taxes").html("");
                             for(var i=0;i<taxes.length;i++){
-                                $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                if(taxes[i].taxamount > 0){
+                                    $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                }
                             }
                         } 
                     });

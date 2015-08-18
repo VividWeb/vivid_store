@@ -199,9 +199,8 @@ class Cart
 
         if (self::isCustomerTaxable()) {
             $taxes[] = array('name'=>$taxName,'taxamount'=>$taxTotal,'calculation'=>$taxCalc, 'based'=>$taxBased);
-        }
-
-        return $taxes;
+            return $taxes;
+        } 
     }
 
 
