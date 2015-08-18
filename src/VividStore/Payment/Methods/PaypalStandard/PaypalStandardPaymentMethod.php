@@ -65,7 +65,7 @@ class PaypalStandardPaymentMethod extends PaymentMethod
             return "https://www.paypal.com/cgi-bin/webscr";
         }
     }
-    public function validateCompletion($data)
+    public static function validateCompletion($data)
     {
         
     }
