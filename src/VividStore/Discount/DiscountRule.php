@@ -17,7 +17,9 @@ class DiscountRule extends Object
 
     public static function discountsWithCodesExist() {
         $db = Database::get();
-        $data = $db->GetRow("SELECT count(*) as codecount FROM VividStoreDiscountRules WHERE enabled =1 "); // TODO
+        $data = $db->GetRow("SELECT count(*) as codecount FROM VividStoreDiscountRules WHERE drEnabled =1 "); // TODO
+
+        return ($data['codecount'] > 0);
     }
 
     public static function findAutomaticDiscounts(Cart $cart, $code = '', $user = null) {
