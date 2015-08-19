@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.2.3.1';
+    protected $pkgVersion = '2.2.3.2';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet'
     );
@@ -364,6 +364,9 @@ class Controller extends Package
         }
 
         Installer::addOrderStatusesToDatabase($pkg);
+        
+        Config::save('vividstore.cartOverlay',false);
+
     }
 
     public function upgrade()
@@ -534,6 +537,10 @@ class Controller extends Package
         $paypalPM = PaymentMethod::getByHandle('paypal_standard');
         if (!is_object($paypalPM)) {
             PaymentMethod::add('paypal_standard', 'PayPal Standard', $pkg);
+        }
+
+        if(empty(Config::get('vividstore.cartOverlay'))){
+            Config::save('vividstore.cartOverlay',false);
         }
 
         parent::upgrade();
