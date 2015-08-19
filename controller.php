@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.2.3.2';
+    protected $pkgVersion = '2.3';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet'
     );
@@ -356,6 +356,7 @@ class Controller extends Package
         //install payment gateways 
         PaymentMethod::add('auth_net','Authorize .NET',$pkg);
         PaymentMethod::add('invoice','Invoice',$pkg,null,true);
+        //PaymentMethod::add('paypal_standard','PayPal',$pkg);
 
         //create fileset to place digital downloads
         $fs = FileSet::getByName('Digital Downloads');
@@ -534,10 +535,10 @@ class Controller extends Package
             }
         }
         
-        $paypalPM = PaymentMethod::getByHandle('paypal_standard');
+        /*$paypalPM = PaymentMethod::getByHandle('paypal_standard');
         if (!is_object($paypalPM)) {
             PaymentMethod::add('paypal_standard', 'PayPal Standard', $pkg);
-        }
+        }*/
 
         if(empty(Config::get('vividstore.cartOverlay'))){
             Config::save('vividstore.cartOverlay',false);
