@@ -361,12 +361,13 @@ class Cart
         $taxes = self::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
-
-        foreach($taxes as $tax) {
-            if ($tax['calculation'] != 'extract') {
-                $addedTaxTotal += $tax['taxamount'];
-            } else {
-                $includedTaxTotal += $tax['taxamount'];
+        if($taxes){
+            foreach($taxes as $tax) {
+                if ($tax['calculation'] != 'extract') {
+                    $addedTaxTotal += $tax['taxamount'];
+                } else {
+                    $includedTaxTotal += $tax['taxamount'];
+                }
             }
         }
 
