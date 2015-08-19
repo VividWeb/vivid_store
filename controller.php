@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.2.3';
+    protected $pkgVersion = '2.3';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet'
     );
@@ -356,6 +356,7 @@ class Controller extends Package
         //install payment gateways 
         PaymentMethod::add('auth_net','Authorize .NET',$pkg);
         PaymentMethod::add('invoice','Invoice',$pkg,null,true);
+        //PaymentMethod::add('paypal_standard','PayPal',$pkg);
 
         //create fileset to place digital downloads
         $fs = FileSet::getByName('Digital Downloads');
@@ -364,6 +365,9 @@ class Controller extends Package
         }
 
         Installer::addOrderStatusesToDatabase($pkg);
+        
+        Config::save('vividstore.cartOverlay',false);
+
     }
 
     public function upgrade()
@@ -530,6 +534,15 @@ class Controller extends Package
                 $db->Execute("DELETE FROM Config WHERE configGroup='vividstore'");
             }
         }
+        
+        /*$paypalPM = PaymentMethod::getByHandle('paypal_standard');
+        if (!is_object($paypalPM)) {
+            PaymentMethod::add('paypal_standard', 'PayPal Standard', $pkg);
+        }*/
+
+        if(empty(Config::get('vividstore.cartOverlay'))){
+            Config::save('vividstore.cartOverlay',false);
+        }
 
         parent::upgrade();
     }
@@ -566,6 +579,7 @@ class Controller extends Package
         Route::register('/checkout/getstates', '\Concrete\Package\VividStore\Src\VividStore\Utilities\States::getStateList');
         Route::register('/checkout/updater','\Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout::updater');
         Route::register('/productfinder','\Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder::getProductMatch');
+        Route::register('/checkout/paypalresponse','\Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard\PaypalStandardPaymentMethod::validateCompletion');
     }
     public function on_start()
     {

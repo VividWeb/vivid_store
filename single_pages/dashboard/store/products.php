@@ -654,7 +654,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <?php } else { ?>
 
                     <div class="alert alert-info">
-                        <?=t("When you create a product, we'll make a page for that product. For now though, there's nothing to see here.")?>
+                        <?=t("When you create a product, we'll make a page for that product. Below is the available templates for the Product Page Type. Choose one, and we'll use this to create the Detail page.")?>
+                    </div>
+                    <div class="form-group">
+                        <label><?=t("Page Template")?></label>
+                        <?php echo $form->select('selectPageTemplate',$pageTemplates,null);?>
                     </div>
 
                 <?php } ?>

@@ -180,7 +180,7 @@ class Order extends Object
             $mh->sendMail();
             
         
-        Session::set('cart',null);
+        $cart->clear();
     }
     public function remove()
     {

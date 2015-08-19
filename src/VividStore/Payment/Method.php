@@ -157,6 +157,13 @@ class Method extends Controller
         $pkg = Package::getByID($this->pkgID);
         View::element($this->pmHandle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
     }
+    public function renderRedirectForm()
+    {
+        $controller = $this->getMethodController();
+        $controller->redirectForm();
+        $pkg = Package::getByID($this->pkgID);
+        View::element($this->pmHandle.'/redirect_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
+    }
     
     public function submitPayment()
     {

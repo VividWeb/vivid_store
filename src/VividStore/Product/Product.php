@@ -158,7 +158,7 @@ class Product extends Object
                 }
             }
             $product = Product::getByID($pID);
-            $product->generatePage();
+            $product->generatePage($data['selectPageTemplate']);
             
         }
 

@@ -148,20 +148,43 @@ class Checkout extends PageController
             //There was no payment method enabled somehow.
             //so we'll force invoice.
             $pm = PaymentMethod::getByHandle('invoice');
-        }
-        $payment = $pm->submitPayment();
-        if($payment['error']==1){
-            $pmsess = Session::get('paymentMethod');  
-            $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
-            Session::set('paymentMethod',$pmsess);
-            $pesess = Session::get('paymentErrors');
-            $pesess = $payment['errorMessage'];
-            Session::set('paymentErrors',$pesess);
-            $this->redirect("/checkout/failed#payment");
         } else {
-            VividOrder::add($data,$pm);    
-            $this->redirect('/checkout/complete');
-        }  
+            if($pm->getMethodController()->external == true){
+                $pmsess = Session::get('paymentMethod');  
+                $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
+                Session::set('paymentMethod',$pmsess);
+                $this->redirect('/checkout/external');
+                
+            } else {
+                $payment = $pm->submitPayment();
+                if($payment['error']==1){
+                    $pmsess = Session::get('paymentMethod');  
+                    $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
+                    Session::set('paymentMethod',$pmsess);
+                    $pesess = Session::get('paymentErrors');
+                    $pesess = $payment['errorMessage'];
+                    Session::set('paymentErrors',$pesess);
+                    $this->redirect("/checkout/failed#payment");
+                } else {
+                    VividOrder::add($data,$pm);    
+                    $this->redirect('/checkout/complete');
+                }  
+            }
+        }
+    }
+    public function external()
+    {
+        $pm = Session::get('paymentMethod');
+        /*print_r($pm);
+        exit();die();
+        */
+        foreach($pm as $pmID=>$handle){
+            $pm = PaymentMethod::getByID($pmID);
+        }
+        //$pm = PaymentMethod::getByHandle($pm[3]);
+        $this->set('pm',$pm);
+        $this->set('action',$pm->getMethodController()->getAction());
+
     }
     public function validate()
     {
