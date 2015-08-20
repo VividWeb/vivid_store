@@ -131,7 +131,7 @@ class Cart
         unset($cart[$instanceID]);
         Session::set('vividstore.cart',$cart);
     }
-    public function clear()
+    public static function clear()
     {
         $cart = self::getCart();
         unset($cart);
