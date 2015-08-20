@@ -45,7 +45,7 @@ class Order extends Object
         $data = $db->GetRow("SELECT * FROM VividStoreOrders WHERE cID=? ORDER BY oID DESC",$cID);
         return Order::getByID($data['oID']);
     }
-    public function add($data,$pm)
+    public function add($data,$pm,$status=null)
     {
         $taxBased = Config::get('vividstore.taxBased');
         $taxlabel = Config::get('vividstore.taxName');
@@ -89,7 +89,11 @@ class Order extends Object
         $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
-        $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
+        if($status){
+            $order->updateStatus($status);
+        } else {
+            $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
+        }
         $order->setAttribute("email",$customer->getEmail());
         $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
         $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));
@@ -180,7 +184,8 @@ class Order extends Object
             $mh->sendMail();
             
         
-        $cart->clear();
+        VividCart::clear();
+        return $order;
     }
     public function remove()
     {

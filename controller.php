@@ -36,9 +36,10 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.3';
+    protected $pkgVersion = '2.3.1';
     protected $pkgAutoloaderRegistries = array(
-        'src/AuthorizeNet' => '\AuthorizeNet'
+        'src/AuthorizeNet' => '\AuthorizeNet',
+        'src/Omnipay' => '\Omnipay'
     );
     public function getPackageDescription()
     {
@@ -356,7 +357,7 @@ class Controller extends Package
         //install payment gateways 
         PaymentMethod::add('auth_net','Authorize .NET',$pkg);
         PaymentMethod::add('invoice','Invoice',$pkg,null,true);
-        //PaymentMethod::add('paypal_standard','PayPal',$pkg);
+        PaymentMethod::add('paypal_standard','PayPal',$pkg);
 
         //create fileset to place digital downloads
         $fs = FileSet::getByName('Digital Downloads');
@@ -519,7 +520,7 @@ class Controller extends Package
                 ), $pkg)->setAttributeSet($orderCustSet);
             }
 
-            Installer::addOrderStatusesToDatabase($pkg);
+            
 
             // convert legacy config items to current config storage
             // applies for version 2.1.1 and below
@@ -535,10 +536,12 @@ class Controller extends Package
             }
         }
         
-        /*$paypalPM = PaymentMethod::getByHandle('paypal_standard');
+        Installer::addOrderStatusesToDatabase($pkg);
+        
+        $paypalPM = PaymentMethod::getByHandle('paypal_standard');
         if (!is_object($paypalPM)) {
             PaymentMethod::add('paypal_standard', 'PayPal Standard', $pkg);
-        }*/
+        }
 
         if(empty(Config::get('vividstore.cartOverlay'))){
             Config::save('vividstore.cartOverlay',false);

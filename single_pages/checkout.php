@@ -311,7 +311,7 @@ defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
     </form>
     <script type="text/javascript">
         $(function(){
-           //$("#checkout-redirect-form").submit(); 
+           $("#checkout-redirect-form").submit(); 
         });
     </script>
 <?php } else { ?>

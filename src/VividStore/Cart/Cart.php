@@ -130,7 +130,7 @@ class Cart
         unset($cart[$instanceID]);
         Session::set('vividstore.cart',$cart);
     }
-    public function clear()
+    public static function clear()
     {
         $cart = self::getCart();
         unset($cart);
@@ -360,12 +360,13 @@ class Cart
         $taxes = self::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
-
-        foreach($taxes as $tax) {
-            if ($tax['calculation'] != 'extract') {
-                $addedTaxTotal += $tax['taxamount'];
-            } else {
-                $includedTaxTotal += $tax['taxamount'];
+        if($taxes){
+            foreach($taxes as $tax) {
+                if ($tax['calculation'] != 'extract') {
+                    $addedTaxTotal += $tax['taxamount'];
+                } else {
+                    $includedTaxTotal += $tax['taxamount'];
+                }
             }
         }
 

@@ -153,8 +153,9 @@ class Checkout extends PageController
                 $pmsess = Session::get('paymentMethod');  
                 $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
                 Session::set('paymentMethod',$pmsess);
+                $order = VividOrder::add($data,$pm,'incomplete');
+                Session::set('orderID',$order->getOrderID());
                 $this->redirect('/checkout/external');
-                
             } else {
                 $payment = $pm->submitPayment();
                 if($payment['error']==1){
