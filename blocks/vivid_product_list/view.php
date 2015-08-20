@@ -17,7 +17,7 @@ if($products){
                     if(is_object($imgObj)){
                         $thumb = $ih->getThumbnail($imgObj,400,280,true);?>
                         <div class="product-list-thumbnail">
-                            <?php if($showQuickViewLink || empty($showQuickViewLink)){ ?>
+                            <?php if($showQuickViewLink){ ?>
                             <a class="product-quick-view" href="javascript:vividStore.productModal(<?=$product->getProductID()?>);">
                                 <?=t("Quick View")?>
                             </a>
