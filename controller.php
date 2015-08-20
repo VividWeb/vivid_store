@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.3.1';
+    protected $pkgVersion = '2.3.2';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
         'src/Omnipay' => '\Omnipay'
@@ -543,7 +543,8 @@ class Controller extends Package
             PaymentMethod::add('paypal_standard', 'PayPal Standard', $pkg);
         }
 
-        if(empty(Config::get('vividstore.cartOverlay'))){
+        $co = Config::get('vividstore.cartOverlay');
+        if(empty($co)){
             Config::save('vividstore.cartOverlay',false);
         }
 
