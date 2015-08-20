@@ -38,7 +38,8 @@ class Controller extends Package
     protected $appVersionRequired = '5.7.3';
     protected $pkgVersion = '2.3.1';
     protected $pkgAutoloaderRegistries = array(
-        'src/AuthorizeNet' => '\AuthorizeNet'
+        'src/AuthorizeNet' => '\AuthorizeNet',
+        'src/Omnipay' => '\Omnipay'
     );
     public function getPackageDescription()
     {
