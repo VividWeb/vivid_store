@@ -8,7 +8,7 @@ $attributeViews = array('attributes','attributeadded','attributeremoved');
 $ps = Core::make('helper/form/page_selector');
 
 
-use \Config;
+use Config;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
