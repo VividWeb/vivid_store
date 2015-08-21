@@ -16,7 +16,7 @@ use Config;
 
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
-use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
+use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
@@ -45,7 +45,7 @@ class Order extends Object
         $data = $db->GetRow("SELECT * FROM VividStoreOrders WHERE cID=? ORDER BY oID DESC",$cID);
         return Order::getByID($data['oID']);
     }
-    public function add($data,$pm)
+    public function add($data,$pm,$status=null)
     {
         $taxBased = Config::get('vividstore.taxBased');
         $taxlabel = Config::get('vividstore.taxName');
@@ -89,7 +89,11 @@ class Order extends Object
         $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
-        $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
+        if($status){
+            $order->updateStatus($status);
+        } else {
+            $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
+        }
         $order->setAttribute("email",$customer->getEmail());
         $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
         $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));
@@ -102,7 +106,7 @@ class Order extends Object
         $customer->setLastOrderID($oID);
 
         //add the order items
-        $cart = Session::get('cart');
+        $cart = VividCart::getCart();
 
         foreach ($cart as $cartItem) {
             $taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']);
@@ -180,7 +184,8 @@ class Order extends Object
             $mh->sendMail();
             
         
-        Session::set('cart',null);
+        VividCart::clear();
+        return $order;
     }
     public function remove()
     {

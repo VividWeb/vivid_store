@@ -69,7 +69,7 @@ class OrderItem extends Object
     public function getQty() { return $this->oiQty; }
     public function getSubTotal()
     {
-        $price = Price::getFloat($this->getPricePaid());
+        $price = $this->getPricePaid();
         $qty = $this->getQty();
         $subtotal = $qty * $price;
         return $subtotal;

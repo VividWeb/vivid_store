@@ -1,5 +1,5 @@
-<?php defined('C5_EXECUTE') or die("Access Denied."); ?>
-<div class="vivid-store-utility-links">
+<?php defined('C5_EXECUTE') or die("Access Denied.");?>
+<div class="vivid-store-utility-links <?= ($itemCount == 0 ? 'vivid-cart-empty' : '');?>">
     <?php if($showSignIn){
         $u = new User();
         if($u->isLoggedIn()){
@@ -16,5 +16,14 @@
     <?php if($showCartItems){?>
     <span class="items-in-cart"><?=$itemsLabel?> (<span class="items-counter"><?=$itemCount?></span>)</span>
     <?php } ?>
+
     <a href="<?=View::url('/cart')?>" class="cart-link"><?=$cartLabel?></a>
 </div>
+<?php if(\Config::get('vividstore.cartOverlay')){?>
+<script>
+    $('.cart-link').click(function(e){
+        e.preventDefault();
+        vividStore.displayCart();
+    });
+</script>
+<?php } ?>

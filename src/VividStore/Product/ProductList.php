@@ -12,19 +12,39 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 class ProductList extends AttributedItemList
 {
     
-    protected $gID = 0;
+    protected $gIDs = array();
+    protected $groupMatchAny = false;
     protected $sortBy = "alpha";
     protected $featured = "all";
     protected $activeOnly = true;
+    protected $cIDs = array();
     
     public function setGroupID($gID)
     {
-        $this->gID = $gID;
+        $this->gIDs = array($gID);
     }
-    
+
+    public function setGroupIDs($groupIDs)
+    {
+        $this->gIDs = array_merge($this->gIDs, $groupIDs);
+    }
+
+
     public function setSortBy($sort)
     {
         $this->sortBy = $sort;
+    }
+
+    public function setCID($cID) {
+        $this->cIDs[] = $cID;
+    }
+
+    public function setCIDs($cIDs) {
+        $this->cIDs = array_merge($this->cIDs, array_values($cIDs));
+    }
+
+    public function setGroupMatchAny($match) {
+        $this->groupMatchAny = (bool)$match;
     }
     
     public function setFeatureType($type)
@@ -56,9 +76,24 @@ class ProductList extends AttributedItemList
     {
         $paramcount = 0;
 
-        if(isset($this->gID) && ($this->gID > 0)){
-            $query->where('gID = ?')->setParameter($paramcount++,$this->gID);
+        if(!empty($this->gIDs)) {
+            $validgids = array();
+
+            foreach($this->gIDs as $gID) {
+                if ($gID > 0) {
+                    $validgids[] = $gID;
+                }
+            }
+
+            if (!empty($validgids)) {
+                $query->innerJoin('p', 'VividStoreProductGroups', 'g', 'p.pID = g.pID and g.gID in (' . implode(',', $validgids) . ')');
+
+                if (!$this->groupMatchAny) {
+                    $query->having('count(g.gID) = '  . count($validgids));
+                }
+            }
         }
+
         switch ($this->sortBy){
             case "alpha":
                 $query->orderBy('pName','ASC');
@@ -79,10 +114,15 @@ class ProductList extends AttributedItemList
             $query->andWhere("pActive = 1");
         }
 
+        if (is_array($this->cIDs) && !empty($this->cIDs)) {
+            $query->innerJoin('p', 'VividStoreProductLocations', 'l', 'p.pID = l.pID and l.cID in (' .  implode(',',$this->cIDs). ')');
+        }
+
+        $query->groupBy('p.pID');
+
         if ($this->search) {
             $query->andWhere('pName like ?')->setParameter($paramcount++,'%'. $this->search. '%');
         }
-
 
         return $query;
     }

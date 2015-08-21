@@ -71,6 +71,15 @@ class Product extends Object
                     $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
+
+            //update product groups
+            $db->Execute('DELETE FROM VividStoreProductGroups WHERE pID = ?', $data['pID']);
+            if (!empty($data['pProductGroups'])) {
+                foreach($data['pProductGroups'] as $gID){
+                    $vals = array($pID,$gID);
+                    $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
+                }
+            }
             
             //update option groups
             $db->Execute('DELETE FROM VividStoreProductOptionGroups WHERE pID = ?', $data['pID']);
@@ -113,13 +122,22 @@ class Product extends Object
                 }
             }
 
-            //update user groups
+            //insert user groups
             if (!empty($data['pUserGroups'])) {
                 foreach($data['pUserGroups'] as $gID){
                     $vals = array($pID,$gID);
                     $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
+
+            //insert product groups
+            if (!empty($data['pProductGroups'])) {
+                foreach($data['pProductGroups'] as $gID){
+                    $vals = array($pID,$gID);
+                    $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
+                }
+            }
+
             
             //add option groups
             $count = count($data['pogSort']);
@@ -140,7 +158,7 @@ class Product extends Object
                 }
             }
             $product = Product::getByID($pID);
-            $product->generatePage();
+            $product->generatePage($data['selectPageTemplate']);
             
         }
 
@@ -169,6 +187,15 @@ class Product extends Object
                 }
             }
         }
+
+        $db->Execute("DELETE FROM VividStoreProductLocations where pID = ?",array($pID));
+
+        foreach($data['cID'] as $cID) {
+            if ($cID > 0) {
+                $db->Execute("REPLACE INTO VividStoreProductLocations(pID,cID) VALUES (?,?)",array($pID,(int)$cID));
+            }
+        }
+
         $product = Product::getByID($pID);
         return $product;
         
@@ -181,6 +208,12 @@ class Product extends Object
         $db->Execute("DELETE FROM VividStoreProductImages WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionGroups WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionItems WHERE pID=?",$this->pID);
+        
+        //delete page from sitemap
+        $page = Page::getByID($this->cID);
+        if(is_object($page)){
+            $page->delete();
+        }
     }
     public function generatePage($templateID=null){
         $pkg = Package::getByHandle('vivid_store');
@@ -318,9 +351,27 @@ class Product extends Object
     public function getProductImages()
     {
         $db = Database::get();
-        $productImages = $db->GetAll("SELECT * FROM VividStoreProductImages WHERE pID=?",$this->pID);
+        $productImages = $db->GetAll("SELECT * FROM VividStoreProductImages WHERE pID=? ORDER BY piSort",$this->pID);
         return $productImages;
     }
+
+    public function getProductImagesObjects(){
+        $objects = array();
+        $images = $this->getProductImages();
+
+        foreach($images as $img) {
+            if ($img['pifID'] > 0) {
+                $fileObj = File::getByID($img['pifID']);
+
+                if ($fileObj) {
+                    $objects[]= $fileObj;
+                }
+            }
+        }
+
+        return $objects;
+    }
+
     public function getProductOptionGroups()
     {
         $db = Database::get();
@@ -338,13 +389,46 @@ class Product extends Object
         $db = Database::get();
         $optionItems = $db->GetAll("SELECT * FROM VividStoreProductOptionItems WHERE pID=? ORDER BY poiSort",$this->pID);
         return $optionItems;
-    } 
+    }
+
+    public function getProductPages()
+    {
+        $db = Database::get();
+        $pages = $db->GetAll("SELECT cID FROM VividStoreProductLocations WHERE pID=?",$this->pID);
+        return $pages;
+    }
+
      public function getProductOptionValueByID($id)
     {
         $db = Database::get();
         $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
         return $optionItem['poiName'];
     }
+
+
+    public function getProductGroupIDs()
+    {
+        $db = Database::get();
+        $groups = $db->GetAll("SELECT gID FROM VividStoreProductGroups WHERE pID=?",$this->pID);
+        $values = array();
+        foreach($groups as $g) {
+            $values[] = $g['gID'];
+        }
+        return $values;
+    }
+
+    public function getProductGroups()
+    {
+        $db = Database::get();
+        $groups = $db->GetAll("SELECT pg.gID, groupName  FROM VividStoreProductGroups pg INNER JOIN VividStoreGroups g on pg.gID = g.gID WHERE pID=?",$this->pID);
+        $values = array();
+        foreach($groups as $g) {
+            $values[$g['gID']] = $g['groupName'];
+        }
+        return $values;
+    }
+
+
     public function setAttribute($ak, $value)
     {
         if (!is_object($ak)) {

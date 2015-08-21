@@ -1,6 +1,5 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
-
-use \Config;
+use Config;
 ?>
 	    <form method="post" action="<?=$view->action('save')?>">
 	        
@@ -298,8 +297,14 @@ use \Config;
                 <!-- #settings-customers -->
                 <div class="col-sm-7 store-pane" id="settings-checkout">
 
+                    <h3><?=t("Shopping Cart")?></h3>
                     <div class="form-group">
-                        <h3><?php echo t('Guest checkout');?></h3>
+                        <?php echo $form->label('cartOverlay',t('When Clicking on "View Cart" in Utility Links:')); ?>
+                        <?php echo $form->select('cartOverlay',array(false=>"Go to Cart Page",true=>"Display Cart Overlay"), Config::get('vividstore.cartOverlay')); ?>
+                    </div>
+
+                    <h3><?php echo t('Guest checkout');?></h3>
+                    <div class="form-group">
                         <?php $guestCheckout =  Config::get('vividstore.guestCheckout');
                         $guestCheckout = ($guestCheckout ? $guestCheckout : 'off');
                         ?>

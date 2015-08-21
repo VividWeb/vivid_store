@@ -1,6 +1,5 @@
 var vividStore = {
 
-
 waiting: function(){
     $("body").append("<div class='whiteout'><div class='vivid-store-spinner'><i class='fa fa-spinner fa-spin'></i></div></div>");
 },
@@ -32,11 +31,20 @@ exitModal: function(){
     craftProductModal: function(content){
        $("body").append("<div class='whiteout'>"+content+"</div>"); 
     },
-    
-
-
 
 //SHOPPING CART
+
+    displayCart: function(res) {
+        $.ajax({
+            type: "POST",
+            data: res,
+            url: CARTURL+'/getmodal',
+            success: function(data){
+                vividStore.craftProductModal(data);
+            }
+        });
+    },
+
 
     //Add Item to Cart
     addToCart: function(pID, modal){
@@ -53,12 +61,22 @@ exitModal: function(){
                 url: CARTURL+"/add",
                 data: cereal,
                 type: 'post',
-                success: function() {
+                success: function(data) {
+
+                    var res = jQuery.parseJSON(data);
+
                     $(".whiteout").remove();
+
+                    vividStore.displayCart(res);
+
                     $.ajax({
                        url: CARTURL+'/getTotalItems',
                        success: function(itemCount){
                            $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                           if (itemCount > 0) {
+                               $(".vivid-store-utility-links").removeClass('vivid-cart-empty');
+                           }
                        } 
                     });
                 }
@@ -69,7 +87,7 @@ exitModal: function(){
     },
     
     //Update Item in Cart
-    updateItem: function(instanceID){
+    updateItem: function(instanceID, modal){
         var qty = $("*[data-instance-id='"+instanceID+"']").find(".cart-list-product-qty input").val();
         vividStore.waiting();
         $.ajax({ 
@@ -84,10 +102,15 @@ exitModal: function(){
                         $(".whiteout").remove();
                     }
                 });
+
                 $.ajax({
                    url: CARTURL+'/getTotalItems',
                    success: function(itemCount){
                        $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                       if (modal) {
+                           vividStore.displayCart();
+                       }
                    } 
                 });
             }
@@ -95,7 +118,7 @@ exitModal: function(){
     },
     
     //Remove Item in Cart
-    removeItem: function(instanceID){
+    removeItem: function(instanceID, modal){
         vividStore.waiting();
         $.ajax({ 
             url: CARTURL+"/remove",
@@ -110,10 +133,19 @@ exitModal: function(){
                         $("*[data-instance-id='"+instanceID+"']").remove();
                     }
                 });
+
                  $.ajax({
                    url: CARTURL+'/getTotalItems',
                    success: function(itemCount){
                        $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                       if (itemCount == 0) {
+                           $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+                       }
+
+                       if (modal) {
+                           vividStore.displayCart();
+                       }
                    } 
                 });
             }
@@ -121,7 +153,7 @@ exitModal: function(){
     },
     
     //Clear the Cart
-    clearCart: function(){
+    clearCart: function(modal){
          $.ajax({ 
              url: CARTURL+"/clear",
              success: function() {
@@ -131,6 +163,13 @@ exitModal: function(){
                         $(".cart-grand-total-value").text(total);
                         $(".cart-page-cart-list-item").remove();
                         $(".whiteout").remove();
+                        $(".vivid-store-utility-links .items-counter").text(0);
+                        $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+
+                        if (modal) {
+                            vividStore.displayCart();
+                        }
+
                     }
                  });                 
              }
@@ -228,9 +267,11 @@ $("#checkout-form-group-billing").submit(function(e){
                         url: CARTURL+"/getTaxTotal",
                         success: function(results){
                             var taxes = JSON.parse(results);
-                            $("#taxes").html("");  
+                            $("#taxes").html("");
                             for(var i=0;i<taxes.length;i++){
-                                $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                if(taxes[i].taxamount > 0){
+                                    $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                }
                             }
                         } 
                     });
@@ -282,7 +323,9 @@ $("#checkout-form-group-billing").submit(function(e){
                             var taxes = JSON.parse(results);
                             $("#taxes").html("");  
                             for(var i=0;i<taxes.length;i++){
-                                $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                if(taxes[i].taxamount > 0){
+                                    $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                }
                             }
                         } 
                     });

@@ -2,27 +2,74 @@
 <fieldset>
     <legend><?=t('Product Arrangement')?></legend>
     <?php
-        $productgroups = array("0"=>t("None"));
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
-        } 
+        }
     ?>
     <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <?php echo $form->label('filter',t('List Products'));?>
+                <?php echo $form->select('filter',array(
+                    'all'=>t("All"),
+                    'current'=>t('Under current page'),
+                    'current_children'=>t('Under current page and child pages'),
+                    'page'=>t('Under a specified page'),
+                    'page_children'=>t('Under a specified page and child pages')
+                ),$filter);?>
+            </div>
+
+            <div class="form-group" id="pageselector">
+                <div class="form-group" <?= ($filter == 'page' || $filter == 'page_children' ? '' : 'style="display: none"'); ?> >
+                    <?php
+                    $ps = Core::make('helper/form/page_selector');
+                    echo $ps->selectPage('filterCID', ($filterCID > 0 ? $filterCID : false) ); ?>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <?php if(!empty($productgroups)){?>
         <div class="col-xs-6">
+            <div class="form-group">
+                <?php echo $form->label('gID',t('Filter by Groups'));?>
+
+                <div class="ccm-search-field-content ccm-search-field-content-select2">
+                    <select multiple="multiple" name="filtergroups[]" id="groups-select" class="existing-select2 select2-select" style="width: 100%">
+                        <?php foreach ($productgroups as $pgkey=>$pglabel) { ?>
+                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $groupfilters) ? 'selected="selected"' : ''); ?>><?php echo $pglabel; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <?php } ?>
+
+        <div class="col-xs-6">
+            <div class="form-group">
+                <?php echo $form->label('groupMatchAny',t('Matching'));?>
+                <?php echo $form->select('groupMatchAny',array('0'=>t("All groups listed"),'1'=>t('Any group listed')),$groupMatchAny);?>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
             <div class="form-group">
                 <?php echo $form->label('sortOrder',t('Sort Order'));?>
                 <?php echo $form->select('sortOrder',array('alpha'=>t("Alphabetical"),'date'=>t('Recently Added')),$sortOrder);?>
             </div>
         </div>
-        <?php if($productgroups){?>
-        <div class="col-xs-6">
-            <div class="form-group">
-                <?php echo $form->label('gID',t('Filter by Group'));?>
-                <?php echo $form->select('gID',$productgroups,$gID);?>
-            </div>
-        </div>
-        <?php } ?>
     </div>
+
+
+
+
     <legend><?=t('Pagination')?></legend>
     <div class="row">
         <div class="col-xs-6">
@@ -98,3 +145,22 @@
     </div>
     
 </fieldset>
+
+
+<script>
+    $(document).ready(function(){
+        $('#groups-select').select2();
+
+        $('#filter').change(function(){
+            if ($(this).val() == 'page' || $(this).val() == 'page_children') {
+                $('#pageselector').show();
+            }  else {
+                $('#pageselector').hide();
+            }
+        });
+
+    });
+</script>
+
+
+

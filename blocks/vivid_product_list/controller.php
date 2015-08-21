@@ -4,6 +4,8 @@ use \Concrete\Core\Block\BlockController;
 use Package;
 use Core;
 use View;
+use Page;
+use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
@@ -28,24 +30,73 @@ class Controller extends BlockController
     }
     public function add()
     {
+        $this->requireAsset('css', 'select2');
+        $this->requireAsset('javascript', 'select2');
         $this->getGroupList();
+        $this->set('groupfilters', array());
     }
     public function edit()
     {
+        $this->requireAsset('css', 'select2');
+        $this->requireAsset('javascript', 'select2');
         $this->getGroupList();
+        $this->set('groupfilters', $this->getGroupFilters());
     }
+
+    public function getGroupFilters() {
+        $db = Database::get();
+        $vals = array($this->bID);
+        $result = $db->getAll("SELECT gID FROM btVividStoreProductListGroups where bID = ?",$vals);
+
+        $list = array();
+
+        if ($result) {
+            foreach($result as $g) {
+                $list[] = $g['gID'];
+            }
+        }
+
+        return $list;
+
+    }
+
     public function getGroupList()
     {
-        $grouplist = VividProductGroupList::getGroupList();            
+        $grouplist = VividProductGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
     }
     public function view()
     {
-        
         $products = new VividProductList();
+
+        if ($this->filter == 'current' || $this->filter == 'current_children') {
+            $page = Page::getCurrentPage();
+            $products->setCID($page->getCollectionID());
+
+            if ($this->filter == 'current_children') {
+                $products->setCIDs($page->getCollectionChildrenArray());
+            }
+        }
+
+
+        if ($this->filter == 'page' || $this->filter == 'page_children') {
+            if ($this->filterCID) {
+                $products->setCID($this->filterCID);
+
+                if ($this->filter == 'page_children') {
+                    $targetpage = Page::getByID($this->filterCID);
+                    if ($targetpage) {
+                        $products->setCIDs($targetpage->getCollectionChildrenArray());
+                    }
+                }
+            }
+        }
+
+
         $products->setItemsPerPage($this->maxProducts);
-        $products->setGroupID($this->gID);
+        $products->setGroupIDs($this->getGroupFilters());
         $products->setFeatureType($this->showFeatured);
+        $products->setGroupMatchAny($this->groupMatchAny);
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
         $this->set('products',$paginator->getCurrentPageResults());  
@@ -85,15 +136,37 @@ class Controller extends BlockController
         $args['showButton'] = isset($args['showButton']) ? 1 : 0;
         $args['truncateEnabled'] = isset($args['truncateEnabled']) ? 1 : 0;
         $args['showPagination'] = isset($args['showPagination']) ? 1 : 0;
+
+        $filtergroups = $args['filtergroups'];
+        unset($args['filtergroups']);
+
+        $db = Database::get();
+        $vals = array($this->bID);
+        $db->Execute("DELETE FROM btVividStoreProductListGroups where bID = ?",$vals);
+
+        //insert  groups
+        if (!empty($filtergroups)) {
+            foreach($filtergroups as $gID){
+                $vals = array($this->bID,(int)$gID);
+                //Log::addEntry($vals);
+                $db->Execute("INSERT INTO btVividStoreProductListGroups (bID,gID) VALUES (?,?)",$vals);
+            }
+        }
+
         parent::save($args);
     }
     public function validate($args)
     {
-        $e = Core::make("helper/validation/error"); 
+        $e = Core::make("helper/validation/error");
         $nh = Core::make("helper/number");
         if($args['maxProducts'] < 1){
             $e->add(t('Max Products must be at least 1'));
         }
+
+        if(($args['filter'] == 'page' || $args['filter'] == 'page_children') && $args['filterCID'] <= 0){
+            $e->add(t('A page must be selected'));
+        }
+
         if(!$nh->isInteger($args['maxProducts'])){
             $e->add(t('Max Product must be a whole number'));
         }

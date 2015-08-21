@@ -23,10 +23,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         
         <li class="cart-page-cart-list-item clearfix<?=$classes?>" data-instance-id="<?=$k?>" data-product-id="<?=$pID?>">
             <div class="cart-list-thumb">
-                <?=$product->getProductImageThumb()?>
+                <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>">
+                    <?=$product->getProductImageThumb()?>
+                </a>
             </div>
             <div class="cart-list-product-name">
-                <?=$product->getProductName()?>
+                <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>">
+                    <?=$product->getProductName()?>
+                </a>
             </div>
             
             <div class="cart-list-item-price">
@@ -70,8 +74,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     </div>
         
     <div class="cart-page-cart-links">
+        <?php if ($cart  && !empty($cart)) { ?>
         <a class="btn-cart-page-clear" href="javascript:vividStore.clearCart()"><?=t('Clear Cart')?></a>
         <a class="btn-cart-page-checkout" href="<?=View::url('/checkout')?>"><?=t('Checkout')?></a>
+        <?php } ?>
     </div>
     
 </div>
