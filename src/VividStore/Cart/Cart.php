@@ -344,11 +344,13 @@ class Cart
         $taxTotal = 0;
         $taxes = self::getTaxes();
 
-        foreach($taxes as $tax) {
-            if ($tax['calculation'] != 'extract') {
-                $taxTotal += $tax['taxamount'];
-            }
-        }
+        if($taxes){
+		    foreach($taxes as $tax) {
+		        if ($tax['calculation'] != 'extract') {
+		            $taxTotal += $tax['taxamount'];
+		        }
+		    }
+		}
 
         $shippingTotal = Price::getFloat(Cart::getShippingTotal());
         $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
