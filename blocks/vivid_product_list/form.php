@@ -71,6 +71,12 @@
     <label><?=t('Show:')?></label>
     <div class="checkbox">
         <label>
+            <?php echo $form->checkbox('showDescription',1,$showDescription);?>
+            <?=t('Description')?>
+        </label>
+    </div>
+    <div class="checkbox">
+        <label>
             <?php if($showQuickViewLink!=0){
                 $showQuickViewLink=1;
             }?>

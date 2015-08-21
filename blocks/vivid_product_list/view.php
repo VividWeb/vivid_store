@@ -29,6 +29,9 @@ if($products){
                 ?>
                 <h2 class="product-list-name"><?=$product->getProductName()?></h2>
                 <span class="product-list-price"><?=Price::format($product->getProductPrice())?></span>
+                <?php if($showDescription){ ?>
+                <div class="product-list-description"><?=$product->getProductDesc()?></div>
+                <?php } ?>
                 <?php if($showPageLink){?>
                 <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>" class="btn btn-default btn-sm btn-more-details"><?=t("More Details")?></a>
                 <?php } ?>
