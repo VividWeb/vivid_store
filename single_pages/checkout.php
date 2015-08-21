@@ -1,6 +1,7 @@
 <?php
+defined('C5_EXECUTE') or die(_("Access Denied."));
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
-defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
+?>
 <?php if($controller->getTask() == "view" || $controller->getTask() == "failed"){?>
 
 <div class="clearfix">

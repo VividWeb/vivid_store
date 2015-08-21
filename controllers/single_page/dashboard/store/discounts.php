@@ -110,7 +110,7 @@ class Discounts extends DashboardPageController
         }
 
         if (!empty($failed)) {
-            $_SESSION['vividstore.failedcodes'] = $failed;
+            Session::set('vividstore.failedcodes', $failed);
         }
 
         $this->redirect('/dashboard/store/discounts/codes/' . $drID, $successcount );
