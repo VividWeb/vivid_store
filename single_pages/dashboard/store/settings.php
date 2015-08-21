@@ -1,5 +1,5 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
-use Config;
+
 ?>
 	    <form method="post" action="<?=$view->action('save')?>">
 	        
