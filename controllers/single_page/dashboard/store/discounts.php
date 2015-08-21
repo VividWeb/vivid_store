@@ -47,9 +47,9 @@ class Discounts extends DashboardPageController
             $this->set('successCount', $successcount);
         }
 
-        if (is_array($_SESSION['vividstore.failedcodes'])) {
-            $this->set('failedcodes', $_SESSION['vividstore.failedcodes']);
-            unset($_SESSION['vividstore.failedcodes']);
+        if (is_array(Session::get('vividstore.failedcodes'))) {
+            $this->set('failedcodes', Session::get('vividstore.failedcodes'));
+            Session::set('vividstore.failedcodes',null);
         }
     }
 
