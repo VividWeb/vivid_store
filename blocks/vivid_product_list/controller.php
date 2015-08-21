@@ -67,7 +67,9 @@ class Controller extends BlockController
     }
     public function view()
     {
+
         $products = new VividProductList();
+        $products->setSortBy($this->sortOrder);
 
         if ($this->filter == 'current' || $this->filter == 'current_children') {
             $page = Page::getCurrentPage();
