@@ -40,7 +40,17 @@ class OrderList  extends AttributedItemList
                 $this->query->where('oStatus = ?')->setParameter($paramcount++,$this->status);
             }
         }
-
+		
+		if (isset($this->fromDate)) {
+			$this->query->andWhere('oDate >= ?')->setParameter($paramcount++,$this->fromDate);
+		}
+		if (isset($this->toDate)) {
+			$this->query->andWhere('oDate >= ?')->setParameter($paramcount++,$this->toDate);
+		}
+		if (isset($this->limit)) {
+			$this->query->setMaxResults($this->limit);
+		}
+		
         $this->query->orderBy('oID', 'DESC');
 
         return $this->query;
@@ -53,7 +63,28 @@ class OrderList  extends AttributedItemList
     public function setStatus($status) {
         $this->status = $status;
     }
-    
+    public function setFromDate($date)
+	{
+		if(!$date){
+			$date = date('Y-m-d', strtotime('-30 days'));
+		}
+		$this->fromDate = $date;
+	}
+	public function setToDate($date)
+	{
+		if(!$date){
+			$date = date('Y-m-d');
+		}
+		$this->toDate = $date;
+	}
+	public function setLimit($limit)
+	{
+		if(!$limit){
+			$limit = 0;
+		}	
+		$this->limit = $limit;
+	}
+	
     public function getResult($queryRow)
     {
         return VividOrder::getByID($queryRow['oID']);
