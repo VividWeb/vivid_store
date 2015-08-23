@@ -36,7 +36,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.3.3.1';
+    protected $pkgVersion = '2.3.3';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
         'src/Omnipay' => '\Omnipay'
@@ -61,6 +61,8 @@ class Controller extends Package
         SinglePage::add('/dashboard/store/products/',$pkg);
         SinglePage::add('/dashboard/store/products/attributes',$pkg);
         SinglePage::add('/dashboard/store/settings/',$pkg);
+		SinglePage::add('/dashboard/store/reports',$pkg);
+		SinglePage::add('/dashboard/store/reports/sales',$pkg);
 
         //install our cart/checkout pages
         SinglePage::add('/cart/',$pkg);
@@ -547,8 +549,15 @@ class Controller extends Package
         if(empty($co)){
             Config::save('vividstore.cartOverlay',false);
         }
-
-
+		
+		//$reports = Page::getByPath('/dashboard/store/reports');
+        //if (!is_object($reports) || $reports->isError()) {
+            SinglePage::add('/dashboard/store/reports', $pkg);
+        //}
+		//$salesReports = Page::getByPath('/dashboard/store/reports/sales');
+        //if (!is_object($salesReports) || $salesReports->isError()) {
+            SinglePage::add('/dashboard/store/reports/sales', $pkg);
+        //}	
     }
 
     private function installStoreProductPageType($pkg){

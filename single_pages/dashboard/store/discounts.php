@@ -1,7 +1,7 @@
 <?php 
 defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule;
-use \Config;
+use Config;
 
 $form = Core::make('helper/form');
 $date = Core::make('helper/form/date_time');

@@ -402,13 +402,13 @@ class Cart
         $taxTotal = 0;
         $taxes = self::getTaxes();
 
-        if ($taxes) {
-            foreach($taxes as $tax) {
-                if ($tax['calculation'] != 'extract') {
-                    $taxTotal += $tax['taxamount'];
-                }
-            }
-        }
+        if($taxes){
+		    foreach($taxes as $tax) {
+		        if ($tax['calculation'] != 'extract') {
+		            $taxTotal += $tax['taxamount'];
+		        }
+		    }
+		}
 
 
         $shippingTotal = Price::getFloat(Cart::getShippingTotal());
