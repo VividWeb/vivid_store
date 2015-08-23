@@ -63,6 +63,7 @@ class Controller extends Package
         SinglePage::add('/dashboard/store/settings/',$pkg);
 		SinglePage::add('/dashboard/store/reports',$pkg);
 		SinglePage::add('/dashboard/store/reports/sales',$pkg);
+		SinglePage::add('/dashboard/store/reports/products',$pkg);
 
         //install our cart/checkout pages
         SinglePage::add('/cart/',$pkg);
@@ -550,14 +551,18 @@ class Controller extends Package
             Config::save('vividstore.cartOverlay',false);
         }
 
-		//$reports = Page::getByPath('/dashboard/store/reports');
-        //if (!is_object($reports) || $reports->isError()) {
+		$reports = Page::getByPath('/dashboard/store/reports');
+        if (!is_object($reports) || $reports->isError()) {
             SinglePage::add('/dashboard/store/reports', $pkg);
-        //}
-		//$salesReports = Page::getByPath('/dashboard/store/reports/sales');
-        //if (!is_object($salesReports) || $salesReports->isError()) {
+        }
+		$salesReports = Page::getByPath('/dashboard/store/reports/sales');
+        if (!is_object($salesReports) || $salesReports->isError()) {
             SinglePage::add('/dashboard/store/reports/sales', $pkg);
-        //}
+        }
+		$productReports = Page::getByPath('/dashboard/store/reports/products');
+        if (!is_object($productReports) || $productReports->isError()) {
+            SinglePage::add('/dashboard/store/reports/products', $pkg);
+        }
 
         parent::upgrade();
     }

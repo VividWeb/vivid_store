@@ -7,6 +7,7 @@ use Concrete\Core\Search\ItemList\Database\AttributedItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 
 use Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
+use Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as VividOrderItem;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class OrderList  extends AttributedItemList
@@ -101,5 +102,26 @@ class OrderList  extends AttributedItemList
         $query = $this->deliverQueryObject();
         return $query->select('count(distinct o.oID)')->setMaxResults(1)->execute()->fetchColumn();
     }
-    
+	
+	public static function getDateOfFirstOrder()
+	{
+		$db = Database::get();
+		$date = $db->GetRow("SELECT * FROM VividStoreOrders ORDER BY oDate ASC LIMIT 1");
+		return $date['oDate'];
+	}
+    public function getOrderItems()
+	{
+		$orders = $this->getResults();
+		$orderItems = array();
+		$db = Database::get();
+		foreach($orders as $order){
+			$oID = $order->getOrderID();
+			$OrderOrderItems = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$oID);
+			foreach($OrderOrderItems as $oi){
+				$oi = VividOrderItem::getByID($oi['oiID']);
+				$orderItems[] = $oi;
+			}
+		}
+		return $orderItems;
+	}
 }

@@ -64,6 +64,8 @@ class OrderItem extends Object
         
     }    
     
+	public function getOrderItemID(){ return $this->oiID; }
+	public function getProductID(){ return $this->pID; }
     public function getProductName(){ return $this->oiProductName; }
     public function getPricePaid() { return $this->oiPricePaid; }
     public function getQty() { return $this->oiQty; }
@@ -94,13 +96,4 @@ class OrderItem extends Object
     {
         return VividProduct::getByID($this->pID);
     }
-    public function getTotalOrdered()
-	{
-		$db = Database::get();
-		
-	}
-	public function getTotalPricePaid()
-	{
-		$db = Database::get();
-	}
 }
