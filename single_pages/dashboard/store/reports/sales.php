@@ -91,34 +91,61 @@ $(function(){
 
 });
 </script>
-<h2>Sales Today</h2>
-<?php 
-	$ts = SalesReport::getTodaysSales();
-?>
-<p>
-	<strong>Total: </strong> <?=Price::format($ts['total'])?><br>
-	<strong>Products: </strong> <?=Price::format($ts['productTotal'])?><br>
-	<strong>Tax: </strong> <?=Price::format($ts['taxTotal'])?><br>
-	<strong>Shipping: </strong> <?=Price::format($ts['shippingTotal'])?>
-</p>
-
-<h2>Sales In the past 30 days</h2>
-<?php $td = SalesReport::getThirtyDays(); ?>
-<p>
-	<strong>Total: </strong> <?=Price::format($td['total'])?><br>
-	<strong>Products: </strong> <?=Price::format($td['productTotal'])?><br>
-	<strong>Tax: </strong> <?=Price::format($td['taxTotal'])?><br>
-	<strong>Shipping: </strong> <?=Price::format($td['shippingTotal'])?>
-</p>
-
-<h2>Year to date</h2>
-<?php $ytd = SalesReport::getYearToDate(); ?>
-<p>
-	<strong>Total: </strong> <?=Price::format($ytd['total'])?><br>
-	<strong>Products: </strong> <?=Price::format($ytd['productTotal'])?><br>
-	<strong>Tax: </strong> <?=Price::format($ytd['taxTotal'])?><br>
-	<strong>Shipping: </strong> <?=Price::format($ytd['shippingTotal'])?>
-</p>
+<div class="row">
+	<div class="col-xs-6 col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h2 class="panel-title">Sales Today</h2>
+			</div>
+			<div class="panel-body">
+				<?php 
+				$ts = SalesReport::getTodaysSales();
+				?>
+				<p>
+				<strong>Total: </strong> <?=Price::format($ts['total'])?><br>
+				<strong>Products: </strong> <?=Price::format($ts['productTotal'])?><br>
+				<strong>Tax: </strong> <?=Price::format($ts['taxTotal'])?><br>
+				<strong>Shipping: </strong> <?=Price::format($ts['shippingTotal'])?>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6 col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h2 class="panel-title">Past 30 Days</h2>
+			</div>
+			<div class="panel-body">
+				<?php 
+				$td = SalesReport::getThirtyDays();
+				?>
+				<p>
+				<strong>Total: </strong> <?=Price::format($td['total'])?><br>
+				<strong>Products: </strong> <?=Price::format($td['productTotal'])?><br>
+				<strong>Tax: </strong> <?=Price::format($td['taxTotal'])?><br>
+				<strong>Shipping: </strong> <?=Price::format($td['shippingTotal'])?>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6 col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h2 class="panel-title">Year to Date</h2>
+			</div>
+			<div class="panel-body">
+				<?php 
+				$ytd = SalesReport::getYearToDate();
+				?>
+				<p>
+				<strong>Total: </strong> <?=Price::format($ytd['total'])?><br>
+				<strong>Products: </strong> <?=Price::format($ytd['productTotal'])?><br>
+				<strong>Tax: </strong> <?=Price::format($ytd['taxTotal'])?><br>
+				<strong>Shipping: </strong> <?=Price::format($ytd['shippingTotal'])?>
+				</p>
+			</div>
+		</div>
+	</div>
 
 <h2>Custom Date Range</h2>
 <form action="<?=URL::to('/dashboard/store/reports/sales')?>" method="post" class="form form-inline">
