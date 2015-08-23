@@ -59,6 +59,11 @@ class SalesReport extends OrderList
 		$jan1 = $jan1->format("Y-m-d");
 		return self::getTotalsByRange($jan1,$today,0);
 	}
-	
+	public function getByMonth($date)
+	{
+		$from = date('Y-m-01', strtotime($date));
+		$to = date('Y-m-t', strtotime($date));
+		return self::getTotalsByRange($from,$to,0);
+	}
 	
 }

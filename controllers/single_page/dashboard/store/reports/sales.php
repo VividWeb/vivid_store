@@ -18,6 +18,10 @@ class Sales extends DashboardPageController
     {
         $sr = new SalesReport();
 		$this->set('sr',$sr);
+		$pkg = Package::getByHandle('vivid_store');
+        $packagePath = $pkg->getRelativePath();
+		$this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/chartist.css'));
+        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/chartist.js'));
     }
     
 }
