@@ -11,11 +11,13 @@ use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
 {
     static protected $cart = null;
+    static protected $discounts = null;
 
     public static function getCart() {
 
@@ -46,10 +48,36 @@ class Cart
                 Session::set('vividstore.cart', $checkeditems);
             }
 
+            self::$discounts = array();
+
+            $rules = DiscountRule::findAutomaticDiscounts();
+            if (count($rules) > 0) {
+                self::$discounts = array_merge(self::$discounts, $rules);
+            }
+
+            $code = trim(Session::get('vividstore.code'));
+            if ($code) {
+                $rules = DiscountRule::findDiscountRuleByCode($code);
+
+                if (count($rules) > 0) {
+                    self::$discounts = array_merge(self::$discounts, $rules);
+                } else {
+                     Session::set('vividstore.code', '');
+                }
+            }
+
             self::$cart = $checkeditems;
         }
 
         return self::$cart;
+    }
+
+    public static function getDiscounts() {
+        if (!isset(self::$cart)) {
+            self::getCart();
+        }
+
+        return self::$discounts;
     }
 
     public function add($data)
@@ -151,8 +179,24 @@ class Cart
                 }
             }
         }
-        return $subtotal;
+
+        $discounts = self::getDiscounts();
+
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'subtotal') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $subtotal -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $subtotal -= ($discount->drPercentage / 100 * $subtotal);
+                }
+            }
+        }
+
+        return max($subtotal,0);
     }
+
     public function isCustomerTaxable()
     {
         $taxAddress = Config::get('vividstore.taxAddress');
@@ -334,6 +378,21 @@ class Cart
             }
 
         }
+
+        $discounts = self::getDiscounts();
+
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'shipping') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $shippingTotal -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $shippingTotal -= ($discount->drPercentage / 100 * $shippingTotal);
+                }
+            }
+        }
+
         return $shippingTotal;
     }
 
@@ -343,14 +402,32 @@ class Cart
         $taxTotal = 0;
         $taxes = self::getTaxes();
 
-        foreach($taxes as $tax) {
-            if ($tax['calculation'] != 'extract') {
-                $taxTotal += $tax['taxamount'];
+        if ($taxes) {
+            foreach($taxes as $tax) {
+                if ($tax['calculation'] != 'extract') {
+                    $taxTotal += $tax['taxamount'];
+                }
             }
         }
 
+
         $shippingTotal = Price::getFloat(Cart::getShippingTotal());
+
         $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
+
+        $discounts = self::getDiscounts();
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'total') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $grandTotal -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $grandTotal -= ($discount->drPercentage / 100 * $grandTotal);
+                }
+            }
+        }
+
         return $grandTotal;
     }
 
@@ -373,9 +450,21 @@ class Cart
         $shippingTotal = Price::getFloat(Cart::getShippingTotal());
         $total = ($subTotal + $addedTaxTotal + $shippingTotal);
 
+        $discounts = self::getDiscounts();
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'total') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $total -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $total -= ($discount->drPercentage / 100 * $total);
+                }
+            }
+        }
+
         return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
     }
-
 
     public function requiresLogin() {
         if(self::getCart()){
@@ -391,6 +480,28 @@ class Cart
 
         return false;
     }
-}
 
+    public static function storeCode($code) {
+        $rule = DiscountRule::findDiscountRuleByCode($code);
+
+        if (!empty($rule)) {
+            Session::set('vividstore.code',$code);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function hasCode() {
+        return (bool)Session::get('vividstore.code');
+    }
+
+    public static function getCode() {
+        return Session::get('vividstore.code');
+    }
+
+    public static function clearCode() {
+        Session::set('vividstore.code', '');
+    }
+}
 

@@ -17,6 +17,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as Cart;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -88,6 +89,10 @@ class Checkout extends PageController
         $discountsWithCodesExist = DiscountRule::discountsWithCodesExist();
 
         $this->set("discountsWithCodesExist",$discountsWithCodesExist);
+
+        $this->set('cart', Cart::getCart());
+        $this->set('discounts', Cart::getDiscounts());
+        $this->set('hasCode', Cart::hasCode());
 
         $this->set("billingCountries",$billingCountries);
         $this->set("shippingCountries",$shippingCountries);
