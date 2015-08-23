@@ -5,16 +5,59 @@ use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
-class SalesReport 
+class SalesReport extends OrderList
 {
 	
 	public function __construct()
 	{
-		$ol = new OrderList();
-		$ol->setFromDate();
-		$ol->setToDate();
-		$ol->setLimit();
-		return $ol;
+		parent::__construct();	
+		$this->setFromDate();
+		$this->setToDate();
+		$this->setLimit(0);
+	}
+	public static function getTotalsByRange($from,$to,$limit=0)
+	{
+		$sr = new SalesReport();
+		$sr->setFromDate($from);
+		$sr->setToDate($to);
+		$sr->setLimit($limit);
+		
+		$total = 0;
+		$productTotal = 0;
+		$taxTotal = 0;
+		$shippingTotal = 0;
+		foreach($sr->getResults() as $order){
+			$total = $total + $order->getTotal();	
+			$productTotal = $productTotal + $order->getSubTotal();
+			$taxTotal = $taxTotal + $order->getTaxTotal();
+			$shippingTotal = $shippingTotal + $order->getShippingTotal();
+		}
+		
+		$totals = array(
+			"total" => $total,
+			"productTotal" => $productTotal,
+			"taxTotal" => $taxTotal,
+			"shippingTotal" => $shippingTotal
+		);
+		return $totals;
+	}
+	public static function getTodaysSales()
+	{
+		$today = date('Y-m-d');
+		return self::getTotalsByRange($today,$today,0);
+	}
+	public static function getThirtyDays()
+	{
+		$today = date('Y-m-d');
+		$thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
+		return self::getTotalsByRange($thirtyDaysAgo,$today,0);
+	}
+	public function getYearToDate()
+	{
+		$today = date('Y-m-d');
+		$jan1 = new \DateTime(date("Y")."-01-01"); 
+		$jan1 = $jan1->format("Y-m-d");
+		return self::getTotalsByRange($jan1,$today,0);
 	}
 	
 	
