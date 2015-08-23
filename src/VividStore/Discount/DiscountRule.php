@@ -3,8 +3,10 @@
 namespace Concrete\Package\VividStore\Src\Vividstore\Discount;
 use Concrete\Core\Foundation\Object as Object;
 use Concrete\Package\VividStore\Src\Vividstore\Discount\DiscountCode;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use Database;
 use Core;
+
 
 class DiscountRule extends Object
 {
@@ -17,13 +19,26 @@ class DiscountRule extends Object
 
     public static function discountsWithCodesExist() {
         $db = Database::get();
-        $data = $db->GetRow("SELECT count(*) as codecount FROM VividStoreDiscountRules WHERE enabled =1 "); // TODO
+        $data = $db->GetRow("SELECT count(*) as codecount FROM VividStoreDiscountRules WHERE drEnabled =1 "); // TODO
+
+        return ($data['codecount'] > 0);
     }
 
-    public static function findAutomaticDiscounts(Cart $cart, $code = '', $user = null) {
+    public static function findAutomaticDiscounts($user = null, $productlist = array()) {
         $db = Database::get();
-        $r = $db->GetAssoc("SELECT * FROM VividStoreDiscountRules WHERE enabled =1 "); // TODO
+        $result = $db->query("SELECT * FROM VividStoreDiscountRules
+              WHERE drEnabled = 1
+              AND drDeleted IS NULL
+              AND drTrigger = 'auto'
+              AND (drPercentage > 0 or drValue  > 0)
+              AND (drValidFrom IS NULL OR drValidFrom <= NOW())
+              AND (drValidTo IS NULL OR drValidTo > NOW())
+              "); // TODO
+
         $discounts = array();
+        while ($row = $result->fetchRow()) {
+            $discounts[] =  self::load($row);
+        }
         return $discounts;
     }
 
@@ -37,11 +52,26 @@ class DiscountRule extends Object
         return $r;
     }
 
-    public static function findDiscountRuleByCode($code) {
-        // look up discount by code, if found and applicable:
-        // return $discount;
+    public static function findDiscountRuleByCode($code, $user = null) {
+        $db = Database::get();
 
-        return false;
+        $result = $db->query("SELECT * FROM VividStoreDiscountCodes as dc
+        LEFT JOIN VividStoreDiscountRules as dr on dc.drID = dr.drID
+        WHERE dcCode = ?
+        AND oID IS NULL
+        AND drDeleted IS NULL
+        AND  drEnabled = '1'
+        AND drTrigger = 'code'
+        AND (drValidFrom IS NULL OR drValidFrom <= NOW())
+        AND (drValidTo IS NULL OR drValidTo > NOW())", array($code));
+
+        $discounts = array();
+
+        while ($row = $result->fetchRow()) {
+            $discounts[] =  self::load($row);
+        }
+
+        return $discounts;
     }
 
     public function getCodes() {
@@ -66,7 +96,7 @@ class DiscountRule extends Object
 
     }
 
-    public function load($data) {
+    public static function load($data) {
         if(!empty($data)){
             $discountRule = new DiscountRule();
             $discountRule->setPropertiesFromArray($data);
@@ -171,6 +201,22 @@ class DiscountRule extends Object
         $now = $dt->getLocalDateTime();
 
         $db->Execute("UPDATE VividStoreDiscountRules SET drDeleted = ? WHERE drID=?",array($now, $this->drID));
+    }
+
+    public function getDisplay() {
+        $display = trim($this->drDisplay);
+
+        if ($display) {
+           return $display;
+        } else {
+            if ($this->drDeductType == 'percentage') {
+                return $this->drPercentage . ' ' . t('off');
+            }
+
+            if ($this->drDeductType == 'value') {
+                return Price::format($this->drValue) . ' ' . t('off');
+            }
+        }
     }
 
 }

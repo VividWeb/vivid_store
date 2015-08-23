@@ -267,7 +267,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         <h2><?=t("Your Cart")?></h2>
 
         <?php
-        $cart = Session::get('cart');
 
         if(\Illuminate\Filesystem\Filesystem::exists(DIR_BASE.'/application/elements/cart_list.php')){
             View::element('cart_list',array('cart'=>$cart));
@@ -297,6 +296,28 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <strong><?=t("Shipping")?>:</strong> <?=Price::format($shippingtotal);?><br>
             <?php } ?>
         </p>
+
+        <?php if(!empty($discounts)) { ?>
+            <p><strong><?= (count($discounts) == 1 ? t('Discount') : t('Discounts'));?>:</strong>
+
+                <?php
+                $discountstrings = array();
+
+                foreach($discounts as $discount) { ?>
+                    <?php  $discountstrings[] = h($discount->getDisplay()); ?>
+                <?php }
+
+                echo implode(', ', $discountstrings);
+                ?>
+            </p>
+        <?php }?>
+
+        <?php if ($discountsWithCodesExist && !$hasCode) { ?>
+            <p><a href="<?= View::url('/cart');?>"><?= t('Enter discount code'); ?></a></p>
+        <?php } ?>
+
+
+
         <p><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></p>
         
     </div>

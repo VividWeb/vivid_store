@@ -89,6 +89,36 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             ?>
         </tbody>
     </table>
+
+    <?php $applieddiscounts = $order->getAppliedDiscounts();
+
+    if (!empty($applieddiscounts)) { ?>
+        <h3><?=t("Discounts Applied")?></h3>
+        <hr />
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th><strong><?=t("Name")?></strong></th>
+                <th><?=t("Displayed")?></th>
+                <th><?=t("Deducted From")?></th>
+                <th><?=t("Amount")?></th>
+                <th><?=t("Triggered")?></th>
+            </tr>
+
+            </thead>
+            <tbody>
+            <?php foreach($applieddiscounts as $discount) { ?>
+                <tr>
+                    <td><?= h($discount['odName']); ?></td>
+                    <td><?= h($discount['odDisplay']); ?></td>
+                    <td><?= h($discount['odDeductFrom']); ?></td>
+                    <td><?= ($discount['odValue'] > 0 ? $discount['odValue'] : $discount['odPercentage'] . '%' ); ?></td>
+                    <td><?= ($discount['odCode'] ? t('by code'). ' ' .$discount['odCode']: t('Automatically') ); ?></td>
+                </tr>
+            <?php } ?>
+
+            </tbody>
+        </table>
     
     <p>
         <strong><?=t("Items Subtotal")?>:</strong>  <?= Price::format($order->getSubTotal())?><br>
@@ -100,6 +130,11 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
         <strong class="text-large"><?=t("Total")?>:</strong>  <?= Price::format($order->getTotal())?><br>
         <strong><?=t("Payment Method")?>:</strong> <?=$order->getPaymentMethodName()?>
     </p>
+
+
+
+
+    <?php } ?>
 
     <h3><?=t("Order Status History")?></h3>
     <hr>
