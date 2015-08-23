@@ -94,5 +94,13 @@ class OrderItem extends Object
     {
         return VividProduct::getByID($this->pID);
     }
-    
+    public function getTotalOrdered()
+	{
+		$db = Database::get();
+		
+	}
+	public function getTotalPricePaid()
+	{
+		$db = Database::get();
+	}
 }
