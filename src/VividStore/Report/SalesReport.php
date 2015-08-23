@@ -37,7 +37,8 @@ class SalesReport extends OrderList
 			"total" => $total,
 			"productTotal" => $productTotal,
 			"taxTotal" => $taxTotal,
-			"shippingTotal" => $shippingTotal
+			"shippingTotal" => $shippingTotal,
+			"orders" => $sr
 		);
 		return $totals;
 	}

@@ -119,3 +119,45 @@ $(function(){
 	<strong>Tax: </strong> <?=Price::format($ytd['taxTotal'])?><br>
 	<strong>Shipping: </strong> <?=Price::format($ytd['shippingTotal'])?>
 </p>
+
+<h2>Custom Date Range</h2>
+<form action="<?=URL::to('/dashboard/store/reports/sales')?>" method="post" class="form form-inline">
+	<div class="form-group">
+		<?php echo Core::make('helper/form/date_time')->date('dateFrom', $dateFrom); ?>
+	</div>
+	<div class="form-group">
+		<?php echo Core::make('helper/form/date_time')->date('dateTo', $dateTo); ?>
+	</div>
+	<input type="submit" class="btn btn-primary">
+</form>
+<p>
+	<strong>Product Total: </strong><?=Price::format($ordersTotals['productTotal'])?> | 
+	<strong>Tax Total:</strong> <?=Price::format($ordersTotals['taxTotal'])?> |
+	<strong>Shipping Total:</strong> <?=Price::format($ordersTotals['shippingTotal'])?> |
+	<strong>Total:</strong> <?=Price::format($ordersTotals['total'])?>
+</p>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th><?=t("Order #")?></th>
+			<th><?=t("Date")?></th>
+			<th><?=t("SubTotal")?></th>
+			<th><?=t("Tax Total")?></th>
+			<th><?=t("Shipping")?></th>
+			<th><?=t("Total")?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach($orders as $o){?>
+		<tr>
+			<td><a href="<?=URL::to('/dashboard/store/orders/order',$o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
+			<td><?=$o->getOrderDate()?></td>
+			<td><?=$o->getSubTotal()?></td>
+			<td><?=$o->getTaxTotal()?></td>
+			<td><?=$o->getShippingTotal()?></td>
+			<td><?=$o->getTotal()?></td>
+		</tr>
+		<?php } ?>
+	</tbody>
+</table>
