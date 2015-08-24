@@ -30,7 +30,7 @@ class Sales extends DashboardPageController
 		$dateFrom = $this->post('dateFrom');
 		$dateTo = $this->post('dateTo');
 		if(!$dateFrom){ $dateFrom = $thirtyDaysAgo; }
-		if(!$dateTo){ $dateTo = $toda; }
+		if(!$dateTo){ $dateTo = $today; }
 		$this->set('dateFrom',$dateFrom);
 		$this->set('dateTo',$dateTo);
 		

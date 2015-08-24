@@ -16,9 +16,30 @@ class Products extends DashboardPageController
 
     public function view()
     {
-    	$pr = new ProductReport();
-		$pr->sortByPopularity();
+    	$dateFrom = $this->post('dateFrom');
+		$dateTo = $this->post('dateTo');
+		
+		if(!$dateFrom){
+			$dateFrom = OrderList::getDateOfFirstOrder();
+		}		
+		if(!$dateTo){
+			$dateTo = date('Y-m-d');
+		}
+		$pr = new ProductReport($dateFrom,$dateTo);
+		$orderBy = $this->post('orderBy');
+		if(!$orderBy){
+			$orderBy = 'quantity';
+		}
+		if($orderBy=='quantity'){
+			$pr->sortByPopularity();	
+		} else {
+			$pr->sortByTotal();
+		}
+		
 		$products = $pr->getProducts();
+		
+		$this->set('dateFrom',$dateFrom);
+		$this->set('dateTo',$dateTo);
     	$this->set("products",$products);
 	}
     

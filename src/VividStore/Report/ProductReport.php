@@ -14,15 +14,15 @@ class ProductReport
 	private $orderItems;
 	private $products;
 	
-	public function __construct()
+	public function __construct($from=null,$to=null)
 	{
-		$this->setOrderItemsByRange();
+		$this->setOrderItemsByRange($from,$to);
 		$this->setProducts();
 	}
 	
 	public function setOrderItemsByRange($from=null,$to=null)
 	{
-		if(!$from){
+		if(!isset($from)){
 			$from = OrderList::getDateOfFirstOrder();
 		}		
 		if(!$to){
