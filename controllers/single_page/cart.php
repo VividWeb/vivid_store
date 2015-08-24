@@ -11,13 +11,28 @@ use Session;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart extends PageController
 {
     public function view()
     {
+        $codeerror = false;
+        $codesuccess = false;
+
+        if ($this->isPost()) {
+            if ($this->post('action') == 'code' && $this->post('code')) {
+                $codesuccess = VividCart::storeCode($this->post('code'));
+                $codeerror = !$codesuccess;
+            }
+        }
+
+        $this->set('codeerror', $codeerror);
+        $this->set('codesuccess', $codesuccess);
+
         $this->set('cart',VividCart::getCart());
+        $this->set('discounts',VividCart::getDiscounts());
         $this->set('total',VividCart::getSubTotal());
         $this->addHeaderItem("
             <script type=\"text/javascript\">
@@ -27,7 +42,10 @@ class Cart extends PageController
             </script>
         ");
         $this->addFooterItem(Core::make('helper/html')->javascript('vivid-store.js','vivid_store'));   
-        $this->addHeaderItem(Core::make('helper/html')->css('vivid-store.css','vivid_store'));       
+        $this->addHeaderItem(Core::make('helper/html')->css('vivid-store.css','vivid_store'));
+
+        $discountsWithCodesExist = DiscountRule::discountsWithCodesExist();
+        $this->set("discountsWithCodesExist",$discountsWithCodesExist);
     }  
     public function add()
     {
@@ -39,6 +57,12 @@ class Cart extends PageController
         exit();
 
     }
+
+    public function code() {
+        VividCart::storeCode($this->post('code'));
+        exit();
+    }
+
     public function update()
     {
         $data = $this->post();

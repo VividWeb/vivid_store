@@ -376,7 +376,7 @@ class Controller extends Package
 
     public function upgrade()
     {
-
+        parent::upgrade();
         $pkg = Package::getByHandle('vivid_store');
 
 
@@ -550,7 +550,7 @@ class Controller extends Package
         if(empty($co)){
             Config::save('vividstore.cartOverlay',false);
         }
-
+		
 		$reports = Page::getByPath('/dashboard/store/reports');
         if (!is_object($reports) || $reports->isError()) {
             SinglePage::add('/dashboard/store/reports', $pkg);
@@ -563,8 +563,6 @@ class Controller extends Package
         if (!is_object($productReports) || $productReports->isError()) {
             SinglePage::add('/dashboard/store/reports/products', $pkg);
         }
-
-        parent::upgrade();
     }
 
     private function installStoreProductPageType($pkg){

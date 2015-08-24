@@ -5,6 +5,7 @@ use \Concrete\Core\Page\Controller\DashboardPageController;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRuleList;
+use Session;
 
 class Discounts extends DashboardPageController
 {
@@ -110,7 +111,7 @@ class Discounts extends DashboardPageController
         }
 
         if (!empty($failed)) {
-            $_SESSION['vividstore.failedcodes'] = $failed;
+            Session::set('vividstore.failedcodes', $failed);
         }
 
         $this->redirect('/dashboard/store/discounts/codes/' . $drID, $successcount );

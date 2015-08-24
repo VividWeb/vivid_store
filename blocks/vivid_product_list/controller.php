@@ -67,7 +67,9 @@ class Controller extends BlockController
     }
     public function view()
     {
+
         $products = new VividProductList();
+        $products->setSortBy($this->sortOrder);
 
         if ($this->filter == 'current' || $this->filter == 'current_children') {
             $page = Page::getCurrentPage();
@@ -127,7 +129,8 @@ class Controller extends BlockController
         $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));    
     }
     public function save($args)
-    {
+    {   
+        $args['showDescription'] = isset($args['showDescription']) ? 1 : 0;
         $args['showQuickViewLink'] = isset($args['showQuickViewLink']) ? 1 : 0;
         $args['showPageLink'] = isset($args['showPageLink']) ? 1 : 0;
         $args['showAddToCart'] = isset($args['showAddToCart']) ? 1 : 0;
