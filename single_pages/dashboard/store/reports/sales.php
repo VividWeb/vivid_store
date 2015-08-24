@@ -240,3 +240,6 @@ $(function(){
 		<?php } ?>
 	</tbody>
 </table>
+<?php if ($paginator->getTotalPages() > 1) { ?>
+    <?= $pagination ?>
+<?php } ?>
