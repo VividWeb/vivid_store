@@ -22,6 +22,7 @@ use \Concrete\Core\Attribute\Type as AttributeType;
 use AttributeSet;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Utility\Service\Text;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
@@ -40,6 +41,7 @@ class Installer
 		Installer::installSinglePage('/dashboard/store/products/', $pkg);
 		Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
 		Installer::installSinglePage('/dashboard/store/settings/', $pkg);
+		Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
 		Installer::installSinglePage('/dashboard/store/reports', $pkg);
 		Installer::installSinglePage('/dashboard/store/reports/sales', $pkg);
 		Installer::installSinglePage('/dashboard/store/reports/products', $pkg);
@@ -134,6 +136,18 @@ class Installer
 		$pm = PaymentMethod::getByHandle($handle);
         if (!is_object($pm)) {
             PaymentMethod::add($handle,$name,$pkg,$displayName,$enabled);
+        }
+	}
+	public static function installShippingMethods(Package $pkg)
+	{
+		Installer::installShippingMethod('flat_rate','Flat Rate',$pkg);
+	}
+	
+	public static function installShippingMethod($handle,$name,$pkg)
+	{
+		$smt = ShippingMethodType::getByHandle($handle);
+        if(!is_object($smt)){
+            ShippingMethodType::add($handle,$name,$pkg);
         }
 	}
 	public static function installBlocks(Package $pkg)

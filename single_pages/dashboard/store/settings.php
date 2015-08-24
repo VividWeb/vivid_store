@@ -1,4 +1,10 @@
 <?php defined('C5_EXECUTE') or die("Access Denied."); ?>
+	    
+	    <div class="ccm-dashboard-header-buttons">
+            <a href="<?php echo View::url('/dashboard/store/settings/shipping')?>" class="btn btn-primary"><i class="fa fa-gift"></i> <?php echo t("Shipping Methods")?></a>
+            <a href="<?php echo View::url('/dashboard/store/settings/payment')?>" class="btn btn-primary"><i class="fa fa-money"></i> <?php echo t("Payment Methods")?></a>
+        </div>
+	    
 	    <form method="post" action="<?=$view->action('save')?>">
 	        
             <div class="row">
@@ -143,21 +149,6 @@
                                 <?php echo $form->select('sizeUnit',array('in'=>t('in'),'cm'=>t('cm')),Config::get('vividstore.sizeUnit'));?>
                             </div>
                         </div>                        
-                    </div>
-                    <hr>
-                    <h3><?=t("Settings")?></h3>
-                    
-                    <div class="form-group">
-                        <?php echo $form->label('shippingEnabled',t('Enabled'));?>
-                        <?php echo $form->select('shippingEnabled',array('no'=>t('No'),'yes'=>t('Yes')),Config::get('vividstore.shippingenabled'));?>
-                    </div>
-                    <div class="form-group">
-                        <?php echo $form->label('shippingBasePrice',t('Base Price')); ?>
-                        <?php echo $form->text('shippingBasePrice',Config::get('vividstore.shippingbase'),array('style'=>'width:100px')); ?>
-                    </div>
-                    <div class="form-group">
-                        <?php echo $form->label('shippingItemPrice',t('Additional Price Per Item')); ?>
-                        <?php echo $form->text('shippingItemPrice',Config::get('vividstore.shippingitem'),array('style'=>'width:100px')); ?>
                     </div>
                     
             

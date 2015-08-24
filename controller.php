@@ -42,6 +42,7 @@ class Controller extends Package
 		Installer::updateConfigStorage($pkg);
 		Installer::setDefaultConfigValues($pkg);
 		Installer::installPaymentMethods($pkg);
+		Installer::installShippingMethods($pkg);
         Installer::installBlocks($pkg);
 		Installer::setPageTypeDefaults($pkg);
 		Installer::installCustomerGroups($pkg);
@@ -61,7 +62,7 @@ class Controller extends Package
     public function upgrade()
     {
         parent::upgrade();
-		$this->installStore();		
+		$this->installStore();				
     }
 
     
