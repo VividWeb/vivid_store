@@ -5,6 +5,7 @@ use \Concrete\Core\Page\Controller\DashboardPageController;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRuleList;
+use Session;
 
 class Discounts extends DashboardPageController
 {
