@@ -168,7 +168,8 @@ $(function(){
   		},
   		plugins: [
   			Chartist.plugins.tooltip()
-  		]
+  		],
+  		lineSmooth: Chartist.Interpolation.none()
 	}
 	);
 	
