@@ -179,10 +179,10 @@ $(function(){
 
 <div class="well">
 	<div class="row">
-		<div class="col-xs-12 col-sm-5">
+		<div class="col-xs-12 col-sm-4">
 			<h3><?=t("View Orders by Date")?></h3>
 		</div>
-		<div class="col-xs-12 col-sm-7">
+		<div class="col-xs-12 col-sm-8 text-right">
 			<form action="<?=URL::to('/dashboard/store/reports/sales')?>" method="post" class="form form-inline order-report-form">
 				<div class="form-group">
 					<?php echo Core::make('helper/form/date_time')->date('dateFrom', $dateFrom); ?>
