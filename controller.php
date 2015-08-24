@@ -1,34 +1,10 @@
 <?php
-
 namespace Concrete\Package\VividStore;
 use Package;
-use BlockType;
-use BlockTypeSet;
-use SinglePage;
-use Core;
-use Page;
-use PageTemplate;
-use PageType;
-use Route;
-use Group;
-use View;
-use Database;
-use FileSet;
-use Loader;
-use Config;
-use Concrete\Core\Database\Schema\Schema;
-use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
-use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
-use \Concrete\Core\Attribute\Type as AttributeType;
-use AttributeSet;
-use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
-use \Concrete\Core\Utility\Service\Text;
-use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
-use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
+use Route;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -51,8 +27,15 @@ class Controller extends Package
         return t("Vivid Store");
     }
 	
-	public function installStore($pkg)
+	public function installStore()
 	{
+		$pkg = Package::getByHandle('vivid_store');
+		if (version_compare($pkg->getPackageVersion(), '2.1', '<')) {
+            Installer::renameDatabaseTables($pkg);
+        }
+		if (version_compare(APP_VERSION, '5.7.4', '<')) {
+			Installer::refreshDatabase($pkg);
+		}
 		Installer::installSinglePages($pkg);
 		Installer::installProductParentPage($pkg);
         Installer::installStoreProductPageType($pkg);
@@ -67,23 +50,18 @@ class Controller extends Package
 		Installer::installProductAttributes($pkg);
 		Installer::createDDFileset($pkg);
 		Installer::installOrderStatuses($pkg);
-		
-		if (version_compare($pkg->getPackageVersion(), '2.1', '<')) {
-            Installer::renameDatabaseTables($pkg);
-            Installer::refreshDatabase($pkg);
-		}
 	}
 
     public function install()
     {
         $pkg = parent::install();
-		$this->installStore($pkg);
+		$this->installStore();
     }
 
     public function upgrade()
     {
-        $pkg = parent::upgrade();
-        $this->installStore($pkg);		
+        parent::upgrade();
+		$this->installStore();		
     }
 
     
@@ -107,17 +85,17 @@ class Controller extends Package
     }
     public function uninstall()
     {
-        $authpm = PaymentMethod::getByHandle('auth_net');
-        if(is_object($authpm)){
-            $authpm->delete();
+        $authnetpm = PaymentMethod::getByHandle('auth_net');
+        if(is_object($authnetpm)){
+            $authnetpm->delete();
         }
         $invoicepm = PaymentMethod::getByHandle('invoice');
         if(is_object($invoicepm)){
             $invoicepm->delete();
         }
-		$invoicepm = PaymentMethod::getByHandle('paypal_standard');
-        if(is_object($invoicepm)){
-            $invoicepm->delete();
+		$paypalpm = PaymentMethod::getByHandle('paypal_standard');
+        if(is_object($paypalpm)){
+            $paypalpm->delete();
         }
         parent::uninstall();
     }
