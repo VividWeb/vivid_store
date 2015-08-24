@@ -54,3 +54,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 	</tbody>
 </table>
 
+<?php if ($paginator->getTotalPages() > 1) { ?>
+    <?= $pagination ?>
+<?php } ?>
+

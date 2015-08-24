@@ -43,10 +43,12 @@ class Sales extends DashboardPageController
     	$orders->setItemsPerPage(10);
 
         $paginator = $orders->getPagination();
-        //$pagination = $paginator->renderDefaultView();
+        $pagination = $paginator->renderDefaultView();
         $this->set('orders',$paginator->getCurrentPageResults());  
-        //$this->set('pagination',$pagination);
-        //$this->set('paginator', $paginator); 
+        $this->set('pagination',$pagination);
+        $this->set('paginator', $paginator); 
+        
+        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
      
 	}
     

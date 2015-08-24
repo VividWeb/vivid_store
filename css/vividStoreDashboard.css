@@ -55,3 +55,13 @@
         .option-group .panel-heading label { display: block; margin-top: 4px; }
         
 #tax-rules-group select { margin-bottom: 8px; }
+
+/* Sales reports */
+.chartist-tooltip { position: absolute; background: #414d59; color: #97aabc; padding: 8px 15px; text-align: center; }
+.panel-sale {  }
+	.panel-sale .panel-heading { background: #414d59; color: #97aabc; }
+	.panel-sale .panel-body { background: #fafafa; text-align: center; font-size: 16px; }
+		.panel-sale .panel-body .stat { margin-bottom: 15px; }
+		.panel-sale .panel-body strong { display: block; font-size: 20px; color: #414d59; }
+
+.order-report-form { margin-top: 15px; }

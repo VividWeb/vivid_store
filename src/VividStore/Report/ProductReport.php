@@ -2,6 +2,9 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Report;
 
 use Database;
+use Concrete\Core\Search\ItemList\ItemList as AbstractItemList;
+use Concrete\Core\Search\Pagination\Pagination;
+use Pagerfanta\Adapter\ArrayAdapter;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
@@ -9,7 +12,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItemList;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
-class ProductReport 
+class ProductReport extends AbstractItemList
 {
 	private $orderItems;
 	private $products;
@@ -94,4 +97,28 @@ class ProductReport
 	public function getOrderItems(){ return $this->orderItems; }
 	public function getProducts(){ return $this->products; }
 	
+	protected function executeSortBy($column, $direction = 'asc')
+    {
+        $this->query->orderBy($column, $direction);
+    }
+	public function executeGetResults()
+    {
+        //return $this->deliverQueryObject()->execute()->fetchAll();
+    }
+	public function debugStart(){}
+
+    public function debugStop(){}
+	protected function createPaginationObject()
+    {
+        $pagination = new Pagination($this, new ArrayAdapter($this->getProducts()));
+        return $pagination;
+    }
+	public function getTotalResults()
+    {
+        return count($this->getProducts());
+    }
+	public function getResult($queryRow)
+    {
+        return $queryRow;
+    }
 }

@@ -9,6 +9,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Report\ProductReport;
+use \Concrete\Core\Search\Pagination\Pagination;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Products extends DashboardPageController
@@ -36,11 +37,18 @@ class Products extends DashboardPageController
 			$pr->sortByTotal();
 		}
 		
-		$products = $pr->getProducts();
+		//$products = $pr->getProducts();
 		
 		$this->set('dateFrom',$dateFrom);
 		$this->set('dateTo',$dateTo);
-    	$this->set("products",$products);
+		
+		$pr->setItemsPerPage(10);
+
+        $paginator = $pr->getPagination();
+        $pagination = $paginator->renderDefaultView();
+        $this->set('products',$paginator->getCurrentPageResults());  
+		$this->set('pagination',$pagination);
+        $this->set('paginator', $paginator);
 	}
     
 }
