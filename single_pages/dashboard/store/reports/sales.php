@@ -144,18 +144,6 @@ $(function(){
 						}
 					}
 				?>				
-			],
-			[
-				<?php 
-					for($i=0;$i<6;$i++){
-						$report = SalesReport::getByMonth($months[$i]->format('Y-M'));
-						if($i==5){
-							echo "{meta: '".t('Tax')."', value: ".$report['taxTotal']."}";
-						} else {
-							echo "{meta: '".t('Tax')."', value: ".$report['taxTotal']."},";
-						}
-					}
-				?>				
 			]
 	  	]
 	},

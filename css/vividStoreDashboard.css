@@ -65,3 +65,10 @@
 		.panel-sale .panel-body strong { display: block; font-size: 20px; color: #414d59; }
 
 .order-report-form { margin-top: 15px; }
+
+.ct-chart-line .ct-series.ct-series-a .ct-line { stroke: #4ECDC4; stroke-width: 3px; stroke-linecap: round; }
+.ct-chart-line .ct-series.ct-series-a .ct-point { stroke: #4674a1; }
+.ct-chart-line .ct-series.ct-series-b .ct-line { stroke: #4674a1; stroke-width: 2px; stroke-linecap: round; }
+.ct-chart-line .ct-series.ct-series-b .ct-point { stroke: #414d59; }
+.ct-chart-line .ct-series.ct-series-c .ct-line { stroke: #414d59; stroke-width: 2px; stroke-linecap: round; stroke-dasharray: 30px 10px; }
+.ct-chart-line .ct-series.ct-series-c .ct-point { stroke: #303b48; }
