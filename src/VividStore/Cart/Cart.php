@@ -1,37 +1,99 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Cart;
+namespace Concrete\Package\VividStore\Src\VividStore\Cart;
 
 use Package;
 use User;
 use UserInfo;
 use Session;
+use Config;
+use Database;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
 {
+    static protected $cart = null;
+    static protected $discounts = null;
+
+    public static function getCart() {
+
+        // this acts as a singleton, in that it wil only fetch the cart form the session and check it for validity once per request
+        if (!isset(self::$cart)) {
+            $cart = Session::get('vividstore.cart');
+            if(!is_array($cart)) {
+               Session::set('vividstore.cart',array());
+               $cart = array();
+            }
+
+            $db = Database::get();
+
+            $checkeditems = array();
+            $removal = false;
+            // loop through and check if product hasn't been deleted. Remove from cart session if not found.
+            foreach($cart as $cartitem) {
+                $exists = $db->GetOne("SELECT pID FROM VividStoreProducts WHERE pID=? ",$cartitem['product']['pID']);
+
+                if (!empty($exists)) {
+                    $checkeditems[] = $cartitem;
+                } else {
+                    $removal = true;
+                }
+            }
+
+            if ($removal) {
+                Session::set('vividstore.cart', $checkeditems);
+            }
+
+            self::$discounts = array();
+
+            $rules = DiscountRule::findAutomaticDiscounts();
+            if (count($rules) > 0) {
+                self::$discounts = array_merge(self::$discounts, $rules);
+            }
+
+            $code = trim(Session::get('vividstore.code'));
+            if ($code) {
+                $rules = DiscountRule::findDiscountRuleByCode($code);
+
+                if (count($rules) > 0) {
+                    self::$discounts = array_merge(self::$discounts, $rules);
+                } else {
+                     Session::set('vividstore.code', '');
+                }
+            }
+
+            self::$cart = $checkeditems;
+        }
+
+        return self::$cart;
+    }
+
+    public static function getDiscounts() {
+        if (!isset(self::$cart)) {
+            self::getCart();
+        }
+
+        return self::$discounts;
+    }
+
     public function add($data)
     {
-        //take our jQuery serialized data, and make it an associative array    
-        $product = array();
-        parse_str($data['data'],$product);
-        
-        $product['pID'] = (int) $product['pID'];
-        $product['quantity'] = (int) $product['quantity'];
-        
+
         //now, build a nicer "cart item"
         $cartItem = array();
         $cartItem['product'] = array(
-            "pID"=>$product['pID'],
-            "qty"=>$product['quantity']
+            "pID"=>(int) $data['pID'],
+            "qty"=>(int) $data['quantity']
         );
-        unset($product['pID']);
-        unset($product['quantity']);
+        unset($data['pID']);
+        unset($data['quantity']);
         
         //since we removed the ID/qty, we're left with just the attributes
-        $cartItem['productAttributes'] = $product; 
+        $cartItem['productAttributes'] = $data;
         
         /*
          * We need to add the item to the cart, however, first we need to do some comparisons.
@@ -43,18 +105,15 @@ class Cart
          * phew.
          * 
          */
-         
-        if(!is_array(Session::get('cart'))) {
-            Session::set('cart',array());
-        }
+
         $exists = false;
-        foreach(Session::get('cart') as $k=>$cart) {
+        foreach(self::getCart() as $k=>$cart) {
             if($cart['product']['pID'] == $cartItem['product']['pID']) {
               if( count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
                 if(count($cartItem['productAttributes']) === 0) {
                   $exists = $k;
                   break;
-                }                
+                }
                 foreach($cartItem['productAttributes'] as $key=>$value) {
                   if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
                     // Do nothing
@@ -69,188 +128,380 @@ class Cart
         }
         if($exists !== false) {
             //we have a match, update the qty
-            $cart = Session::get('cart');
+            $cart = self::getCart();
             $cart[$exists]['product']['qty'] += $cartItem['product']['qty'];
-            Session::set('cart',$cart);
+            Session::set('vividstore.cart',$cart);
         }
         else {
-            $cart = Session::get('cart');
-            $cart[] = $cartItem;    
-            Session::set('cart',$cart);
+            $cart = self::getCart();
+            $cart[] = $cartItem;
+            Session::set('vividstore.cart',$cart);
         }
     }
     public function update($data)
     {
         $instanceID = $data['instance'];
-        $qty = $data['pQty'];        
-        $cart = Session::get('cart');
-        $cart[$instanceID]['product']['qty']=$qty;
-        Session::set('cart',$cart);
+        $qty = $data['pQty'];
+        $cart = self::getCart();
+
+        if ($qty > 0) {
+            $cart[$instanceID]['product']['qty']=$qty;
+        } else {
+            $this->remove($instanceID);
+        }
+
+        Session::set('vividstore.cart',$cart);
     }
     public function remove($instanceID)
     {
-        $cart = Session::get('cart');
+        $cart = self::getCart();
         unset($cart[$instanceID]);
-        Session::set('cart',$cart);
+        Session::set('vividstore.cart',$cart);
     }
-    public function clear()
+    public static function clear()
     {
-        $cart = Session::get('cart');
+        $cart = self::getCart();
         unset($cart);
-        Session::set('cart',$cart);
+        Session::set('vividstore.cart',null);
     }
     public function getSubTotal()
     {
-        $cart = Session::get('cart');    
+        $cart = self::getCart();
         $subtotal = 0;
         if($cart){
-            foreach ($cart as $cartItem){            
+            foreach ($cart as $cartItem){
                 $pID = $cartItem['product']['pID'];
                 $qty = $cartItem['product']['qty'];
                 $product = VividProduct::getByID($pID);
                 if(is_object($product)){
-                    $productSubTotal = $product->getProductPrice() * $qty;    
+                    $productSubTotal = $product->getProductPrice() * $qty;
                     $subtotal = $subtotal + $productSubTotal;
                 }
             }
         }
-        return Price::format($subtotal);  
-    }
-    public function isCustomerTaxable()
-    {
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();    
-        $match = $pkgconfig->get('vividstore.taxMatch');
-        $taxAddress = $pkgconfig->get('vividstore.taxAddress');
-        $storeCity = $pkgconfig->get('vividstore.taxcity');
-        $storeState = $pkgconfig->get('vividstore.taxstate');
-        $storeCountry = $pkgconfig->get('vividstore.taxcountry');
-        $u = new User();
-        if($u->isLoggedIn()){
-            $ui = UserInfo::getByID($u->getUserID());
-            $customerIsTaxable = false;
-            switch($taxAddress){
-                case "billing":
-                    $userCity = $ui->getAttribute("billing_address")->city; 
-                    $userState = $ui->getAttribute("billing_address")->state_province; 
-                    $userCountry = $ui->getAttribute("billing_address")->country; 
-                    break;
-                case "shipping":
-                    $userCity = $ui->getAttribute("shipping_address")->city; 
-                    $userState = $ui->getAttribute("shipping_address")->state_province; 
-                    $userCountry = $ui->getAttribute("shipping_address")->country; 
-                    break;
-            } 
-            switch($match){
-                case "state":
-                    if($userState==$storeState){
-                        $customerIsTaxable = true;
-                    }
-                    break;
-                case "city":
-                    if($userCity==$storyCity){
-                        $customerIsTaxable = true;
-                    }
-                    break;
-                case "country":
-                    if($userCountry==$storeCountry){
-                        $customerIsTaxable = true;
-                    }
-                    break;
-    
+
+        $discounts = self::getDiscounts();
+
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'subtotal') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $subtotal -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $subtotal -= ($discount->drPercentage / 100 * $subtotal);
+                }
             }
         }
-        return $customerIsTaxable; 
+
+        return max($subtotal,0);
     }
+
+    public function isCustomerTaxable()
+    {
+        $taxAddress = Config::get('vividstore.taxAddress');
+        $taxCountry = strtolower(Config::get('vividstore.taxcountry'));
+        $taxState = strtolower(trim(Config::get('vividstore.taxstate')));
+        $taxCity = strtolower(trim(Config::get('vividstore.taxcity')));
+        $customer = new Customer;
+
+        $customerIsTaxable = false;
+
+        switch($taxAddress){
+            case "billing":
+                $userCity = strtolower(trim($customer->getValue("billing_address")->city));
+                $userState = strtolower(trim($customer->getValue("billing_address")->state_province));
+                $userCountry = strtolower(trim($customer->getValue("billing_address")->country));
+                break;
+            case "shipping":
+                $userCity = strtolower(trim($customer->getValue("shipping_address")->city));
+                $userState = strtolower(trim($customer->getValue("shipping_address")->state_province));
+                $userCountry = strtolower(trim($customer->getValue("shipping_address")->country));
+                break;
+        }
+
+        if ($userCountry == $taxCountry ) {
+            $customerIsTaxable = true;
+            if ($taxState && $userState != $taxState) {
+                $customerIsTaxable = false;
+            } elseif ($taxCity && $userCity != $taxCity) {
+                $customerIsTaxable = false;
+            }
+        }
+
+        return $customerIsTaxable;
+    }
+
+    public function getTaxes($formatted=false) {
+        $taxTotal = self::getTaxTotal();
+        $taxName = Config::get('vividstore.taxName');
+        $taxCalc = Config::get('vividstore.calculation');
+        $taxBased = Config::get('vividstore.taxBased');
+
+        $taxes = array();
+
+        if (self::isCustomerTaxable()) {
+            $taxes[] = array('name'=>$taxName,'taxamount'=>$taxTotal,'calculation'=>$taxCalc, 'based'=>$taxBased);
+            return $taxes;
+        } 
+    }
+
+
     public function getTaxTotal()
     {
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
         //first check if tax is enabled in settings
-        if($pkgconfig->get('vividstore.taxenabled') == "yes"){
-            $cart = Session::get('cart');    
+        if(Config::get('vividstore.taxenabled') == "yes"){
+            $cart = self::getCart();
             $taxtotal = 0;
             if($cart){
-                foreach ($cart as $cartItem){            
+                foreach ($cart as $cartItem){
                     $pID = $cartItem['product']['pID'];
                     $qty = $cartItem['product']['qty'];
                     $product = VividProduct::getByID($pID);
                     if(is_object($product)){
                         if($product->isTaxable()){
-                            //the product is "Taxable", but is the customer?
-                            if(self::isCustomerTaxable()){
-                                switch($pkgconfig->get('vividstore.taxBased')){
+                            $taxCalc = Config::get('vividstore.calculation');
+
+                            if ($taxCalc == 'extract') {
+                                $taxrate =  10 / (Config::get('vividstore.taxrate') + 100);
+                            }  else {
+                                $taxrate = Config::get('vividstore.taxrate') / 100;
+                            }
+
+                            switch(Config::get('vividstore.taxBased')){
                                     case "subtotal":
-                                        $productSubTotal = $product->getProductPrice() * $qty; 
-                                        $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
+                                        $productSubTotal = $product->getProductPrice() * $qty;
                                         $tax = $taxrate * $productSubTotal;
                                         $taxtotal = $taxtotal + $tax;
                                         break;
                                     case "grandtotal":
-                                        $productSubTotal = $product->getProductPrice() * $qty; 
+                                        $productSubTotal = $product->getProductPrice() * $qty;
                                         $shippingTotal = Price::getFloat(self::getShippingTotal());
                                         $taxableTotal = $productSubTotal + $shippingTotal;
-                                        $taxrate = $pkgconfig->get('vividstore.taxrate') / 100;
                                         $tax = $taxrate * $taxableTotal;
                                         $taxtotal = $taxtotal + $tax;
                                         break;
                                 }
-                            }//if customer is taxable
+
                         }//if product is taxable
                     }//if obj
                 }//foreach
             }//if cart
         }//if tax enabled
         //return self::isCustomerTaxable();
-        return Price::format($taxtotal);     
+        return $taxtotal;
     }
+
+    public function getTaxProduct($productID)
+    {
+        //first check if tax is enabled in settings
+        if(Config::get('vividstore.taxenabled') == "yes"){
+            $cart = self::getCart();
+
+            if($cart){
+                $taxCalc = Config::get('vividstore.calculation');
+
+                if ($taxCalc == 'extract') {
+                    $taxrate =  10 / (Config::get('vividstore.taxrate') + 100);
+                }  else {
+                    $taxrate = Config::get('vividstore.taxrate') / 100;
+                }
+
+                foreach ($cart as $cartItem){
+                    if ($cartItem['product']['pID'] == $productID) {
+                        $product = VividProduct::getByID($productID);
+                    }
+                    if(is_object($product)){
+                        if($product->isTaxable()){
+                            //the product is "Taxable", but is the customer?
+                            if(self::isCustomerTaxable()){
+                                    $tax = $taxrate * $product->getProductPrice() ;
+                                    return $tax;
+
+                            }//if customer is taxable
+                        }//if product is taxable
+                    }//if obj
+                }//foreach
+            }//if cart
+        }//if tax enabled
+
+        return 0;
+    }
+
     public function getTotalItemsInCart(){
-        $total = 0;    
-        if(Session::get('cart')){
-            foreach(Session::get('cart') as $item){
+        $total = 0;
+        if(self::getCart()){
+            foreach(self::getCart() as $item){
                 $subtotal = $item['product']['qty'];
                 $total = $total + $subtotal;
             }
         }
         return $total;
     }
+
+    public function isShippable() {
+        foreach(self::getCart() as $item){
+            //check if items are shippable
+            $product = VividProduct::getByID($item['product']['pID']);
+            if ($product) {
+                if($product->isShippable()){
+                    return true; // return as soon as we have shippable product
+                }
+            }
+
+        }
+        return false;
+    }
+
     public function getShippingTotal(){
-        $pkg = Package::getByHandle('vivid_store');
-        $pkgconfig = $pkg->getConfig();
-        $shippingenabled = $pkgconfig->get('vividstore.shippingenabled');
+        $shippingenabled = Config::get('vividstore.shippingenabled');
         if($shippingenabled=="yes"){
-            $baserate = $pkgconfig->get('vividstore.shippingbase');
-            $peritemrate = $pkgconfig->get('vividstore.shippingitem');
+            $baserate = Config::get('vividstore.shippingbase');
+            $peritemrate = Config::get('vividstore.shippingitem');
             $shippableItems = 0;
             //go through items
-            if(Session::get('cart')){
-                foreach(Session::get('cart') as $item){
+            if(self::getCart()){
+                foreach(self::getCart() as $item){
                     //check if items are shippable
                     $product = VividProduct::getByID($item['product']['pID']);
                     if($product->isShippable()){
                         $shippableItems = $shippableItems + $item['product']['qty'];
                     }
                 }
-            }      
+            }
             if($shippableItems > 1){
-                $shippingTotal = $baserate + (($shippableItems-1) * $peritemrate);    
+                $shippingTotal = $baserate + (($shippableItems-1) * $peritemrate);
             } elseif($shippableItems == 1) {
                 $shippingTotal = $baserate;
             } elseif($shippableItems == 0){
                 $shippingTotal = 0;
             }
-            
+
         }
-        return Price::format($shippingTotal);
+
+        $discounts = self::getDiscounts();
+
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'shipping') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $shippingTotal -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $shippingTotal -= ($discount->drPercentage / 100 * $shippingTotal);
+                }
+            }
+        }
+
+        return $shippingTotal;
     }
+
     public function getTotal()
     {
-        $subtotal = Price::getFloat(Cart::getSubTotal());
-        $taxtotal = Price::getFloat(Cart::getTaxTotal()); 
-        $shippingtotal = Price::getFloat(Cart::getShippingTotal());
-        $grandTotal = ($subtotal + $taxtotal + $shippingtotal);
-        return Price::format($grandTotal);
+        $subTotal = Price::getFloat(Cart::getSubTotal());
+        $taxTotal = 0;
+        $taxes = self::getTaxes();
+
+        if($taxes){
+		    foreach($taxes as $tax) {
+		        if ($tax['calculation'] != 'extract') {
+		            $taxTotal += $tax['taxamount'];
+		        }
+		    }
+		}
+
+
+        $shippingTotal = Price::getFloat(Cart::getShippingTotal());
+
+        $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
+
+        $discounts = self::getDiscounts();
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'total') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $grandTotal -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $grandTotal -= ($discount->drPercentage / 100 * $grandTotal);
+                }
+            }
+        }
+
+        return $grandTotal;
+    }
+
+    // returns an array of formatted cart totals
+    public function getTotals() {
+        $subTotal = Price::getFloat(Cart::getSubTotal());
+        $taxes = self::getTaxes();
+        $addedTaxTotal = 0;
+        $includedTaxTotal = 0;
+        if($taxes){
+            foreach($taxes as $tax) {
+                if ($tax['calculation'] != 'extract') {
+                    $addedTaxTotal += $tax['taxamount'];
+                } else {
+                    $includedTaxTotal += $tax['taxamount'];
+                }
+            }
+        }
+
+        $shippingTotal = Price::getFloat(Cart::getShippingTotal());
+        $total = ($subTotal + $addedTaxTotal + $shippingTotal);
+
+        $discounts = self::getDiscounts();
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'total') {
+                if ($discount->drDeductType  == 'value' ) {
+                    $total -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $total -= ($discount->drPercentage / 100 * $total);
+                }
+            }
+        }
+
+        return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
+    }
+
+    public function requiresLogin() {
+        if(self::getCart()){
+            foreach(self::getCart() as $item) {
+                $product = VividProduct::getByID($item['product']['pID']);
+                if ($product) {
+                    if ($product->hasUserGroups() || $product->hasDigitalDownload()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static function storeCode($code) {
+        $rule = DiscountRule::findDiscountRuleByCode($code);
+
+        if (!empty($rule)) {
+            Session::set('vividstore.code',$code);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function hasCode() {
+        return (bool)Session::get('vividstore.code');
+    }
+
+    public static function getCode() {
+        return Session::get('vividstore.code');
+    }
+
+    public static function clearCode() {
+        Session::set('vividstore.code', '');
     }
 }
-
 

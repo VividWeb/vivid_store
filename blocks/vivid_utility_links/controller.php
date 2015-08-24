@@ -7,7 +7,7 @@ use View;
 use User;
 use UserInfo;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
@@ -34,6 +34,7 @@ class Controller extends BlockController
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
         $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));    
         $this->set("itemCount",VividCart::getTotalItemsInCart());
+        $this->set("total",Price::format(VividCart::getSubTotal()));
         $this->addHeaderItem("
             <script type=\"text/javascript\">
                 var PRODUCTMODAL = '".View::url('/productmodal')."';
@@ -46,7 +47,10 @@ class Controller extends BlockController
     public function save($args)
     {
         $args['showCartItems'] = isset($args['showCartItems']) ? 1 : 0;
+		$args['showCartTotal'] = isset($args['showCartTotal']) ? 1 : 0;
         $args['showSignIn'] = isset($args['showSignIn']) ? 1 : 0;
+		$args['showCheckout'] = isset($args['showCheckout']) ? 1 : 0;
+		$args['showGreeting'] = isset($args['showGreeting']) ? 1 : 0;
         parent::save($args);
     }
     public function validate($args)

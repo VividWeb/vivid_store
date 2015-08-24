@@ -76,7 +76,7 @@ $(function(){
             window.location = url+'/'+pageTemplate;        
         }
     });
-    
+
 });
 
 
@@ -89,7 +89,13 @@ function updateTaxStates(){
        type: 'post',
        data: {country: countryCode, selectedState: selectedState, type: "tax"},
        success: function(states){
-            $("#taxState").replaceWith(states);
+           $("#taxState").replaceWith(states);
+
+           if (states.indexOf(" selected ") >= 0) {
+               $("#taxState").prepend("<option value=''></option>");
+           } else {
+               $("#taxState").prepend("<option value='' selected='selected'></option>");
+           }
        } 
     });
 }

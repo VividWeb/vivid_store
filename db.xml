@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <schema version="0.3">
-	<table name="VividStoreProduct">
+	<table name="VividStoreProducts">
 		<field name="pID" type="I"><key /><unsigned /><autoincrement/></field>
 		<field name="gID" type="I"></field>
 		<field name="cID" type="I"></field>
@@ -22,26 +22,26 @@
 		<field name="pLength" type="I"></field>
 		<field name="pWeight" type="I"></field>
 	</table>
-	<table name="VividStoreProductOptionGroup">
+	<table name="VividStoreProductOptionGroups">
         <field name="pogID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="pogName" type="C" size="255"></field>
         <field name="pogSort" type="I"></field>
     </table>
-    <table name="VividStoreProductOptionItem">
+    <table name="VividStoreProductOptionItems">
         <field name="poiID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="pogID" type="I"></field>
         <field name="poiName" type="C" size="255"></field>
         <field name="poiSort" type="I"></field>
     </table>
-	<table name="VividStoreProductImage">
+	<table name="VividStoreProductImages">
         <field name="piID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="pifID" type="I"></field>
         <field name="piSort" type="I"></field>
     </table>
-    <table name="VividStoreDigitalFile">
+    <table name="VividStoreDigitalFiles">
         <field name="dfID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="dffID" type="I"></field>
@@ -50,12 +50,20 @@
         <field name="gID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="groupName" type="C" size="100"></field>
     </table>
+    <table name="VividStoreProductGroups">
+        <field name="pID" type="I"></field>
+        <field name="gID" type="I"></field>
+    </table>
+    <table name="VividStoreProductLocations">
+        <field name="pID" type="I"><key /></field>
+        <field name="cID" type="I"><key /></field>
+    </table>
     <table name="VividStoreProductUserGroups">
         <field name="pugID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="gID" type="I"></field>
     </table>
-    <table name="VividStoreOrder">
+    <table name="VividStoreOrders">
         <field name="oID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="cID" type="I"></field>
         <field name="oDate" type="T"></field>
@@ -63,18 +71,56 @@
         <field name="pmID" type="I"></field>
         <field name="smID" type="I"></field>
         <field name="oShippingTotal" type="C" size="10"></field>
-        <field name="oTax" type="C" size="10"></field>
+        <field name="oTax" type="C" size="10.4"></field>
+        <field name="oTaxIncluded" type="N" size="10.4"></field>
+        <field name="oTaxName" type="C" size="255"></field>
         <field name="oTotal" type="C" size="10"></field>
     </table>
-    <table name="VividStoreOrderItem">
+    <table name="VividStoreOrderDiscounts">
+        <field name="oID" type="I"><unsigned /></field>
+        <field name="odName" type="C" size="255"></field>
+        <field name="odDisplay" type="C" size="255"></field>
+        <field name="odValue" type="N" size="10.2"></field>
+        <field name="odPercentage" type="N" size="5.2"></field>
+        <field name="odDeductFrom" type="C" size="20"></field>
+        <field name="odCode" type="C" size="255"></field>
+    </table>
+    <table name="VividStoreOrderStatuses">
+        <field name="osID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="osHandle" type="C" size="255"></field>
+        <field name="osName" type="C" size="255"></field>
+        <field name="osInformSite" type="I"></field>
+        <field name="osInformCustomer" type="I"></field>
+        <field name="osIsStartingStatus" type="I"></field>
+        <field name="osSortOrder" type="I"></field>
+    </table>
+    <table name="VividStoreOrderStatusHistories">
+        <field name="oshID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="oID" type="I"></field>
+        <field name="oshStatus" type="C" size="50"></field>
+        <field name="oshDate" type="T"><deftimestamp/></field>
+        <field name="uID" type="I"></field>
+    </table>
+    <table name="VividStoreOrderItems">
         <field name="oiID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="oID" type="I"></field>
         <field name="oiProductName" type="C" size="255"></field>
-        <field name="oiPricePaid" type="N" size="10,4"></field>
+        <field name="oiPricePaid" type="N" size="10.4"></field>
+        <field name="oiTax" type="N" size="10.4"></field>
+        <field name="oiTaxIncluded" type="N" size="10.4"></field>
+        <field name="oiTaxName" type="C" size="255"></field>
         <field name="oiQty" type="I"></field>
     </table>
-    <table name="VividStoreOrderItemOption">
+    <table name="VividStoreOrderItemDiscounts">
+        <field name="oiID" type="I"><unsigned /></field>
+        <field name="oiName" type="C" size="255"></field>
+        <field name="oiDisplay" type="C" size="255"></field>
+        <field name="oiValue" type="N" size="10.2"></field>
+        <field name="oiPercentage" type="N" size="5.2"></field>
+        <field name="oiCode" type="C" size="255"></field>
+    </table>
+    <table name="VividStoreOrderItemOptions">
         <field name="oioID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="oiID" type="I"></field>
         <field name="oioKey" type="C" size="255"></field>
@@ -104,35 +150,35 @@
         <field name="pmEnabled" type="I"></field>
         <field name="pkgID" type="I"></field>
     </table>
-    <table name="VividStoreShippingMethodTypes">
-        <field name="smtID" type="I"><key/><unsigned/><autoincrement/></field>
-        <field name="smtHandle" type="C" size="255"></field>
-        <field name="smtName" type="C" size="255"></field>
-        <field name="pkgID" type="I"></field>
+
+    <table name="VividStoreDiscountRules">
+        <field name="drID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="drName" type="C" size="255"></field>
+        <field name="drEnabled" type="L"></field>
+        <field name="drDisplay" type="C" size="255"></field>
+        <field name="drDescription" type="X"></field>
+        <field name="drDeductType" type="C" size="20"></field>
+        <field name="drValue" type="N" size="10.2"></field>
+        <field name="drPercentage" type="N" size="5.2"></field>
+        <field name="drDeductFrom" type="C" size="20"></field>
+        <field name="drTrigger" type="C" size="20"></field>
+        <field name="drSingleUseCodes" type="L"></field>
+        <field name="drExclusive" type="L"></field>
+        <field name="drCurrency" type="C" size="20"></field>
+        <field name="drValidFrom" type="T"></field>
+        <field name="drValidTo" type="T"></field>
+        <field name="drDateAdded" type="T"></field>
+        <field name="drDeleted" type="T"></field>
     </table>
-    <table name="VividStoreShippingMethods">
-        <field name="smID" type="I"><key/><unsigned/><autoincrement/></field>
-        <field name="smtID" type="I"></field>
-        <field name="smtmID" type="I"></field>
-        <field name="smName" type="C" size="255"></field>
-        <field name="smEnabled" type="L"></field>
-        <fi>
+
+    <table name="VividStoreDiscountCodes">
+        <field name="dcID" type="I"><key /><unsigned /><autoincrement/></field>
+        <field name="drID" type="I"><key/><unsigned/></field>
+        <field name="dcCode" type="C" size="255"></field>
+        <field name="oID" type="I"><unsigned /></field>
+        <field name="dcDateAdded" type="T"></field>
     </table>
-    <table name="VividStoreFlatRateMethods">
-        <field name="smtmID" type="I"><key/><unsigned/><autoincrement/></field>
-        <field name="smID" type="I"></field>
-        <field name="baseRate" type="N"></field>
-        <field name="perItemRate" type="N"></field>
-        <field name="minimumAmount" type="N"></field>
-        <field name="maximumAmount" type="N"></field>
-        <field name="countries" type="C" size="10"></field>
-        <field name="countriesSelected" type="X2"></field>
-    </table>
-    <table name="VividStoreFreeShippingMethods">
-        <field name="smtmID" type="I"><key/><unsigned/><autoincrement/></field>
-        <field name="fssmDisplayName" type="C" size="255"></field>
-        <field name="smID" type="I"></field>
-        <field name="minimumAmount" type="N"></field>
+
         <field name="maximumAmount" type="N"></field>
         <field name="countries" type="C" size="10"></field>
         <field name="countriesSelected" type="X2"></field>

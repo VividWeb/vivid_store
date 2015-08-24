@@ -1,6 +1,8 @@
 .btn-dark { background: #555; border-color: #222; color: #fff !important; }
 .btn-dark:hover { background: #444; }
 
+.redactor-editor { padding: 15px; }
+
 .group-list { margin: 30px 0 50px !important; }
     
     .group-list li { margin-bottom: 8px; }
@@ -29,6 +31,7 @@
             
 .store-pane { display: none; }
 .store-pane.active { display: block; }
+    .sortable { cursor: move; text-align: center; }
 
 
 /* Dynamic Image Selector */
@@ -52,3 +55,20 @@
         .option-group .panel-heading label { display: block; margin-top: 4px; }
         
 #tax-rules-group select { margin-bottom: 8px; }
+
+/* Sales reports */
+.chartist-tooltip { position: absolute; background: #414d59; color: #97aabc; padding: 8px 15px; text-align: center; }
+.panel-sale {  }
+	.panel-sale .panel-heading { background: #414d59; color: #97aabc; }
+	.panel-sale .panel-body { background: #fafafa; text-align: center; font-size: 16px; }
+		.panel-sale .panel-body .stat { margin-bottom: 15px; }
+		.panel-sale .panel-body strong { display: block; font-size: 20px; color: #414d59; }
+
+.order-report-form { margin-top: 15px; }
+
+.ct-chart-line .ct-series.ct-series-a .ct-line { stroke: #4ECDC4; stroke-width: 3px; stroke-linecap: round; }
+.ct-chart-line .ct-series.ct-series-a .ct-point { stroke: #4674a1; }
+.ct-chart-line .ct-series.ct-series-b .ct-line { stroke: #4674a1; stroke-width: 2px; stroke-linecap: round; }
+.ct-chart-line .ct-series.ct-series-b .ct-point { stroke: #414d59; }
+.ct-chart-line .ct-series.ct-series-c .ct-line { stroke: #414d59; stroke-width: 2px; stroke-linecap: round; stroke-dasharray: 30px 10px; }
+.ct-chart-line .ct-series.ct-series-c .ct-point { stroke: #303b48; }

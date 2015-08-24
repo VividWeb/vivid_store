@@ -30,6 +30,11 @@ class Products extends DashboardPageController
         $products->setItemsPerPage(10);
         $products->setGroupID($gID);
         $products->activeOnly(false);
+
+        if ($this->get('keywords')) {
+            $products->setSearch($this->get('keywords'));
+        }
+
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
         $this->set('products',$paginator->getCurrentPageResults());  
@@ -39,7 +44,7 @@ class Products extends DashboardPageController
         $packagePath = $pkg->getRelativePath();
         $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
-        $grouplist = VividProductGroupList::getGroupList();            
+        $grouplist = VividProductGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         
     }
@@ -63,8 +68,7 @@ class Products extends DashboardPageController
         $this->set("actionType",t("Add")); 
         
         $grouplist = VividProductGroupList::getGroupList();            
-        $this->set("grouplist",$grouplist);   
-        $productgroups = array("0"=>t("None"));
+        $this->set("grouplist",$grouplist);
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
@@ -74,6 +78,8 @@ class Products extends DashboardPageController
         $gl->setItemsPerPage(1000);
         $gl->filterByAssignable();
         $usergroups = $gl->get();
+
+        $usergrouparray = array();
 
         foreach($usergroups as $ug) {
             if ( $ug->gName != 'Administrators') {
@@ -91,14 +97,20 @@ class Products extends DashboardPageController
         
         //get the product
         $product = VividProduct::getByID($pID);
+
+        if (!$product) {
+            $this->redirect('/dashboard/store/products/');
+        }
+
         $this->set('p',$product);
         $this->set("images",$product->getProductImages());
-        $this->set("groups",$product->getProductOptionGroups()); 
+        $this->set("groups",$product->getProductOptionGroups());
         $this->set('optItems',$product->getProductOptionItems());
-        
+        $this->set('pages', $product->getProductPages());
+        $this->set('pgroups', $product->getProductGroupIDs());
+
         //populate "Groups" select box options
-        $grouplist = VividProductGroupList::getGroupList();         
-        $productgroups = array("0"=>t("None"));
+        $grouplist = VividProductGroupList::getGroupList();
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }     
@@ -108,6 +120,8 @@ class Products extends DashboardPageController
         $gl->setItemsPerPage(1000);
         $gl->filterByAssignable();
         $usergroups = $gl->get();
+
+        $usergrouparray = array();
 
         foreach($usergroups as $ug) {
             if ( $ug->gName != 'Administrators') {
@@ -156,7 +170,6 @@ class Products extends DashboardPageController
             $templates[$pt->getPageTemplateID()] = $pt->getPageTemplateName();
         }
         $this->set('pageTemplates',$templates);
-        $this->set("pkgconfig",$pkg->getConfig());
     }
     public function save()
     {

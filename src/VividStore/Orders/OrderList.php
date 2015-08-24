@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Orders;
+namespace Concrete\Package\VividStore\Src\VividStore\Orders;
 
 use Database;
 use Concrete\Core\Search\Pagination\Pagination;
@@ -7,7 +7,7 @@ use Concrete\Core\Search\ItemList\Database\AttributedItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 
 use Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
-use Concrete\Package\VividStore\Src\VividStore\Orders\Item as OrderItem;
+use Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as VividOrderItem;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class OrderList  extends AttributedItemList
@@ -22,10 +22,67 @@ class OrderList  extends AttributedItemList
     {
         $this->query
         ->select('o.oID')
-        ->from('VividStoreOrder','o')
-        ->orderBy('oID', 'DESC');
+        ->from('VividStoreOrders','o');
+
     }
-    
+
+    public function finalizeQuery(\Doctrine\DBAL\Query\QueryBuilder $query)
+    {
+        $paramcount = 0;
+
+        if (isset($this->search)) {
+            $this->query->where('oID like ?')->setParameter($paramcount++,'%'. $this->search. '%');
+        }
+
+        if(isset($this->status)){
+            if ($paramcount > 0) {
+                $this->query->andWhere('oStatus = ?')->setParameter($paramcount++,$this->status);
+            } else {
+                $this->query->where('oStatus = ?')->setParameter($paramcount++,$this->status);
+            }
+        }
+		
+		if (isset($this->fromDate)) {
+			$this->query->andWhere('DATE(oDate) >= DATE(?)')->setParameter($paramcount++,$this->fromDate);
+		}
+		if (isset($this->toDate)) {
+			$this->query->andWhere('DATE(oDate) <= DATE(?)')->setParameter($paramcount++,$this->toDate);
+		}
+		if ($this->limit > 0) {
+			$this->query->setMaxResults($this->limit);
+		}
+		
+        $this->query->orderBy('oID', 'DESC');
+
+        return $this->query;
+    }
+
+    public function setSearch($search) {
+        $this->search = $search;
+    }
+
+    public function setStatus($status) {
+        $this->status = $status;
+    }
+    public function setFromDate($date = null)
+	{
+		if(!$date){
+			$date = date('Y-m-d', strtotime('-30 days'));
+		}
+		$this->fromDate = $date;
+	}
+	public function setToDate($date = null)
+	{
+		if(!$date){
+			$date = date('Y-m-d');
+		}
+		$this->toDate = $date;
+	}
+	public function setLimit($limit = 0)
+	{
+		$this->limit = $limit;
+	}
+	
     public function getResult($queryRow)
     {
         return VividOrder::getByID($queryRow['oID']);
@@ -45,5 +102,26 @@ class OrderList  extends AttributedItemList
         $query = $this->deliverQueryObject();
         return $query->select('count(distinct o.oID)')->setMaxResults(1)->execute()->fetchColumn();
     }
-    
+	
+	public static function getDateOfFirstOrder()
+	{
+		$db = Database::get();
+		$date = $db->GetRow("SELECT * FROM VividStoreOrders ORDER BY oDate ASC LIMIT 1");
+		return $date['oDate'];
+	}
+    public function getOrderItems()
+	{
+		$orders = $this->getResults();
+		$orderItems = array();
+		$db = Database::get();
+		foreach($orders as $order){
+			$oID = $order->getOrderID();
+			$OrderOrderItems = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$oID);
+			foreach($OrderOrderItems as $oi){
+				$oi = VividOrderItem::getByID($oi['oiID']);
+				$orderItems[] = $oi;
+			}
+		}
+		return $orderItems;
+	}
 }

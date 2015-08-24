@@ -4,7 +4,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 ?>
 <div class="cart-page-cart">
-    
+
     <h1><?=t("Shopping Cart")?></h1>
     
     <input id='cartURL' type='hidden' data-cart-url='<?=View::url("/cart/")?>'>
@@ -23,10 +23,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         
         <li class="cart-page-cart-list-item clearfix<?=$classes?>" data-instance-id="<?=$k?>" data-product-id="<?=$pID?>">
             <div class="cart-list-thumb">
-                <?=$product->getProductImageThumb()?>
+                <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>">
+                    <?=$product->getProductImageThumb()?>
+                </a>
             </div>
             <div class="cart-list-product-name">
-                <?=$product->getProductName()?>
+                <a href="<?=URL::page(Page::getByID($product->getProductPageID()))?>">
+                    <?=$product->getProductName()?>
+                </a>
             </div>
             
             <div class="cart-list-item-price">
@@ -52,8 +56,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 <?php }  ?>
             </div>    
             <?php } ?>
-            
-            
         </li>
     
     <?php 
@@ -63,15 +65,47 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     }//if cart
     ?>
     </ul>
-    
+
+    <?php if ($discountsWithCodesExist) { ?>
+    <h3><?= t('Enter Discount Code');?></h3>
+        <form method="post" action="<?= View::url('/cart/');?>">
+        <input type="text" name="code" />
+            <input type="hidden" name="action" value="code" />
+            <button type="submit" class=""><?= t('Apply');?></button>
+        </form>
+    <?php } ?>
+
+    <?php if ($codesuccess) { ?>
+        <p><?= t('Discount has been applied');?></p>
+    <?php } ?>
+
+    <?php if ($codeerror) { ?>
+        <p><?= t('Invalid code');?></p>
+    <?php } ?>
+
+    <?php if(!empty($discounts)) { ?>
+    <h3><?= t('Discounts');?></h3>
+    <div class="cart-page-discounts">
+        <ul>
+        <?php foreach($discounts as $discount) { ?>
+            <li><?php echo h($discount->getDisplay()); ?></li>
+        <?php } ?>
+        </ul>
+    </div>
+    <?php }?>
+
+
+
     <div class="cart-page-cart-total">        
         <span class="cart-grand-total-label"><?=t("Sub Total")?>:</span>
-        <span class="cart-grand-total-value"><?=$total?></span>        
+        <span class="cart-grand-total-value"><?=Price::format($total)?></span>
     </div>
         
     <div class="cart-page-cart-links">
+        <?php if ($cart  && !empty($cart)) { ?>
         <a class="btn-cart-page-clear" href="javascript:vividStore.clearCart()"><?=t('Clear Cart')?></a>
         <a class="btn-cart-page-checkout" href="<?=View::url('/checkout')?>"><?=t('Checkout')?></a>
+        <?php } ?>
     </div>
     
 </div>

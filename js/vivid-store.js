@@ -1,6 +1,5 @@
 var vividStore = {
 
-
 waiting: function(){
     $("body").append("<div class='whiteout'><div class='vivid-store-spinner'><i class='fa fa-spinner fa-spin'></i></div></div>");
 },
@@ -32,11 +31,20 @@ exitModal: function(){
     craftProductModal: function(content){
        $("body").append("<div class='whiteout'>"+content+"</div>"); 
     },
-    
-
-
 
 //SHOPPING CART
+
+    displayCart: function(res) {
+        $.ajax({
+            type: "POST",
+            data: res,
+            url: CARTURL+'/getmodal',
+            success: function(data){
+                vividStore.craftProductModal(data);
+            }
+        });
+    },
+
 
     //Add Item to Cart
     addToCart: function(pID, modal){
@@ -51,14 +59,25 @@ exitModal: function(){
             vividStore.waiting();
             $.ajax({ 
                 url: CARTURL+"/add",
-                data: {data: cereal},
+                data: cereal,
                 type: 'post',
-                success: function() {
+                success: function(data) {
+                    var res = jQuery.parseJSON(data);
                     $(".whiteout").remove();
+                    vividStore.displayCart(res);
                     $.ajax({
                        url: CARTURL+'/getTotalItems',
                        success: function(itemCount){
                            $(".vivid-store-utility-links .items-counter").text(itemCount);
+                           if (itemCount > 0) {
+                               $(".vivid-store-utility-links").removeClass('vivid-cart-empty');
+                           }
+                       } 
+                    });
+                    $.ajax({
+                       url: CARTURL+'/getSubTotal',
+                       success: function(subTotal){
+                           $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
                        } 
                     });
                 }
@@ -69,7 +88,7 @@ exitModal: function(){
     },
     
     //Update Item in Cart
-    updateItem: function(instanceID){
+    updateItem: function(instanceID, modal){
         var qty = $("*[data-instance-id='"+instanceID+"']").find(".cart-list-product-qty input").val();
         vividStore.waiting();
         $.ajax({ 
@@ -84,10 +103,21 @@ exitModal: function(){
                         $(".whiteout").remove();
                     }
                 });
+
                 $.ajax({
                    url: CARTURL+'/getTotalItems',
                    success: function(itemCount){
                        $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                       if (modal) {
+                           vividStore.displayCart();
+                       }
+                   } 
+                });
+                $.ajax({
+                   url: CARTURL+'/getSubTotal',
+                   success: function(subTotal){
+                       $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
                    } 
                 });
             }
@@ -95,7 +125,7 @@ exitModal: function(){
     },
     
     //Remove Item in Cart
-    removeItem: function(instanceID){
+    removeItem: function(instanceID, modal){
         vividStore.waiting();
         $.ajax({ 
             url: CARTURL+"/remove",
@@ -110,10 +140,19 @@ exitModal: function(){
                         $("*[data-instance-id='"+instanceID+"']").remove();
                     }
                 });
+
                  $.ajax({
                    url: CARTURL+'/getTotalItems',
                    success: function(itemCount){
                        $(".vivid-store-utility-links .items-counter").text(itemCount);
+
+                       if (itemCount == 0) {
+                           $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+                       }
+
+                       if (modal) {
+                           vividStore.displayCart();
+                       }
                    } 
                 });
             }
@@ -121,7 +160,7 @@ exitModal: function(){
     },
     
     //Clear the Cart
-    clearCart: function(){
+    clearCart: function(modal){
          $.ajax({ 
              url: CARTURL+"/clear",
              success: function() {
@@ -131,6 +170,14 @@ exitModal: function(){
                         $(".cart-grand-total-value").text(total);
                         $(".cart-page-cart-list-item").remove();
                         $(".whiteout").remove();
+                        $(".vivid-store-utility-links .items-counter").text(0);
+                        $(".vivid-store-utility-links .total-cart-amount").text("");
+                        $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+
+                        if (modal) {
+                            vividStore.displayCart();
+                        }
+
                     }
                  });                 
              }
@@ -200,6 +247,7 @@ vividStore.showPaymentForm();
 
 $("#checkout-form-group-billing").submit(function(e){
         e.preventDefault();
+        var email = $("#email").val();
         var bfName = $("#checkout-billing-first-name").val();
         var blName = $("#checkout-billing-last-name").val();
         var bPhone = $("#checkout-billing-phone").val();
@@ -214,7 +262,7 @@ $("#checkout-form-group-billing").submit(function(e){
         $.ajax({
             url: CHECKOUTURL+"/updater",
             type: 'post',
-            data: {adrType: 'billing', fName: bfName, lName: blName, phone: bPhone, addr1: bAddress1, addr2: bAddress2, count: bCountry, city: bCity, state: bState, postal: bPostal},
+            data: {adrType: 'billing', email: email, fName: bfName, lName: blName, phone: bPhone, addr1: bAddress1, addr2: bAddress2, count: bCountry, city: bCity, state: bState, postal: bPostal},
             //dataType: 'json',
             success: function(result){
                 //var test = null;
@@ -225,8 +273,14 @@ $("#checkout-form-group-billing").submit(function(e){
                     //update tax
                     $.ajax({
                         url: CARTURL+"/getTaxTotal",
-                        success: function(taxTotal){
-                            $(".tax-amount").text(taxTotal);
+                        success: function(results){
+                            var taxes = JSON.parse(results);
+                            $("#taxes").html("");
+                            for(var i=0;i<taxes.length;i++){
+                                if(taxes[i].taxamount > 0){
+                                    $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                }
+                            }
                         } 
                     });
                     $.ajax({
@@ -236,7 +290,7 @@ $("#checkout-form-group-billing").submit(function(e){
                         }
                     });
                 } else {
-                    alert($errors.errors);
+                    alert($errors.errors.join('\n'));
                     $('.whiteout').remove();
                 }
             },
@@ -264,11 +318,36 @@ $("#checkout-form-group-billing").submit(function(e){
            url: CHECKOUTURL+"/updater",
            type: 'post',
            data: {adrType: 'shipping', fName: sfName, lName: slName, addr1: sAddress1, addr2: sAddress2, count: sCountry, city: sCity, state: sState, postal: sPostal},
-           dataType: 'json',
-           success: function(){
-                $(".whiteout").remove();
-                vividStore.nextPane(obj);   
-           }  
+           //dataType: 'json', 
+           success: function(result){
+                var $errors = JSON.parse(result);
+                if($errors.error == false){
+                    $(".whiteout").remove();
+                    vividStore.nextPane(obj);   
+                    //update tax
+                    $.ajax({
+                        url: CARTURL+"/getTaxTotal",
+                        success: function(results){
+                            var taxes = JSON.parse(results);
+                            $("#taxes").html("");  
+                            for(var i=0;i<taxes.length;i++){
+                                if(taxes[i].taxamount > 0){
+                                    $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                }
+                            }
+                        } 
+                    });
+                    $.ajax({
+                        url: CARTURL+"/getTotal",
+                        success: function(total){
+                            $(".total-amount").text(total);
+                        }
+                    });
+                } else {
+                    alert($errors.errors.join('\n'));
+                    $('.whiteout').remove();
+                }
+            },
        });
        
     });

@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Payment;
+namespace Concrete\Package\VividStore\Src\VividStore\Payment;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
@@ -66,16 +66,12 @@ class Method extends Controller
     
     protected function setMethodController()
     {
-        $th = Core::make("helper/text"); 
-        $dir = $this->getMethodDirectory(); 
-        $file = new Filesystem();   
-        $file->requireOnce($dir."controller.php");
-        $namespace = "Concrete\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\src\VividStore\Payment";
+        $th = Core::make("helper/text");
+        $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\Src\\VividStore\\Payment\\Methods\\".$th->camelcase($this->pmHandle);
         
         $className = $th->camelcase($this->pmHandle)."PaymentMethod";
         $namespace = $namespace.'\\'.$className;
         $this->methodController = new $namespace();
-        //return $class;
     }
     public function getMethodController(){ return $this->methodController; }
 
@@ -100,7 +96,7 @@ class Method extends Controller
         $pm = self::getByHandle($pmHandle);
         if(!($pm instanceof Method)){
             $vals = array($pmHandle,$pmName,$pmDisplayName,$pkgID);
-            $db->Execute("INSERT INTO VividStorePaymentMethods (pmHandle,pmName,pmDisplayName,pkgID) values(?,?,?,?)", $vals);
+            $db->Execute("INSERT INTO VividStorePaymentMethods (pmHandle,pmName,pmDisplayName,pkgID) VALUES (?,?,?,?)", $vals);
             $pm = self::getByHandle($pmHandle);        
             if($enabled){
                 $pm->setEnabled(1);
@@ -160,6 +156,13 @@ class Method extends Controller
         $controller->dashboardForm();
         $pkg = Package::getByID($this->pkgID);
         View::element($this->pmHandle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
+    }
+    public function renderRedirectForm()
+    {
+        $controller = $this->getMethodController();
+        $controller->redirectForm();
+        $pkg = Package::getByID($this->pkgID);
+        View::element($this->pmHandle.'/redirect_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
     }
     
     public function submitPayment()

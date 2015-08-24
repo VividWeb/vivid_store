@@ -1,6 +1,6 @@
 <?php 
 defined('C5_EXECUTE') or die("Access Denied.");
-
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 $subject = t("Order Receipt");
 
 
@@ -84,8 +84,8 @@ ob_start();
                                 ?>
                             </td>
                             <td><?=$item->getQty()?></td>
-                            <td><?=$item->getPricePaid()?></td>
-                            <td><?=$item->getSubTotal()?></td>
+                            <td><?=Price::format($item->getPricePaid())?></td>
+                            <td><?=Price::format($item->getSubTotal())?></td>
                         </tr>
                       <?php
                             }
@@ -108,7 +108,7 @@ ob_start();
                     }
                 }
                 if(count($downloads) > 0){?>
-                    <p><strong><?=t("Your Downloads")?></h3></p>
+                    <p><strong><?=t("Your Downloads")?></strong></p>
                     <p><?=t("Note: You must be logged in to download files")?></p>
                     <ul class="order-downloads">
                     <?php
@@ -122,9 +122,20 @@ ob_start();
             </div>
             
             <p>
-                <strong><?=t("Tax")?>:</strong>  <?=$order->getTaxTotal()?><br>
-                <strong><?=t("Shipping")?>:</strong>  <?=$order->getShippingTotal()?><br>
-                <strong class="text-large"><?=t("Total")?>:</strong>  <?=$order->getTotal()?>
+                <?php
+                $taxtotal = $order->getTaxTotal();
+
+                if($taxtotal > 0 && $taxbased == 'subtotal') { ?>
+                    <strong><?=($taxlabel ? $taxlabel : t("Tax"))?>:</strong>  <?=Price::format($order->getTaxTotal())?><br>
+                <?php } ?>
+
+                <strong><?=t("Shipping")?>:</strong>  <?=Price::format($order->getShippingTotal())?><br>
+
+                <?php if($taxtotal > 0 && $taxbased == 'grandtotal') { ?>
+                    <strong><?=($taxlabel ? $taxlabel : t("Tax"))?>:</strong>  <?=Price::format($order->getTaxTotal())?><br>
+                <?php } ?>
+
+                <strong class="text-large"><?=t("Total")?>:</strong>  <?=Price::format($order->getTotal())?>
             </p>
             
         </div>
@@ -174,10 +185,10 @@ ob_start();
     }
 ?>
 
-<?=t("Tax")?>: <?=$order->getTaxTotal()?>
-<?=t("Shipping")?>:  <?=$order->getShippingTotal()?>
-<?=t("Total")?>: <?=$order->getTotal()?>
+<?=t("Tax")?>: <?=Price::format($order->getTaxTotal())?>
+<?=t("Shipping")?>:  <?=Price::format($order->getShippingTotal())?>
+<?=t("Total")?>: <?=Price::format($order->getTotal())?>
 
 <?php 
 
-$body = ob_end_clean(); ?>
+$body = ob_get_clean(); ?>
