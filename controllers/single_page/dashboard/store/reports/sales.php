@@ -51,5 +51,11 @@ class Sales extends DashboardPageController
         $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
      
 	}
+	public function export()
+	{
+		$from = $this->get('fromDate');
+		$to = $this->get('toDate');
+		
+	}
     
 }
