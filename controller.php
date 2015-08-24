@@ -23,6 +23,7 @@ use \Concrete\Core\Attribute\Type as AttributeType;
 use AttributeSet;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Utility\Service\Text;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
@@ -61,9 +62,11 @@ class Controller extends Package
         SinglePage::add('/dashboard/store/products/',$pkg);
         SinglePage::add('/dashboard/store/products/attributes',$pkg);
         SinglePage::add('/dashboard/store/settings/',$pkg);
+		SinglePage::add('/dashboard/store/settings/shipping',$pkg);
 		SinglePage::add('/dashboard/store/reports',$pkg);
 		SinglePage::add('/dashboard/store/reports/sales',$pkg);
 		SinglePage::add('/dashboard/store/reports/products',$pkg);
+		
 
         //install our cart/checkout pages
         SinglePage::add('/cart/',$pkg);
@@ -361,6 +364,12 @@ class Controller extends Package
         PaymentMethod::add('auth_net','Authorize .NET',$pkg);
         PaymentMethod::add('invoice','Invoice',$pkg,null,true);
         PaymentMethod::add('paypal_standard','PayPal',$pkg);
+		
+		//Install Shipping Methods       
+        $smt = ShippingMethodType::getByHandle('flat_rate');
+        if(!is_object($smt)){
+            ShippingMethodType::add('flat_rate','Flat Rate',$pkg);
+        }
 
         //create fileset to place digital downloads
         $fs = FileSet::getByName('Digital Downloads');
@@ -372,9 +381,6 @@ class Controller extends Package
         
         Config::save('vividstore.cartOverlay',false);
 
-        }
-
-           
     }
 
     public function upgrade()
@@ -566,6 +572,23 @@ class Controller extends Package
         if (!is_object($productReports) || $productReports->isError()) {
             SinglePage::add('/dashboard/store/reports/products', $pkg);
         }
+		
+		//install shipping methods
+        $smt = ShippingMethodType::getByHandle('flat_rate');
+        if(!is_object($smt)){
+            ShippingMethodType::add('flat_rate','Flat Rate',$pkg);
+        }
+        
+        /*$smt = ShippingMethodType::getByHandle('free_shipping');
+        if(!is_object($smt)){
+            ShippingMethodType::add('free_shipping','Free Shipping',$pkg);
+        }*/
+        
+        $shippingMethodsPage = Page::getBypath('/dashboard/store/settings/shipping');
+        if(!is_object($shippingMethodsPage) || $shippingMethodsPage->isError()){
+            SinglePage::add('/dashboard/store/settings/shipping',$pkg);
+        }
+		
     }
 
     private function installStoreProductPageType($pkg){

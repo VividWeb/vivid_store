@@ -1,6 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Methods;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodTypeMethod;
 use Package;
 use Core;
 use Database;
@@ -11,19 +11,9 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  * @Entity
  * @Table(name="VividStoreFlatRateMethods")
  */
-class FlatRateShippingMethod 
+class FlatRateShippingMethod extends MethodTypeMethod
 {
-    /**
-     * @Id 
-     * @Column(name="smtmID",type="integer",nullable=false)
-     * @GeneratedValue(strategy="AUTO")
-     */
-    protected $smtmID;
     
-    /**
-     * @Column(type="string")
-     */
-    protected $smID;
     /**
      * @Column(type="decimal")
      */
@@ -32,47 +22,36 @@ class FlatRateShippingMethod
      * @Column(type="decimal")
      */
     protected $perItemRate;
-    /**
-     * @Column(type="decimal")
-     */
-    protected $minimumAmount;
-    /**
-     * @Column(type="decimal")
-     */
-    protected $maximumAmount;
-    /**
-     * @Column(type="string")
-     */
-    protected $countries;
-    /**
-     * @Column(type="text")
-     */
-    protected $countriesSelected;
-    
-    public function setBaseRate($baseRate){ $this->baseRate = $baseRate; }
+        
+	public function setBaseRate($baseRate){ $this->baseRate = $baseRate; }
     public function setPerItemRate($perItemRate){ $this->perItemRate = $perItemRate; }
-    public function setMinimumAmount($minAmount){ $this->minimumAmount = $minAmount; }
-    public function setMaximumAmount($maxAmount){ $this->maximumAmount = $maxAmount; }
-    public function setCountries($countries){ $this->countries = $countries; }
-    public function setCountriesSelected($countriesSelected){ $this->countriesSelected; }
+	
+	public static function getByID($smtmID)
+    {
+        $em = Database::get()->getEntityManager();
+        return $em->getRepository('\Concrete\Package\VividStore\Src\VividStore\Shipping\Methods\FlatRateShippingMethod')
+            ->find($smtmID);
+    }
     
-    public function getShippingMethodTypeMethodID(){ $this->smtmID; }
-    public function getShippingMethodID() { return $this->smID; }
-    public function getBaseRate(){ $this->baseRate; }
-    public function getPerItemRate(){ $this->perItemRate; }
-    public function getMinimumAmount(){ $this->minimumAmount; }
-    public function getMaximumAmount(){ $this->maximumAmount; }
-    public function getCountries(){ $this->countries; }
-    public function getCountriesSelected(){ $this->countriesSelected; }
+    public function getBaseRate(){ return $this->baseRate; }
+    public function getPerItemRate(){ return $this->perItemRate; }
     
-    public function dashboardForm()
+    public function dashboardForm($shippingMethod = null)
     {
         $this->set('form',Core::make("helper/form"));
-        $this->set('smt',ShippingMethodType::getByHandle('flat_rate'));
+        $this->set('smt',$this);
         $pkg = Package::getByHandle("vivid_store");
         $pkgconfig = $pkg->getConfig();
         $this->set('config',$pkgconfig);
         $this->set('countryList',Core::make('helper/lists/countries')->getCountries());
+        
+		if(is_object($shippingMethod)){			
+			$smtm = $shippingMethod->getShippingMethodTypeMethod();
+		} else {
+			$smtm = new self(); 
+		}
+		$this->set("smtm",$smtm);
+		
     }
     public function addMethodTypeMethod($data)
     {
@@ -87,11 +66,40 @@ class FlatRateShippingMethod
         $em = Database::get()->getEntityManager();
         $em->persist($sm);
         $em->flush();
+		
+		return $sm;
     }
+	public function update($data)
+	{
+		$this->setBaseRate($data['baseRate']);
+        $this->setPerItemRate($data['perItemRate']);
+        $this->setMinimumAmount($data['minimumAmount']);
+        $this->setMaximumAmount($data['maximumAmount']);
+        $this->setCountries($data['countries']);
+        $this->setCountriesSelected($data['countriesSelected']);
+        
+        $em = Database::get()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
+		
+		return $this;
+	}
+	
     public function validate($args,$e)
     {
         
-        //$e->add("error message");        
+        if($args['baseRate']==""){
+            $e->add(t("Please set a Base Rate"));     
+        }    
+		if(!is_numeric($args['baseRate'])){
+			$e->add(t("Base Rate should be a number")); 
+		}
+        if(!$args['perItemRate']==""){
+        	if(!is_numeric($args['perItemRate'])){
+            	$e->add(t("The PRice Per Item doesn't have to be set, but it does have to be numeric"));     
+			}
+        }    
+			   
         return $e;
         
     }

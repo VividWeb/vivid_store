@@ -5,7 +5,6 @@ use Concrete\Core\Foundation\Object as Object;
 use Database;
 use Core;
 use Package;
-use Controller;
 use Illuminate\Filesystem\Filesystem;
 use View;
 
@@ -15,11 +14,11 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  * @Entity
  * @Table(name="VividStoreShippingMethodTypes")
  */
-class MethodType extends Controller
+class MethodType
 {
     /**
      * @Id @Column(type="integer")
-     * @GeneratedValue(strategy="NONE")
+     * @GeneratedValue(strategy="AUTO")
      */
     protected $smtID;
     
@@ -129,15 +128,16 @@ class MethodType extends Controller
         }
         return $dir;
     }
-    public function renderDashboardForm()
+    public function renderDashboardForm($sm)
     {
         $controller = $this->getMethodTypeController();
-        $controller->dashboardForm();
+        $controller->dashboardForm($sm);
         $pkg = Package::getByID($this->pkgID);
         View::element('shipping_method_types/'.$this->smtHandle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
     }
     public function addMethod($data)
     {
-        $this->getMethodTypeController()->addMethodTypeMethod($data);
+        $sm = $this->getMethodTypeController()->addMethodTypeMethod($data);
+		return $sm;
     }
 }    
