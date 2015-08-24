@@ -53,6 +53,7 @@ class ProductReport extends AbstractItemList
 				} else { $name = $oi->getProductName(); }
 				$products[$oi->getProductID()] = array(
 					'name' => $name,
+					'pID' => $oi->getProductID(),
 					'pricePaid' => intval($oi->getPricePaid()) * intval($oi->getQty()),
 					'quantity' => intval($oi->getQty())
 				);
