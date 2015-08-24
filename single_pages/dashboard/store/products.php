@@ -64,34 +64,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
-                            <?php echo $form->label("pPrice", t("Price"));?>
-                            <?php $price = $p->getProductPrice(); ?>
-                            <?php echo $form->text("pPrice", $price?$price:'0');?>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <?php echo $form->label("pQty", t("Quantity"));?>
-                            <?php $qty = $p->getProductQty(); ?>
-                            <?php echo $form->text("pQty", $qty?$qty:'999');?>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <?php echo $form->label("pTaxable", t("Taxable"));?>
-                            <?php echo $form->select("pTaxable",array('0'=>t('No'),'1'=>t('Yes')), $p->isTaxable());?>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div class="form-group">
                             <?php echo $form->label("pActive", t("Active"));?>
                             <?php echo $form->select("pActive", array('1'=>t('Active'),'0'=>t('Inactive')), $p->isActive());?>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pFeatured", t("Featured Product"));?>
@@ -99,7 +75,51 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pPrice", t("Price"));?>
+                            <?php $price = $p->getProductPrice(); ?>
+                            <?php echo $form->text("pPrice", $price?$price:'0');?>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pTaxable", t("Taxable"));?>
+                            <?php echo $form->select("pTaxable",array('0'=>t('No'),'1'=>t('Yes')), $p->isTaxable());?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pQty", t("Quantity"));?>
+                            <?php $qty = $p->getProductQty(); ?>
+                            <div class="input-group">
+                                <?php echo $form->text("pQty", $qty?$qty:'999', array(($p->pQtyUnlim ? 'disabled' : '')=>($p->pQtyUnlim ? 'disabled' : '')));?>
+                                <div class="input-group-addon">
+                                    <?php echo $form->checkbox('pQtyUnlim', '1', $p->pQtyUnlim)?>
+                                    <?php echo $form->label('pQtyUnlim', t('Unlimited'))?>
+                                </div>
 
+                                <script>
+                                    $(document).ready(function(){
+                                        $('#pQtyUnlim').change(function(){
+                                            $('#pQty').prop('disabled',this.checked);
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pNoQty", t("Offer quantity selection"));?>
+                            <?php echo $form->select("pNoQty",array('0'=>t('Yes'),'1'=>t('No, only allow one of this product in a cart')), $p->isTaxable());?>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="form-group">
                     <?php echo $form->label("pDesc", t("Short Description"));?><br>
                     <textarea class="redactor-content" name="pDesc" id="pDesc" style="display:none;"><?=$p->getProductDesc()?></textarea>
@@ -614,6 +634,19 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         </select>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <?php echo $form->checkbox('pCreateUserAccount', '1', $p->pCreateUserAccount)?>
+                    <?php echo $form->label('pCreateUserAccount', t('Create user account on purchase'))?>
+                    <span class="help-block"><?= t('When checked, if customer is guest, will create a user account on purchase'); ?></span>
+                </div>
+
+
+                <div class="form-group">
+                    <?php echo $form->checkbox('pAutoCheckout', '1', $p->pAutoCheckout)?>
+                    <?php echo $form->label('pAutoCheckout', t('Send customer directly to checkout when added to cart'))?>
+                </div>
+
 
                 <script type="text/javascript">
                     $(function() {

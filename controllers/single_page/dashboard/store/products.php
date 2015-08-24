@@ -211,7 +211,7 @@ class Products extends DashboardPageController
         if(!is_numeric($args['pPrice'])){
             $e->add(t('The Price must be set, and numeric'));
         }
-        if(!is_numeric($args['pQty'])){
+        if(!is_numeric($args['pQty']) && !$args['pQtyUnlim']){
             $e->add(t('The Quantity must be set, and numeric'));
         }
         if(!is_numeric($args['pWidth'])){
