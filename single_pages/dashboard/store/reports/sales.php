@@ -126,9 +126,9 @@ $(function(){
 					for($i=0;$i<6;$i++){
 						$report = SalesReport::getByMonth($months[$i]->format('Y-M'));
 						if($i==5){
-							echo "{meta: '".t('SubTotal')."', value: ".$report['productTotal']."}";
+							echo "{meta: '".t('Products')."', value: ".$report['productTotal']."}";
 						} else {
-							echo "{meta: '".t('SubTotal')."', value: ".$report['productTotal']."},";
+							echo "{meta: '".t('Products')."', value: ".$report['productTotal']."},";
 						}
 					}
 				?>				
@@ -199,7 +199,7 @@ $(function(){
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th><?=t("SubTotal")?></th>
+				<th><?=t("Products")?></th>
 				<th><?=t("Tax")?></th>
 				<th><?=t("Shipping")?></th>
 				<th><?=t("Total")?></th>
@@ -222,7 +222,7 @@ $(function(){
 		<tr>
 			<th><?=t("Order #")?></th>
 			<th><?=t("Date")?></th>
-			<th><?=t("SubTotal")?></th>
+			<th><?=t("Products")?></th>
 			<th><?=t("Tax Total")?></th>
 			<th><?=t("Shipping")?></th>
 			<th><?=t("Total")?></th>
