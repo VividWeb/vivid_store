@@ -62,21 +62,22 @@ exitModal: function(){
                 data: cereal,
                 type: 'post',
                 success: function(data) {
-
                     var res = jQuery.parseJSON(data);
-
                     $(".whiteout").remove();
-
                     vividStore.displayCart(res);
-
                     $.ajax({
                        url: CARTURL+'/getTotalItems',
                        success: function(itemCount){
                            $(".vivid-store-utility-links .items-counter").text(itemCount);
-
                            if (itemCount > 0) {
                                $(".vivid-store-utility-links").removeClass('vivid-cart-empty');
                            }
+                       } 
+                    });
+                    $.ajax({
+                       url: CARTURL+'/getSubTotal',
+                       success: function(subTotal){
+                           $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
                        } 
                     });
                 }
@@ -111,6 +112,12 @@ exitModal: function(){
                        if (modal) {
                            vividStore.displayCart();
                        }
+                   } 
+                });
+                $.ajax({
+                   url: CARTURL+'/getSubTotal',
+                   success: function(subTotal){
+                       $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
                    } 
                 });
             }
@@ -164,6 +171,7 @@ exitModal: function(){
                         $(".cart-page-cart-list-item").remove();
                         $(".whiteout").remove();
                         $(".vivid-store-utility-links .items-counter").text(0);
+                        $(".vivid-store-utility-links .total-cart-amount").text("");
                         $(".vivid-store-utility-links").addClass('vivid-cart-empty');
 
                         if (modal) {
