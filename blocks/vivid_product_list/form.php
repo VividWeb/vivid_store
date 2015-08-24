@@ -7,7 +7,7 @@
         }
     ?>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-12 col-sm-6">
             <div class="form-group">
                 <?php echo $form->label('filter',t('List Products'));?>
                 <?php echo $form->select('filter',array(
@@ -28,11 +28,17 @@
             </div>
 
         </div>
+        <div class="col-xs-12 col-sm-6">
+        	<div class="form-group">
+                <?php echo $form->label('sortOrder',t('Sort Order'));?>
+                <?php echo $form->select('sortOrder',array('alpha'=>t("Alphabetical"),'date'=>t('Recently Added'),'popular'=>t('Most Popular')),$sortOrder);?>
+            </div>
+        </div>
     </div>
 
     <div class="row">
         <?php if(!empty($productgroups)){?>
-        <div class="col-xs-6">
+        <div class="col-xs-12 col-sm-6">
             <div class="form-group">
                 <?php echo $form->label('gID',t('Filter by Groups'));?>
 
@@ -48,26 +54,14 @@
 
         <?php } ?>
 
-        <div class="col-xs-6">
+        <div class="col-xs-12 col-sm-6">
             <div class="form-group">
                 <?php echo $form->label('groupMatchAny',t('Matching'));?>
                 <?php echo $form->select('groupMatchAny',array('0'=>t("All groups listed"),'1'=>t('Any group listed')),$groupMatchAny);?>
             </div>
         </div>
 
-
     </div>
-
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <?php echo $form->label('sortOrder',t('Sort Order'));?>
-                <?php echo $form->select('sortOrder',array('alpha'=>t("Alphabetical"),'date'=>t('Recently Added')),$sortOrder);?>
-            </div>
-        </div>
-    </div>
-
-
 
 
     <legend><?=t('Pagination')?></legend>
@@ -153,9 +147,9 @@
 
         $('#filter').change(function(){
             if ($(this).val() == 'page' || $(this).val() == 'page_children') {
-                $('#pageselector').show();
+                $('#pageselector>div').show();
             }  else {
-                $('#pageselector').hide();
+                $('#pageselector>div').hide();
             }
         });
 
