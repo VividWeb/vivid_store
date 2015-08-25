@@ -15,6 +15,7 @@ use Database;
 use FileSet;
 use Loader;
 use Config;
+use Localization;
 use Concrete\Core\Database\Schema\Schema;
 use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
@@ -311,27 +312,7 @@ class Installer
         }
 	}
 	
-    public static function refreshDatabase(Package $package)
-    {
-        
-            if (file_exists($package->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
-                $db = Database::get();
-                $db->beginTransaction();
-                $parser = Schema::getSchemaParser(simplexml_load_file($package->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
-                $parser->setIgnoreExistingTables(false);
-                $toSchema = $parser->parse($db);
-                $fromSchema = $db->getSchemaManager()->createSchema();
-                $comparator = new \Doctrine\DBAL\Schema\Comparator();
-                $schemaDiff = $comparator->compare($fromSchema, $toSchema);
-                $saveQueries = $schemaDiff->toSaveSql($db->getDatabasePlatform());
-                foreach ($saveQueries as $query) {
-                    $db->query($query);
-                }
-                $db->commit();
-            }
-        
-    }
-
+	
     public static function renameDatabaseTables(Package $package)
     {
         $renameTables = array(
@@ -381,6 +362,55 @@ class Installer
                 $orderStatus = OrderStatus::getByID($row['osID']);
                 $orderStatus->update($status, true);
             }
+        }
+    }
+
+	//The following is copied from 7.5.1's upgrade method. 
+	//upgradeDatabase() has been changed to not drop tables unrelated to ORM.
+	public function upgrade()
+    {
+        $this->upgradeDatabase();
+
+        // now we refresh all blocks
+        $items = $this->getPackageItems();
+        if (is_array($items['block_types'])) {
+            foreach ($items['block_types'] as $item) {
+                $item->refresh();
+            }
+        }
+        Localization::clearCache();
+    }
+	
+    public static function upgradeDatabase()
+    {
+        $dbm = $this->getDatabaseStructureManager();
+        $this->destroyProxyClasses();
+        if ($dbm->hasEntities()) {
+            $dbm->generateProxyClasses();
+            //$dbm->dropObsoleteDatabaseTables(camelcase($this->getPackageHandle()));
+            $dbm->installDatabase();
+        }
+
+        if (file_exists($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
+            // Legacy db.xml
+            // currently this is just done from xml
+            $db = Database::get();
+            $db->beginTransaction();
+
+            $parser = Schema::getSchemaParser(simplexml_load_file($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
+            $parser->setIgnoreExistingTables(false);
+            $toSchema = $parser->parse($db);
+
+            $fromSchema = $db->getSchemaManager()->createSchema();
+            $comparator = new \Doctrine\DBAL\Schema\Comparator();
+            $schemaDiff = $comparator->compare($fromSchema, $toSchema);
+            $saveQueries = $schemaDiff->toSaveSql($db->getDatabasePlatform());
+
+            foreach ($saveQueries as $query) {
+                $db->query($query);
+            }
+
+            $db->commit();
         }
     }
 

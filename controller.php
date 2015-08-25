@@ -34,9 +34,6 @@ class Controller extends Package
 		if (version_compare($pkg->getPackageVersion(), '2.1', '<')) {
             Installer::renameDatabaseTables($pkg);
         }
-		if (version_compare(APP_VERSION, '5.7.4', '<')) {
-			Installer::refreshDatabase($pkg);
-		}
 		Installer::installSinglePages($pkg);
 		Installer::installProductParentPage($pkg);
         Installer::installStoreProductPageType($pkg);
@@ -62,7 +59,9 @@ class Controller extends Package
 
     public function upgrade()
     {
-        parent::upgrade();
+        //as of 7.5.1, the Package::upgrade() method will wipe out our non-ORM tables.
+        //parent::upgrade();
+		Installer::upgrade();
 		$this->installStore();				
     }
 
