@@ -24,7 +24,6 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
-use \Concrete\Core\Utility\Service\Text;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
 
@@ -273,7 +272,7 @@ class Installer
 		Installer::installOrderAttribute('shipping_address', $address, $pkg, $orderCustSet);
 	}
 	
-	public static function installOrderAttribute($handle,$type,$set,$pkg,$data=null)
+	public static function installOrderAttribute($handle,$type,$pkg,$set,$data=null)
 	{
 		$attr = StoreOrderKey::getByHandle($handle);
         if (!is_object($attr)) {
