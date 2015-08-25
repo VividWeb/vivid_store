@@ -1,9 +1,8 @@
 <?php
 
 namespace Concrete\Package\VividStore\Src\Vividstore\Discount;
-use Concrete\Core\Foundation\Object as Object;
-use Concrete\Package\VividStore\Src\Vividstore\Discount\DiscountCode;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+
+use Concrete\Core\Foundation\Object as Object;use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use Database;
 use Core;
 

@@ -74,11 +74,11 @@ ob_start();
                                     if($options){
                                         echo "<ul class='list-unstyled'>";
                                         foreach($options as $option){
-                                            echo "<li>";    
+                                            echo "<li>";
                                             echo "<strong>".$option['oioKey'].": </strong>";
                                             echo $option['oioValue'];
                                             echo "</li>";
-                                        }      
+                                        }
                                         echo "</ul>";
                                     }
                                 ?>

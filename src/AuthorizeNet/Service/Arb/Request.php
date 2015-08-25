@@ -11,7 +11,6 @@ namespace AuthorizeNet\Service\Arb;
 
 use AuthorizeNet\Common\Type\Subscription;
 use AuthorizeNet\Common\Request as BaseRequest;
-use AuthorizeNet\Service\Arb\Response;
 
 /**
  * A class to send a request to the ARB XML API.

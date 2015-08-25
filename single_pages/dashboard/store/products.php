@@ -676,7 +676,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 
 
-<?php } else if(in_array($controller->getTask(),$listViews)) { ?>
+<?php } elseif(in_array($controller->getTask(),$listViews)) { ?>
 
     <div class="ccm-dashboard-header-buttons">
         <!--<a href="<?php echo View::url('/dashboard/store/products/', 'attributes')?>" class="btn btn-dark"><?php echo t("Manage Attributes")?></a>-->
@@ -765,7 +765,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
     </div>
 
-<?php } else if (in_array($controller->getTask(),$groupViews)){ ?>
+<?php } elseif (in_array($controller->getTask(),$groupViews)){ ?>
 
     <?php if($grouplist){?>
         <h3><?=t("Groups")?></h3>

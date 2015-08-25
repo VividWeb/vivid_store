@@ -1,7 +1,7 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Methods;
+
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
-use Package;
 use Core;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));

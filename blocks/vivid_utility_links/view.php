@@ -7,7 +7,7 @@
         }
     } ?>
     <?php if($showGreeting){
-    	$u = new User();
+        $u = new User();
         if($u->isLoggedIn()){
             $msg = '<span class="welcome-message">'.t("Welcome back").'</span>';
             $ui = UserInfo::getByID($u->getUserID());
@@ -15,7 +15,7 @@
                 $msg = '<span class="welcome-message">'.t("Welcome back, ").'<span class="first-name">'.$firstname.'</span></span>';
             }
             echo $msg;
-        }	
+        }
     } ?>
     <?php if($showCartItems){?>
     <span class="items-in-cart"><?=$itemsLabel?> (<span class="items-counter"><?=$itemCount?></span>)</span>

@@ -1,13 +1,10 @@
 <?php
 namespace Concrete\Package\VividStore\Controller\SinglePage;
-use Page;
+
 use PageController;
 use Core;
-use \Concrete\Core\Localization\Service\CountryList;
 use View;
 use Package;
-use User;
-use UserInfo;
 use Session;
 use Config;
 use Loader;
@@ -125,8 +122,8 @@ class Checkout extends PageController
         ");
 
         $packagePath = $pkg->getRelativePath();
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));   
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));   
+        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
+        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));
         $this->addFooterItem("
             <script type=\"text/javascript\">
                 vividStore.loadViaHash();
@@ -135,12 +132,12 @@ class Checkout extends PageController
         $this->set("enabledPaymentMethods",PaymentMethod::getEnabledMethods());
         
         
-    }  
+    }
     
     public function failed()
     {
         $this->set('paymentErrors',Session::get('paymentErrors'));
-        $this->view();   
+        $this->view();
     }
     public function submit()
     {
@@ -155,7 +152,7 @@ class Checkout extends PageController
             $pm = PaymentMethod::getByHandle('invoice');
         } else {
             if($pm->getMethodController()->external == true){
-                $pmsess = Session::get('paymentMethod');  
+                $pmsess = Session::get('paymentMethod');
                 $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
                 Session::set('paymentMethod',$pmsess);
                 $order = VividOrder::add($data,$pm,'incomplete');
@@ -164,7 +161,7 @@ class Checkout extends PageController
             } else {
                 $payment = $pm->submitPayment();
                 if($payment['error']==1){
-                    $pmsess = Session::get('paymentMethod');  
+                    $pmsess = Session::get('paymentMethod');
                     $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
                     Session::set('paymentMethod',$pmsess);
                     $pesess = Session::get('paymentErrors');
@@ -172,9 +169,9 @@ class Checkout extends PageController
                     Session::set('paymentErrors',$pesess);
                     $this->redirect("/checkout/failed#payment");
                 } else {
-                    VividOrder::add($data,$pm);    
+                    VividOrder::add($data,$pm);
                     $this->redirect('/checkout/complete');
-                }  
+                }
             }
         }
     }
@@ -197,4 +194,4 @@ class Checkout extends PageController
         
     }
 
-}    
+}

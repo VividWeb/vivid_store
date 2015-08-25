@@ -10,7 +10,6 @@
 namespace AuthorizeNet\Service\Td;
 
 use AuthorizeNet\Common\Request as BaseRequest;
-use AuthorizeNet\Service\Td\Response;
 
 /**
  * A class to send a request to the Transaction Details XML API.

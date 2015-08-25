@@ -47,7 +47,7 @@ class History extends Object
 
     public function getUserName() {
         $u = $this->getUser();
-        if($u){    
+        if($u){
             return $u->getUserName();
         }
     }

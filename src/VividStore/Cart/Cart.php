@@ -1,9 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Cart;
 
-use Package;
-use User;
-use UserInfo;
 use Session;
 use Config;
 use Database;
@@ -243,7 +240,7 @@ class Cart
         if (self::isCustomerTaxable()) {
             $taxes[] = array('name'=>$taxName,'taxamount'=>$taxTotal,'calculation'=>$taxCalc, 'based'=>$taxBased);
             return $taxes;
-        } 
+        }
     }
 
 
@@ -403,12 +400,12 @@ class Cart
         $taxes = self::getTaxes();
 
         if($taxes){
-		    foreach($taxes as $tax) {
-		        if ($tax['calculation'] != 'extract') {
-		            $taxTotal += $tax['taxamount'];
-		        }
-		    }
-		}
+            foreach($taxes as $tax) {
+                if ($tax['calculation'] != 'extract') {
+                    $taxTotal += $tax['taxamount'];
+                }
+            }
+        }
 
 
         $shippingTotal = Price::getFloat(Cart::getShippingTotal());
@@ -504,4 +501,3 @@ class Cart
         Session::set('vividstore.code', '');
     }
 }
-

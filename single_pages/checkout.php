@@ -15,11 +15,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         <div class="checkout-form-group" id="checkout-form-group-signin">
 
             <?php 
-                if ($guestCheckout == 'option' && !$requiresLogin) { 
+                if ($guestCheckout == 'option' && !$requiresLogin) {
                     $introTitle = t("Sign in, Register or Checkout as Guest");
-                } else { 
+                } else {
                     $introTitle = t("Sign in or Register");
-                } 
+                }
             ?>
             
             <h2><?=$introTitle?></h2>
@@ -219,13 +219,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 ?>
                 <div class="col-container clearfix">
                     <div id="checkout-payment-method-options" class="vivid-store-col-1 <?php echo count($enabledPaymentMethods) == 1 ? "hidden" : ""; ?>">
-                        <?php  
+                        <?php 
                             $i = 1;
                             foreach($enabledPaymentMethods as $pm):
                             if($i==1){
-                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID(),'checked'=>'checked');    
+                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID(),'checked'=>'checked');
                             } else {
-                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID());       
+                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID());
                             }
                         ?>
                             <div class='radio'>
@@ -288,7 +288,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     foreach($taxes as $tax){?>
                         <strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span><br>
                 <?php 
-                    } 
+                    }
                 }
                 ?>
             </span>

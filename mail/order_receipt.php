@@ -74,11 +74,11 @@ ob_start();
                                     if($options){
                                         echo "<ul class='list-unstyled'>";
                                         foreach($options as $option){
-                                            echo "<li>";    
+                                            echo "<li>";
                                             echo "<strong>".$option['oioKey'].": </strong>";
                                             echo $option['oioValue'];
                                             echo "</li>";
-                                        }      
+                                        }
                                         echo "</ul>";
                                     }
                                 ?>
@@ -102,9 +102,9 @@ ob_start();
                     $pObj = $item->getProductObject();
                     if(is_object($pObj)){
                         if($pObj->hasDigitalDownload()){
-                            $fileObjs = $pObj->getProductDownloadFileObjects();    
+                            $fileObjs = $pObj->getProductDownloadFileObjects();
                             $downloads[$item->getProductName()] = $fileObjs[0];
-                        } 
+                        }
                     }
                 }
                 if(count($downloads) > 0){?>

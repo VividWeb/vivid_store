@@ -6,7 +6,6 @@ use Database;
 use Core;
 use Package;
 use Controller;
-use Illuminate\Filesystem\Filesystem;
 use View;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -24,7 +23,7 @@ class Method extends Controller
     public function getPaymentMethodHandle(){ return $this->pmHandle; }
     public function getPaymentMethodName(){ return $this->pmName; }
     public function getPaymentMethodPkgID(){ return $this->pkgID; }
-    public function getPaymentMethodDisplayName() 
+    public function getPaymentMethodDisplayName()
     {
         if($this->pmDisplayName == ""){
             return $this->pmName;
@@ -41,7 +40,7 @@ class Method extends Controller
             $method->setMethodController();
         }
         return($method instanceof Method) ? $method : false;
-    }  
+    }
     
     public static function getByHandle($pmHandle){
         $db = Database::get();
@@ -97,7 +96,7 @@ class Method extends Controller
         if(!($pm instanceof Method)){
             $vals = array($pmHandle,$pmName,$pmDisplayName,$pkgID);
             $db->Execute("INSERT INTO VividStorePaymentMethods (pmHandle,pmName,pmDisplayName,pkgID) VALUES (?,?,?,?)", $vals);
-            $pm = self::getByHandle($pmHandle);        
+            $pm = self::getByHandle($pmHandle);
             if($enabled){
                 $pm->setEnabled(1);
             }
@@ -135,12 +134,12 @@ class Method extends Controller
             $methods[] = $method;
         }
         return $methods;
-    } 
+    }
     
     public static function getEnabledMethods()
     {
         return self::getMethods(true);
-    }      
+    }
               
     public function renderCheckoutForm()
     {
@@ -172,4 +171,4 @@ class Method extends Controller
         return $class->submitPayment();
     }
       
-}    
+}

@@ -1,6 +1,7 @@
 <?php
 
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
+
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use Core;
 use Package;
@@ -29,9 +30,9 @@ class Orders extends DashboardPageController
 
         $paginator = $orderList->getPagination();
         $pagination = $paginator->renderDefaultView();
-        $this->set('orderList',$paginator->getCurrentPageResults());  
+        $this->set('orderList',$paginator->getCurrentPageResults());
         $this->set('pagination',$pagination);
-        $this->set('paginator', $paginator);     
+        $this->set('paginator', $paginator);
         $this->set('orderStatuses', OrderStatus::getList());
         $pkg = Package::getByHandle('vivid_store');
         $packagePath = $pkg->getRelativePath();

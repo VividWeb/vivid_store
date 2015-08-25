@@ -70,11 +70,11 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                             if($options){
                                 echo "<ul class='list-unstyled'>";
                                 foreach($options as $option){
-                                    echo "<li>";    
+                                    echo "<li>";
                                     echo "<strong>".$option['oioKey'].": </strong>";
                                     echo $option['oioValue'];
                                     echo "</li>";
-                                }      
+                                }
                                 echo "</ul>";
                             }
                         ?>

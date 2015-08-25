@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Methods;
+
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodTypeMethod;
 use Package;
 use Core;
@@ -23,10 +24,10 @@ class FlatRateShippingMethod extends MethodTypeMethod
      */
     protected $perItemRate;
         
-	public function setBaseRate($baseRate){ $this->baseRate = $baseRate; }
+    public function setBaseRate($baseRate){ $this->baseRate = $baseRate; }
     public function setPerItemRate($perItemRate){ $this->perItemRate = $perItemRate; }
-	
-	public static function getByID($smtmID)
+    
+    public static function getByID($smtmID)
     {
         $em = Database::get()->getEntityManager();
         return $em->getRepository('\Concrete\Package\VividStore\Src\VividStore\Shipping\Methods\FlatRateShippingMethod')
@@ -45,13 +46,13 @@ class FlatRateShippingMethod extends MethodTypeMethod
         $this->set('config',$pkgconfig);
         $this->set('countryList',Core::make('helper/lists/countries')->getCountries());
         
-		if(is_object($shippingMethod)){			
-			$smtm = $shippingMethod->getShippingMethodTypeMethod();
-		} else {
-			$smtm = new self(); 
-		}
-		$this->set("smtm",$smtm);
-		
+        if(is_object($shippingMethod)){
+            $smtm = $shippingMethod->getShippingMethodTypeMethod();
+        } else {
+            $smtm = new self();
+        }
+        $this->set("smtm",$smtm);
+        
     }
     public function addMethodTypeMethod($data)
     {
@@ -66,12 +67,12 @@ class FlatRateShippingMethod extends MethodTypeMethod
         $em = Database::get()->getEntityManager();
         $em->persist($sm);
         $em->flush();
-		
-		return $sm;
+        
+        return $sm;
     }
-	public function update($data)
-	{
-		$this->setBaseRate($data['baseRate']);
+    public function update($data)
+    {
+        $this->setBaseRate($data['baseRate']);
         $this->setPerItemRate($data['perItemRate']);
         $this->setMinimumAmount($data['minimumAmount']);
         $this->setMaximumAmount($data['maximumAmount']);
@@ -81,25 +82,25 @@ class FlatRateShippingMethod extends MethodTypeMethod
         $em = Database::get()->getEntityManager();
         $em->persist($this);
         $em->flush();
-		
-		return $this;
-	}
-	
+        
+        return $this;
+    }
+    
     public function validate($args,$e)
     {
         
         if($args['baseRate']==""){
-            $e->add(t("Please set a Base Rate"));     
-        }    
-		if(!is_numeric($args['baseRate'])){
-			$e->add(t("Base Rate should be a number")); 
-		}
+            $e->add(t("Please set a Base Rate"));
+        }
+        if(!is_numeric($args['baseRate'])){
+            $e->add(t("Base Rate should be a number"));
+        }
         if(!$args['perItemRate']==""){
-        	if(!is_numeric($args['perItemRate'])){
-            	$e->add(t("The Price Per Item doesn't have to be set, but it does have to be numeric"));     
-			}
-        }    
-			   
+            if(!is_numeric($args['perItemRate'])){
+                $e->add(t("The Price Per Item doesn't have to be set, but it does have to be numeric"));
+            }
+        }
+               
         return $e;
         
     }

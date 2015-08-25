@@ -3,13 +3,10 @@ namespace Concrete\Package\VividStore\Src\VividStore\Orders;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
-use File;
 use User;
-use UserInfo;
 use Core;
 use Package;
 use Concrete\Core\Mail\Service as MailService;
-use Session;
 use Group;
 use Events;
 use Config;
@@ -38,7 +35,7 @@ class Order extends Object
             $order->setPropertiesFromArray($data);
         }
         return($order instanceof Order) ? $order : false;
-    }  
+    }
     public function getCustomersMostRecentOrderByCID($cID)
     {
         $db = Database::get();
@@ -205,7 +202,7 @@ class Order extends Object
     }
     public function getOrderItems()
     {
-        $db = Database::get();    
+        $db = Database::get();
         $rows = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$this->oID);
         $items = array();
 
@@ -217,8 +214,8 @@ class Order extends Object
     }
     public function getOrderID(){ return $this->oID; }
     public function getPaymentMethodName() {
-        $pm = PaymentMethod::getByID($this->pmID); 
-        if(is_object($pm)){  
+        $pm = PaymentMethod::getByID($this->pmID);
+        if(is_object($pm)){
             return $pm->getPaymentMethodName();
         }
     }

@@ -1,9 +1,8 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard;
+
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
-use Package;
 use Core;
 use URL;
 use Config;
@@ -34,12 +33,12 @@ class PaypalStandardPaymentMethod extends PaymentMethod
     public function validate($args,$e)
     {
         
-        $pm = PaymentMethod::getByHandle('paypal_standard');    
+        $pm = PaymentMethod::getByHandle('paypal_standard');
         if($args['paymentMethodEnabled'][$pm->getPaymentMethodID()]==1){
             if($args['paypalEmail']==""){
-                $e->add(t("PayPal Email must be set"));     
-            }   
-        }         
+                $e->add(t("PayPal Email must be set"));
+            }
+        }
         return $e;
         
     }
@@ -86,33 +85,33 @@ class PaypalStandardPaymentMethod extends PaymentMethod
         $raw_post_array = explode('&', $raw_post_data);
         $myPost = array();
         foreach ($raw_post_array as $keyval) {
-        	$keyval = explode ('=', $keyval);
-        	if (count($keyval) == 2)
-        		$myPost[$keyval[0]] = urldecode($keyval[1]);
+            $keyval = explode ('=', $keyval);
+            if (count($keyval) == 2)
+                $myPost[$keyval[0]] = urldecode($keyval[1]);
         }
         // read the post from PayPal system and add 'cmd'
         $req = 'cmd=_notify-validate';
         if(function_exists('get_magic_quotes_gpc')) {
-        	$get_magic_quotes_exists = true;
+            $get_magic_quotes_exists = true;
         }
         foreach ($myPost as $key => $value) {
-        	if($get_magic_quotes_exists == true && get_magic_quotes_gpc() == 1) {
-        		$value = urlencode(stripslashes($value));
-        	} else {
-        		$value = urlencode($value);
-        	}
-        	$req .= "&$key=$value";
+            if($get_magic_quotes_exists == true && get_magic_quotes_gpc() == 1) {
+                $value = urlencode(stripslashes($value));
+            } else {
+                $value = urlencode($value);
+            }
+            $req .= "&$key=$value";
         }
         // Post IPN data back to PayPal to validate the IPN data is genuine
         // Without this step anyone can fake IPN data
         if(Config::get('vividstore.paypalTestMode') == true) {
-        	$paypal_url = "https://www.sandbox.paypal.com/cgi-bin/webscr";
+            $paypal_url = "https://www.sandbox.paypal.com/cgi-bin/webscr";
         } else {
-        	$paypal_url = "https://www.paypal.com/cgi-bin/webscr";
+            $paypal_url = "https://www.paypal.com/cgi-bin/webscr";
         }
         $ch = curl_init($paypal_url);
         if ($ch == FALSE) {
-        	return FALSE;
+            return FALSE;
         }
         curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -122,8 +121,8 @@ class PaypalStandardPaymentMethod extends PaymentMethod
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
         if(DEBUG == true) {
-        	curl_setopt($ch, CURLOPT_HEADER, 1);
-        	curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 1);
+            curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
         }
         
         // CONFIG: Optional proxy configuration
@@ -138,30 +137,30 @@ class PaypalStandardPaymentMethod extends PaymentMethod
         // This is mandatory for some environments.
         //$cert = __DIR__ . "./cacert.pem";
         //curl_setopt($ch, CURLOPT_CAINFO, $cert);
-        
+
         $res = curl_exec($ch);
         if (curl_errno($ch) != 0) // cURL error
         {
-        	Log::addEntry("Can't connect to PayPal to validate IPN message: " . curl_error($ch));
-        	curl_close($ch);
-        	exit;
+            Log::addEntry("Can't connect to PayPal to validate IPN message: " . curl_error($ch));
+            curl_close($ch);
+            exit;
         } else {
-    		//if we want to log more stuff
-    		//Log::addEntry("HTTP request of validation request:". curl_getinfo($ch, CURLINFO_HEADER_OUT) ." for IPN payload: $req");
-    		//Log::addEntry("HTTP response of validation request: $res");
-    		curl_close($ch);
+            //if we want to log more stuff
+            //Log::addEntry("HTTP request of validation request:". curl_getinfo($ch, CURLINFO_HEADER_OUT) ." for IPN payload: $req");
+            //Log::addEntry("HTTP response of validation request: $res");
+            curl_close($ch);
         }
         // Inspect IPN validation result and act accordingly
         // Split response headers and payload, a better way for strcmp
         $tokens = explode("\r\n\r\n", trim($res));
         $res = trim(end($tokens));
         if (strcmp ($res, "VERIFIED") == 0) {
-        	$order = VividOrder::getByID($_POST['invoice']);
-        	$order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
-        } else if (strcmp ($res, "INVALID") == 0) {
-        	// log for manual investigation
-        	// Add business logic here which deals with invalid IPN messages
-        	Log::addEntry("Invalid IPN: $req");
+            $order = VividOrder::getByID($_POST['invoice']);
+            $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
+        } elseif (strcmp ($res, "INVALID") == 0) {
+            // log for manual investigation
+            // Add business logic here which deals with invalid IPN messages
+            Log::addEntry("Invalid IPN: $req");
         }
     }
 

@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Block\VividProductList;
+
 use \Concrete\Core\Block\BlockController;
 use Package;
 use Core;
@@ -7,7 +8,6 @@ use View;
 use Page;
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -101,7 +101,7 @@ class Controller extends BlockController
         $products->setGroupMatchAny($this->groupMatchAny);
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
-        $this->set('products',$paginator->getCurrentPageResults());  
+        $this->set('products',$paginator->getCurrentPageResults());
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
 
@@ -126,10 +126,10 @@ class Controller extends BlockController
             </script>
         ");
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));    
+        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));
     }
     public function save($args)
-    {   
+    {
         $args['showDescription'] = isset($args['showDescription']) ? 1 : 0;
         $args['showQuickViewLink'] = isset($args['showQuickViewLink']) ? 1 : 0;
         $args['showPageLink'] = isset($args['showPageLink']) ? 1 : 0;

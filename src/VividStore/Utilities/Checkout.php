@@ -3,8 +3,6 @@ namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use \Concrete\Core\Controller\Controller as RouteController;
 use Core;
-use User;
-use UserInfo;
 use Loader;
 use Session;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
@@ -22,7 +20,7 @@ class Checkout extends RouteController
             if ($data['adrType']=='billing'){ $billing=true; }
             $e = $this->validateAddress($data,$shipping);
             if($e->has()){
-                echo $e->outputJSON();   
+                echo $e->outputJSON();
             } else {
                 if ($data['adrType']=='billing'){
                     $this->updateBilling($data);

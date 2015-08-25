@@ -2,7 +2,6 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Controller;
-use Core;
 use User;
 use Database;
 
@@ -26,7 +25,7 @@ class ProductFinder extends Controller
             $db = Database::get();
             $results = $db->query('SELECT * FROM VividStoreProducts WHERE pName LIKE "%'.$query.'%"');
             
-            if($results){ 
+            if($results){
             foreach($results as $result){ ?>
         
                 <li data-product-id="<?=$result['pID']?>"><?=$result['pName']?></li>

@@ -1,12 +1,9 @@
 <?php
 namespace Concrete\Package\VividStore\Controller\SinglePage\Checkout;
-use Page;
+
 use PageController;
 use Core;
-use \Concrete\Core\Localization\Service\CountryList;
 use View;
-use Package;
-use User;
 
 
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
@@ -26,8 +23,8 @@ class Complete extends PageController
             $this->redirect("/cart");
         }
         $this->addFooterItem(Core::make('helper/html')->javascript('vivid-store.js','vivid_store'));
-        $this->addHeaderItem(Core::make('helper/html')->css('vivid-store.css','vivid_store'));   
-    }  
+        $this->addHeaderItem(Core::make('helper/html')->css('vivid-store.css','vivid_store'));
+    }
     
 
-}    
+}

@@ -11,7 +11,6 @@ namespace AuthorizeNet\Service\Aim;
 
 use AuthorizeNet\Exception\AuthorizeNetException;
 use AuthorizeNet\Common\Request as BaseRequest;
-use AuthorizeNet\Service\Aim\Response;
 
 /**
  * Builds and sends an AuthorizeNet AIM Request.
