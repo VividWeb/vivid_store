@@ -427,7 +427,17 @@ class Product extends Object
         }
         return $values;
     }
-
+	
+	/* TO-DO
+	 * This isn't completely accurate as an order status may be incomplete and never change,
+	 * or an order may be canceled. So at somepoint, circle back to this to check for certain status's
+	 */
+	public function getTotalSold()
+	{
+		$db = Database::get();
+		$results = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE pID = ?",$this->pID);
+		return count($results);
+	}
 
     public function setAttribute($ak, $value)
     {

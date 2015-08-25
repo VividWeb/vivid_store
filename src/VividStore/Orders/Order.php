@@ -146,6 +146,16 @@ class Order extends Object
             }
         }
 
+        $discounts = VividCart::getDiscounts();
+
+        if ($discounts) {
+            foreach($discounts as $discount) {
+                $order->addDiscount($discount, VividCart::getCode());
+            }
+        }
+
+        VividCart::clearCode();
+
         // create order event and dispatch
         $event = new OrderEvent($order);
         Events::dispatch('on_vividstore_order', $event);
@@ -282,5 +292,19 @@ class Order extends Object
         }
         
         return $av;
+    }
+
+    public function addDiscount($discount, $code = '') {
+        $db = Database::get();
+
+        //add the discount
+        $vals = array($this->oID,$discount->drName, $discount->getDisplay(), $discount->drValue,$discount->drPercentage, $discount->drDeductFrom, $code);
+        $db->Execute("INSERT INTO VividStoreOrderDiscounts(oID,odName,odDisplay,odValue,odPercentage,odDeductFrom,odCode) VALUES (?,?,?,?,?,?,?)", $vals);
+    }
+
+    public function getAppliedDiscounts() {
+        $db = Database::get();
+        $rows = $db->GetAll("SELECT * FROM VividStoreOrderDiscounts WHERE oID=?",$this->oID);
+        return $rows;
     }
 }

@@ -5,10 +5,15 @@ if($products){
     echo "<div class='product-list clearfix'>";
 
     $i=1;
-    foreach($products as $product){ 
+    foreach($products as $product){
+    	//this is done so we can get a type of active class if there's a product list on the product page
+    	$class = "product-list-item vivid-store-col-".$productsPerRow;
+    	if(Page::getCurrentPage()->getCollectionID()==$product->getProductPageID()){
+    		$class = $class." on-product-page"; 
+    	} 
     ?>
     
-        <div class="product-list-item vivid-store-col-<?=$productsPerRow?>">
+        <div class="<?=$class?>">
             
             <form class="product-list-item-inner" id="form-add-to-cart-<?=$product->getProductID()?>">
                 

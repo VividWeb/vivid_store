@@ -1,7 +1,6 @@
 <?php 
 defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule;
-use Config;
 
 $form = Core::make('helper/form');
 $date = Core::make('helper/form/date_time');
@@ -202,7 +201,10 @@ $currencySymbol = Config::get('vividstore.symbol');
 
         <div class="form-group">
             <?php echo $form->label('drDeductFrom', t('Deduct From'))?>
-            <?php echo $form->select('drDeductFrom', array('total' => t('Total, including shipping'), 'subtotal'=>'Items Sub-total', 'shipping' => t('Shipping'), 'product'=> t('Specific Product'), 'group'=> t('Products in Product Group')), $d->drDeductFrom, array('class' => ''))?>
+            <?php
+            // commenting out following until product and product group matching is implemented
+            //echo $form->select('drDeductFrom', array('total' => t('Total, including shipping'), 'subtotal'=>'Items Sub-total', 'shipping' => t('Shipping'), 'product'=> t('Specific Product'), 'group'=> t('Products in Product Group')), $d->drDeductFrom, array('class' => ''))?>
+            <?php echo $form->select('drDeductFrom', array('total' => t('Total, including shipping'), 'subtotal'=>'Items Sub-total', 'shipping' => t('Shipping')), $d->drDeductFrom, array('class' => ''))?>
         </div>
 
         <div class="form-group">
@@ -256,8 +258,8 @@ $currencySymbol = Config::get('vividstore.symbol');
             </div>
         </div>
 
-        <h4><?php echo t('Users / Groups');?></h4>
-        <p><em>To be implemented</em></p>
+<!--        <h4>--><?php //echo t('Users / Groups');?><!--</h4>-->
+<!--        <p><em>To be implemented</em></p>-->
 
         </fieldset>
 
