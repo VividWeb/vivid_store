@@ -18,7 +18,7 @@ abstract class MethodTypeMethod extends Controller
     protected $smtmID;
     
     /**
-     * @Column(type="string")
+     * @Column(type="string",nullable=true)
      */
     protected $smID;
 	/**
@@ -34,7 +34,7 @@ abstract class MethodTypeMethod extends Controller
      */
     protected $countries;
     /**
-     * @Column(type="text")
+     * @Column(type="text",nullable=true)
      */
     protected $countriesSelected;
 	
