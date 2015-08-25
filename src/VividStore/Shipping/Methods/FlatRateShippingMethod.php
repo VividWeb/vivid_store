@@ -96,7 +96,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
 		}
         if(!$args['perItemRate']==""){
         	if(!is_numeric($args['perItemRate'])){
-            	$e->add(t("The PRice Per Item doesn't have to be set, but it does have to be numeric"));     
+            	$e->add(t("The Price Per Item doesn't have to be set, but it does have to be numeric"));     
 			}
         }    
 			   
