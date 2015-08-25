@@ -3,6 +3,7 @@ namespace Concrete\Package\VividStore;
 use Package;
 
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 use Route;
 
@@ -12,7 +13,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '2.3.3';
+    protected $pkgVersion = '3.0dev1';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
         'src/Omnipay' => '\Omnipay'
@@ -98,6 +99,8 @@ class Controller extends Package
         if(is_object($paypalpm)){
             $paypalpm->delete();
         }
+		$shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
+		$shippingMethodType->delete();
         parent::uninstall();
     }
 
