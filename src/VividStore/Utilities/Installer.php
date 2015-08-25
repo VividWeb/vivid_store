@@ -121,7 +121,7 @@ class Installer
 	{
 		$config = Config::get($key);
 		if(empty($config)){
-			Config::save($key,$avlue);
+			Config::save($key,$value);
 		}
 	}
 	public static function installPaymentMethods(Package $pkg)

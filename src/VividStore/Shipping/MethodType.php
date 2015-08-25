@@ -54,9 +54,6 @@ class MethodType
     public function setMethodTypeController()
     {
         $th = Core::make("helper/text"); 
-        $dir = $this->getMethodTypeDirectory(); 
-        //$file = new Filesystem();   
-        //$file->requireOnce($dir."controller.php");
         $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\Src\\VividStore\\Shipping\\Methods";
         
         $className = $th->camelcase($this->smtHandle)."ShippingMethod";
@@ -119,14 +116,6 @@ class MethodType
             $methodTypes[] = self::getByID($result['smtID']);
         }
         return $methodTypes;
-    }
-    public function getMethodTypeDirectory()
-    {
-        if ($this->pkgID > 0){
-            $pkg = Package::getByID($this->pkgID);
-            $dir = $pkg->getPackagePath()."/src/VividStore/Shipping/Methods/".$this->smtHandle."/";
-        }
-        return $dir;
     }
     public function renderDashboardForm($sm)
     {
