@@ -62,6 +62,7 @@ class Order extends Object
         $now = $dt->getLocalDateTime();
         
         //get the price details
+        $smID = \Session::get('smID');
         $shipping = VividCart::getShippingTotal();
         $shipping = Price::formatFloat($shipping);
         $taxvalue = VividCart::getTaxTotal();
@@ -239,6 +240,11 @@ class Order extends Object
     }
     public function getTaxTotal() { return $this->oTax + $this->oTaxIncluded; }
     public function getShippingTotal() { return $this->oShippingTotal; }
+    public function getShippingMethodName(){
+        if($this->smID){
+            return ShippingMethod::getByID($this->smID)->getName();
+        }
+    }
     
     public function updateStatus($status)
     {
