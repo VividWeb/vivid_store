@@ -10,6 +10,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMetho
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as Product;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
@@ -81,6 +82,12 @@ class Cart
     public function add($data)
     {
 
+        $product = Product::getByID((int)$data['pID']);
+
+        if (!$product) {
+            return false;
+        }
+
         //now, build a nicer "cart item"
         $cartItem = array();
         $cartItem['product'] = array(
@@ -127,7 +134,13 @@ class Cart
         if($exists !== false) {
             //we have a match, update the qty
             $cart = self::getCart();
-            $cart[$exists]['product']['qty'] += $cartItem['product']['qty'];
+
+            if ($product->allowQuantity()) {
+                $cart[$exists]['product']['qty'] += $cartItem['product']['qty'];
+            } else {
+                $cart[$exists]['product']['qty'] = 1;
+            }
+
             Session::set('vividstore.cart',$cart);
         }
         else {

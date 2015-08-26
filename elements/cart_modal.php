@@ -46,9 +46,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                             <div class="cart-list-item-price">
                                 <?=Price::format($product->getProductPrice())?>
                             </div>
+
                             <div class="cart-list-product-qty">
+                                <?php if ($product->allowQuantity()) { ?>
                                 <span class="cart-item-label"><?=t("Quantity:")?></span>
                                 <input type="number" max="<?=$product->getProductQty()?>" min="1" value="<?=$qty?>" style="width: 50px;">
+                                <?php } ?>
                             </div>
                             <div class="cart-list-item-links">
                                 <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(<?=$k?>, true);"><?=t("Update")?></a>
