@@ -28,6 +28,7 @@ class Cart extends PageController
         $this->set('codesuccess', $codesuccess);
 
         $this->set('cart',VividCart::getCart());
+        $this->set('cartmessage',VividCart::getCartMessage());
         $this->set('discounts',VividCart::getDiscounts());
         $this->set('total',VividCart::getSubTotal());
         $this->addHeaderItem("
@@ -48,7 +49,7 @@ class Cart extends PageController
         $data = $this->post();
         VividCart::add($data);
         $product = VividProduct::getByID($data['pID']);
-        $returndata = array('success'=>true,'quantity'=>(int)$data['quantity'],'product'=>$product);
+        $returndata = array('success'=>true,'quantity'=>(int)$data['quantity'],'product'=>$product, 'action'=>'add');
         echo json_encode($returndata);
         exit();
 
@@ -63,7 +64,7 @@ class Cart extends PageController
     {
         $data = $this->post();
         VividCart::update($data);
-        $returndata = array('success'=>true);
+        $returndata = array('success'=>true, 'action'=>'update');
         echo json_encode($returndata);
         exit();
     }
@@ -71,13 +72,15 @@ class Cart extends PageController
     {
         $instanceID = $_POST['instance'];
         VividCart::remove($instanceID);
-        $returndata = array('success'=>true);
+        $returndata = array('success'=>true,'action'=>'remove');
         echo json_encode($returndata);
         exit();
     }
     public function clear()
     {
         VividCart::clear();
-        $this->view();
+        $returndata = array('success'=>true,'action'=>'clear');
+        echo json_encode($returndata);
+        exit();
     }
 }

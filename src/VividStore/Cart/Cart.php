@@ -168,6 +168,8 @@ class Cart
             $this->remove($instanceID);
         }
 
+        self::setCartMessage('productupdated');
+
         Session::set('vividstore.cart',$cart);
     }
     public function remove($instanceID)
@@ -526,5 +528,20 @@ class Cart
 
     public static function clearCode() {
         Session::set('vividstore.code', '');
+    }
+
+    public static function setCartMessage($message, $type='notice') {
+        Session::set('vividstore.cart_message', $message);
+        Session::set('vividstore.cart_message_type', $type);
+    }
+
+    public static function getCartMessage() {
+        $message = Session::get('vividstore.cart_message');
+        $type = Session::get('vividstore.cart_message_type');
+
+        Session::set('vividstore.cart_message', null);
+        Session::set('vividstore.cart_message_type', null);
+
+        return array('message'=>$message, 'type'=>$type);
     }
 }

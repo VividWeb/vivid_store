@@ -95,31 +95,35 @@ exitModal: function(){
             url: CARTURL+"/update",
             data: {instance: instanceID, pQty: qty},
             type: 'post',
-            success: function() {                
-                $.ajax({
-                    url: CARTURL+"/getSubTotal",
-                    success: function(total){
-                        $(".cart-grand-total-value").text(total);
-                        $(".whiteout").remove();
-                    }
-                });
+            success: function(data) {
+                $(".whiteout").remove();
 
-                $.ajax({
-                   url: CARTURL+'/getTotalItems',
-                   success: function(itemCount){
-                       $(".vivid-store-utility-links .items-counter").text(itemCount);
+                if (modal) {
+                    var res = jQuery.parseJSON(data);
+                    vividStore.displayCart(res);
 
-                       if (modal) {
-                           vividStore.displayCart();
-                       }
-                   } 
-                });
-                $.ajax({
-                   url: CARTURL+'/getSubTotal',
-                   success: function(subTotal){
-                       $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
-                   } 
-                });
+                } else {
+                    $.ajax({
+                        url: CARTURL + "/getSubTotal",
+                        success: function (total) {
+                            $(".cart-grand-total-value").text(total);
+                            $(".whiteout").remove();
+                        }
+                    });
+
+                    $.ajax({
+                        url: CARTURL + '/getTotalItems',
+                        success: function (itemCount) {
+                            $(".vivid-store-utility-links .items-counter").text(itemCount);
+                        }
+                    });
+                    $.ajax({
+                        url: CARTURL + '/getSubTotal',
+                        success: function (subTotal) {
+                            $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
+                        }
+                    });
+                }
             }
         }); 
     },
@@ -131,30 +135,35 @@ exitModal: function(){
             url: CARTURL+"/remove",
             data: {instance: instanceID},
             type: 'post',
-            success: function() {
-                $.ajax({
-                    url: CARTURL+"/getSubTotal",
-                    success: function(total){
-                        $(".cart-grand-total-value").text(total);
-                        $(".whiteout").remove();
-                        $("*[data-instance-id='"+instanceID+"']").remove();
-                    }
-                });
+            success: function(data) {
+                $(".whiteout").remove();
 
-                 $.ajax({
-                   url: CARTURL+'/getTotalItems',
-                   success: function(itemCount){
-                       $(".vivid-store-utility-links .items-counter").text(itemCount);
+                if (modal) {
+                    var res = jQuery.parseJSON(data);
+                    vividStore.displayCart(res);
+                } else {
+                    $.ajax({
+                        url: CARTURL+"/getSubTotal",
+                        success: function(total){
+                            $(".cart-grand-total-value").text(total);
+                            $(".whiteout").remove();
+                            $("*[data-instance-id='"+instanceID+"']").remove();
+                        }
+                    });
 
-                       if (itemCount == 0) {
-                           $(".vivid-store-utility-links").addClass('vivid-cart-empty');
-                       }
+                    $.ajax({
+                        url: CARTURL+'/getTotalItems',
+                        success: function(itemCount){
+                            $(".vivid-store-utility-links .items-counter").text(itemCount);
 
-                       if (modal) {
-                           vividStore.displayCart();
-                       }
-                   } 
-                });
+                            if (itemCount == 0) {
+                                $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+                            }
+
+
+                        }
+                    });
+                }
             }
         }); 
     },
@@ -163,23 +172,27 @@ exitModal: function(){
     clearCart: function(modal){
          $.ajax({ 
              url: CARTURL+"/clear",
-             success: function() {
-                 $.ajax({
-                    url: CARTURL+"/getSubTotal",
-                    success: function(total){
-                        $(".cart-grand-total-value").text(total);
-                        $(".cart-page-cart-list-item").remove();
-                        $(".whiteout").remove();
-                        $(".vivid-store-utility-links .items-counter").text(0);
-                        $(".vivid-store-utility-links .total-cart-amount").text("");
-                        $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+             success: function(data) {
+                 $(".whiteout").remove();
 
-                        if (modal) {
-                            vividStore.displayCart();
-                        }
+                 if (modal) {
+                     var res = jQuery.parseJSON(data);
+                     vividStore.displayCart(res);
+                 } else {
+                     $.ajax({
+                         url: CARTURL+"/getSubTotal",
+                         success: function(total){
+                             $(".cart-grand-total-value").text(total);
+                             $(".cart-page-cart-list-item").remove();
+                             $(".whiteout").remove();
+                             $(".vivid-store-utility-links .items-counter").text(0);
+                             $(".vivid-store-utility-links .total-cart-amount").text("");
+                             $(".vivid-store-utility-links").addClass('vivid-cart-empty');
 
-                    }
-                 });                 
+                         }
+                     });
+                 }
+
              }
         });
     },
