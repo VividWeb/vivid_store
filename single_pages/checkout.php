@@ -199,13 +199,32 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             </div>
             
         </form>
-        <!--
-        <div class="checkout-form-group" id="checkout-form-group-shipping-method">
+        
+        <form class="checkout-form-group" id="checkout-form-group-shipping-method">
             
             <h2><?=t("Shipping Method")?></h2>
             
-        </div>
-        -->
+            <div class="checkout-form-group-body">
+                
+                <div id="checkout-shipping-method-options">
+                    
+                    <?php 
+                        /* shipping options are loaded in via ajax, 
+                         * since we dont know which shipping methods are available 
+                         * until after the shipping address fields are filled out.
+                         */
+                     ?>
+                    
+                </div>
+                
+                <div class="checkout-form-group-buttons">
+                    <a href="javascript:;" class="btn btn-default btn-previous-pane"><?=t("Previous")?></a>
+                    <input type="submit" class="btn btn-default btn-next-pane" value="<?=t("Next")?>">
+                </div>
+                
+            </div>
+            
+        </form>
       <?php } ?>
 
         <form class="checkout-form-group" id="checkout-form-group-payment" method="post" action="<?=View::url('/checkout/submit')?>">
@@ -293,7 +312,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 ?>
             </span>
             <?php if ($shippingEnabled) { ?>
-            <strong><?=t("Shipping")?>:</strong> <?=Price::format($shippingtotal);?><br>
+            <strong><?=t("Shipping")?>:</strong> <span id="shipping-total"><?=Price::format($shippingtotal);?></span><br>
             <?php } ?>
         </p>
 

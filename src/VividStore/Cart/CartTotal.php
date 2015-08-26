@@ -21,6 +21,11 @@ class CartTotal extends RouteController
     {
         echo json_encode(VividCart::getTaxes(true));
     }
+    public function getShippingTotal()
+    {
+        $smID = $_POST['smID'];
+        echo Price::format(VividCart::getShippingTotal($smID));
+    }
     public function getTotalItems()
     {
         echo VividCart::getTotalItemsInCart();

@@ -110,7 +110,7 @@ class Installer
         Installer::setConfigValue('vividstore.whole','.');
         Installer::setConfigValue('vividstore.thousand',',');
         Installer::setConfigValue('vividstore.sizeUnit','in');
-        Installer::setConfigValue('vividstore.weightUnit','l');
+        Installer::setConfigValue('vividstore.weightUnit','lb');
         Installer::setConfigValue('vividstore.taxName',t('Tax'));
         Installer::setConfigValue('vividstore.cartOverlay',false);
         Installer::setConfigValue('vividstore.sizeUnit', 'in');

@@ -64,7 +64,7 @@ class Method
         if($methodTypeID){
             $methods = $em->getRepository('\Concrete\Package\VividStore\src\VividStore\Shipping\Method')->findBy(array('smtID'=>$methodTypeID));
         } else {
-            $methods = $em->getRepository('\Concrete\Package\VividStore\src\VividStore\Shipping\Method');
+            $methods = $em->createQuery('select u from \Concrete\Package\VividStore\src\VividStore\Shipping\Method u')->getResult();
         }
         return $methods;
     }
@@ -105,5 +105,18 @@ class Method
         $em = Database::get()->getEntityManager();
         $em->remove($this);
         $em->flush();
+    }
+    public static function getEligibleMethods()
+    {
+        $allMethods = self::getAvailableMethods();
+        $eligibleMethods = array();
+        $i=1;
+        foreach($allMethods as $method){
+            if($method->getShippingMethodTypeMethod()->isEligible()){
+                $eligibleMethods[] = $method;
+            }
+            $i++;
+        }
+        return $eligibleMethods;
     }
 }

@@ -16,6 +16,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as Cart;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Checkout extends PageController

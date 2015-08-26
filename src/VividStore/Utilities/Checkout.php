@@ -5,6 +5,9 @@ use \Concrete\Core\Controller\Controller as RouteController;
 use Core;
 use Loader;
 use Session;
+use Illuminate\Filesystem\Filesystem;
+use View;
+
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -136,6 +139,15 @@ class Checkout extends RouteController
         
         return $e;
 
+    }
+
+    public function getShippingMethods()
+    {
+        if(Filesystem::exists(DIR_BASE."/application/elements/checkout/shipping_methods.php")){
+            View::element("checkout/shipping_methods");
+        } else {
+            View::element("checkout/shipping_methods",null,"vivid_store");
+        }
     }
     
 }

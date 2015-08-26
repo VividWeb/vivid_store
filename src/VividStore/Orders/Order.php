@@ -19,6 +19,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
@@ -67,6 +68,8 @@ class Order extends Object
         $taxName = Config::get('vividstore.taxName');
         $total = VividCart::getTotal();
         $total = Price::formatFloat($total);
+        
+                
 
         $tax = 0;
         $taxIncluded = 0;
@@ -82,8 +85,8 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
-        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?)", $vals);
+        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,smID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
         if($status){

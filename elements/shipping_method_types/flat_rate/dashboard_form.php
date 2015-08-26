@@ -25,7 +25,12 @@
     <div class="col-xs-12 col-sm-6">
         <div class="form-group">
             <?php echo $form->label('countriesSelected',t("If Certain Countries, which?")); ?>
-            <?php echo $form->select('countriesSelected',$countryList,array('multiple'=>'multiple'),$smtm->getCountriesSelected()); ?>
+            <select class="form-control" multiple="multiple">
+                <?php $selectedCountries = explode(',',$smtm->getCountriesSelected()); ?>
+                <?php foreach($countryList as $code=>$country){?>
+                    <option value="<?=$code?>"<?php if(in_array($code,$selectedCountries)){echo " selected";}?>><?=$country?></option>
+                <?php } ?>
+            </select>
         </div>
     </div>
 </div> 

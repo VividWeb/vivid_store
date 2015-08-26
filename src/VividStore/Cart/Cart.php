@@ -6,6 +6,7 @@ use Config;
 use Database;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
@@ -350,46 +351,52 @@ class Cart
         return false;
     }
 
-    public function getShippingTotal(){
-        $shippingenabled = Config::get('vividstore.shippingenabled');
-        if($shippingenabled=="yes"){
-            $baserate = Config::get('vividstore.shippingbase');
-            $peritemrate = Config::get('vividstore.shippingitem');
-            $shippableItems = 0;
-            //go through items
-            if(self::getCart()){
-                foreach(self::getCart() as $item){
-                    //check if items are shippable
-                    $product = VividProduct::getByID($item['product']['pID']);
-                    if($product->isShippable()){
-                        $shippableItems = $shippableItems + $item['product']['qty'];
+    public function getShippableItems()
+    {
+        
+        $shippableItems = array();
+        //go through items
+        if(self::getCart()){
+            foreach(self::getCart() as $item){
+                //check if items are shippable
+                $product = VividProduct::getByID($item['product']['pID']);
+                if($product->isShippable()){
+                    $shippableItems[] = $item;
+                }                
+            }
+        }
+    
+        return $shippableItems;
+    }
+
+    public function getShippingTotal($smID=null){
+        
+        if($smID){
+            $shippingMethod = ShippingMethod::getByID($smID);
+            Session::set('smID',$smID);
+        } else {
+            $sessionShippingMethodID = Session::get('smID');
+            if(!empty($sessionShippingMethodID)){
+                $shippingMethod = ShippingMethod::getByID($sessionShippingMethodID);
+            }
+        }
+        if(is_object($shippingMethod)){
+            $shippingTotal = $shippingMethod->getShippingMethodTypeMethod()->getRate();
+            
+            $discounts = self::getDiscounts();
+    
+            foreach($discounts as $discount) {
+                if ($discount->drDeductFrom == 'shipping') {
+                    if ($discount->drDeductType  == 'value' ) {
+                        $shippingTotal -= $discount->drValue;
+                    }
+    
+                    if ($discount->drDeductType  == 'percentage' ) {
+                        $shippingTotal -= ($discount->drPercentage / 100 * $shippingTotal);
                     }
                 }
             }
-            if($shippableItems > 1){
-                $shippingTotal = $baserate + (($shippableItems-1) * $peritemrate);
-            } elseif($shippableItems == 1) {
-                $shippingTotal = $baserate;
-            } elseif($shippableItems == 0){
-                $shippingTotal = 0;
-            }
-
         }
-
-        $discounts = self::getDiscounts();
-
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'shipping') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $shippingTotal -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $shippingTotal -= ($discount->drPercentage / 100 * $shippingTotal);
-                }
-            }
-        }
-
         return $shippingTotal;
     }
 
