@@ -49,7 +49,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <li><a href="#product-images" data-pane-toggle><?=t('Images')?></a></li>
                         <li><a href="#product-options" data-pane-toggle><?=t('Options')?></a></li>
                         <li><a href="#product-attributes" data-pane-toggle><?=t('Attributes')?></a></li>
-                        <li><a href="#product-digital" data-pane-toggle><?=t("Downloads and User Groups")?></a></li>
+                        <li><a href="#product-digital" data-pane-toggle><?=t("Memberships and Downloads")?></a></li>
                         <li><a href="#product-page" data-pane-toggle><?=t('Detail Page')?></a></li>
                     </ul>
                 </div>
@@ -79,8 +79,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pPrice", t("Price"));?>
-                            <?php $price = $p->getProductPrice(); ?>
-                            <?php echo $form->text("pPrice", $price?$price:'0');?>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <?= Config::get('vividstore.symbol');?>
+                                </div>
+                                <?php $price = $p->getProductPrice(); ?>
+                                <?php echo $form->text("pPrice", $price?$price:'0');?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-6">
@@ -93,7 +98,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
-                            <?php echo $form->label("pQty", t("Quantity"));?>
+                            <?php echo $form->label("pQty", t("Stock Level"));?>
                             <?php $qty = $p->getProductQty(); ?>
                             <div class="input-group">
                                 <?php echo $form->text("pQty", $qty?$qty:'999', array(($p->pQtyUnlim ? 'disabled' : '')=>($p->pQtyUnlim ? 'disabled' : '')));?>
@@ -106,10 +111,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                     $(document).ready(function(){
                                         $('#pQtyUnlim').change(function(){
                                             $('#pQty').prop('disabled',this.checked);
+                                            $('#backorders').toggle();
                                         });
                                     });
                                 </script>
                             </div>
+
+                        </div>
+                        <div class="form-group" id="backorders" <?= ($p->pQtyUnlim ? 'style="display: none"' : '');?>>
+                            <?php echo $form->checkbox('pBackOrder', '1', $p->pBackOrder)?>
+                            <?php echo $form->label('pBackOrder', t('Allow Back Orders'))?>
                         </div>
                     </div>
                     <div class="col-xs-6">
@@ -623,6 +634,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <?php } ?>
 
                 <div class="form-group">
+                    <?php echo $form->checkbox('pCreateUserAccount', '1', $p->pCreateUserAccount)?>
+                    <?php echo $form->label('pCreateUserAccount', t('Create user account on purchase'))?>
+                    <span class="help-block"><?= t('When checked, if customer is guest, will create a user account on purchase'); ?></span>
+                </div>
+
+                <div class="form-group">
                     <?php echo $form->label("usergroups", t("On purchase add user to user groups"));?>
                     <div class="ccm-search-field-content ccm-search-field-content-select2">
                         <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;" placeholder="<?php echo t('Select user groups');?>">
@@ -635,16 +652,17 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <?php echo $form->checkbox('pCreateUserAccount', '1', $p->pCreateUserAccount)?>
-                    <?php echo $form->label('pCreateUserAccount', t('Create user account on purchase'))?>
-                    <span class="help-block"><?= t('When checked, if customer is guest, will create a user account on purchase'); ?></span>
-                </div>
+
 
 
                 <div class="form-group">
                     <?php echo $form->checkbox('pAutoCheckout', '1', $p->pAutoCheckout)?>
                     <?php echo $form->label('pAutoCheckout', t('Send customer directly to checkout when added to cart'))?>
+                </div>
+
+                <div class="form-group">
+                    <?php echo $form->checkbox('pExclusive', '1', $p->pExclusive)?>
+                    <?php echo $form->label('pExclusive', t('Prevent this item from being in the cart with other items'))?>
                 </div>
 
 
@@ -746,7 +764,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <thead>
             <th><a><?=t('Primary Image')?></a></th>
             <th><a><?=t('Product Name')?></a></th>
-            <th><a><?=t('Quantity')?></a></th>
+            <th><a><?=t('Stock Level')?></a></th>
             <th><a><?=t('Price')?></a></th>
             <th><a><?=t('Featured')?></a></th>
             <th><a><?=t('Groups')?></a></th>

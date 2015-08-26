@@ -63,6 +63,12 @@ exitModal: function(){
                 type: 'post',
                 success: function(data) {
                     var res = jQuery.parseJSON(data);
+
+                    if (res.product.pAutoCheckout == '1') {
+                        window.location.href = CCM_APPLICATION_URL + "/checkout";
+                        return false;
+                    }
+
                     $(".whiteout").remove();
                     vividStore.displayCart(res);
                     $.ajax({

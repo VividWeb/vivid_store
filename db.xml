@@ -11,6 +11,7 @@
 		<field name="pFeatured" type="C" size="10"></field>
 		<field name="pQty" type="I"></field>
 		<field name="pQtyUnlim" type="C" size="10"></field>
+		<field name="pBackOrder" type="I"></field>
         <field name="pNoQty" type="I"></field>
 		<field name="pTaxable" type="C" size="10"></field>
 		<field name="pfID" type="I"><unsigned /></field>
@@ -24,6 +25,7 @@
 		<field name="pWeight" type="I"></field>
         <field name="pCreateUserAccount" type="I"></field>
         <field name="pAutoCheckout" type="I"></field>
+        <field name="pExclusive" type="I"></field>
 	</table>
 	<table name="VividStoreProductOptionGroups">
         <field name="pogID" type="I"><key /><unsigned /><autoincrement/></field>

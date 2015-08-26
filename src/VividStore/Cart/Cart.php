@@ -471,7 +471,7 @@ class Cart
             foreach(self::getCart() as $item) {
                 $product = VividProduct::getByID($item['product']['pID']);
                 if ($product) {
-                    if ($product->hasUserGroups() || $product->hasDigitalDownload()) {
+                    if (($product->hasUserGroups() || $product->hasDigitalDownload()) && !$product->createsLogin()) {
                         return true;
                     }
                 }

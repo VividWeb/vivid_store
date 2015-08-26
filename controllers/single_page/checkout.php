@@ -172,7 +172,7 @@ class Checkout extends PageController
                     Session::set('paymentErrors',$pesess);
                     $this->redirect("/checkout/failed#payment");
                 } else {
-                    VividOrder::add($data,$pm);    
+                    VividOrder::add($data,$pm);
                     $this->redirect('/checkout/complete');
                 }  
             }
