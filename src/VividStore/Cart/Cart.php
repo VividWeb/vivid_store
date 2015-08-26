@@ -88,6 +88,7 @@ class Cart
             return false;
         }
 
+
         //now, build a nicer "cart item"
         $cartItem = array();
         $cartItem['product'] = array(
@@ -145,7 +146,13 @@ class Cart
         }
         else {
             $cart = self::getCart();
-            $cart[] = $cartItem;
+
+            if ($product->isExclusive()) {
+                $cart = array($cartItem);
+            } else {
+                $cart[] = $cartItem;
+            }
+
             Session::set('vividstore.cart',$cart);
         }
     }
