@@ -42,7 +42,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 <span class="cart-item-label"><?=t("Quantity:")?></span>
                 <input type="number" max="<?=$product->getProductQty()?>" min="1" value="<?=$qty?>" style="width: 50px;">
                 <?php } ?>
-                <?= $qty; ?>
             </div>
             <div class="cart-list-item-links">
                 <?php if ($product->allowQuantity()) { ?>
