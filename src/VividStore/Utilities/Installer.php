@@ -10,11 +10,10 @@ use Page;
 use PageTemplate;
 use PageType;
 use Group;
-use View;
 use Database;
 use FileSet;
-use Loader;
 use Config;
+use Localization;
 use Concrete\Core\Database\Schema\Schema;
 use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
@@ -32,35 +31,35 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Installer
 {
-	public static function installSinglePages(Package $pkg)
-	{
-		//install our dashboard singlepages
-		Installer::installSinglePage('/dashboard/store', $pkg);
-		Installer::installSinglePage('/dashboard/store/orders/', $pkg);
-		Installer::installSinglePage('/dashboard/store/products/', $pkg);
-		Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
-		Installer::installSinglePage('/dashboard/store/settings/', $pkg);
-		Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
-		Installer::installSinglePage('/dashboard/store/reports', $pkg);
-		Installer::installSinglePage('/dashboard/store/reports/sales', $pkg);
-		Installer::installSinglePage('/dashboard/store/reports/products', $pkg);
-		Installer::installSinglePage('/cart', $pkg);
-		Installer::installSinglePage('/checkout', $pkg);
-		Installer::installSinglePage('/checkout/complete', $pkg);
-		Page::getByPath('/cart/')->setAttribute('exclude_nav', 1);
-		Page::getByPath('/checkout/')->setAttribute('exclude_nav', 1);
-		Page::getByPath('/checkout/complete')->setAttribute('exclude_nav', 1);
-	}
-	public static function installSinglePage($path,$pkg)
-	{
-		$page = Page::getByPath($path);
-		if (!is_object($page) || $page->isError()) {
+    public static function installSinglePages(Package $pkg)
+    {
+        //install our dashboard singlepages
+        Installer::installSinglePage('/dashboard/store', $pkg);
+        Installer::installSinglePage('/dashboard/store/orders/', $pkg);
+        Installer::installSinglePage('/dashboard/store/products/', $pkg);
+        Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
+        Installer::installSinglePage('/dashboard/store/settings/', $pkg);
+        Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
+        Installer::installSinglePage('/dashboard/store/reports', $pkg);
+        Installer::installSinglePage('/dashboard/store/reports/sales', $pkg);
+        Installer::installSinglePage('/dashboard/store/reports/products', $pkg);
+        Installer::installSinglePage('/cart', $pkg);
+        Installer::installSinglePage('/checkout', $pkg);
+        Installer::installSinglePage('/checkout/complete', $pkg);
+        Page::getByPath('/cart/')->setAttribute('exclude_nav', 1);
+        Page::getByPath('/checkout/')->setAttribute('exclude_nav', 1);
+        Page::getByPath('/checkout/complete')->setAttribute('exclude_nav', 1);
+    }
+    public static function installSinglePage($path,$pkg)
+    {
+        $page = Page::getByPath($path);
+        if (!is_object($page) || $page->isError()) {
             SinglePage::add($path, $pkg);
         }
-	}
-	public static function installProductParentPage(Package $pkg)
-	{
-		$productParentPage = Page::getByPath('/product-detail');
+    }
+    public static function installProductParentPage(Package $pkg)
+    {
+        $productParentPage = Page::getByPath('/product-detail');
         if (!is_object($productParentPage) || $productParentPage->isError()) {
             $productParentPage = Page::getByID(1)->add(
                 PageType::getByHandle('page'),
@@ -72,9 +71,9 @@ class Installer
                 PageTemplate::getByHandle('full')
             );
         }
-		$productParentPage->setAttribute('exclude_nav', 1);
-	}
-	public function installStoreProductPageType(Package $pkg){
+        $productParentPage->setAttribute('exclude_nav', 1);
+    }
+    public function installStoreProductPageType(Package $pkg){
         //install product detail page type
         $pageType = PageType::getByHandle('store_product');
         if(!is_object($pageType)){
@@ -93,9 +92,9 @@ class Installer
             )->setConfiguredPageTypePublishTargetObject(new PageTypePublishTargetAllConfiguration(PageTypePublishTargetAllType::getByHandle('all')));
         }
     }
-	public static function updateConfigStorage(Package $pkg)
-	{
-		$db = Database::get();
+    public static function updateConfigStorage(Package $pkg)
+    {
+        $db = Database::get();
         $configitems = $db->GetAll("SELECT * FROM Config WHERE configGroup='vividstore'");
         if (!empty($configitems)) {
             foreach ($configitems as $config) {
@@ -103,78 +102,78 @@ class Installer
             }
             $db->Execute("DELETE FROM Config WHERE configGroup='vividstore'");
         }
-	}
-	public static function setDefaultConfigValues(Package $pkg)
-	{
-		Installer::setConfigValue('vividstore.productPublishTarget',Page::getByPath('/product-detail')->getCollectionID());
-		Installer::setConfigValue('vividstore.symbol','$');
+    }
+    public static function setDefaultConfigValues(Package $pkg)
+    {
+        Installer::setConfigValue('vividstore.productPublishTarget',Page::getByPath('/product-detail')->getCollectionID());
+        Installer::setConfigValue('vividstore.symbol','$');
         Installer::setConfigValue('vividstore.whole','.');
         Installer::setConfigValue('vividstore.thousand',',');
         Installer::setConfigValue('vividstore.sizeUnit','in');
-        Installer::setConfigValue('vividstore.weightUnit','l');
-		Installer::setConfigValue('vividstore.taxName',t('Tax'));
-		Installer::setConfigValue('vividstore.cartOverlay',false);
-		Installer::setConfigValue('vividstore.sizeUnit', 'in');
+        Installer::setConfigValue('vividstore.weightUnit','lb');
+        Installer::setConfigValue('vividstore.taxName',t('Tax'));
+        Installer::setConfigValue('vividstore.cartOverlay',false);
+        Installer::setConfigValue('vividstore.sizeUnit', 'in');
         Installer::setConfigValue('vividstore.weightUnit', 'lb');
-	}
-	public static function setConfigValue($key,$value)
-	{
-		$config = Config::get($key);
-		if(empty($config)){
-			Config::save($key,$value);
-		}
-	}
-	public static function installPaymentMethods(Package $pkg)
-	{
-		Installer::installPaymentMethod('auth_net','Authorize .NET',$pkg);
-		Installer::installPaymentMethod('invoice','Invoice',$pkg,null,true);
+    }
+    public static function setConfigValue($key,$value)
+    {
+        $config = Config::get($key);
+        if(empty($config)){
+            Config::save($key,$value);
+        }
+    }
+    public static function installPaymentMethods(Package $pkg)
+    {
+        Installer::installPaymentMethod('auth_net','Authorize .NET',$pkg);
+        Installer::installPaymentMethod('invoice','Invoice',$pkg,null,true);
         Installer::installPaymentMethod('paypal_standard','PayPal',$pkg);
-	}
-	public static function installPaymentMethod($handle,$name,$pkg=null,$displayName=null,$enabled=false)
-	{
-		$pm = PaymentMethod::getByHandle($handle);
+    }
+    public static function installPaymentMethod($handle,$name,$pkg=null,$displayName=null,$enabled=false)
+    {
+        $pm = PaymentMethod::getByHandle($handle);
         if (!is_object($pm)) {
             PaymentMethod::add($handle,$name,$pkg,$displayName,$enabled);
         }
-	}
-	public static function installShippingMethods(Package $pkg)
-	{
-		Installer::installShippingMethod('flat_rate','Flat Rate',$pkg);
-	}
-	
-	public static function installShippingMethod($handle,$name,$pkg)
-	{
-		$smt = ShippingMethodType::getByHandle($handle);
+    }
+    public static function installShippingMethods(Package $pkg)
+    {
+        Installer::installShippingMethod('flat_rate','Flat Rate',$pkg);
+    }
+    
+    public static function installShippingMethod($handle,$name,$pkg)
+    {
+        $smt = ShippingMethodType::getByHandle($handle);
         if(!is_object($smt)){
             ShippingMethodType::add($handle,$name,$pkg);
         }
-	}
-	public static function installBlocks(Package $pkg)
-	{
-		$bts = BlockTypeSet::getByHandle('vivid_store');
-		if(!is_object){
-			BlockTypeSet::add("vivid_store","Store", $pkg);
-		}
-	    Installer::installBlock('vivid_product_list', $pkg);
+    }
+    public static function installBlocks(Package $pkg)
+    {
+        $bts = BlockTypeSet::getByHandle('vivid_store');
+        if(!is_object){
+            BlockTypeSet::add("vivid_store","Store", $pkg);
+        }
+        Installer::installBlock('vivid_product_list', $pkg);
         Installer::installBlock('vivid_utility_links', $pkg);
         Installer::installBlock('vivid_product', $pkg);
-	}
-	public static function installBlock($handle,$pkg)
-	{
-		$blockType = BlockType::getByHandle($handle);
+    }
+    public static function installBlock($handle,$pkg)
+    {
+        $blockType = BlockType::getByHandle($handle);
         if (!is_object($blockType)) {
             BlockType::installBlockTypeFromPackage($handle, $pkg);
         }
-	}
-	public static function setPageTypeDefaults(Package $pkg)
-	{
-		$pageType = PageType::getByHandle('store_product');
+    }
+    public static function setPageTypeDefaults(Package $pkg)
+    {
+        $pageType = PageType::getByHandle('store_product');
         $template = $pageType->getPageTypeDefaultPageTemplateObject();
         $pageObj = $pageType->getPageTypePageTemplateDefaultPageObject($template);
 
         $bt = BlockType::getByHandle('vivid_product');
         $blocks = $pageObj->getBlocks('Main');
-		//only install blocks if there's none on there.
+        //only install blocks if there's none on there.
         if(count($blocks)<1){
             $data = array(
                 'productLocation'=>'page',
@@ -188,48 +187,48 @@ class Installer
             );
             $pageObj->addBlock($bt, 'Main', $data);
         }
-	}
-	
-	public static function installCustomerGroups(Package $pkg)
-	{
-		$group = Group::getByName('Store Customer');
+    }
+    
+    public static function installCustomerGroups(Package $pkg)
+    {
+        $group = Group::getByName('Store Customer');
         if (!$group || $group->getGroupID() < 1) {
             $group = Group::add('Store Customer', t('Registered Customer in your store'));
         }
-	}
-	
-	public static function installUserAttributes(Package $package)
-	{
-		//user attributes for customers
+    }
+    
+    public static function installUserAttributes(Package $package)
+    {
+        //user attributes for customers
         $uakc = AttributeKeyCategory::getByHandle('user');
         $uakc->setAllowAttributeSets(AttributeKeyCategory::ASET_ALLOW_MULTIPLE);
 
         //define attr group, and the different attribute types we'll use
         $custSet = AttributeSet::getByHandle('customer_info');
-		if(!is_object($custSet)){
-        	$custSet = $uakc->addSet('customer_info', t('Store Customer Info'), $pkg);
-		}
+        if(!is_object($custSet)){
+            $custSet = $uakc->addSet('customer_info', t('Store Customer Info'), $pkg);
+        }
         $text = AttributeType::getByHandle('text');
         $address = AttributeType::getByHandle('address');
-		
-		Installer::installUserAttribute('email',$text,$pkg,$custSet);
-		Installer::installUserAttribute('billing_first_name',$text,$pkg,$custSet);
-		Installer::installUserAttribute('billing_last_name',$text,$pkg,$custSet);
-		Installer::installUserAttribute('billing_address',$address,$pkg,$custSet);
-		Installer::installUserAttribute('billing_phone',$text,$pkg,$custSet);
-		Installer::installUserAttribute('shipping_first_name',$text,$pkg,$custSet);
-		Installer::installUserAttribute('shipping_last_name',$text,$pkg,$custSet);
-		Installer::installUserAttribute('shipping_address',$address,$pkg,$custSet);
-		
-	}
-	public static function installUserAttribute($handle,$type,$pkg,$set,$data=null)
-	{
-		$attr = UserAttributeKey::getByHandle($handle);
+        
+        Installer::installUserAttribute('email',$text,$pkg,$custSet);
+        Installer::installUserAttribute('billing_first_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('billing_last_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('billing_address',$address,$pkg,$custSet);
+        Installer::installUserAttribute('billing_phone',$text,$pkg,$custSet);
+        Installer::installUserAttribute('shipping_first_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('shipping_last_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('shipping_address',$address,$pkg,$custSet);
+        
+    }
+    public static function installUserAttribute($handle,$type,$pkg,$set,$data=null)
+    {
+        $attr = UserAttributeKey::getByHandle($handle);
         if (!is_object($attr)) {
-        	$name = Core::make("helper/text")->camelcase($handle);
-        	if(!$data){
-        		$data = array(
-        			'akHandle' => $handle,
+            $name = Core::make("helper/text")->camelcase($handle);
+            if(!$data){
+                $data = array(
+                    'akHandle' => $handle,
                     'akName' => t($name),
                     'akIsSearchable' => false,
                     'uakProfileEdit' => true,
@@ -238,14 +237,14 @@ class Installer
                     'uakProfileEditRequired' => false,
                     'akCheckedByDefault' => true
                 );
-        	}
+            }
             UserAttributeKey::add($type,$data,$pkg)->setAttributeSet($set);
         }
-	}
-	
-	public static function installOrderAttributes(Package $pkg)
-	{
-		//create custom attribute category for orders
+    }
+    
+    public static function installOrderAttributes(Package $pkg)
+    {
+        //create custom attribute category for orders
         $oakc = AttributeKeyCategory::getByHandle('store_order');
         if (!is_object($oakc)) {
             $oakc = AttributeKeyCategory::add('store_order', AttributeKeyCategory::ASET_ALLOW_SINGLE, $pkg);
@@ -258,38 +257,38 @@ class Installer
 
             $orderCustSet = $oakc->addSet('order_customer', t('Store Customer Info'), $pkg);
         }
-		
-		$text = AttributeType::getByHandle('text');
+        
+        $text = AttributeType::getByHandle('text');
         $address = AttributeType::getByHandle('address');
-		
-		Installer::installOrderAttribute('email', $text, $pkg, $orderCustSet);
-		Installer::installOrderAttribute('billing_first_name', $text, $pkg, $orderCustSet);
-		Installer::installOrderAttribute('billing_last_name', $text, $pkg, $orderCustSet);
-		Installer::installOrderAttribute('billing_address', $address, $pkg, $orderCustSet);
-		Installer::installOrderAttribute('billing_phone', $text, $pkg, $orderCustSet);
-		Installer::installOrderAttribute('shipping_first_name', $text, $pkg, $orderCustSet);
-		Installer::installOrderAttribute('shipping_last_name', $text, $pkg, $orderCustSet);
-		Installer::installOrderAttribute('shipping_address', $address, $pkg, $orderCustSet);
-	}
-	
-	public static function installOrderAttribute($handle,$type,$pkg,$set,$data=null)
-	{
-		$attr = StoreOrderKey::getByHandle($handle);
+        
+        Installer::installOrderAttribute('email', $text, $pkg, $orderCustSet);
+        Installer::installOrderAttribute('billing_first_name', $text, $pkg, $orderCustSet);
+        Installer::installOrderAttribute('billing_last_name', $text, $pkg, $orderCustSet);
+        Installer::installOrderAttribute('billing_address', $address, $pkg, $orderCustSet);
+        Installer::installOrderAttribute('billing_phone', $text, $pkg, $orderCustSet);
+        Installer::installOrderAttribute('shipping_first_name', $text, $pkg, $orderCustSet);
+        Installer::installOrderAttribute('shipping_last_name', $text, $pkg, $orderCustSet);
+        Installer::installOrderAttribute('shipping_address', $address, $pkg, $orderCustSet);
+    }
+    
+    public static function installOrderAttribute($handle,$type,$pkg,$set,$data=null)
+    {
+        $attr = StoreOrderKey::getByHandle($handle);
         if (!is_object($attr)) {
-        	$name = Core::make("helper/text")->camelcase($handle);
-			if(!$data){
-				$data = array(
-					'akHandle' => $handle,
-                	'akName' => t($name)
-				);
-			}
+            $name = Core::make("helper/text")->camelcase($handle);
+            if(!$data){
+                $data = array(
+                    'akHandle' => $handle,
+                    'akName' => t($name)
+                );
+            }
             StoreOrderKey::add($type, $data, $pkg)->setAttributeSet($set);
         }
-	}
-	
-	public static function installProductAttributes(Package $pkg)
-	{
-		//create custom attribute category for products
+    }
+    
+    public static function installProductAttributes(Package $pkg)
+    {
+        //create custom attribute category for products
         $pakc = AttributeKeyCategory::getByHandle('store_product');
         if (!is_object($pakc)) {
             $pakc = AttributeKeyCategory::add('store_product', AttributeKeyCategory::ASET_ALLOW_SINGLE, $pkg);
@@ -300,38 +299,18 @@ class Installer
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('boolean'));
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('date_time'));
         }
-	}
-	
-	public static function createDDFileset(Package $pkg)
-	{
-		//create fileset to place digital downloads
+    }
+    
+    public static function createDDFileset(Package $pkg)
+    {
+        //create fileset to place digital downloads
         $fs = FileSet::getByName('Digital Downloads');
         if(!is_object($fs)){
             FileSet::add("Digital Downloads");
         }
-	}
-	
-    public static function refreshDatabase(Package $package)
-    {
-        
-            if (file_exists($package->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
-                $db = Database::get();
-                $db->beginTransaction();
-                $parser = Schema::getSchemaParser(simplexml_load_file($package->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
-                $parser->setIgnoreExistingTables(false);
-                $toSchema = $parser->parse($db);
-                $fromSchema = $db->getSchemaManager()->createSchema();
-                $comparator = new \Doctrine\DBAL\Schema\Comparator();
-                $schemaDiff = $comparator->compare($fromSchema, $toSchema);
-                $saveQueries = $schemaDiff->toSaveSql($db->getDatabasePlatform());
-                foreach ($saveQueries as $query) {
-                    $db->query($query);
-                }
-                $db->commit();
-            }
-        
     }
-
+    
+    
     public static function renameDatabaseTables(Package $package)
     {
         $renameTables = array(
@@ -381,6 +360,55 @@ class Installer
                 $orderStatus = OrderStatus::getByID($row['osID']);
                 $orderStatus->update($status, true);
             }
+        }
+    }
+
+    //The following is copied from 7.5.1's upgrade method. 
+    //upgradeDatabase() has been changed to not drop tables unrelated to ORM.
+    public function upgrade()
+    {
+        $this->upgradeDatabase();
+
+        // now we refresh all blocks
+        $items = $this->getPackageItems();
+        if (is_array($items['block_types'])) {
+            foreach ($items['block_types'] as $item) {
+                $item->refresh();
+            }
+        }
+        Localization::clearCache();
+    }
+    
+    public static function upgradeDatabase()
+    {
+        $dbm = $this->getDatabaseStructureManager();
+        $this->destroyProxyClasses();
+        if ($dbm->hasEntities()) {
+            $dbm->generateProxyClasses();
+            //$dbm->dropObsoleteDatabaseTables(camelcase($this->getPackageHandle()));
+            $dbm->installDatabase();
+        }
+
+        if (file_exists($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
+            // Legacy db.xml
+            // currently this is just done from xml
+            $db = Database::get();
+            $db->beginTransaction();
+
+            $parser = Schema::getSchemaParser(simplexml_load_file($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
+            $parser->setIgnoreExistingTables(false);
+            $toSchema = $parser->parse($db);
+
+            $fromSchema = $db->getSchemaManager()->createSchema();
+            $comparator = new \Doctrine\DBAL\Schema\Comparator();
+            $schemaDiff = $comparator->compare($fromSchema, $toSchema);
+            $saveQueries = $schemaDiff->toSaveSql($db->getDatabasePlatform());
+
+            foreach ($saveQueries as $query) {
+                $db->query($query);
+            }
+
+            $db->commit();
         }
     }
 

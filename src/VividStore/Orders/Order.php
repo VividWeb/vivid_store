@@ -3,13 +3,10 @@ namespace Concrete\Package\VividStore\Src\VividStore\Orders;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
-use File;
 use User;
-use UserInfo;
 use Core;
 use Package;
 use Concrete\Core\Mail\Service as MailService;
-use Session;
 use Group;
 use Events;
 use Config;
@@ -24,6 +21,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
@@ -40,7 +38,7 @@ class Order extends Object
             $order->setPropertiesFromArray($data);
         }
         return($order instanceof Order) ? $order : false;
-    }  
+    }
     public function getCustomersMostRecentOrderByCID($cID)
     {
         $db = Database::get();
@@ -66,12 +64,15 @@ class Order extends Object
         $now = $dt->getLocalDateTime();
         
         //get the price details
+        $smID = \Session::get('smID');
         $shipping = VividCart::getShippingTotal();
         $shipping = Price::formatFloat($shipping);
         $taxvalue = VividCart::getTaxTotal();
         $taxName = Config::get('vividstore.taxName');
         $total = VividCart::getTotal();
         $total = Price::formatFloat($total);
+        
+                
 
         $tax = 0;
         $taxIncluded = 0;
@@ -87,8 +88,8 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
-        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?)", $vals);
+        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,smID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
         if($status){
@@ -313,7 +314,7 @@ class Order extends Object
     }
     public function getOrderItems()
     {
-        $db = Database::get();    
+        $db = Database::get();
         $rows = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$this->oID);
         $items = array();
 
@@ -325,8 +326,8 @@ class Order extends Object
     }
     public function getOrderID(){ return $this->oID; }
     public function getPaymentMethodName() {
-        $pm = PaymentMethod::getByID($this->pmID); 
-        if(is_object($pm)){  
+        $pm = PaymentMethod::getByID($this->pmID);
+        if(is_object($pm)){
             return $pm->getPaymentMethodName();
         }
     }
@@ -347,6 +348,11 @@ class Order extends Object
     }
     public function getTaxTotal() { return $this->oTax + $this->oTaxIncluded; }
     public function getShippingTotal() { return $this->oShippingTotal; }
+    public function getShippingMethodName(){
+        if($this->smID){
+            return ShippingMethod::getByID($this->smID)->getName();
+        }
+    }
     
     public function updateStatus($status)
     {

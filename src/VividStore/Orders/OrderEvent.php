@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Orders;
+
 use \Symfony\Component\EventDispatcher\GenericEvent;
 
 class OrderEvent extends GenericEvent {

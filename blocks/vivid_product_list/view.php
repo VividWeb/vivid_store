@@ -6,11 +6,11 @@ if($products){
 
     $i=1;
     foreach($products as $product){
-    	//this is done so we can get a type of active class if there's a product list on the product page
-    	$class = "product-list-item vivid-store-col-".$productsPerRow;
-    	if(Page::getCurrentPage()->getCollectionID()==$product->getProductPageID()){
-    		$class = $class." on-product-page"; 
-    	} 
+        //this is done so we can get a type of active class if there's a product list on the product page
+        $class = "product-list-item vivid-store-col-".$productsPerRow;
+        if(Page::getCurrentPage()->getCollectionID()==$product->getProductPageID()){
+            $class = $class." on-product-page";
+        }
     ?>
     
         <div class="<?=$class?>">
@@ -45,7 +45,7 @@ if($products){
                      * If we have an add to cart button, 
                      * we at least need to have the Product ID
                      * and a default quanity (1)
-                     */ 
+                     */
                 ?>
                 <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
                 <input type="hidden" name="quantity" class="product-qty" value="1">
@@ -71,7 +71,7 @@ if($products){
     if($showPagination){
         if ($paginator->getTotalPages() > 1) {
             echo $pagination;
-        } 
+        }
     }
     
 } //if products

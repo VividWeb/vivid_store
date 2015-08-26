@@ -184,7 +184,7 @@
                             
                             </div>
                             
-                        <?php        
+                        <?php 
                             }
                         } else {
                             echo t("No Payment Methods are Installed");

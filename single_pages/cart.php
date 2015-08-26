@@ -12,8 +12,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     <ul class="cart-page-cart-list">
     <?php 
     if($cart){
-        $i=1;  
-        foreach ($cart as $k=>$cartItem){            
+        $i=1;
+        foreach ($cart as $k=>$cartItem){
             $pID = $cartItem['product']['pID'];
             $qty = $cartItem['product']['qty'];
             $product = VividProduct::getByID($pID);

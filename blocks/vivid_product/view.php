@@ -99,7 +99,7 @@ if(is_object($p)){?>
                         foreach($optionItems as $option){
                             if($option['pogID']==$optionGroup['pogID']){?>
                                 <option value="<?=$option['poiID']?>"><?=$option['poiName']?></option>   
-                            <?php }   
+                            <?php }
                         }//foreach    
                         ?>
                     </select>

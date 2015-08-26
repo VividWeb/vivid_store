@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Block\VividProduct;
+
 use \Concrete\Core\Block\BlockController;
 use Package;
 use Core;
@@ -51,8 +52,8 @@ class Controller extends BlockController
             </script>
         ");
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store')); 
-        $this->requireAsset('core/lightbox');   
+        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));
+        $this->requireAsset('core/lightbox');
     }
     public function save($args)
     {

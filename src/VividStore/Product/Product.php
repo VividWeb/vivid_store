@@ -1,5 +1,6 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
+
 use Concrete\Core\Foundation\Object as Object;
 use Package;
 use Page;
@@ -11,7 +12,6 @@ use Core;
 use User;
 use Config;
 
-use Concrete\Core\Permission\Assignment\FileAssignment;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
@@ -21,12 +21,12 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 class Product extends Object
 {
     
-    public static function getByID($pID) 
+    public static function getByID($pID)
     {
         $db = Database::get();
         $data = $db->GetRow("SELECT * FROM VividStoreProducts WHERE pID=?",$pID);
         return self::load($data);
-    }  
+    }
     public static function getByCollectionID($cID)
     {
         $db = Database::get();
@@ -46,8 +46,8 @@ class Product extends Object
         $db = Database::get();
         if($data['pID']){
         //if we know the pID, we're updating.
-                
-            $pID = $data['pID']; 
+
+            $pID = $data['pID'];
                 
             //update product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
@@ -104,7 +104,7 @@ class Product extends Object
             
         } else {
         //else, we don't know it, so we're adding
-            
+
             $dt = Core::make('helper/date');
             $now = $dt->getLocalDateTime();
             
@@ -177,7 +177,7 @@ class Product extends Object
                     $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
                     $pk->setPermissionObject($fileObj);
                     $pao = $pk->getPermissionAssignmentObject();
-                    $groupEntity = \Concrete\Core\Permission\Access\Entity\GroupEntity::getOrCreate(\Group::getByID(GUEST_GROUP_ID));                    
+                    $groupEntity = \Concrete\Core\Permission\Access\Entity\GroupEntity::getOrCreate(\Group::getByID(GUEST_GROUP_ID));
                     $pa = $pk->getPermissionAccessObject();
                     if ($pa) {
                         $pa->removeListItem($groupEntity);
@@ -239,7 +239,7 @@ class Product extends Object
         $cID = $productParentPage->getCollectionID();
         $this->setProductPageID($cID);
     }
-    public function setProductPageID($cID) 
+    public function setProductPageID($cID)
     {
         $db = Database::get();
         $vals = array($cID,$this->pID);
@@ -265,8 +265,8 @@ class Product extends Object
     public function getGroupName()
     {
         $group = ProductGroup::getByID($this->gID);
-        if(is_object($group)){    
-            return $group->getGroupName(); 
+        if(is_object($group)){
+            return $group->getGroupName();
         }
     }
     public function isFeatured(){ return $this->pFeatured; }
@@ -294,14 +294,14 @@ class Product extends Object
         if($this->pfID){
             $fileObj = File::getByID($this->pfID);
             return $fileObj;
-        }   
+        }
     }
     public function hasDigitalDownload()
     {
         $files = $this->getProductDownloadFileIDs();
         return count($files)>0 ? true : false;
     }
-    public function getProductDownloadFileIDs() 
+    public function getProductDownloadFileIDs()
     {
         $db = Database::get();
         $results = $db->GetAll("SELECT dffID FROM VividStoreDigitalFiles WHERE pID=?",$this->pID);
@@ -312,7 +312,7 @@ class Product extends Object
         $fileObjects = array();
         foreach($results as $result){
             $fileObjects[] = File::getByID($result['dffID']);
-        }  
+        }
         return $fileObjects;
     }
     public function hasUserGroups(){
@@ -335,19 +335,19 @@ class Product extends Object
     }
     public function getProductImage(){
         $fileObj = $this->getProductImageObj();
-        if(is_object($fileObj)){ 
-            return "<img src='".$fileObj->getRelativePath()."'>"; 
+        if(is_object($fileObj)){
+            return "<img src='".$fileObj->getRelativePath()."'>";
         }
     }
     public function getProductImageThumb(){
         $fileObj = $this->getProductImageObj();
-        if(is_object($fileObj)){ 
-            return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>"; 
+        if(is_object($fileObj)){
+            return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>";
         }
     }
     public function getProductQty(){ return $this->pQty; }
     public function setProductQty($qty)
-    {  
+    {
         $db = Database::get();
         $db->Execute("UPDATE VividStoreProducts SET pQty=? WHERE pID=?",array($qty,$this->pID));
     }
@@ -430,17 +430,17 @@ class Product extends Object
         }
         return $values;
     }
-	
-	/* TO-DO
-	 * This isn't completely accurate as an order status may be incomplete and never change,
-	 * or an order may be canceled. So at somepoint, circle back to this to check for certain status's
-	 */
-	public function getTotalSold()
-	{
-		$db = Database::get();
-		$results = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE pID = ?",$this->pID);
-		return count($results);
-	}
+    
+    /* TO-DO
+     * This isn't completely accurate as an order status may be incomplete and never change,
+     * or an order may be canceled. So at somepoint, circle back to this to check for certain status's
+     */
+    public function getTotalSold()
+    {
+        $db = Database::get();
+        $results = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE pID = ?",$this->pID);
+        return count($results);
+    }
 
     public function setAttribute($ak, $value)
     {

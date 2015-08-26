@@ -3,10 +3,6 @@ namespace Concrete\Package\VividStore\src\VividStore\Shipping;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
-use Core;
-use Package;
-use Controller;
-use View;
 
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 
@@ -16,7 +12,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
  * @Entity
  * @Table(name="VividStoreShippingMethods")
  */
-class Method 
+class Method
 {
     /** @Id @Column(type="integer") @GeneratedValue **/
     protected $smID;
@@ -48,31 +44,31 @@ class Method
     
     public function getShippingMethodID(){ return $this->smID; }
     public function getShippingMethodType(){ return ShippingMethodType::getByID($this->smtID); }
-	public function getShippingMethodTypeMethod(){
-		$methodTypeController = $this->getShippingMethodType()->getMethodTypeController();
-		$methodTypeMethod = $methodTypeController->getByID($this->smtmID);
-		return $methodTypeMethod;		
-	}
+    public function getShippingMethodTypeMethod(){
+        $methodTypeController = $this->getShippingMethodType()->getMethodTypeController();
+        $methodTypeMethod = $methodTypeController->getByID($this->smtmID);
+        return $methodTypeMethod;
+    }
     public function getName() { return $this->smName; }
-    public function isEnabled(){ return $this->smEnabled; }    
+    public function isEnabled(){ return $this->smEnabled; }
     
     public static function getByID($smID) {
         $db = Database::get();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\src\VividStore\Shipping\Method', $smID);
-    }  
+    }
     
-	public static function getAvailableMethods($methodTypeID=null)
-	{
-		$em = Database::get()->getEntityManager();
-		if($methodTypeID){
-			$methods = $em->getRepository('\Concrete\Package\VividStore\src\VividStore\Shipping\Method')->findBy(array('smtID'=>$methodTypeID));
-		} else {
-			$methods = $em->getRepository('\Concrete\Package\VividStore\src\VividStore\Shipping\Method');
-		}
-		return $methods;
-	}
-	
+    public static function getAvailableMethods($methodTypeID=null)
+    {
+        $em = Database::get()->getEntityManager();
+        if($methodTypeID){
+            $methods = $em->getRepository('\Concrete\Package\VividStore\src\VividStore\Shipping\Method')->findBy(array('smtID'=>$methodTypeID));
+        } else {
+            $methods = $em->createQuery('select u from \Concrete\Package\VividStore\src\VividStore\Shipping\Method u')->getResult();
+        }
+        return $methods;
+    }
+    
     /*
      * @smtm Shipping Method Type Method Object
      * @smt Shipping Method Type Object
@@ -88,15 +84,15 @@ class Method
         $sm->setEnabled($smEnabled);
         $sm->save();
         $smtm->setShippingMethodID($sm->getShippingMethodID());
-		$smtm->save();
-		return $sm;
+        $smtm->save();
+        return $sm;
     }
-	public function update($smName,$smEnabled)
+    public function update($smName,$smEnabled)
     {
         $this->setName($smName);
         $this->setEnabled($smEnabled);
         $this->save();
-		return $sm;
+        return $sm;
     }
     public function save()
     {
@@ -110,4 +106,17 @@ class Method
         $em->remove($this);
         $em->flush();
     }
-}    
+    public static function getEligibleMethods()
+    {
+        $allMethods = self::getAvailableMethods();
+        $eligibleMethods = array();
+        $i=1;
+        foreach($allMethods as $method){
+            if($method->getShippingMethodTypeMethod()->isEligible()){
+                $eligibleMethods[] = $method;
+            }
+            $i++;
+        }
+        return $eligibleMethods;
+    }
+}

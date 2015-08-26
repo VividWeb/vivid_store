@@ -1,5 +1,6 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Groups;
+
 use Database;
 use Concrete\Core\Foundation\Object as Object;
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -14,9 +15,9 @@ class ProductGroup extends Object
             $group->setPropertiesFromArray($data);
         }
         return($group instanceof ProductGroup) ? $group : false;
-    } 
+    }
     
-    public function getGroupName(){ return $this->groupName; }    
+    public function getGroupName(){ return $this->groupName; }
     public function getGroupID() { return $this->gID; }
     
     public function add($data)

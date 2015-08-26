@@ -43,7 +43,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             <?php } ?>
         </div>
     </div>
-    <h3><?=t("Order Items")?></h3>
+    <h3><?=t("Order Info")?></h3>
     <hr>
     <table class="table table-striped">
         <thead>
@@ -70,11 +70,11 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                             if($options){
                                 echo "<ul class='list-unstyled'>";
                                 foreach($options as $option){
-                                    echo "<li>";    
+                                    echo "<li>";
                                     echo "<strong>".$option['oioKey'].": </strong>";
                                     echo $option['oioValue'];
                                     echo "</li>";
-                                }      
+                                }
                                 echo "</ul>";
                             }
                         ?>
@@ -89,6 +89,17 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             ?>
         </tbody>
     </table>
+    
+    <p>
+        <strong><?=t("Subtotal")?>: </strong><?=Price::format($order->getSubTotal())?><br>
+        <strong><?=t("Tax")?>: </strong><?=Price::format($order->getTaxTotal())?><br>
+        <strong><?=t("Shipping")?>: </strong><?=Price::format($order->getShippingTotal())?><br>
+        <strong><?=t("Grand Total")?>: </strong><?=Price::format($order->getTotal())?>
+    </p>
+    <p>
+        <strong><?=t("Payment Method")?>: </strong><?=$order->getPaymentMethodName()?><br>
+        <strong><?=t("Shipping Method")?>: </strong><?=$order->getShippingMethodName()?>
+    </p>
 
     <?php $applieddiscounts = $order->getAppliedDiscounts();
 

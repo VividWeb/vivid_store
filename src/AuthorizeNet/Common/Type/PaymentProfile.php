@@ -9,9 +9,6 @@
 
 namespace AuthorizeNet\Common\Type;
 
-use AuthorizeNet\Common\Type\Address;
-use AuthorizeNet\Common\Type\Payment;
-
 /**
  * A class that contains all fields for a CIM Payment Profile.
  *

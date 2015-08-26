@@ -1,16 +1,12 @@
 <?php
 namespace Concrete\Package\VividStore\Controller\SinglePage;
 
-use Page;
 use PageController;
-use Package;
 use Core;
 use View;
-use Session;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -41,12 +37,12 @@ class Cart extends PageController
                 var CHECKOUTURL = '".View::url('/checkout')."';
             </script>
         ");
-        $this->addFooterItem(Core::make('helper/html')->javascript('vivid-store.js','vivid_store'));   
+        $this->addFooterItem(Core::make('helper/html')->javascript('vivid-store.js','vivid_store'));
         $this->addHeaderItem(Core::make('helper/html')->css('vivid-store.css','vivid_store'));
 
         $discountsWithCodesExist = DiscountRule::discountsWithCodesExist();
         $this->set("discountsWithCodesExist",$discountsWithCodesExist);
-    }  
+    }
     public function add()
     {
         $data = $this->post();
@@ -84,4 +80,4 @@ class Cart extends PageController
         VividCart::clear();
         $this->view();
     }
-}    
+}

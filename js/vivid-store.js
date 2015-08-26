@@ -63,12 +63,6 @@ exitModal: function(){
                 type: 'post',
                 success: function(data) {
                     var res = jQuery.parseJSON(data);
-
-                    if (res.product.pAutoCheckout == '1') {
-                        window.location.href = CCM_APPLICATION_URL + "/checkout";
-                        return false;
-                    }
-
                     $(".whiteout").remove();
                     vividStore.displayCart(res);
                     $.ajax({
@@ -237,6 +231,14 @@ exitModal: function(){
        } else { alert("not valid"); }
     },
     
+    showShippingMethods: function(){
+        $.ajax({
+            url: CHECKOUTURL+"/getShippingMethods",
+            success: function(html){
+                $("#checkout-shipping-method-options").html(html);
+            }
+        });  
+    },
     
     showPaymentForm: function(){
         var pmID = $("#checkout-payment-method-options input[type='radio']:checked").attr('data-payment-method-id');
@@ -249,6 +251,7 @@ exitModal: function(){
 
 vividStore.updateBillingStates();
 vividStore.updateShippingStates();
+vividStore.showShippingMethods();
 vividStore.showPaymentForm();
 
 $("#checkout-form-group-billing").submit(function(e){
@@ -343,6 +346,7 @@ $("#checkout-form-group-billing").submit(function(e){
                             }
                         } 
                     });
+                    vividStore.showShippingMethods();
                     $.ajax({
                         url: CARTURL+"/getTotal",
                         success: function(total){
@@ -356,6 +360,45 @@ $("#checkout-form-group-billing").submit(function(e){
             },
        });
        
+    });
+    $("#checkout-form-group-shipping-method").submit(function(e){
+        e.preventDefault();
+        vividStore.waiting();
+        var obj = $(this);
+        if($("#checkout-shipping-method-options input[type='radio']:checked").length < 1){
+            $('.whiteout').remove();
+            alert("You must choose a shipping method");            
+        } else {
+            var smID = $("#checkout-shipping-method-options input[type='radio']:checked").val();
+            $.ajax({
+                type: 'post',
+                data: {smID: smID },
+                url: CARTURL+"/getShippingTotal",
+                success: function(total){
+                    $("#shipping-total").text(total);
+                    vividStore.nextPane(obj);  
+                    $('.whiteout').remove();                    
+                }
+            });
+            $.ajax({
+                url: CARTURL+"/getTaxTotal",
+                success: function(results){
+                    var taxes = JSON.parse(results);
+                    $("#taxes").html("");
+                    for(var i=0;i<taxes.length;i++){
+                        if(taxes[i].taxamount > 0){
+                            $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                        }
+                    }
+                } 
+            });
+            $.ajax({
+                url: CARTURL+"/getTotal",
+                success: function(total){
+                    $(".total-amount").text(total);
+                }
+            });
+        }
     });
     $(".btn-previous-pane").click(function(){
        //hide the body of the current pane, go to the next pane, show that body.

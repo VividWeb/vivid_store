@@ -10,7 +10,6 @@
 namespace AuthorizeNet\Service\Cim;
 
 use AuthorizeNet\Common\Request as BaseRequest;
-use AuthorizeNet\Service\Cim\Response;
 
 /**
  * A class to send a request to the CIM XML API.

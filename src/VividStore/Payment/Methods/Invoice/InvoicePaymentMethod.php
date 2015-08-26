@@ -1,9 +1,7 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\Invoice;
+
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
-use Package;
 use Core;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));

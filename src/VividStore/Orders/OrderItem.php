@@ -1,8 +1,8 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Orders;
+
 use Concrete\Core\Foundation\Object as Object;
 use Database;
-use File;
 use User;
 use UserInfo;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
@@ -18,7 +18,7 @@ class OrderItem extends Object
             $item->setPropertiesFromArray($data);
         }
         return($item instanceof OrderItem) ? $item : false;
-    }  
+    }
     public function add($data,$oID,$tax=0,$taxIncluded=0,$taxName='')
     {
         $db = Database::get();
@@ -47,15 +47,15 @@ class OrderItem extends Object
             $db->Execute("INSERT INTO VividStoreOrderItemOptions (oiID,oioKey,oioValue) VALUES (?,?,?)",$values);
         }
         if($product->hasDigitalDownload()){
-            $fileObjs = $product->getProductDownloadFileObjects(); 
-            $fileObj = $fileObjs[0];    
+            $fileObjs = $product->getProductDownloadFileObjects();
+            $fileObj = $fileObjs[0];
             $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
             $pk->setPermissionObject($fileObj);
             $pao = $pk->getPermissionAssignmentObject();
             $u = new User();
             $uID = $u->getUserID();
             $ui = UserInfo::getByID($uID);
-            $user = \Concrete\Core\Permission\Access\Entity\UserEntity::getOrCreate($ui);                    
+            $user = \Concrete\Core\Permission\Access\Entity\UserEntity::getOrCreate($ui);
             $pa = $pk->getPermissionAccessObject();
             if ($pa) {
                 $pa->addListItem($user);
@@ -64,10 +64,10 @@ class OrderItem extends Object
 
         }
         
-    }    
+    }
     
-	public function getOrderItemID(){ return $this->oiID; }
-	public function getProductID(){ return $this->pID; }
+    public function getOrderItemID(){ return $this->oiID; }
+    public function getProductID(){ return $this->pID; }
     public function getProductName(){ return $this->oiProductName; }
     public function getPricePaid() { return $this->oiPricePaid; }
     public function getQty() { return $this->oiQty; }

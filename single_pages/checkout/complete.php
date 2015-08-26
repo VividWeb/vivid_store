@@ -10,9 +10,9 @@
         $pObj = $item->getProductObject();
         if(is_object($pObj)){
             if($pObj->hasDigitalDownload()){
-                $fileObjs = $pObj->getProductDownloadFileObjects();    
+                $fileObjs = $pObj->getProductDownloadFileObjects();
                 $downloads[$item->getProductName()] = $fileObjs[0];
-            } 
+            }
         }
     }
     if(count($downloads) > 0){?>
@@ -23,7 +23,7 @@
             echo '<li><a href="'.$file->getDownloadURL().'">'.$name.'</a></li>';
         }?>
         </ul>
-    <?php } 
+    <?php }
     
     
 /*
