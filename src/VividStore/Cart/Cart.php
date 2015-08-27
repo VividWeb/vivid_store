@@ -197,37 +197,7 @@ class Cart
 
     public function isCustomerTaxable()
     {
-        $taxAddress = Config::get('vividstore.taxAddress');
-        $taxCountry = strtolower(Config::get('vividstore.taxcountry'));
-        $taxState = strtolower(trim(Config::get('vividstore.taxstate')));
-        $taxCity = strtolower(trim(Config::get('vividstore.taxcity')));
-        $customer = new Customer;
-
-        $customerIsTaxable = false;
-
-        switch($taxAddress){
-            case "billing":
-                $userCity = strtolower(trim($customer->getValue("billing_address")->city));
-                $userState = strtolower(trim($customer->getValue("billing_address")->state_province));
-                $userCountry = strtolower(trim($customer->getValue("billing_address")->country));
-                break;
-            case "shipping":
-                $userCity = strtolower(trim($customer->getValue("shipping_address")->city));
-                $userState = strtolower(trim($customer->getValue("shipping_address")->state_province));
-                $userCountry = strtolower(trim($customer->getValue("shipping_address")->country));
-                break;
-        }
-
-        if ($userCountry == $taxCountry ) {
-            $customerIsTaxable = true;
-            if ($taxState && $userState != $taxState) {
-                $customerIsTaxable = false;
-            } elseif ($taxCity && $userCity != $taxCity) {
-                $customerIsTaxable = false;
-            }
-        }
-
-        return $customerIsTaxable;
+        //get tax rates, loop th
     }
 
     public function getTaxes($formatted=false) {
@@ -249,42 +219,7 @@ class Cart
     {
         //first check if tax is enabled in settings
         if(Config::get('vividstore.taxenabled') == "yes"){
-            $cart = self::getCart();
-            $taxtotal = 0;
-            if($cart){
-                foreach ($cart as $cartItem){
-                    $pID = $cartItem['product']['pID'];
-                    $qty = $cartItem['product']['qty'];
-                    $product = VividProduct::getByID($pID);
-                    if(is_object($product)){
-                        if($product->isTaxable()){
-                            $taxCalc = Config::get('vividstore.calculation');
-
-                            if ($taxCalc == 'extract') {
-                                $taxrate =  10 / (Config::get('vividstore.taxrate') + 100);
-                            }  else {
-                                $taxrate = Config::get('vividstore.taxrate') / 100;
-                            }
-
-                            switch(Config::get('vividstore.taxBased')){
-                                    case "subtotal":
-                                        $productSubTotal = $product->getProductPrice() * $qty;
-                                        $tax = $taxrate * $productSubTotal;
-                                        $taxtotal = $taxtotal + $tax;
-                                        break;
-                                    case "grandtotal":
-                                        $productSubTotal = $product->getProductPrice() * $qty;
-                                        $shippingTotal = Price::getFloat(self::getShippingTotal());
-                                        $taxableTotal = $productSubTotal + $shippingTotal;
-                                        $tax = $taxrate * $taxableTotal;
-                                        $taxtotal = $taxtotal + $tax;
-                                        break;
-                                }
-
-                        }//if product is taxable
-                    }//if obj
-                }//foreach
-            }//if cart
+            
         }//if tax enabled
         //return self::isCustomerTaxable();
         return $taxtotal;
