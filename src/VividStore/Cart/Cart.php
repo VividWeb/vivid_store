@@ -368,6 +368,22 @@ class Cart
     
         return $shippableItems;
     }
+    
+    public function getCartWeight()
+    {
+        $totalWeight = 0;
+        if(self::getCart()){
+            foreach(self::getCart() as $item){
+                $product = VividProduct::getByID($item['product']['pID']);
+                if($product->isShippable()){
+                    $totalProductWeight = $product->getProductWeight() * $item['product']['qty'];
+                    $totalWeight = $totalWeight + $totalProductWeight;
+                }      
+            }
+        }
+        //only returns weight of shippable items.
+        return $totalWeight;
+    }
 
     public function getShippingTotal($smID=null){
         

@@ -35,6 +35,15 @@ class FlatRateShippingMethod extends MethodTypeMethod
      * @Column(type="decimal")
      */
     protected $maximumAmount;
+    
+    /**
+     * @Column(type="decimal")
+     */
+    protected $minimumWeight;
+    /**
+     * @Column(type="decimal")
+     */
+    protected $maximumWeight;
     /**
      * @Column(type="string")
      */
@@ -45,9 +54,13 @@ class FlatRateShippingMethod extends MethodTypeMethod
     protected $countriesSelected;
         
     public function setBaseRate($baseRate){ $this->baseRate = $baseRate; }
+    public function setRateType($rateType){ $this->rateType = $rateType; }
     public function setPerItemRate($perItemRate){ $this->perItemRate = $perItemRate; }
+    public function setPerWeightRate($perWeightRate){ $this->perWeightRate = $perWeightRate; }
     public function setMinimumAmount($minAmount){ $this->minimumAmount = $minAmount; }
     public function setMaximumAmount($maxAmount){ $this->maximumAmount = $maxAmount; }
+    public function setMinimumWeight($minWeight){ $this->minimumWeight = $minWeight; }
+    public function setMaximumWeight($maxWeight){ $this->maximumWeight = $maxWeight; }
     public function setCountries($countries){ $this->countries = $countries; }
     public function setCountriesSelected($countriesSelected){ $this->countriesSelected = $countriesSelected; }
     
@@ -59,20 +72,38 @@ class FlatRateShippingMethod extends MethodTypeMethod
     }
     
     public function getBaseRate(){ return $this->baseRate; }
+    public function getRateType(){ return $this->rateType; }
     public function getPerItemRate(){ return $this->perItemRate; }
-    
+    public function getPerWeightRate(){ return $this->perWeightRate; }
     public function getMinimumAmount(){ return $this->minimumAmount; }
     public function getMaximumAmount(){ return $this->maximumAmount; }
+    public function getMinimumWeight(){ return $this->minimumWeight; }
+    public function getMaximumWeight(){ return $this->maximumWeight; }
     public function getCountries(){ return $this->countries; }
     public function getCountriesSelected(){ return $this->countriesSelected; }
     
     public function addMethodTypeMethod($data)
     {
-        $sm = new self();
+        return $this->addOrUpdate('update',$data);    
+    }
+    public function update($data)
+    {
+        return $this->addOrUpdate('update',$data);        
+    }
+    
+    private function addOrUpdate($type,$data)
+    {
+        if($type=="update"){
+            $sm = $this;
+        } else {
+            $sm = new self();
+        }
         $sm->setBaseRate($data['baseRate']);
         $sm->setPerItemRate($data['perItemRate']);
         $sm->setMinimumAmount($data['minimumAmount']);
         $sm->setMaximumAmount($data['maximumAmount']);
+        $sm->setMinimumWeight($data['minimumWeight']);
+        $sm->setMaximumWeight($data['maximumWeight']);
         $sm->setCountries($data['countries']);
         if($data['countriesSelected']){
             $countriesSelected = implode(',',$data['countriesSelected']);
@@ -84,24 +115,6 @@ class FlatRateShippingMethod extends MethodTypeMethod
         $em->flush();
         
         return $sm;
-    }
-    public function update($data)
-    {
-        $this->setBaseRate($data['baseRate']);
-        $this->setPerItemRate($data['perItemRate']);
-        $this->setMinimumAmount($data['minimumAmount']);
-        $this->setMaximumAmount($data['maximumAmount']);
-        if($data['countriesSelected']){
-            $countriesSelected = implode(',',$data['countriesSelected']);
-        }
-        $this->setCountries($data['countries']);
-        $this->setCountriesSelected($countriesSelected);
-        
-        $em = Database::get()->getEntityManager();
-        $em->persist($this);
-        $em->flush();
-        
-        return $this;
     }
     
     public function dashboardForm($shippingMethod = null)
@@ -142,18 +155,16 @@ class FlatRateShippingMethod extends MethodTypeMethod
     
     public function isEligible()
     {
-        $customer = new Customer();
-        $custCountry = $customer->getValue('shipping_address')->country;
+        //three checks - within countries, price range, and weight
         if($this->isWithinRange()){
-            if($this->getCountries() != 'all'){
-                $selectedCountries = explode(',',$this->getCountriesSelected());
-                if(in_array($custCountry,$selectedCountries)){
+            if($this->isWithinSelectedCountries()){
+                if($this->isWithinWeight()){
                     return true;
                 } else {
-                    return false;   
+                    return false;
                 }
             } else {
-                return true;
+                return false;
             }
         } else {
             return false;
@@ -176,6 +187,39 @@ class FlatRateShippingMethod extends MethodTypeMethod
             return false;   
         }
     }    
+    
+    public function isWithinWeight()
+    {
+        $totalWeight = VividCart::getCartWeight();
+        $maxWeight = $this->getMaximumWeight();
+        if($max!=0){
+            if($totalWeight >= $this->getMinimumWeight() && $totalWeight <= $this->getMaximumWeight()){
+                return true;
+            } else {
+                return false;
+            }
+        } elseif($totalWeight >= $this->getMinimumWeight()) {
+            return true;
+        } else {
+            return false;   
+        }
+    }
+    
+    public function isWithinSelectedCountries()
+    {
+        $customer = new Customer();
+        $custCountry = $customer->getValue('shipping_address')->country;
+        if($this->getCountries() != 'all'){
+            $selectedCountries = explode(',',$this->getCountriesSelected());
+            if(in_array($custCountry,$selectedCountries)){
+                return true;
+            } else {
+                return false;   
+            }
+        } else {
+            return true;
+        }
+    }
     
     public function getRate()
     {
