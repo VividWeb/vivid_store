@@ -141,6 +141,7 @@ class Installer
     public static function installShippingMethods(Package $pkg)
     {
         Installer::installShippingMethod('flat_rate','Flat Rate',$pkg);
+        Installer::installShippingMethod('free_shipping','Free Shipping',$pkg);
     }
     
     public static function installShippingMethod($handle,$name,$pkg)

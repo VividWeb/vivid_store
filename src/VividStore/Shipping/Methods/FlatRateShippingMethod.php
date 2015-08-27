@@ -23,10 +23,19 @@ class FlatRateShippingMethod extends MethodTypeMethod
      * @Column(type="decimal")
      */
     protected $baseRate;
+	
+    /**
+     * @Column(type="string")
+     */
+    protected $rateType;
     /**
      * @Column(type="decimal")
      */
     protected $perItemRate;
+	/**
+     * @Column(type="decimal")
+     */
+    protected $perWeightRate;
     /**
      * @Column(type="decimal")
      */
@@ -99,7 +108,9 @@ class FlatRateShippingMethod extends MethodTypeMethod
             $sm = new self();
         }
         $sm->setBaseRate($data['baseRate']);
+		$sm->setRateType($data['rateType']);
         $sm->setPerItemRate($data['perItemRate']);
+		$sm->setPerWeightRate($data['perWeightRate']);
         $sm->setMinimumAmount($data['minimumAmount']);
         $sm->setMaximumAmount($data['maximumAmount']);
         $sm->setMinimumWeight($data['minimumWeight']);
@@ -227,24 +238,37 @@ class FlatRateShippingMethod extends MethodTypeMethod
         $peritemrate = $this->getPerItemRate();
         $shippableItems = VividCart::getShippableItems();
         if(count($shippableItems) > 0 ){
-            $totalQty = 0;
-            //go through items
-            foreach($shippableItems as $item){
-                //check if items are shippable
-                $product = VividProduct::getByID($item['product']['pID']);
-                if($product->isShippable()){
-                    $totalQty = $totalQty + $item['product']['qty'];
-                }
-            }
-            if($totalQty > 1){
-                $shippingTotal = $baserate + (($totalQty-1) * $peritemrate);
-            } elseif($totalQty == 1) {
-                $shippingTotal = $baserate;
+            if($this->getRateType() == 'quantity'){
+                $shippingTotal = $this->getQuantityBasedRate($shippableItems);
+            } elseif($this->getRateType() == 'weight'){
+                $shippingTotal = $this->getWeightBasedRate($shippableItems);
             }
         } else {
             $shippingTotal = 0;
         }
         return $shippingTotal;
+    }
+    
+    public function getWeightBasedRate($shippableItems)
+    {
+        
+    }
+    public function getQuantityBasedRate($shippableItems)
+    {
+        $totalQty = 0;
+        //go through items
+        foreach($shippableItems as $item){
+            //check if items are shippable
+            $product = VividProduct::getByID($item['product']['pID']);
+            if($product->isShippable()){
+                $totalQty = $totalQty + $item['product']['qty'];
+            }
+        }
+        if($totalQty > 1){
+            $shippingTotal = $baserate + (($totalQty-1) * $peritemrate);
+        } elseif($totalQty == 1) {
+            $shippingTotal = $baserate;
+        }
     }
         
 }
