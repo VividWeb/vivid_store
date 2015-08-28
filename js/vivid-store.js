@@ -304,9 +304,10 @@ $("#checkout-form-group-billing").submit(function(e){
                         url: CARTURL+"/getTaxTotal",
                         success: function(results){
                             var taxes = JSON.parse(results);
+                            //alert(taxes.length);
                             $("#taxes").html("");
                             for(var i=0;i<taxes.length;i++){
-                                if(taxes[i].taxamount > 0){
+                                if(taxes[i].taxed===true){
                                     $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
                                 }
                             }
@@ -360,7 +361,7 @@ $("#checkout-form-group-billing").submit(function(e){
                             var taxes = JSON.parse(results);
                             $("#taxes").html("");  
                             for(var i=0;i<taxes.length;i++){
-                                if(taxes[i].taxamount > 0){
+                                if(taxes[i].taxed===true){
                                     $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
                                 }
                             }

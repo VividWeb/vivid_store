@@ -5,16 +5,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 $eligibleMethods = ShippingMethod::getEligibleMethods();
 $i=1;
 foreach($eligibleMethods as $method){
-$sessionShippingMethodID = Session::get('smID');
-if($sessionShippingMethodID == $method->getShippingMethodID()){
-    $checked = true;
-} else {
-    if($i==1){
+    $sessionShippingMethodID = Session::get('smID');
+    if($sessionShippingMethodID == $method->getShippingMethodID()){
         $checked = true;
     } else {
-        $checked = false;
-    }
-} 
+        if($i==1){
+            $checked = true;
+        } else {
+            $checked = false;
+        }
+    } 
 ?>
     <div class="radio">
         <label>

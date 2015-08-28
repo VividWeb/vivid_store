@@ -2,7 +2,7 @@
 	    
 	    <div class="ccm-dashboard-header-buttons">
             <a href="<?php echo View::url('/dashboard/store/settings/shipping')?>" class="btn btn-primary"><i class="fa fa-gift"></i> <?php echo t("Shipping Methods")?></a>
-            <!--<a href="<?php echo View::url('/dashboard/store/settings/payment')?>" class="btn btn-primary"><i class="fa fa-money"></i> <?php echo t("Payment Methods")?></a>-->
+            <a href="<?php echo View::url('/dashboard/store/settings/tax')?>" class="btn btn-primary"><i class="fa fa-money"></i> <?php echo t("Tax Rates")?></a>
         </div>
 	    
 	    <form method="post" action="<?=$view->action('save')?>">
@@ -20,7 +20,6 @@
                             <li><a href="#settings-payments" data-pane-toggle><?=t('Payments')?></a></li>
                             <li><a href="#settings-order-statuses" data-pane-toggle><?=t('Order Statuses')?></a></li>
                             <li><a href="#settings-notifications" data-pane-toggle><?=t('Notifications')?></a></li>
-                            <li><a href="#settings-products" data-pane-toggle><?=t('Products')?></a></li>
                             <li><a href="#settings-checkout" data-pane-toggle><?=t('Cart and Checkout')?></a></li>
                         </ul>
                     

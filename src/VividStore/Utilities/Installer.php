@@ -40,6 +40,7 @@ class Installer
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
+        Installer::installSinglePage('/dashboard/store/settings/tax',$pkg);
         Installer::installSinglePage('/dashboard/store/reports', $pkg);
         Installer::installSinglePage('/dashboard/store/reports/sales', $pkg);
         Installer::installSinglePage('/dashboard/store/reports/products', $pkg);
@@ -139,6 +140,7 @@ class Installer
     public static function installShippingMethods(Package $pkg)
     {
         Installer::installShippingMethod('flat_rate','Flat Rate',$pkg);
+        Installer::installShippingMethod('free_shipping','Free Shipping',$pkg);
     }
     
     public static function installShippingMethod($handle,$name,$pkg)
