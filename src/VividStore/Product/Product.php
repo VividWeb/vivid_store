@@ -329,6 +329,12 @@ class Product extends Object
     public function isExclusive() {
         return (bool)$this->pExclusive;
     }
+    public function isUnlimited() {
+        return (bool)$this->pQtyUnlim;
+    }
+    public function allowBackOrders() {
+        return (bool)$this->pBackOrder;
+    }
     public function getProductUserGroups(){
         $db = Database::get();
         $productGroupResult = $db->GetAll("SELECT gID FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);

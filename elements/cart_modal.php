@@ -24,6 +24,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 <p class="alert alert-warning"><?= t('Item removed');?></p>
             <?php } ?>
 
+            <?php if($actiondata['quantity'] != $actiondata['added']) { ?>
+                <p class="alert alert-warning"><?= t('Due to stock levels your quantity has been limited');?></p>
+            <?php } ?>
+
         <?php } ?>
 
         <h2><?=t("Shopping Cart")?></h2>
