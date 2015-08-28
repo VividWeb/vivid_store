@@ -196,21 +196,6 @@ class Cart
         return max($subtotal,0);
     }
 
-    public function isCustomerTaxable()
-    {
-        //get tax rates, loop th
-    }
-
-    public function getTaxTotal()
-    {
-        //first check if tax is enabled in settings
-        if(Config::get('vividstore.taxenabled') == "yes"){
-            
-        }//if tax enabled
-        //return self::isCustomerTaxable();
-        return $taxtotal;
-    }
-
     public function getTotalItemsInCart(){
         $total = 0;
         if(self::getCart()){
