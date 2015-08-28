@@ -234,8 +234,6 @@ class FlatRateShippingMethod extends MethodTypeMethod
     
     public function getRate()
     {
-        $baserate = $this->getBaseRate();
-        $peritemrate = $this->getPerItemRate();
         $shippableItems = VividCart::getShippableItems();
         if(count($shippableItems) > 0 ){
             if($this->getRateType() == 'quantity'){
@@ -251,10 +249,24 @@ class FlatRateShippingMethod extends MethodTypeMethod
     
     public function getWeightBasedRate($shippableItems)
     {
-        
+        $baserate = $this->getBaseRate();
+        $totalWeight = 0;
+        foreach($shippableItems as $item){
+            $product = VividProduct::getByID($item['product']['pID']);
+            if($product->isShippable()){
+                $totalProductWeight = $item['product']['qty'] * $product->getProductWeight();
+                $totalWeight = $totalWeight + $totalProductWeight;
+            }
+        }
+        $perWeightRate = $this->getPerWeightRate();
+        $totalWeightRate = $perWeightRate * $totalWeight;
+        $shippingTotal = $baserate + $totalWeightRate;
+        return $shippingTotal;
     }
     public function getQuantityBasedRate($shippableItems)
     {
+        $baserate = $this->getBaseRate();
+        $peritemrate = $this->getPerItemRate();
         $totalQty = 0;
         //go through items
         foreach($shippableItems as $item){
@@ -269,6 +281,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
         } elseif($totalQty == 1) {
             $shippingTotal = $baserate;
         }
+        return $shippingTotal;
     }
         
 }

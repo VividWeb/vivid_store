@@ -10,6 +10,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMetho
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
@@ -200,21 +201,6 @@ class Cart
         //get tax rates, loop th
     }
 
-    public function getTaxes($formatted=false) {
-        $taxTotal = self::getTaxTotal();
-        $taxName = Config::get('vividstore.taxName');
-        $taxCalc = Config::get('vividstore.calculation');
-        $taxBased = Config::get('vividstore.taxBased');
-
-        $taxes = array();
-
-        if (self::isCustomerTaxable()) {
-            $taxes[] = array('name'=>$taxName,'taxamount'=>$taxTotal,'calculation'=>$taxCalc, 'based'=>$taxBased);
-            return $taxes;
-        }
-    }
-
-
     public function getTaxTotal()
     {
         //first check if tax is enabled in settings
@@ -223,42 +209,6 @@ class Cart
         }//if tax enabled
         //return self::isCustomerTaxable();
         return $taxtotal;
-    }
-
-    public function getTaxProduct($productID)
-    {
-        //first check if tax is enabled in settings
-        if(Config::get('vividstore.taxenabled') == "yes"){
-            $cart = self::getCart();
-
-            if($cart){
-                $taxCalc = Config::get('vividstore.calculation');
-
-                if ($taxCalc == 'extract') {
-                    $taxrate =  10 / (Config::get('vividstore.taxrate') + 100);
-                }  else {
-                    $taxrate = Config::get('vividstore.taxrate') / 100;
-                }
-
-                foreach ($cart as $cartItem){
-                    if ($cartItem['product']['pID'] == $productID) {
-                        $product = VividProduct::getByID($productID);
-                    }
-                    if(is_object($product)){
-                        if($product->isTaxable()){
-                            //the product is "Taxable", but is the customer?
-                            if(self::isCustomerTaxable()){
-                                    $tax = $taxrate * $product->getProductPrice() ;
-                                    return $tax;
-
-                            }//if customer is taxable
-                        }//if product is taxable
-                    }//if obj
-                }//foreach
-            }//if cart
-        }//if tax enabled
-
-        return 0;
     }
 
     public function getTotalItemsInCart(){
@@ -355,7 +305,7 @@ class Cart
     {
         $subTotal = Price::getFloat(Cart::getSubTotal());
         $taxTotal = 0;
-        $taxes = self::getTaxes();
+        $taxes = Tax::getTaxes();
 
         if($taxes){
             foreach($taxes as $tax) {
@@ -389,7 +339,7 @@ class Cart
     // returns an array of formatted cart totals
     public function getTotals() {
         $subTotal = Price::getFloat(Cart::getSubTotal());
-        $taxes = self::getTaxes();
+        $taxes = Tax::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
         if($taxes){

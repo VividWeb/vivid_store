@@ -8,6 +8,7 @@ use Loader;
 use Core;
 use Package;
 
+use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -17,7 +18,7 @@ class Tax extends DashboardPageController
     
     public function view()
     {
-        $this->set("taxRates",TaxRate::getTaxRates());
+        $this->set("taxRates",StoreTax::getTaxRates());
     }
     public function add()
     {
