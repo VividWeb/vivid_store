@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Concrete\Core\Foundation\Object as Object;
@@ -20,7 +20,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Product extends Object
 {
-    
+
     public static function getByID($pID)
     {
         $db = Database::get();
@@ -48,11 +48,11 @@ class Product extends Object
         //if we know the pID, we're updating.
 
             $pID = $data['pID'];
-                
+
             //update product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
             $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
-            
+
             //update additional images
             $db->Execute('DELETE FROM VividStoreProductImages WHERE pID = ?', $data['pID']);
             $count = count($data['pifID']);
@@ -80,7 +80,7 @@ class Product extends Object
                     $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
-            
+
             //update option groups
             $db->Execute('DELETE FROM VividStoreProductOptionGroups WHERE pID = ?', $data['pID']);
             $db->Execute('DELETE FROM VividStoreProductOptionItems WHERE pID = ?', $data['pID']);
@@ -101,17 +101,17 @@ class Product extends Object
                         }
                 }
             }
-            
+
         } else {
         //else, we don't know it, so we're adding
 
             $dt = Core::make('helper/date');
             $now = $dt->getLocalDateTime();
-            
+
             //add product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pAutoCheckout'],$now);
-            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
-            
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
+            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+
             //add additional images
             $pID = $db->lastInsertId();
             $count = count($data['pifID']);
@@ -138,7 +138,7 @@ class Product extends Object
                 }
             }
 
-            
+
             //add option groups
             $count = count($data['pogSort']);
             $ii=0;//set counter for items
@@ -159,7 +159,7 @@ class Product extends Object
             }
             $product = Product::getByID($pID);
             $product->generatePage($data['selectPageTemplate']);
-            
+
         }
 
         //save files
@@ -198,8 +198,8 @@ class Product extends Object
 
         $product = Product::getByID($pID);
         return $product;
-        
-        
+
+
     }
     public function remove()
     {
@@ -208,7 +208,7 @@ class Product extends Object
         $db->Execute("DELETE FROM VividStoreProductImages WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionGroups WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionItems WHERE pID=?",$this->pID);
-        
+
         //delete page from sitemap
         $page = Page::getByID($this->cID);
         if(is_object($page)){
@@ -244,7 +244,7 @@ class Product extends Object
         $db = Database::get();
         $vals = array($cID,$this->pID);
         $db->Execute('UPDATE VividStoreProducts SET cID=? WHERE pID = ?', $vals);
-            
+
     }
     public function getProductID(){ return $this->pID; }
     public function getProductName(){ return $this->pName; }
@@ -259,7 +259,7 @@ class Product extends Object
         } else {
             return false;
         }
-        
+
     }
     public function getGroupID(){ return $this->gID; }
     public function getGroupName()
@@ -442,7 +442,7 @@ class Product extends Object
         }
         return $values;
     }
-    
+
     /* TO-DO
      * This isn't completely accurate as an order status may be incomplete and never change,
      * or an order may be canceled. So at somepoint, circle back to this to check for certain status's
@@ -484,20 +484,20 @@ class Product extends Object
                 $av->setAttributeKey($ak);
             }
         }
-        
+
         if ($createIfNotFound) {
             $cnt = 0;
-        
+
             // Is this avID in use ?
             if (is_object($av)) {
                 $cnt = $db->GetOne("SELECT COUNT(avID) FROM VividStoreProductAttributeValues WHERE avID=?", $av->getAttributeValueID());
             }
-            
+
             if ((!is_object($av)) || ($cnt > 1)) {
                 $av = $ak->addAttributeValue();
             }
         }
-        
+
         return $av;
     }
 }
