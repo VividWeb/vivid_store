@@ -14,6 +14,8 @@ class Customer
 
         if ($u->isLoggedIn()) {
             $this->ui = UserInfo::getByID($u->getUserID());
+        } elseif($uID) {
+            $this->ui = UserInfo::getByID($uID);
         } else {
             $this->ui = null;
         }

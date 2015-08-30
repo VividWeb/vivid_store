@@ -30,10 +30,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     <div class="checkout-cart-item-price">
                         <?=Price::format($product->getProductPrice())?>
                     </div>
+
+                    <?php if ($product->allowQuantity()) { ?>
                     <div class="checkout-cart-product-qty">
                         <span class="checkout-cart-item-label"><?=t("Quantity:")?></span>
                         <?=$qty?>
                     </div>
+                    <?php } ?>
 
                     <?php if($cartItem['productAttributes']){?>
                         <div class="checkout-cart-item-attributes">

@@ -60,9 +60,9 @@
                 .cart-page-cart-list li.cart-page-cart-list-item .cart-list-product-qty input { padding: 3px; border-radius: 3px; border: 1px solid #ddd; }            
             
             .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links { width: 35%; margin-top: 10px; text-align: right; }
-                .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links a { display: inline-block; background: #fff; padding: 2px 8px; border: 1px solid #ddd; margin-bottom: 2px; border-radius: 3px; }
-                .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links a.btn-cart-list-remove { background: #d9534f; border-color: #d43f3a; color: #fff !important; }
-                .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links a.btn-cart-list-update {  }
+                .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links a, .cart-page-cart-list button, .cart-page-cart-links button { display: inline-block; background: #fff; padding: 2px 8px; border: 1px solid #ddd; margin-bottom: 2px; border-radius: 3px; }
+                .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links .btn-cart-list-remove { background: #d9534f; border-color: #d43f3a; color: #fff !important; }
+                .cart-page-cart-list li.cart-page-cart-list-item .btn-cart-list-update { padding: 5px 15px; }
             .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-attributes { margin-left: 30%; }
                 .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-attribute {  }
                     .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-attribute .cart-list-item-attribute-label { font-weight: bold; }
@@ -72,7 +72,7 @@
         .cart-grand-total-label, .cart-grand-total-value { font-size: 18px; }
     
     .cart-page-cart-links { text-align: right; margin: 20px 0; }
-        .cart-page-cart-links a { display: inline-block; padding: 5px 15px; border: 1px solid; border-radius: 3px; }
+        .cart-page-cart-links a, .cart-page-cart-links button { display: inline-block; padding: 5px 15px; border: 1px solid; border-radius: 3px; }
         .cart-page-cart-links .btn-cart-page-checkout {  }
 
 @media (min-width: 768px) {

@@ -8,11 +8,26 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     <div class="cart-page-cart">
         <?php if (isset($actiondata) and !empty($actiondata)) { ?>
 
-            <?php if($actiondata['success']) { ?>
+            <?php if($actiondata['action'] == 'add') { ?>
                 <p class="alert alert-success"><strong><?= $actiondata['product']['pName']; ?></strong> <?= t('has been added to your cart');?></p>
-            <?php } else { ?>
-                <p class="alert alert-warning"><?= t('The item was not added to your cart');?></p>
             <?php } ?>
+
+            <?php if( $actiondata['action'] =='update') { ?>
+                <p class="alert alert-success"><?= t('Your cart has been updated');?></p>
+            <?php } ?>
+
+            <?php if($actiondata['action'] == 'clear') { ?>
+                <p class="alert alert-warning"><?= t('Your cart has been cleared');?></p>
+            <?php } ?>
+
+            <?php if($actiondata['action'] == 'remove') { ?>
+                <p class="alert alert-warning"><?= t('Item removed');?></p>
+            <?php } ?>
+
+            <?php if($actiondata['quantity'] != $actiondata['added']) { ?>
+                <p class="alert alert-warning"><?= t('Due to stock levels your quantity has been limited');?></p>
+            <?php } ?>
+
         <?php } ?>
 
         <h2><?=t("Shopping Cart")?></h2>
@@ -46,12 +61,17 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                             <div class="cart-list-item-price">
                                 <?=Price::format($product->getProductPrice())?>
                             </div>
+
                             <div class="cart-list-product-qty">
+                                <?php if ($product->allowQuantity()) { ?>
                                 <span class="cart-item-label"><?=t("Quantity:")?></span>
                                 <input type="number" max="<?=$product->getProductQty()?>" min="1" value="<?=$qty?>" style="width: 50px;">
+                                <?php } ?>
                             </div>
                             <div class="cart-list-item-links">
+                                <?php if ($product->allowQuantity()) { ?>
                                 <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(<?=$k?>, true);"><?=t("Update")?></a>
+                                <?php } ?>
                                 <a class="btn-cart-list-remove"  href="javascript:vividStore.removeItem(<?=$k?>, true);"><?=t("Remove")?></a>
                             </div>
                             <?php if($cartItem['productAttributes']){?>
