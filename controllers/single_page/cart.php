@@ -22,7 +22,27 @@ class Cart extends PageController
                 $codesuccess = VividCart::storeCode($this->post('code'));
                 $codeerror = !$codesuccess;
             }
+
+            if ($this->post('action') == 'update') {
+                $data = $this->post();
+                $result = VividCart::update($data);
+                $added = $result['added'];
+                $returndata = array('success'=>true, 'quantity'=>(int)$data['pQty'], 'action'=>'update','added'=>$added);
+            }
+
+            if ($this->post('action') == 'clear') {
+                VividCart::clear();
+                $returndata = array('success'=>true, 'action'=>'clear');
+            }
+
+            if ($this->post('action') == 'remove') {
+                $data = $this->post();
+                $result = VividCart::remove($data['instance']);
+                $returndata = array('success'=>true, 'action'=>'remove');
+            }
         }
+
+        $this->set('actiondata', $returndata);
 
         $this->set('codeerror', $codeerror);
         $this->set('codesuccess', $codesuccess);

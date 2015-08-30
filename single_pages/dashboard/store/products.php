@@ -777,7 +777,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     ?>
                     <tr>
                         <td><?php echo $p->getProductImageThumb();?></td>
-                        <td><strong><?= $p->getProductName() ?></strong></td>
+                        <td><strong><a href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><?= $p->getProductName() ?></a></strong></td>
                         <td><?= $p->getProductQty() ?></td>
                         <td><?= $p->getFormattedPrice() ?></td>
                         <td>

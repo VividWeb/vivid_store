@@ -32,19 +32,25 @@ class Cart
             $db = Database::get();
 
             $checkeditems = array();
-            $removal = false;
+            $update = false;
             // loop through and check if product hasn't been deleted. Remove from cart session if not found.
             foreach($cart as $cartitem) {
-                $exists = $db->GetOne("SELECT pID FROM VividStoreProducts WHERE pID=? ",$cartitem['product']['pID']);
+                $product =Product::getByID((int)$cartitem['product']['pID']);
 
-                if (!empty($exists)) {
+                if ($product) {
+                    // check that we dont have a non-quantity product in cart with a quantity > 1
+                    if (!$product->allowQuantity() && $cartitem['product']['qty'] > 0) {
+                        $cartitem['product']['qty'] = 1;
+                        $update = true;
+                    }
+
                     $checkeditems[] = $cartitem;
                 } else {
-                    $removal = true;
+                    $update = true;
                 }
             }
 
-            if ($removal) {
+            if ($update) {
                 Session::set('vividstore.cart', $checkeditems);
             }
 
@@ -89,6 +95,9 @@ class Cart
             return false;
         }
 
+        if ($product->isExclusive()) {
+            self::clear();
+        }
 
         //now, build a nicer "cart item"
         $cartItem = array();
@@ -137,6 +146,17 @@ class Cart
             }
         }
 
+        $removeexistingexclusive  = false;
+
+        foreach(self::getCart() as $k=>$cart) {
+            $cartproduct = Product::getByID((int)$cart['product']['pID']);
+
+            if ($cartproduct && $cartproduct->isExclusive()) {
+                self::remove($k);
+                $removeexistingexclusive = true;
+            }
+        }
+
         $cart = self::getCart();
 
         if ($exists !== false) {
@@ -174,7 +194,7 @@ class Cart
 
         Session::set('vividstore.cart', $cart);
 
-        return array('added' => $added);
+        return array('added' => $added, 'exclusive'=>$product->isExclusive(), 'removeexistingexclusive'=> $removeexistingexclusive);
     }
 
     public function update($data)
@@ -183,14 +203,23 @@ class Cart
         $qty = $data['pQty'];
         $cart = self::getCart();
 
-        if ($qty > 0) {
-            $cart[$instanceID]['product']['qty'] = $qty;
-            $added = $data['pQty'];
+        $product = Product::getByID((int)$cart[$instanceID]['product']['pID']);
+
+        if ($qty > 0 && $product) {
+            $newquantity = $qty;
+
+            if (!$product->isUnlimited() && !$product->allowBackOrders() && $product->getProductQty() < $newquantity) {
+                $newquantity = $product->getProductQty();
+            }
+
+            $cart[$instanceID]['product']['qty'] = $newquantity;
+            $added = $newquantity;
         } else {
-            $this->remove($instanceID);
+            self::remove($instanceID);
         }
 
         Session::set('vividstore.cart', $cart);
+        self::$cart = null;
 
         return array('added' => $added);
     }
@@ -200,6 +229,7 @@ class Cart
         $cart = self::getCart();
         unset($cart[$instanceID]);
         Session::set('vividstore.cart',$cart);
+        self::$cart = null;
     }
 
     public static function clear()
@@ -207,6 +237,7 @@ class Cart
         $cart = self::getCart();
         unset($cart);
         Session::set('vividstore.cart', null);
+        self::$cart = null;
     }
     public function getSubTotal()
     {

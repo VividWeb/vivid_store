@@ -69,7 +69,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                                 <?php } ?>
                             </div>
                             <div class="cart-list-item-links">
+                                <?php if ($product->allowQuantity()) { ?>
                                 <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(<?=$k?>, true);"><?=t("Update")?></a>
+                                <?php } ?>
                                 <a class="btn-cart-list-remove"  href="javascript:vividStore.removeItem(<?=$k?>, true);"><?=t("Remove")?></a>
                             </div>
                             <?php if($cartItem['productAttributes']){?>
