@@ -12,6 +12,7 @@ use Events;
 use Config;
 use Loader;
 use Page;
+use UserInfo;
 
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
@@ -67,12 +68,12 @@ class Order extends Object
         $smID = \Session::get('smID');
         $shipping = VividCart::getShippingTotal();
         $shipping = Price::formatFloat($shipping);
-        $taxvalue = VividCart::getTaxTotal();
+
         $taxName = Config::get('vividstore.taxName');
-        $total = VividCart::getTotal();
+        $totals = VividCart::getTotals();
+        $total = $totals['total'];
         $total = Price::formatFloat($total);
-        
-                
+        $taxvalue = $totals['taxTotal'];
 
         $tax = 0;
         $taxIncluded = 0;
@@ -124,7 +125,8 @@ class Order extends Object
         $createlogin = false;
 
         foreach ($cart as $cartItem) {
-            $taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']);
+            //$taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']); // TODO - this needs to be updated
+            $taxvalue = 0;
             $tax = 0;
             $taxIncluded = 0;
 
