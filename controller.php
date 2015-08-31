@@ -80,6 +80,7 @@ class controller extends Package
         Route::register('/checkout/updater', '\Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout::updater');
         Route::register('/productfinder', '\Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder::getProductMatch');
         Route::register('/checkout/paypalresponse', '\Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard\PaypalStandardPaymentMethod::validateCompletion');
+        Route::register('/dashboard/store/orders/details/slip','\Concrete\Package\VividStore\Src\VividStore\Utilities\OrderSlip::renderOrderPrintSlip');
     }
     public function on_start()
     {

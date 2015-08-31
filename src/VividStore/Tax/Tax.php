@@ -3,6 +3,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart;
 use Database;
 
 class Tax
@@ -37,4 +38,38 @@ class Tax
         }
         return $taxes;
     }   
+    public function getTaxProduct($productID)
+    {
+        //first check if tax is enabled in settings
+       
+            $cart = Cart::getCart();
+            if($cart){
+                //foreach taxrate
+                foreach(self::getTaxes() as $tax){
+                    
+                }
+                $taxCalc = Config::get('vividstore.calculation');
+                if ($taxCalc == 'extract') {
+                    $taxrate =  10 / (Config::get('vividstore.taxrate') + 100);
+                }  else {
+                    $taxrate = Config::get('vividstore.taxrate') / 100;
+                }
+                foreach ($cart as $cartItem){
+                    if ($cartItem['product']['pID'] == $productID) {
+                        $product = VividProduct::getByID($productID);
+                    }
+                    if(is_object($product)){
+                        if($product->isTaxable()){
+                            //the product is "Taxable", but is the customer?
+                            if(self::isCustomerTaxable()){
+                                    $tax = $taxrate * $product->getProductPrice() ;
+                                    return $tax;
+                            }//if customer is taxable
+                        }//if product is taxable
+                    }//if obj
+                }//foreach
+            }//if cart
+        return 0;
+    }
+    
 }

@@ -15,6 +15,7 @@ use Config;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
@@ -65,28 +66,33 @@ class Order extends Object
         $smID = \Session::get('smID');
         $shipping = VividCart::getShippingTotal();
         $shipping = Price::formatFloat($shipping);
-        $taxvalue = VividCart::getTaxTotal();
-        $taxName = Config::get('vividstore.taxName');
+        $taxes = Tax::getTaxes();
         $total = VividCart::getTotal();
         $total = Price::formatFloat($total);
         
                 
 
-        $tax = 0;
-        $taxIncluded = 0;
+        $tax = array();
+        $taxIncluded = array();
+        $taxLabels = array();
 
-        if ($taxCalc == 'extract') {
-            $taxIncluded = $taxvalue;
-        }  else {
-            $tax = $taxvalue;
+        foreach($taxes as $tax){
+            if ($tax['calculation'] == 'extract') {
+                $taxIncluded[] = Price::formatFloat($tax['taxAmount']);
+            }  else {
+                $tax[] = Price::formatFloat($tax['taxAmount']);
+            }
+            $taxLabels[] = $tax['name'];
         }
-        $tax = Price::formatFloat($tax);
+        
+        $tax = implode(',',$tax);
+        $taxIncluded = implode(',',$taxIncluded);
         
         //get payment method
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$tax,$taxIncluded,$taxLabels,$total);
         $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,smID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
@@ -110,7 +116,7 @@ class Order extends Object
         $cart = VividCart::getCart();
 
         foreach ($cart as $cartItem) {
-            $taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']);
+            $taxes = Tax::getTaxForProduct($cartItem['product']['pID']);
             $tax = 0;
             $taxIncluded = 0;
 
