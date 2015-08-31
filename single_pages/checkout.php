@@ -15,11 +15,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         <div class="checkout-form-group" id="checkout-form-group-signin">
 
             <?php 
-                if ($guestCheckout == 'option' && !$requiresLogin) { 
+                if ($guestCheckout == 'option' && !$requiresLogin) {
                     $introTitle = t("Sign in, Register or Checkout as Guest");
-                } else { 
+                } else {
                     $introTitle = t("Sign in or Register");
-                } 
+                }
             ?>
             
             <h2><?=$introTitle?></h2>
@@ -199,13 +199,32 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             </div>
             
         </form>
-        <!--
-        <div class="checkout-form-group" id="checkout-form-group-shipping-method">
+        
+        <form class="checkout-form-group" id="checkout-form-group-shipping-method">
             
             <h2><?=t("Shipping Method")?></h2>
             
-        </div>
-        -->
+            <div class="checkout-form-group-body">
+                
+                <div id="checkout-shipping-method-options">
+                    
+                    <?php 
+                        /* shipping options are loaded in via ajax, 
+                         * since we dont know which shipping methods are available 
+                         * until after the shipping address fields are filled out.
+                         */
+                     ?>
+                    
+                </div>
+                
+                <div class="checkout-form-group-buttons">
+                    <a href="javascript:;" class="btn btn-default btn-previous-pane"><?=t("Previous")?></a>
+                    <input type="submit" class="btn btn-default btn-next-pane" value="<?=t("Next")?>">
+                </div>
+                
+            </div>
+            
+        </form>
       <?php } ?>
 
         <form class="checkout-form-group" id="checkout-form-group-payment" method="post" action="<?=View::url('/checkout/submit')?>">
@@ -219,13 +238,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 ?>
                 <div class="col-container clearfix">
                     <div id="checkout-payment-method-options" class="vivid-store-col-1 <?php echo count($enabledPaymentMethods) == 1 ? "hidden" : ""; ?>">
-                        <?php  
+                        <?php 
                             $i = 1;
                             foreach($enabledPaymentMethods as $pm):
                             if($i==1){
-                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID(),'checked'=>'checked');    
+                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID(),'checked'=>'checked');
                             } else {
-                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID());       
+                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID());
                             }
                         ?>
                             <div class='radio'>
@@ -288,12 +307,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     foreach($taxes as $tax){?>
                         <strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span><br>
                 <?php 
-                    } 
+                    }
                 }
                 ?>
             </span>
             <?php if ($shippingEnabled) { ?>
-            <strong><?=t("Shipping")?>:</strong> <?=Price::format($shippingtotal);?><br>
+            <strong><?=t("Shipping")?>:</strong> <span id="shipping-total"><?=Price::format($shippingtotal);?></span><br>
             <?php } ?>
         </p>
 

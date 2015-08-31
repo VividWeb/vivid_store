@@ -49,7 +49,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <li><a href="#product-images" data-pane-toggle><?=t('Images')?></a></li>
                         <li><a href="#product-options" data-pane-toggle><?=t('Options')?></a></li>
                         <li><a href="#product-attributes" data-pane-toggle><?=t('Attributes')?></a></li>
-                        <li><a href="#product-digital" data-pane-toggle><?=t("Downloads and User Groups")?></a></li>
+                        <li><a href="#product-digital" data-pane-toggle><?=t("Memberships and Downloads")?></a></li>
                         <li><a href="#product-page" data-pane-toggle><?=t('Detail Page')?></a></li>
                     </ul>
                 </div>
@@ -64,34 +64,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
-                            <?php echo $form->label("pPrice", t("Price"));?>
-                            <?php $price = $p->getProductPrice(); ?>
-                            <?php echo $form->text("pPrice", $price?$price:'0');?>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <?php echo $form->label("pQty", t("Quantity"));?>
-                            <?php $qty = $p->getProductQty(); ?>
-                            <?php echo $form->text("pQty", $qty?$qty:'999');?>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <?php echo $form->label("pTaxable", t("Taxable"));?>
-                            <?php echo $form->select("pTaxable",array('0'=>t('No'),'1'=>t('Yes')), $p->isTaxable());?>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div class="form-group">
                             <?php echo $form->label("pActive", t("Active"));?>
                             <?php echo $form->select("pActive", array('1'=>t('Active'),'0'=>t('Inactive')), $p->isActive());?>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pFeatured", t("Featured Product"));?>
@@ -99,7 +75,62 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pPrice", t("Price"));?>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <?= Config::get('vividstore.symbol');?>
+                                </div>
+                                <?php $price = $p->getProductPrice(); ?>
+                                <?php echo $form->text("pPrice", $price?$price:'0');?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pTaxable", t("Taxable"));?>
+                            <?php echo $form->select("pTaxable",array('0'=>t('No'),'1'=>t('Yes')), $p->isTaxable());?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pQty", t("Stock Level"));?>
+                            <?php $qty = $p->getProductQty(); ?>
+                            <div class="input-group">
+                                <?php echo $form->text("pQty", $qty?$qty:'999', array(($p->pQtyUnlim ? 'disabled' : '')=>($p->pQtyUnlim ? 'disabled' : '')));?>
+                                <div class="input-group-addon">
+                                    <?php echo $form->checkbox('pQtyUnlim', '1', $p->pQtyUnlim)?>
+                                    <?php echo $form->label('pQtyUnlim', t('Unlimited'))?>
+                                </div>
 
+                                <script>
+                                    $(document).ready(function(){
+                                        $('#pQtyUnlim').change(function(){
+                                            $('#pQty').prop('disabled',this.checked);
+                                            $('#backorders').toggle();
+                                        });
+                                    });
+                                </script>
+                            </div>
+
+                        </div>
+                        <div class="form-group" id="backorders" <?= ($p->pQtyUnlim ? 'style="display: none"' : '');?>>
+                            <?php echo $form->checkbox('pBackOrder', '1', $p->pBackOrder)?>
+                            <?php echo $form->label('pBackOrder', t('Allow Back Orders'))?>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pNoQty", t("Offer quantity selection"));?>
+                            <?php echo $form->select("pNoQty",array('0'=>t('Yes'),'1'=>t('No, only allow one of this product in a cart')), $p->isTaxable());?>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="form-group">
                     <?php echo $form->label("pDesc", t("Short Description"));?><br>
                     <textarea class="redactor-content" name="pDesc" id="pDesc" style="display:none;"><?=$p->getProductDesc()?></textarea>
@@ -603,6 +634,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <?php } ?>
 
                 <div class="form-group">
+                    <?php echo $form->checkbox('pCreateUserAccount', '1', $p->pCreateUserAccount)?>
+                    <?php echo $form->label('pCreateUserAccount', t('Create user account on purchase'))?>
+                    <span class="help-block"><?= t('When checked, if customer is guest, will create a user account on purchase'); ?></span>
+                </div>
+
+                <div class="form-group">
                     <?php echo $form->label("usergroups", t("On purchase add user to user groups"));?>
                     <div class="ccm-search-field-content ccm-search-field-content-select2">
                         <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;" placeholder="<?php echo t('Select user groups');?>">
@@ -614,6 +651,20 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         </select>
                     </div>
                 </div>
+
+
+
+
+                <div class="form-group">
+                    <?php echo $form->checkbox('pAutoCheckout', '1', $p->pAutoCheckout)?>
+                    <?php echo $form->label('pAutoCheckout', t('Send customer directly to checkout when added to cart'))?>
+                </div>
+
+                <div class="form-group">
+                    <?php echo $form->checkbox('pExclusive', '1', $p->pExclusive)?>
+                    <?php echo $form->label('pExclusive', t('Prevent this item from being in the cart with other items'))?>
+                </div>
+
 
                 <script type="text/javascript">
                     $(function() {
@@ -676,7 +727,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 
 
-<?php } else if(in_array($controller->getTask(),$listViews)) { ?>
+<?php } elseif(in_array($controller->getTask(),$listViews)) { ?>
 
     <div class="ccm-dashboard-header-buttons">
         <!--<a href="<?php echo View::url('/dashboard/store/products/', 'attributes')?>" class="btn btn-dark"><?php echo t("Manage Attributes")?></a>-->
@@ -713,7 +764,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <thead>
             <th><a><?=t('Primary Image')?></a></th>
             <th><a><?=t('Product Name')?></a></th>
-            <th><a><?=t('Quantity')?></a></th>
+            <th><a><?=t('Stock Level')?></a></th>
             <th><a><?=t('Price')?></a></th>
             <th><a><?=t('Featured')?></a></th>
             <th><a><?=t('Groups')?></a></th>
@@ -726,7 +777,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     ?>
                     <tr>
                         <td><?php echo $p->getProductImageThumb();?></td>
-                        <td><strong><?= $p->getProductName() ?></strong></td>
+                        <td><strong><a href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><?= $p->getProductName() ?></a></strong></td>
                         <td><?= $p->getProductQty() ?></td>
                         <td><?= $p->getFormattedPrice() ?></td>
                         <td>
@@ -765,7 +816,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
     </div>
 
-<?php } else if (in_array($controller->getTask(),$groupViews)){ ?>
+<?php } elseif (in_array($controller->getTask(),$groupViews)){ ?>
 
     <?php if($grouplist){?>
         <h3><?=t("Groups")?></h3>

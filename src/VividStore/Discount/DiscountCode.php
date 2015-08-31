@@ -1,6 +1,7 @@
 <?php
 
 namespace Concrete\Package\VividStore\Src\Vividstore\Discount;
+
 use Concrete\Core\Foundation\Object as Object;
 use Database;
 use Loader;

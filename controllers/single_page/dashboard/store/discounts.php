@@ -1,6 +1,7 @@
 <?php
 
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
+
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode;

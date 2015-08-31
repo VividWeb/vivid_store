@@ -63,8 +63,15 @@ exitModal: function(){
                 type: 'post',
                 success: function(data) {
                     var res = jQuery.parseJSON(data);
+
+                    if (res.product.pAutoCheckout == '1') {
+                        window.location.href = CCM_APPLICATION_URL + "/checkout";
+                        return false;
+                    }
+
                     $(".whiteout").remove();
                     vividStore.displayCart(res);
+
                     $.ajax({
                        url: CARTURL+'/getTotalItems',
                        success: function(itemCount){
@@ -95,31 +102,35 @@ exitModal: function(){
             url: CARTURL+"/update",
             data: {instance: instanceID, pQty: qty},
             type: 'post',
-            success: function() {                
-                $.ajax({
-                    url: CARTURL+"/getSubTotal",
-                    success: function(total){
-                        $(".cart-grand-total-value").text(total);
-                        $(".whiteout").remove();
-                    }
-                });
+            success: function(data) {
+                $(".whiteout").remove();
 
-                $.ajax({
-                   url: CARTURL+'/getTotalItems',
-                   success: function(itemCount){
-                       $(".vivid-store-utility-links .items-counter").text(itemCount);
+                if (modal) {
+                    var res = jQuery.parseJSON(data);
+                    vividStore.displayCart(res);
 
-                       if (modal) {
-                           vividStore.displayCart();
-                       }
-                   } 
-                });
-                $.ajax({
-                   url: CARTURL+'/getSubTotal',
-                   success: function(subTotal){
-                       $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
-                   } 
-                });
+                } else {
+                    $.ajax({
+                        url: CARTURL + "/getSubTotal",
+                        success: function (total) {
+                            $(".cart-grand-total-value").text(total);
+                            $(".whiteout").remove();
+                        }
+                    });
+
+                    $.ajax({
+                        url: CARTURL + '/getTotalItems',
+                        success: function (itemCount) {
+                            $(".vivid-store-utility-links .items-counter").text(itemCount);
+                        }
+                    });
+                    $.ajax({
+                        url: CARTURL + '/getSubTotal',
+                        success: function (subTotal) {
+                            $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
+                        }
+                    });
+                }
             }
         }); 
     },
@@ -131,30 +142,35 @@ exitModal: function(){
             url: CARTURL+"/remove",
             data: {instance: instanceID},
             type: 'post',
-            success: function() {
-                $.ajax({
-                    url: CARTURL+"/getSubTotal",
-                    success: function(total){
-                        $(".cart-grand-total-value").text(total);
-                        $(".whiteout").remove();
-                        $("*[data-instance-id='"+instanceID+"']").remove();
-                    }
-                });
+            success: function(data) {
+                $(".whiteout").remove();
 
-                 $.ajax({
-                   url: CARTURL+'/getTotalItems',
-                   success: function(itemCount){
-                       $(".vivid-store-utility-links .items-counter").text(itemCount);
+                if (modal) {
+                    var res = jQuery.parseJSON(data);
+                    vividStore.displayCart(res);
+                } else {
+                    $.ajax({
+                        url: CARTURL+"/getSubTotal",
+                        success: function(total){
+                            $(".cart-grand-total-value").text(total);
+                            $(".whiteout").remove();
+                            $("*[data-instance-id='"+instanceID+"']").remove();
+                        }
+                    });
 
-                       if (itemCount == 0) {
-                           $(".vivid-store-utility-links").addClass('vivid-cart-empty');
-                       }
+                    $.ajax({
+                        url: CARTURL+'/getTotalItems',
+                        success: function(itemCount){
+                            $(".vivid-store-utility-links .items-counter").text(itemCount);
 
-                       if (modal) {
-                           vividStore.displayCart();
-                       }
-                   } 
-                });
+                            if (itemCount == 0) {
+                                $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+                            }
+
+
+                        }
+                    });
+                }
             }
         }); 
     },
@@ -163,23 +179,27 @@ exitModal: function(){
     clearCart: function(modal){
          $.ajax({ 
              url: CARTURL+"/clear",
-             success: function() {
-                 $.ajax({
-                    url: CARTURL+"/getSubTotal",
-                    success: function(total){
-                        $(".cart-grand-total-value").text(total);
-                        $(".cart-page-cart-list-item").remove();
-                        $(".whiteout").remove();
-                        $(".vivid-store-utility-links .items-counter").text(0);
-                        $(".vivid-store-utility-links .total-cart-amount").text("");
-                        $(".vivid-store-utility-links").addClass('vivid-cart-empty');
+             success: function(data) {
+                 $(".whiteout").remove();
 
-                        if (modal) {
-                            vividStore.displayCart();
-                        }
+                 if (modal) {
+                     var res = jQuery.parseJSON(data);
+                     vividStore.displayCart(res);
+                 } else {
+                     $.ajax({
+                         url: CARTURL+"/getSubTotal",
+                         success: function(total){
+                             $(".cart-grand-total-value").text(total);
+                             $(".cart-page-cart-list-item").remove();
+                             $(".whiteout").remove();
+                             $(".vivid-store-utility-links .items-counter").text(0);
+                             $(".vivid-store-utility-links .total-cart-amount").text("");
+                             $(".vivid-store-utility-links").addClass('vivid-cart-empty');
 
-                    }
-                 });                 
+                         }
+                     });
+                 }
+
              }
         });
     },
@@ -231,6 +251,14 @@ exitModal: function(){
        } else { alert("not valid"); }
     },
     
+    showShippingMethods: function(){
+        $.ajax({
+            url: CHECKOUTURL+"/getShippingMethods",
+            success: function(html){
+                $("#checkout-shipping-method-options").html(html);
+            }
+        });  
+    },
     
     showPaymentForm: function(){
         var pmID = $("#checkout-payment-method-options input[type='radio']:checked").attr('data-payment-method-id');
@@ -243,6 +271,7 @@ exitModal: function(){
 
 vividStore.updateBillingStates();
 vividStore.updateShippingStates();
+vividStore.showShippingMethods();
 vividStore.showPaymentForm();
 
 $("#checkout-form-group-billing").submit(function(e){
@@ -275,9 +304,10 @@ $("#checkout-form-group-billing").submit(function(e){
                         url: CARTURL+"/getTaxTotal",
                         success: function(results){
                             var taxes = JSON.parse(results);
+                            //alert(taxes.length);
                             $("#taxes").html("");
                             for(var i=0;i<taxes.length;i++){
-                                if(taxes[i].taxamount > 0){
+                                if(taxes[i].taxed===true){
                                     $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
                                 }
                             }
@@ -331,12 +361,13 @@ $("#checkout-form-group-billing").submit(function(e){
                             var taxes = JSON.parse(results);
                             $("#taxes").html("");  
                             for(var i=0;i<taxes.length;i++){
-                                if(taxes[i].taxamount > 0){
+                                if(taxes[i].taxed===true){
                                     $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
                                 }
                             }
                         } 
                     });
+                    vividStore.showShippingMethods();
                     $.ajax({
                         url: CARTURL+"/getTotal",
                         success: function(total){
@@ -350,6 +381,45 @@ $("#checkout-form-group-billing").submit(function(e){
             },
        });
        
+    });
+    $("#checkout-form-group-shipping-method").submit(function(e){
+        e.preventDefault();
+        vividStore.waiting();
+        var obj = $(this);
+        if($("#checkout-shipping-method-options input[type='radio']:checked").length < 1){
+            $('.whiteout').remove();
+            alert("You must choose a shipping method");            
+        } else {
+            var smID = $("#checkout-shipping-method-options input[type='radio']:checked").val();
+            $.ajax({
+                type: 'post',
+                data: {smID: smID },
+                url: CARTURL+"/getShippingTotal",
+                success: function(total){
+                    $("#shipping-total").text(total);
+                    vividStore.nextPane(obj);  
+                    $('.whiteout').remove();                    
+                }
+            });
+            $.ajax({
+                url: CARTURL+"/getTaxTotal",
+                success: function(results){
+                    var taxes = JSON.parse(results);
+                    $("#taxes").html("");
+                    for(var i=0;i<taxes.length;i++){
+                        if(taxes[i].taxamount > 0){
+                            $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                        }
+                    }
+                } 
+            });
+            $.ajax({
+                url: CARTURL+"/getTotal",
+                success: function(total){
+                    $(".total-amount").text(total);
+                }
+            });
+        }
     });
     $(".btn-previous-pane").click(function(){
        //hide the body of the current pane, go to the next pane, show that body.

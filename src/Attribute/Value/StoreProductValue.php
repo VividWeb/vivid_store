@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\Attribute\Value;
+
 use Database;
 use \Concrete\Core\Attribute\Value\Value as Value;
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -20,7 +21,7 @@ class StoreProductValue extends Value {
     public function delete() {
         $db = Database::get();
         $db->Execute('delete from VividStoreProductAttributeValues where pID = ? and akID = ? and avID = ?', array(
-            $this->product->getProductID(), 
+            $this->product->getProductID(),
             $this->attributeKey->getAttributeKeyID(),
             $this->getAttributeValueID()
         ));

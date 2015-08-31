@@ -1,5 +1,6 @@
-<?php 
+<?php
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
+
 use Concrete\Core\Foundation\Object as Object;
 use Package;
 use Page;
@@ -11,7 +12,6 @@ use Core;
 use User;
 use Config;
 
-use Concrete\Core\Permission\Assignment\FileAssignment;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
@@ -20,13 +20,13 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Product extends Object
 {
-    
-    public static function getByID($pID) 
+
+    public static function getByID($pID)
     {
         $db = Database::get();
         $data = $db->GetRow("SELECT * FROM VividStoreProducts WHERE pID=?",$pID);
         return self::load($data);
-    }  
+    }
     public static function getByCollectionID($cID)
     {
         $db = Database::get();
@@ -46,13 +46,13 @@ class Product extends Object
         $db = Database::get();
         if($data['pID']){
         //if we know the pID, we're updating.
-                
-            $pID = $data['pID']; 
-                
+
+            $pID = $data['pID'];
+
             //update product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pID']);
-            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=? WHERE pID = ?', $vals);
-            
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
+            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
+
             //update additional images
             $db->Execute('DELETE FROM VividStoreProductImages WHERE pID = ?', $data['pID']);
             $count = count($data['pifID']);
@@ -80,7 +80,7 @@ class Product extends Object
                     $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
                 }
             }
-            
+
             //update option groups
             $db->Execute('DELETE FROM VividStoreProductOptionGroups WHERE pID = ?', $data['pID']);
             $db->Execute('DELETE FROM VividStoreProductOptionItems WHERE pID = ?', $data['pID']);
@@ -101,17 +101,17 @@ class Product extends Object
                         }
                 }
             }
-            
+
         } else {
         //else, we don't know it, so we're adding
-            
+
             $dt = Core::make('helper/date');
             $now = $dt->getLocalDateTime();
-            
+
             //add product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$now);
-            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
-            
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
+            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+
             //add additional images
             $pID = $db->lastInsertId();
             $count = count($data['pifID']);
@@ -138,7 +138,7 @@ class Product extends Object
                 }
             }
 
-            
+
             //add option groups
             $count = count($data['pogSort']);
             $ii=0;//set counter for items
@@ -159,7 +159,7 @@ class Product extends Object
             }
             $product = Product::getByID($pID);
             $product->generatePage($data['selectPageTemplate']);
-            
+
         }
 
         //save files
@@ -177,7 +177,7 @@ class Product extends Object
                     $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
                     $pk->setPermissionObject($fileObj);
                     $pao = $pk->getPermissionAssignmentObject();
-                    $groupEntity = \Concrete\Core\Permission\Access\Entity\GroupEntity::getOrCreate(\Group::getByID(GUEST_GROUP_ID));                    
+                    $groupEntity = \Concrete\Core\Permission\Access\Entity\GroupEntity::getOrCreate(\Group::getByID(GUEST_GROUP_ID));
                     $pa = $pk->getPermissionAccessObject();
                     if ($pa) {
                         $pa->removeListItem($groupEntity);
@@ -198,8 +198,8 @@ class Product extends Object
 
         $product = Product::getByID($pID);
         return $product;
-        
-        
+
+
     }
     public function remove()
     {
@@ -208,7 +208,7 @@ class Product extends Object
         $db->Execute("DELETE FROM VividStoreProductImages WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionGroups WHERE pID=?",$this->pID);
         $db->Execute("DELETE FROM VividStoreProductOptionItems WHERE pID=?",$this->pID);
-        
+
         //delete page from sitemap
         $page = Page::getByID($this->cID);
         if(is_object($page)){
@@ -239,12 +239,12 @@ class Product extends Object
         $cID = $productParentPage->getCollectionID();
         $this->setProductPageID($cID);
     }
-    public function setProductPageID($cID) 
+    public function setProductPageID($cID)
     {
         $db = Database::get();
         $vals = array($cID,$this->pID);
         $db->Execute('UPDATE VividStoreProducts SET cID=? WHERE pID = ?', $vals);
-            
+
     }
     public function getProductID(){ return $this->pID; }
     public function getProductName(){ return $this->pName; }
@@ -259,14 +259,14 @@ class Product extends Object
         } else {
             return false;
         }
-        
+
     }
     public function getGroupID(){ return $this->gID; }
     public function getGroupName()
     {
         $group = ProductGroup::getByID($this->gID);
-        if(is_object($group)){    
-            return $group->getGroupName(); 
+        if(is_object($group)){
+            return $group->getGroupName();
         }
     }
     public function isFeatured(){ return $this->pFeatured; }
@@ -294,14 +294,14 @@ class Product extends Object
         if($this->pfID){
             $fileObj = File::getByID($this->pfID);
             return $fileObj;
-        }   
+        }
     }
     public function hasDigitalDownload()
     {
         $files = $this->getProductDownloadFileIDs();
         return count($files)>0 ? true : false;
     }
-    public function getProductDownloadFileIDs() 
+    public function getProductDownloadFileIDs()
     {
         $db = Database::get();
         $results = $db->GetAll("SELECT dffID FROM VividStoreDigitalFiles WHERE pID=?",$this->pID);
@@ -312,13 +312,28 @@ class Product extends Object
         $fileObjects = array();
         foreach($results as $result){
             $fileObjects[] = File::getByID($result['dffID']);
-        }  
+        }
         return $fileObjects;
     }
     public function hasUserGroups(){
         $db = Database::get();
         $usergroupcount = $db->GetOne("SELECT COUNT(*) AS userGroupCount FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);
         return ($usergroupcount > 0);
+    }
+    public function createsLogin(){
+      return (bool)$this->pCreateUserAccount;
+    }
+    public function allowQuantity() {
+        return !(bool)$this->pNoQty;
+    }
+    public function isExclusive() {
+        return (bool)$this->pExclusive;
+    }
+    public function isUnlimited() {
+        return (bool)$this->pQtyUnlim;
+    }
+    public function allowBackOrders() {
+        return (bool)$this->pBackOrder;
     }
     public function getProductUserGroups(){
         $db = Database::get();
@@ -332,19 +347,19 @@ class Product extends Object
     }
     public function getProductImage(){
         $fileObj = $this->getProductImageObj();
-        if(is_object($fileObj)){ 
-            return "<img src='".$fileObj->getRelativePath()."'>"; 
+        if(is_object($fileObj)){
+            return "<img src='".$fileObj->getRelativePath()."'>";
         }
     }
     public function getProductImageThumb(){
         $fileObj = $this->getProductImageObj();
-        if(is_object($fileObj)){ 
-            return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>"; 
+        if(is_object($fileObj)){
+            return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>";
         }
     }
     public function getProductQty(){ return $this->pQty; }
     public function setProductQty($qty)
-    {  
+    {
         $db = Database::get();
         $db->Execute("UPDATE VividStoreProducts SET pQty=? WHERE pID=?",array($qty,$this->pID));
     }
@@ -427,17 +442,17 @@ class Product extends Object
         }
         return $values;
     }
-	
-	/* TO-DO
-	 * This isn't completely accurate as an order status may be incomplete and never change,
-	 * or an order may be canceled. So at somepoint, circle back to this to check for certain status's
-	 */
-	public function getTotalSold()
-	{
-		$db = Database::get();
-		$results = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE pID = ?",$this->pID);
-		return count($results);
-	}
+
+    /* TO-DO
+     * This isn't completely accurate as an order status may be incomplete and never change,
+     * or an order may be canceled. So at somepoint, circle back to this to check for certain status's
+     */
+    public function getTotalSold()
+    {
+        $db = Database::get();
+        $results = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE pID = ?",$this->pID);
+        return count($results);
+    }
 
     public function setAttribute($ak, $value)
     {
@@ -469,20 +484,20 @@ class Product extends Object
                 $av->setAttributeKey($ak);
             }
         }
-        
+
         if ($createIfNotFound) {
             $cnt = 0;
-        
+
             // Is this avID in use ?
             if (is_object($av)) {
                 $cnt = $db->GetOne("SELECT COUNT(avID) FROM VividStoreProductAttributeValues WHERE avID=?", $av->getAttributeValueID());
             }
-            
+
             if ((!is_object($av)) || ($cnt > 1)) {
                 $av = $ak->addAttributeValue();
             }
         }
-        
+
         return $av;
     }
 }

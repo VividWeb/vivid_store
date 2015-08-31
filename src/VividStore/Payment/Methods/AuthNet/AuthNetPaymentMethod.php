@@ -1,9 +1,9 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\AuthNet;
+
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
-use Package;
 use Core;
 use Config;
 use \AuthorizeNet\Service\Aim as AuthorizeNetAIM;
@@ -32,15 +32,15 @@ class AuthNetPaymentMethod extends PaymentMethod
     
     public function validate($args,$e)
     {
-        $pm = PaymentMethod::getByHandle('auth_net');    
+        $pm = PaymentMethod::getByHandle('auth_net');
         if($args['paymentMethodEnabled'][$pm->getPaymentMethodID()]==1){
             if($args['authnetTransactionKey']==""){
-                $e->add(t("Transaction Key must be set"));     
-            }   
-            if($args['authnetLoginID']==""){
-                $e->add(t("Login ID must be set"));     
+                $e->add(t("Transaction Key must be set"));
             }
-        }  
+            if($args['authnetLoginID']==""){
+                $e->add(t("Login ID must be set"));
+            }
+        }
                
         return $e;
         
@@ -48,7 +48,7 @@ class AuthNetPaymentMethod extends PaymentMethod
     
     public function checkoutForm()
     {
-        $this->set('form',Core::make("helper/form"));  
+        $this->set('form',Core::make("helper/form"));
         $years = array();
         $year = date("Y");
         for($i=0;$i<15;$i++){
@@ -68,7 +68,7 @@ class AuthNetPaymentMethod extends PaymentMethod
         define("TEST_REQUEST", "FALSE");           // You may want to set to true if testing against production
         //define("AUTHORIZENET_MD5_SETTING","");                // Add your MD5 Setting.
         //$site_root = ""; // Add the URL to your site
-        
+
         if (AUTHORIZENET_API_LOGIN_ID == "") {
             die('Enter your merchant credentials');
         }
@@ -76,8 +76,8 @@ class AuthNetPaymentMethod extends PaymentMethod
         $transaction->setSandbox(AUTHORIZENET_SANDBOX);
         $transaction->setFields(
             array(
-                'amount' => Price::getFloat(VividCart::getTotal()), 
-                'card_num' => $_POST['authnet-checkout-credit-card'], 
+                'amount' => Price::getFloat(VividCart::getTotal()),
+                'card_num' => $_POST['authnet-checkout-credit-card'],
                 'exp_date' => $_POST['authnet-checkout-exp-month'].$_POST['authnet-checkout-exp-year']
             )
         );

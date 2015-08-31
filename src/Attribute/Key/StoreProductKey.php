@@ -1,9 +1,7 @@
 <?php
 namespace Concrete\Package\VividStore\Src\Attribute\Key;
-use \Concrete\Core\Attribute\Type as AttributeType;
+
 use Database;
-use CacheLocal;
-use Package;
 use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Core\Attribute\Key\Key as Key;
@@ -35,13 +33,13 @@ class StoreProductKey extends Key {
         $av = StoreProductValue::getByID($avID);
         $av->setAttributeKey($this);
         return $av->{$method}();
-    }    
+    }
        
     public static function getByID($akID) {
         $ak = new StoreProductKey();
         $ak->load($akID);
         if ($ak->getAttributeKeyID() > 0) {
-            return $ak; 
+            return $ak;
         }
     }
 
@@ -60,11 +58,11 @@ class StoreProductKey extends Key {
             return false;
         }
         return $ak;
-    }    
+    }
     
     
     public static function getList() {
-        return parent::getList('store_product');  
+        return parent::getList('store_product');
     }
     
     protected function saveAttribute($product, $value = false) {
@@ -73,8 +71,8 @@ class StoreProductKey extends Key {
         $db = Database::get();
         $v = array($product->getProductID(), $this->getAttributeKeyID(), $av->getAttributeValueID());
         $db->Replace('VividStoreProductAttributeValues', array(
-            'pID' => $product->getProductID(), 
-            'akID' => $this->getAttributeKeyID(), 
+            'pID' => $product->getProductID(),
+            'akID' => $this->getAttributeKeyID(),
             'avID' => $av->getAttributeValueID()
         ), array('pID', 'akID'));
         unset($av);
@@ -82,7 +80,7 @@ class StoreProductKey extends Key {
     }
     
     public static function add($type, $args, $pkg = false) {
-        $ak = parent::add('store_product', $type, $args, $pkg);        
+        $ak = parent::add('store_product', $type, $args, $pkg);
         
         extract($args);
         
@@ -96,7 +94,7 @@ class StoreProductKey extends Key {
     }
     
     public function update($args) {
-        $ak = parent::update($args);    
+        $ak = parent::update($args);
         extract($args);
         $v = array($ak->getAttributeKeyID());
         $db = Database::get();

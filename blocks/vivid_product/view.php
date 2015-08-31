@@ -83,10 +83,14 @@ if(is_object($p)){?>
             <?php } ?>
             
             <div class="clearfix col-container product-options">
+                <?php if ($p->allowQuantity()) { ?>
                 <div class="product-modal-option-group vivid-store-col-2">
                     <label class="option-group-label"><?=t('Quantity')?></label>
-                    <input type="number" name="quantity" class="product-qty" value="1" min="1" max="<?=$p->getProductQty()?>">
+                    <input type="number" name="quantity" class="product-qty" value="1" min="1" <?=($p->allowBackOrders() ? '' :'max="' . $p->getProductQty() . '"' );?>>
                 </div>
+                    <?php } else { ?>
+                    <input type="hidden" name="quantity" class="product-qty" value="1">
+                <?php } ?>
                 <?php
                 $optionGroups = $p->getProductOptionGroups();
                 $optionItems = $p->getProductOptionItems();
@@ -99,7 +103,7 @@ if(is_object($p)){?>
                         foreach($optionItems as $option){
                             if($option['pogID']==$optionGroup['pogID']){?>
                                 <option value="<?=$option['poiID']?>"><?=$option['poiName']?></option>   
-                            <?php }   
+                            <?php }
                         }//foreach    
                         ?>
                     </select>

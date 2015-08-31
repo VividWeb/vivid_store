@@ -10,7 +10,6 @@
 namespace AuthorizeNet\Service\Cp;
 
 use AuthorizeNet\Service\Aim\Request as AimRequest;
-use AuthorizeNet\Service\Cp\Response;
 
 /**
  * Builds and sends an AuthorizeNet CP Request.

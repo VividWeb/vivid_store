@@ -1,4 +1,4 @@
-<?php  
+<?php 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 $addViews = array('select_type','add','edit');
 if (isset($key)) { ?>
@@ -9,7 +9,7 @@ if (isset($key)) { ?>
     
     </form>
 
-<?php  } else if (in_array($controller->getTask(),$addViews)) { ?>
+<?php  } elseif (in_array($controller->getTask(),$addViews)) { ?>
 
 	
 	<?php  if (isset($type)) { ?>
@@ -20,7 +20,7 @@ if (isset($key)) { ?>
 	
 <?php  } else {
 
-	Loader::element('dashboard/attributes_table', array('category' => $category, 'attribs'=> $attrList, 'editURL' => '/dashboard/store/products/attributes')); ?>
+    Loader::element('dashboard/attributes_table', array('category' => $category, 'attribs'=> $attrList, 'editURL' => '/dashboard/store/products/attributes')); ?>
 
 	<form method="get" class="form-horizontal" action="<?php echo $this->action('select_type')?>" id="ccm-attribute-type-form">
     	

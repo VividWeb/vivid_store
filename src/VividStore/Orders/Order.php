@@ -3,16 +3,16 @@ namespace Concrete\Package\VividStore\Src\VividStore\Orders;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
-use File;
 use User;
-use UserInfo;
 use Core;
 use Package;
 use Concrete\Core\Mail\Service as MailService;
-use Session;
 use Group;
 use Events;
 use Config;
+use Loader;
+use Page;
+use UserInfo;
 
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
@@ -22,6 +22,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
@@ -38,7 +39,7 @@ class Order extends Object
             $order->setPropertiesFromArray($data);
         }
         return($order instanceof Order) ? $order : false;
-    }  
+    }
     public function getCustomersMostRecentOrderByCID($cID)
     {
         $db = Database::get();
@@ -64,12 +65,15 @@ class Order extends Object
         $now = $dt->getLocalDateTime();
         
         //get the price details
+        $smID = \Session::get('smID');
         $shipping = VividCart::getShippingTotal();
         $shipping = Price::formatFloat($shipping);
-        $taxvalue = VividCart::getTaxTotal();
+
         $taxName = Config::get('vividstore.taxName');
-        $total = VividCart::getTotal();
+        $totals = VividCart::getTotals();
+        $total = $totals['total'];
         $total = Price::formatFloat($total);
+        $taxvalue = $totals['taxTotal'];
 
         $tax = 0;
         $taxIncluded = 0;
@@ -85,8 +89,8 @@ class Order extends Object
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,$pmID,$shipping,$tax,$taxIncluded,$taxName,$total);
-        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?)", $vals);
+        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,smID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
         if($status){
@@ -94,22 +98,35 @@ class Order extends Object
         } else {
             $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
         }
-        $order->setAttribute("email",$customer->getEmail());
-        $order->setAttribute("billing_first_name",$customer->getValue("billing_first_name"));
-        $order->setAttribute("billing_last_name",$customer->getValue("billing_last_name"));
-        $order->setAttribute("billing_address",$customer->getValueArray("billing_address"));
-        $order->setAttribute("billing_phone",$customer->getValue("billing_phone"));
-        $order->setAttribute("shipping_first_name",$customer->getValue("shipping_first_name"));
-        $order->setAttribute("shipping_last_name",$customer->getValue("shipping_last_name"));
-        $order->setAttribute("shipping_address",$customer->getValueArray("shipping_address"));
+
+        $email = $customer->getEmail();
+        $billing_first_name = $customer->getValue("billing_first_name");
+        $billing_last_name = $customer->getValue("billing_last_name");
+        $billing_address = $customer->getValueArray("billing_address");
+        $billing_phone = $customer->getValue("billing_phone");
+        $shipping_first_name = $customer->getValue("shipping_first_name");
+        $shipping_last_name = $customer->getValue("shipping_last_name");
+        $shipping_address = $customer->getValueArray("shipping_address");
+
+        $order->setAttribute("email",$email);
+        $order->setAttribute("billing_first_name",$billing_first_name);
+        $order->setAttribute("billing_last_name",$billing_last_name);
+        $order->setAttribute("billing_address",$billing_address);
+        $order->setAttribute("billing_phone",$billing_phone);
+        $order->setAttribute("shipping_first_name",$shipping_first_name);
+        $order->setAttribute("shipping_last_name",$shipping_last_name);
+        $order->setAttribute("shipping_address",$shipping_address);
 
         $customer->setLastOrderID($oID);
 
         //add the order items
         $cart = VividCart::getCart();
+        $groupstoadd = array();
+        $createlogin = false;
 
         foreach ($cart as $cartItem) {
-            $taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']);
+            //$taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']); // TODO - this needs to be updated
+            $taxvalue = 0;
             $tax = 0;
             $taxIncluded = 0;
 
@@ -128,22 +145,116 @@ class Order extends Object
             OrderItem::add($cartItem,$oID,$tax,$taxIncluded,$productTaxName);
             $product = VividProduct::getByID($cartItem['product']['pID']);
             if ($product && $product->hasUserGroups()) {
-                $usergroupstoadd = $product->getProductUserGroups();
-                foreach ($usergroupstoadd as $id) {
-                    $g = Group::getByID($id);
-                    if ($g) {
-                        $customer->getUserInfo()->enterGroup($g);
-                    }
-                }
+                $groupstoadd = array_merge($groupstoadd, $product->getProductUserGroups());
+            }
+
+            if ($product && $product->pCreateUserAccount) {
+                $createlogin = true;
             }
         }
-        
-        if (!$customer->isGuest()) {
+
+        if ($createlogin && $customer->isGuest()) {
+            $email = $customer->getEmail();
+
+            $user = UserInfo::getByEmail($email);
+            $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
+
+            $mh = Loader::helper('mail');
+            $mh->addParameter('siteName', Config::get('concrete.site'));
+
+            //$member_redirect_page_id = Config::get('snipcart_membership.complete_cID');
+            $navhelper = Core::make('helper/navigation');
+
+//                    if ($member_redirect_page_id) {
+//                        $target = Page::getById($member_redirect_page_id);
+//                    } else {
+            $target = Page::getByPath('/login');
+//                    }
+
+            if ($target) {
+                $link = $navhelper->getLinkToCollection($target, true);
+
+                if ($link) {
+                    $mh->addParameter('link', $link);
+                }
+            } else {
+                $mh->addParameter('link', '');
+            }
+
+            if (!$user) {
+                $valc = Loader::helper('concrete/validation');
+
+                $min = Config::get('concrete.user.username.minimum');
+                $max = Config::get('concrete.user.username.maximum');
+
+                $newusername = preg_replace("/[^A-Za-z0-9_]/", '', strstr($email, '@', true));
+
+                while (!$valc->isUniqueUsername($newusername) || strlen($newusername) < $min) {
+                    if (strlen($newusername) >= $max) {
+                        $newusername = substr($newusername, 0, $max - 5);
+                    }
+                    $newusername .= rand(0, 9);
+                }
+
+                $user = UserInfo::add(array('uName' => $newusername, 'uEmail' => trim($email), 'uPassword' => $password));
+
+                if (Config::get('concrete.user.registration.email_registration')) {
+                    $mh->addParameter('username', trim($email));
+                } else {
+                    $mh->addParameter('username', $newusername);
+                }
+
+                $mh->addParameter('password', $password);
+                $email = trim($email);
+
+                $mh->load('new_user', 'vivid_store');
+
+                // login the newly created user
+                User::loginByUserID($user->getUserID());
+
+                // update the order created with the user from the newly created user
+                $order->associateUser($user->getUserID());
+
+                // update the new user's attributes
+                $customer = new Customer($user->getUserID());
+                $customer->setValue('billing_first_name', $billing_first_name);
+                $customer->setValue('billing_last_name', $billing_last_name);
+                $customer->setValue('billing_address', $billing_address);
+                $customer->setValue('billing_phone', $billing_phone);
+                $customer->setValue('shipping_first_name', $shipping_first_name);
+                $customer->setValue('shipping_last_name', $shipping_last_name);
+                $customer->setValue('shipping_address', $shipping_address);
+
+
+            } else {  // if the user already exists, don't log them in, but send them a notice
+                $email = $user->getUserEmail();
+                $mh->load('new_access', 'vivid_store');
+            }
+
+            $mh->to($email);
+            $mh->sendMail();
+        }
+
+
+        if (!$customer->isGuest() || $createlogin) {
+            $user = $customer->getUserInfo()->getUserObject();
+
             //add user to Store Customers group
             $group = \Group::getByName('Store Customer');
             if (is_object($group) || $group->getGroupID() < 1) {
-                $customer->getUserInfo()->enterGroup($group);
+                $user->enterGroup($group);
             }
+
+            foreach ($groupstoadd as $id) {
+                $g = Group::getByID($id);
+                if ($g) {
+                    $user->enterGroup($g);
+
+                }
+            }
+
+            $user->refreshUserGroups();
+
         }
 
         $discounts = VividCart::getDiscounts();
@@ -205,7 +316,7 @@ class Order extends Object
     }
     public function getOrderItems()
     {
-        $db = Database::get();    
+        $db = Database::get();
         $rows = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$this->oID);
         $items = array();
 
@@ -217,8 +328,8 @@ class Order extends Object
     }
     public function getOrderID(){ return $this->oID; }
     public function getPaymentMethodName() {
-        $pm = PaymentMethod::getByID($this->pmID); 
-        if(is_object($pm)){  
+        $pm = PaymentMethod::getByID($this->pmID);
+        if(is_object($pm)){
             return $pm->getPaymentMethodName();
         }
     }
@@ -239,6 +350,11 @@ class Order extends Object
     }
     public function getTaxTotal() { return $this->oTax + $this->oTaxIncluded; }
     public function getShippingTotal() { return $this->oShippingTotal; }
+    public function getShippingMethodName(){
+        if($this->smID){
+            return ShippingMethod::getByID($this->smID)->getName();
+        }
+    }
     
     public function updateStatus($status)
     {
@@ -305,6 +421,12 @@ class Order extends Object
     public function getAppliedDiscounts() {
         $db = Database::get();
         $rows = $db->GetAll("SELECT * FROM VividStoreOrderDiscounts WHERE oID=?",$this->oID);
+        return $rows;
+    }
+
+    public function associateUser($uID) {
+        $db = Database::get();
+        $rows = $db->Execute("Update VividStoreOrders set cID=? where oID = ?",array($uID, $this->oID));
         return $rows;
     }
 }

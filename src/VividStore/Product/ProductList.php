@@ -1,12 +1,10 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
-use Database;
-use Concrete\Core\Foundation\Object;
+
 use Concrete\Core\Search\Pagination\Pagination;
 use Concrete\Core\Search\ItemList\Database\AttributedItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 
-use Concrete\Package\VividStore\Src\VividStore\Product\Product;
 use \Concrete\Package\VividStore\Src\VividStore\Report\ProductReport;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -103,18 +101,18 @@ class ProductList extends AttributedItemList
             case "date":
                 $query->orderBy('pDateAdded','DESC');
                 break;
-			case "popular":
-				$pr = new ProductReport();
-				$pr->sortByPopularity();
-				$products = $pr->getProducts();
-				$pIDs = array();
-				foreach($products as $product){
-					$pIDs[] = $product['pID'];
-				}
-				foreach($pIDs as $pID){
-					$query->addOrderBy("pID = ?",'DESC')->setParameter($paramcount++,$pID);
-				}
-				break;
+            case "popular":
+                $pr = new ProductReport();
+                $pr->sortByPopularity();
+                $products = $pr->getProducts();
+                $pIDs = array();
+                foreach($products as $product){
+                    $pIDs[] = $product['pID'];
+                }
+                foreach($pIDs as $pID){
+                    $query->addOrderBy("pID = ?",'DESC')->setParameter($paramcount++,$pID);
+                }
+                break;
         }
         switch ($this->featured){
             case "featured":

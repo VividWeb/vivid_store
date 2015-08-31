@@ -13,7 +13,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '3.0dev1';
+    protected $pkgVersion = '3.0dev9';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
         'src/Omnipay' => '\Omnipay'
@@ -27,7 +27,7 @@ class Controller extends Package
     {
         return t("Vivid Store");
     }
-	
+
 	public function installStore()
 	{
 		$pkg = Package::getByHandle('vivid_store');
@@ -63,10 +63,10 @@ class Controller extends Package
     public function upgrade()
     {
         parent::upgrade();
-		$this->installStore();				
+		$this->installStore();
     }
 
-    
+
 
     public function registerRoutes()
     {

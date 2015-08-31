@@ -1,13 +1,13 @@
 <?php
 
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
+
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use Core;
 use View;
 use Package;
 use FilePermissions;
 use TaskPermission;
-use Database;
 use File;
 use Loader;
 use PageType;
@@ -37,7 +37,7 @@ class Products extends DashboardPageController
 
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
-        $this->set('products',$paginator->getCurrentPageResults());  
+        $this->set('products',$paginator->getCurrentPageResults());
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
         $pkg = Package::getByHandle('vivid_store');
@@ -64,14 +64,14 @@ class Products extends DashboardPageController
     }
     public function add()
     {
-        $this->loadFormAssets();       
-        $this->set("actionType",t("Add")); 
+        $this->loadFormAssets();
+        $this->set("actionType",t("Add"));
         
-        $grouplist = VividProductGroupList::getGroupList();            
+        $grouplist = VividProductGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
-        }     
+        }
         $this->set("productgroups",$productgroups);
 
         $gl = new GroupList();
@@ -92,8 +92,8 @@ class Products extends DashboardPageController
     }
     public function edit($pID)
     {
-        $this->loadFormAssets();     
-        $this->set("actionType",t("Update")); 
+        $this->loadFormAssets();
+        $this->set("actionType",t("Update"));
         
         //get the product
         $product = VividProduct::getByID($pID);
@@ -113,7 +113,7 @@ class Products extends DashboardPageController
         $grouplist = VividProductGroupList::getGroupList();
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
-        }     
+        }
         $this->set("productgroups",$productgroups);
 
         $gl = new GroupList();
@@ -161,7 +161,7 @@ class Products extends DashboardPageController
         $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
         
         $attrList = StoreProductKey::getList();
-		$this->set('attribs',$attrList);
+        $this->set('attribs',$attrList);
         
         $pageType = PageType::getByHandle("store_product");
         $pageTemplates = $pageType->getPageTypePageTemplateObjects();
@@ -185,16 +185,16 @@ class Products extends DashboardPageController
             $this->error = $errors;
             if (!$errors->has()) {
                 
-                $product = VividProduct::save($data); 
-        		$aks = StoreProductKey::getList();
-        		foreach($aks as $uak) {
-        			$uak->saveAttributeForm($product);				
-        		}
+                $product = VividProduct::save($data);
+                $aks = StoreProductKey::getList();
+                foreach($aks as $uak) {
+                    $uak->saveAttributeForm($product);
+                }
                 if($data['pID']){
                     $this->redirect('/dashboard/store/products/', 'updated');
                 } else {
                     $this->redirect('/dashboard/store/products/', 'success');
-                }       
+                }
             }//if no errors
         }//if post
     }
@@ -211,7 +211,7 @@ class Products extends DashboardPageController
         if(!is_numeric($args['pPrice'])){
             $e->add(t('The Price must be set, and numeric'));
         }
-        if(!is_numeric($args['pQty'])){
+        if(!is_numeric($args['pQty']) && !$args['pQtyUnlim']){
             $e->add(t('The Quantity must be set, and numeric'));
         }
         if(!is_numeric($args['pWidth'])){
@@ -234,7 +234,7 @@ class Products extends DashboardPageController
     // GROUPS PAGE
     public function groups()
     {
-        $grouplist = VividProductGroupList::getGroupList();            
+        $grouplist = VividProductGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         $pkg = Package::getByHandle('vivid_store');
         $packagePath = $pkg->getRelativePath();

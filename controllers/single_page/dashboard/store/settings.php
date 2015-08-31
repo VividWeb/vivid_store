@@ -3,7 +3,6 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
-use Database;
 use Package;
 use Core;
 use Loader;
@@ -98,16 +97,16 @@ class Settings extends DashboardPageController
                         $pm = PaymentMethod::getByID($pmID);
                         $pm->setDisplayName($value);
                     }
-                }       
+                }
 
                 $this->saveOrderStatuses($args);
                 
                 $this->redirect('/dashboard/store/settings/success');
                 
             }//if no errors 
-            
+
         }//if post
-         
+
     }
 
     private function saveOrderStatuses($data) {

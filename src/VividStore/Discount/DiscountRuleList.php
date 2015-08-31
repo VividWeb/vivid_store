@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\Vividstore\Discount;
+
 use Concrete\Core\Search\Pagination\Pagination;
 use Concrete\Core\Search\ItemList\Database\ItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;

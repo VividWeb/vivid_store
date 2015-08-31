@@ -90,60 +90,60 @@ use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
 $(function(){
 	new Chartist.Line('#sales-chart', {
 	    <?php
-	    	$months = array(
-				new DateTime(date('Y-M', strtotime('-5 months'))),
-				new DateTime(date('Y-M', strtotime('-4 months'))),
-				new DateTime(date('Y-M', strtotime('-3 months'))),
-				new DateTime(date('Y-M', strtotime('-2 months'))),
-				new DateTime(date('Y-M', strtotime('-1 month'))),
-				new DateTime(date('Y-M'))
-			);
-	    ?>
+            $months = array(
+                new DateTime(date('Y-M', strtotime('-5 months'))),
+                new DateTime(date('Y-M', strtotime('-4 months'))),
+                new DateTime(date('Y-M', strtotime('-3 months'))),
+                new DateTime(date('Y-M', strtotime('-2 months'))),
+                new DateTime(date('Y-M', strtotime('-1 month'))),
+                new DateTime(date('Y-M'))
+            );
+        ?>
 	    
 	    labels: [ <?php for($i=0;$i<6;$i++){
-	    		if($i!=5){
-	    			echo "'".$months[$i]->format("M")."',";
-				} else {
-					echo "'".$months[$i]->format("M")."'";
-				}
-	    	} ?> ],
+                if($i!=5){
+                    echo "'".$months[$i]->format("M")."',";
+                } else {
+                    echo "'".$months[$i]->format("M")."'";
+                }
+            } ?> ],
 		// Our series array that contains series objects or in this case series data arrays
 	    series: [
 	    	[
 				<?php 
-					for($i=0;$i<6;$i++){
-						$report = SalesReport::getByMonth($months[$i]->format('Y-M'));
-						if($i==5){
-							echo "{meta: '".t('Total')."', value: ".$report['total']."}";
-						} else {
-							echo "{meta: '".t('Total')."', value: ".$report['total']."},";
-						}
-					}
-				?>				
+                    for($i=0;$i<6;$i++){
+                        $report = SalesReport::getByMonth($months[$i]->format('Y-M'));
+                        if($i==5){
+                            echo "{meta: '".t('Total')."', value: ".$report['total']."}";
+                        } else {
+                            echo "{meta: '".t('Total')."', value: ".$report['total']."},";
+                        }
+                    }
+                ?>				
 			],
 			[
 				<?php 
-					for($i=0;$i<6;$i++){
-						$report = SalesReport::getByMonth($months[$i]->format('Y-M'));
-						if($i==5){
-							echo "{meta: '".t('Products')."', value: ".$report['productTotal']."}";
-						} else {
-							echo "{meta: '".t('Products')."', value: ".$report['productTotal']."},";
-						}
-					}
-				?>				
+                    for($i=0;$i<6;$i++){
+                        $report = SalesReport::getByMonth($months[$i]->format('Y-M'));
+                        if($i==5){
+                            echo "{meta: '".t('Products')."', value: ".$report['productTotal']."}";
+                        } else {
+                            echo "{meta: '".t('Products')."', value: ".$report['productTotal']."},";
+                        }
+                    }
+                ?>				
 			],
 			[
 				<?php 
-					for($i=0;$i<6;$i++){
-						$report = SalesReport::getByMonth($months[$i]->format('Y-M'));
-						if($i==5){
-							echo "{meta: '".t('Shipping')."', value: ".$report['shippingTotal']."}";
-						} else {
-							echo "{meta: '".t('Shipping')."', value: ".$report['shippingTotal']."},";
-						}
-					}
-				?>				
+                    for($i=0;$i<6;$i++){
+                        $report = SalesReport::getByMonth($months[$i]->format('Y-M'));
+                        if($i==5){
+                            echo "{meta: '".t('Shipping')."', value: ".$report['shippingTotal']."}";
+                        } else {
+                            echo "{meta: '".t('Shipping')."', value: ".$report['shippingTotal']."},";
+                        }
+                    }
+                ?>				
 			]
 	  	]
 	},

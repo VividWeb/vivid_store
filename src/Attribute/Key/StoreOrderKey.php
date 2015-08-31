@@ -1,9 +1,7 @@
 <?php
 namespace Concrete\Package\VividStore\Src\Attribute\Key;
-use \Concrete\Core\Attribute\Type as AttributeType;
+
 use Database;
-use CacheLocal;
-use Package;
 use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Core\Attribute\Key\Key as Key;
@@ -35,13 +33,13 @@ class StoreOrderKey extends Key {
         $av = StoreOrderValue::getByID($avID);
         $av->setAttributeKey($this);
         return $av->{$method}();
-    }    
+    }
        
     public static function getByID($akID) {
         $ak = new StoreOrderKey();
         $ak->load($akID);
         if ($ak->getAttributeKeyID() > 0) {
-            return $ak; 
+            return $ak;
         }
     }
 
@@ -60,11 +58,11 @@ class StoreOrderKey extends Key {
             return false;
         }
         return $ak;
-    }    
+    }
     
     
     public static function getList() {
-        return parent::getList('store_order');  
+        return parent::getList('store_order');
     }
     
     protected function saveAttribute($order, $value = false) {
@@ -73,8 +71,8 @@ class StoreOrderKey extends Key {
         $db = Database::get();
         $v = array($order->getOrderID(), $this->getAttributeKeyID(), $av->getAttributeValueID());
         $db->Replace('VividStoreOrderAttributeValues', array(
-            'oID' => $order->getOrderID(), 
-            'akID' => $this->getAttributeKeyID(), 
+            'oID' => $order->getOrderID(),
+            'akID' => $this->getAttributeKeyID(),
             'avID' => $av->getAttributeValueID()
         ), array('oID', 'akID'));
         unset($av);
@@ -82,7 +80,7 @@ class StoreOrderKey extends Key {
     }
     
     public static function add($type, $args, $pkg = false) {
-        $ak = parent::add('store_order', $type, $args, $pkg);        
+        $ak = parent::add('store_order', $type, $args, $pkg);
         
         extract($args);
         
@@ -96,7 +94,7 @@ class StoreOrderKey extends Key {
     }
     
     public function update($args) {
-        $ak = parent::update($args);    
+        $ak = parent::update($args);
         extract($args);
         $v = array($ak->getAttributeKeyID());
         $db = Database::get();

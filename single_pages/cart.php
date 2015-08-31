@@ -6,14 +6,32 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 <div class="cart-page-cart">
 
     <h1><?=t("Shopping Cart")?></h1>
-    
+
+    <?php if (isset($actiondata) and !empty($actiondata)) { ?>
+        <?php if( $actiondata['action'] =='update') { ?>
+            <p class="alert alert-success"><?= t('Your cart has been updated');?></p>
+        <?php } ?>
+
+        <?php if($actiondata['action'] == 'clear') { ?>
+            <p class="alert alert-warning"><?= t('Your cart has been cleared');?></p>
+        <?php } ?>
+
+        <?php if($actiondata['action'] == 'remove') { ?>
+            <p class="alert alert-warning"><?= t('Item removed');?></p>
+        <?php } ?>
+
+        <?php if($actiondata['quantity'] != $actiondata['added']) { ?>
+            <p class="alert alert-warning"><?= t('Due to stock levels your quantity has been limited');?></p>
+        <?php } ?>
+    <?php } ?>
+
     <input id='cartURL' type='hidden' data-cart-url='<?=View::url("/cart/")?>'>
     
     <ul class="cart-page-cart-list">
     <?php 
     if($cart){
-        $i=1;  
-        foreach ($cart as $k=>$cartItem){            
+        $i=1;
+        foreach ($cart as $k=>$cartItem){
             $pID = $cartItem['product']['pID'];
             $qty = $cartItem['product']['qty'];
             $product = VividProduct::getByID($pID);
@@ -37,13 +55,22 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 <?=Price::format($product->getProductPrice())?>
             </div>
             <div class="cart-list-product-qty">
-                <span class="cart-item-label"><?=t("Quantity:")?></span>
-                <input type="number" max="<?=$product->getProductQty()?>" min="1" value="<?=$qty?>" style="width: 50px;">
+                <?php if ($product->allowQuantity()) { ?>
+                    <form method="post">
+                        <input type="hidden" name="instance" value="<?=$k?>" />
+                        <span class="cart-item-label"><?=t("Quantity:")?></span>
+                        <input type="number" name="pQty" min="1" <?=($product->allowBackOrders() ? '' :'max="' . $product->getProductQty() . '"' );?> value="<?=$qty?>" style="width: 50px;">
+                        <button name="action" value="update" class="btn-cart-list-update" type="submit"><?=t("Update")?></button>
+                    </form>
+                <?php } ?>
             </div>
             <div class="cart-list-item-links">
-                <a class="btn-cart-list-update" href="javascript:vividStore.updateItem(<?=$k?>);"><?=t("Update")?></a> 
-                <a class="btn-cart-list-remove"  href="javascript:vividStore.removeItem(<?=$k?>);"><?=t("Remove")?></a>
+                <form method="post">
+                    <input type="hidden" name="instance" value="<?=$k?>" />
+                     <button name="action" value="remove" class="btn-cart-list-remove" type="submit"><?=t("Remove")?></button>
+                </form>
             </div>
+
             <?php if($cartItem['productAttributes']){?>
             <div class="cart-list-item-attributes">
                 <?php foreach($cartItem['productAttributes'] as $groupID => $valID){
@@ -92,20 +119,23 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         <?php } ?>
         </ul>
     </div>
+
     <?php }?>
 
-
-
+    <?php if ($cart  && !empty($cart)) { ?>
     <div class="cart-page-cart-total">        
         <span class="cart-grand-total-label"><?=t("Sub Total")?>:</span>
         <span class="cart-grand-total-value"><?=Price::format($total)?></span>
     </div>
         
     <div class="cart-page-cart-links">
-        <?php if ($cart  && !empty($cart)) { ?>
-        <a class="btn-cart-page-clear" href="javascript:vividStore.clearCart()"><?=t('Clear Cart')?></a>
+        <form method="post">
+            <button name="action" value="clear" class="btn-cart-list-clear" type="submit"><?=t("Clear Cart")?></button>
+        </form>
         <a class="btn-cart-page-checkout" href="<?=View::url('/checkout')?>"><?=t('Checkout')?></a>
-        <?php } ?>
     </div>
+    <?php } else { ?>
+    <p class="alert alert-info"><?= t('Your cart is empty');?></p>
+    <?php } ?>
     
 </div>
