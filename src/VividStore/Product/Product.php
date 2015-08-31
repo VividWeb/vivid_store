@@ -49,6 +49,12 @@ class Product extends Object
 
             $pID = $data['pID'];
 
+            $product = self::getByID($pID);
+
+            if (!$product->getProductID())  {
+                return false;
+            }
+
             //update product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
             $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
@@ -99,6 +105,22 @@ class Product extends Object
                                 $db->Execute("INSERT INTO VividStoreProductOptionItems (pID,pogID,poiName,poiSort) VALUES (?,?,?,?)",$vals);
                             }
                         }
+                }
+            }
+
+            $originalDesc = strip_tags(trim($product->getProductDesc()));
+
+            $pageID = $product->getProductPageID();
+            if ($pageID) {
+                $productPage = Page::getByID($pageID);
+
+                if ($productPage) {
+                    $pageDescription = trim($productPage->getAttribute('meta_description'));
+
+                    // if it's the same as the current product description, it hasn't been updated independently of the product
+                    if ($pageDescription == '' || $originalDesc == $pageDescription) {
+                        $productPage->setAttribute('meta_description', strip_tags($data['pDesc']));
+                    }
                 }
             }
 
@@ -236,6 +258,10 @@ class Product extends Object
             $pageTemplate
         );
         $productParentPage->setAttribute('exclude_nav', 1);
+
+        $description = strip_tags($this->getProductDesc());
+        $productParentPage->setAttribute('meta_description', $description);
+
         $cID = $productParentPage->getCollectionID();
         $this->setProductPageID($cID);
     }
