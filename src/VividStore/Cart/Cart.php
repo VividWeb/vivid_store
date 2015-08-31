@@ -10,6 +10,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMetho
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as Product;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -31,19 +32,25 @@ class Cart
             $db = Database::get();
 
             $checkeditems = array();
-            $removal = false;
+            $update = false;
             // loop through and check if product hasn't been deleted. Remove from cart session if not found.
             foreach($cart as $cartitem) {
-                $exists = $db->GetOne("SELECT pID FROM VividStoreProducts WHERE pID=? ",$cartitem['product']['pID']);
+                $product =Product::getByID((int)$cartitem['product']['pID']);
 
-                if (!empty($exists)) {
+                if ($product) {
+                    // check that we dont have a non-quantity product in cart with a quantity > 1
+                    if (!$product->allowQuantity() && $cartitem['product']['qty'] > 0) {
+                        $cartitem['product']['qty'] = 1;
+                        $update = true;
+                    }
+
                     $checkeditems[] = $cartitem;
                 } else {
-                    $removal = true;
+                    $update = true;
                 }
             }
 
-            if ($removal) {
+            if ($update) {
                 Session::set('vividstore.cart', $checkeditems);
             }
 
@@ -61,7 +68,7 @@ class Cart
                 if (count($rules) > 0) {
                     self::$discounts = array_merge(self::$discounts, $rules);
                 } else {
-                     Session::set('vividstore.code', '');
+                    Session::set('vividstore.code', '');
                 }
             }
 
@@ -82,6 +89,16 @@ class Cart
     public function add($data)
     {
 
+        $product = Product::getByID((int)$data['pID']);
+
+        if (!$product) {
+            return false;
+        }
+
+        if ($product->isExclusive()) {
+            self::clear();
+        }
+
         //now, build a nicer "cart item"
         $cartItem = array();
         $cartItem['product'] = array(
@@ -90,10 +107,10 @@ class Cart
         );
         unset($data['pID']);
         unset($data['quantity']);
-        
+
         //since we removed the ID/qty, we're left with just the attributes
         $cartItem['productAttributes'] = $data;
-        
+
         /*
          * We need to add the item to the cart, however, first we need to do some comparisons.
          * If we're adding a product that already exists, but the attributes are different,
@@ -104,6 +121,9 @@ class Cart
          * phew.
          * 
          */
+
+        $added = 0;
+        $existingproductcount = 0;
 
         $exists = false;
         foreach(self::getCart() as $k=>$cart) {
@@ -125,43 +145,99 @@ class Cart
               }
             }
         }
-        if($exists !== false) {
+
+        $removeexistingexclusive  = false;
+
+        foreach(self::getCart() as $k=>$cart) {
+            $cartproduct = Product::getByID((int)$cart['product']['pID']);
+
+            if ($cartproduct && $cartproduct->isExclusive()) {
+                self::remove($k);
+                $removeexistingexclusive = true;
+            }
+        }
+
+        $cart = self::getCart();
+
+        if ($exists !== false) {
             //we have a match, update the qty
-            $cart = self::getCart();
-            $cart[$exists]['product']['qty'] += $cartItem['product']['qty'];
-            Session::set('vividstore.cart',$cart);
+            if ($product->allowQuantity()) {
+                $newquantity = $cart[$exists]['product']['qty'] + $cartItem['product']['qty'];
+            } else {
+                $newquantity = 1;
+            }
+
+            if (!$product->isUnlimited() &&  !$product->allowBackOrders() && $product->getProductQty() < max($newquantity, $existingproductcount)) {
+                $newquantity = $product->getProductQty();
+            }
+
+            $added = $newquantity- $existingproductcount;
+            $cart[$exists]['product']['qty'] = $newquantity;
+        } else {
+            $newquantity = $cartItem['product']['qty'];
+
+            if (!$product->isUnlimited() && !$product->allowBackOrders() && $product->getProductQty() < $newquantity) {
+                $newquantity = $product->getProductQty();
+            }
+
+            $cart[$exists]['product']['qty'] = $newquantity;
+
+            if ($product->isExclusive()) {
+                $cart = array($cartItem);
+            } else {
+                $cart[] = $cartItem;
+            }
+
+            $added = $newquantity;
         }
-        else {
-            $cart = self::getCart();
-            $cart[] = $cartItem;
-            Session::set('vividstore.cart',$cart);
-        }
+
+
+        Session::set('vividstore.cart', $cart);
+
+        return array('added' => $added, 'exclusive'=>$product->isExclusive(), 'removeexistingexclusive'=> $removeexistingexclusive);
     }
+
     public function update($data)
     {
         $instanceID = $data['instance'];
         $qty = $data['pQty'];
         $cart = self::getCart();
 
-        if ($qty > 0) {
-            $cart[$instanceID]['product']['qty']=$qty;
+        $product = Product::getByID((int)$cart[$instanceID]['product']['pID']);
+
+        if ($qty > 0 && $product) {
+            $newquantity = $qty;
+
+            if (!$product->isUnlimited() && !$product->allowBackOrders() && $product->getProductQty() < $newquantity) {
+                $newquantity = $product->getProductQty();
+            }
+
+            $cart[$instanceID]['product']['qty'] = $newquantity;
+            $added = $newquantity;
         } else {
-            $this->remove($instanceID);
+            self::remove($instanceID);
         }
 
-        Session::set('vividstore.cart',$cart);
+        Session::set('vividstore.cart', $cart);
+        self::$cart = null;
+
+        return array('added' => $added);
     }
+
     public function remove($instanceID)
     {
         $cart = self::getCart();
         unset($cart[$instanceID]);
         Session::set('vividstore.cart',$cart);
+        self::$cart = null;
     }
+
     public static function clear()
     {
         $cart = self::getCart();
         unset($cart);
-        Session::set('vividstore.cart',null);
+        Session::set('vividstore.cart', null);
+        self::$cart = null;
     }
     public function getSubTotal()
     {
@@ -212,7 +288,7 @@ class Cart
             //check if items are shippable
             $product = VividProduct::getByID($item['product']['pID']);
             if ($product) {
-                if($product->isShippable()){
+                if ($product->isShippable()) {
                     return true; // return as soon as we have shippable product
                 }
             }
@@ -223,19 +299,19 @@ class Cart
 
     public function getShippableItems()
     {
-        
+
         $shippableItems = array();
         //go through items
-        if(self::getCart()){
-            foreach(self::getCart() as $item){
+        if (self::getCart()) {
+            foreach (self::getCart() as $item) {
                 //check if items are shippable
                 $product = VividProduct::getByID($item['product']['pID']);
-                if($product->isShippable()){
+                if ($product->isShippable()) {
                     $shippableItems[] = $item;
-                }                
+                }
             }
         }
-    
+
         return $shippableItems;
     }
     
@@ -361,7 +437,7 @@ class Cart
             foreach(self::getCart() as $item) {
                 $product = VividProduct::getByID($item['product']['pID']);
                 if ($product) {
-                    if ($product->hasUserGroups() || $product->hasDigitalDownload()) {
+                    if (($product->hasUserGroups() || $product->hasDigitalDownload()) && !$product->createsLogin()) {
                         return true;
                     }
                 }
