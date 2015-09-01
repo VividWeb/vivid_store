@@ -126,7 +126,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pNoQty", t("Offer quantity selection"));?>
-                            <?php echo $form->select("pNoQty",array('0'=>t('Yes'),'1'=>t('No, only allow one of this product in a cart')), $p->isTaxable());?>
+                            <?php echo $form->select("pNoQty",array('0'=>t('Yes'),'1'=>t('No, only allow one of this product in a cart')), !$p->allowQuantity());?>
                         </div>
                     </div>
 
