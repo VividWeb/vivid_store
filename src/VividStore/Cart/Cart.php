@@ -141,6 +141,7 @@ class Cart
                     break 2;
                   }
                 }
+
                 $exists = $k;
               }
             }
@@ -160,18 +161,23 @@ class Cart
         $cart = self::getCart();
 
         if ($exists !== false) {
+            $existingproductcount = $cart[$exists]['product']['qty'];
+
             //we have a match, update the qty
             if ($product->allowQuantity()) {
                 $newquantity = $cart[$exists]['product']['qty'] + $cartItem['product']['qty'];
+
+                if (!$product->isUnlimited() &&  !$product->allowBackOrders() && $product->getProductQty() < max($newquantity, $existingproductcount)) {
+                    $newquantity = $product->getProductQty();
+                }
+
+                $added = $newquantity - $existingproductcount;
+
             } else {
+                $added = 1;
                 $newquantity = 1;
             }
 
-            if (!$product->isUnlimited() &&  !$product->allowBackOrders() && $product->getProductQty() < max($newquantity, $existingproductcount)) {
-                $newquantity = $product->getProductQty();
-            }
-
-            $added = $newquantity- $existingproductcount;
             $cart[$exists]['product']['qty'] = $newquantity;
         } else {
             $newquantity = $cartItem['product']['qty'];
@@ -189,6 +195,7 @@ class Cart
             }
 
             $added = $newquantity;
+
         }
 
 
