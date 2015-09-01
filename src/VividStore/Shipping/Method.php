@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Shipping;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
@@ -55,16 +55,16 @@ class Method
     public static function getByID($smID) {
         $db = Database::get();
         $em = $db->getEntityManager();
-        return $em->find('Concrete\Package\VividStore\src\VividStore\Shipping\Method', $smID);
+        return $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\Method', $smID);
     }
     
     public static function getAvailableMethods($methodTypeID=null)
     {
         $em = Database::get()->getEntityManager();
         if($methodTypeID){
-            $methods = $em->getRepository('\Concrete\Package\VividStore\src\VividStore\Shipping\Method')->findBy(array('smtID'=>$methodTypeID));
+            $methods = $em->getRepository('\Concrete\Package\VividStore\Src\VividStore\Shipping\Method')->findBy(array('smtID'=>$methodTypeID));
         } else {
-            $methods = $em->createQuery('select u from \Concrete\Package\VividStore\src\VividStore\Shipping\Method u')->getResult();
+            $methods = $em->createQuery('select u from \Concrete\Package\VividStore\Src\VividStore\Shipping\Method u')->getResult();
         }
         return $methods;
     }

@@ -101,8 +101,11 @@ class Controller extends Package
         if(is_object($paypalpm)){
             $paypalpm->delete();
         }
+
 		$shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
-		$shippingMethodType->delete();
+        if(is_object($shippingMethodType)) {
+            $shippingMethodType->delete();
+        }
         parent::uninstall();
     }
 
