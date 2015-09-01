@@ -52,6 +52,7 @@ class Controller extends Package
 		Installer::installProductAttributes($pkg);
 		Installer::createDDFileset($pkg);
 		Installer::installOrderStatuses($pkg);
+        Installer::installDefaultTaxClass($pkg);
 	}
 
     public function install()

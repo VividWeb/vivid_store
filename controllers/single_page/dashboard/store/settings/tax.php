@@ -9,6 +9,7 @@ use Core;
 use Package;
 
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -19,6 +20,7 @@ class Tax extends DashboardPageController
     public function view()
     {
         $this->set("taxRates",StoreTax::getTaxRates());
+        $this->set("taxClasses",TaxClass::getTaxClasses());
     }
     public function add()
     {
@@ -86,8 +88,6 @@ class Tax extends DashboardPageController
                 $this->add();
             }
         }
-                
-        
     }
     public function validate($data)
     {
@@ -106,6 +106,10 @@ class Tax extends DashboardPageController
         }
         
         return $e;
+        
+    }
+    public function add_class()
+    {
         
     }
 }

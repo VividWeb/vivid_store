@@ -38,13 +38,16 @@ class Tax
         }
         return $taxes;
     }   
-    public function getTaxProduct($productID)
+    public function getTaxProduct($pID)
     {
-        //first check if tax is enabled in settings
-       
+        $product = VividProduct::getByID($productID);
+        foreach(self::getTaxes() as $tax){
+        
+        
+        
             $cart = Cart::getCart();
             if($cart){
-                //foreach taxrate
+                //foreach TaxRate, see if the product is taxable
                 foreach(self::getTaxes() as $tax){
                     
                 }

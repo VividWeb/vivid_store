@@ -1,6 +1,8 @@
 <?php 
 defined('C5_EXECUTE') or die(_("Access Denied."));
+$listViews = array('view','success','updated','removed');
 $addViews = array('add','add_rate','edit');
+$addClassViews = array('add_class','edit_class','save_class');
 
 if(in_array($controller->getTask(),$addViews)){
 /// Add Tax Method View    
@@ -105,13 +107,44 @@ if(in_array($controller->getTask(),$addViews)){
     
 </form>
      
-<?php } else { ?>
+<?php } elseif(in_array($controller->getTask(),$listViews)) { ?>
 <div class="ccm-dashboard-header-buttons">
     <a href="<?php echo View::url('/dashboard/store/settings/tax','add')?>" class="btn btn-primary"><?php echo t("Add Tax Rate")?></a>
     <a href="<?php echo View::url('/dashboard/store/settings')?>" class="btn btn-default"><i class="fa fa-gear"></i> <?php echo t("General Settings")?></a>
 </div>
 
 <div class="dashboard-tax-rates">
+	
+	<table class="table table-striped">
+        <thead>
+            <th><?=t("Tax Classes")?></th>
+            <th><?=t("Associated Tax Methods")?></th>
+            <th class="text-right"><?=t("Actions")?></th>
+        </thead>
+        <tbody>
+            <?php if(count($taxClasses)>0){?>
+                <?php foreach($taxClasses as $tc){?>
+                    <tr>
+                        <td><?=$tc->getTaxClassName()?></td>
+                        <td>
+                            <?php
+                                $taxRates = $tc->getTaxRates();
+                                if($taxRates){
+                                    foreach($taxRates as $taxRateID){
+                                        
+                                    }
+                                }
+                             ?>
+                        </td>
+                        <td class="text-right">
+                            <a href="<?=URL::to('/dashboard/store/settings/tax/edit_class',$tc->getTaxClassID())?>" class="btn btn-default"><?=t("Edit")?></a>
+                            <a href="<?=URL::to('/dashboard/store/settings/tax/delete_class',$tc->getTaxClassID())?>" class="btn btn-danger"><?=t("Delete")?></a>
+                        </td>
+                    </tr>
+                 <?php } ?>
+            <?php } ?>
+        </tbody>
+    </table>
 	
 	<table class="table table-striped">
 		<thead>
@@ -134,5 +167,38 @@ if(in_array($controller->getTask(),$addViews)){
 	</table>
 	
 </div>
+
+<?php } elseif(in_array($controller->getTask(),$addClassViews)) ?>
+
+<form id="settings-tax" action="<?=URL::to('/dashboard/store/settings/tax','save_class')?>" method="post" data-states-utility="<?=View::url('/checkout/getstates')?>">
+
+    <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+            <input type="hidden" name="taxClassID" value="<?=$tc->getTaxClassID()?>">
+            <div class="form-group">
+                <?php echo $form->label('taxClassName',t("Tax Class Name")); ?>
+                <?php echo $form->text('taxClassName',$tc->getTaxClassName()); ?>
+            </div>  
+            <div class="form-group">
+                <?php echo $form->label('taxClassRates[]',t("Tax Class Rates")); ?>
+                <select name="taxClassRates[]" class="form-control" multiple="multiple">
+                    <?php $taxClassRates = explode(',',$tc->getTaxClassRates()); ?>
+                    <?php foreach($taxClassRates as $taxRateID){?>
+                        <?php $taxRate = TaxRate::getByID($taxRateID); ?>
+                        <option value="<?=$taxRateID?>"<?php if(in_array($code,$selectedCountries)){echo " selected";}?>><?=$country?></option>
+                    <?php } ?>
+                </select>
+            </div>          
+        </div>
+    </div>
+
+    
+    <div class="ccm-dashboard-form-actions-wrapper">
+        <div class="ccm-dashboard-form-actions">
+            <button class="pull-right btn btn-success" type="submit" ><?=t('%s Tax Rate',$task)?></button>
+        </div>
+    </div>
+    
+</form>
 
 <?php } ?>

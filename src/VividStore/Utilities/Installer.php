@@ -25,7 +25,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingM
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
-
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -363,6 +363,16 @@ class Installer
                 $orderStatus = OrderStatus::getByID($row['osID']);
                 $orderStatus->update($status, true);
             }
+        }
+    }
+
+    public static function installDefaultTaxClass($pkg)
+    {
+        $data = array(
+            'taxClassName' => t('Default')
+        );
+        if(count(TaxClass::getTaxClasses()) < 1){
+            TaxClass::add($data);
         }
     }
 
