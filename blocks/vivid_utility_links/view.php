@@ -25,7 +25,12 @@
     <span class="total-cart-amount"><?=$total?></span>
     <?php } ?>
 
+    <?php if ($popUpCart) { ?>
+    <a href="javascript:vividStore.displayCart()" class="cart-link"><?=$cartLabel?></a>
+    <?php } else { ?>
     <a href="<?=View::url('/cart')?>" class="cart-link"><?=$cartLabel?></a>
+    <?php } ?>
+
     <?php if($showCheckout){?>
     <a href="<?=View::url('/checkout')?>" class="cart-link"><?=t("Checkout")?></a>	
     <?php } ?>

@@ -35,6 +35,13 @@
     </label>
 </div>
 
+<div class="checkbox">
+    <label>
+        <?php echo $form->checkbox('popUpCart',1,isset($popUpCart)?$popUpCart:1);?>
+        <?=t('Link to popup cart instead of cart page')?>
+    </label>
+</div>
+
 <div class="form-group">
     <?php echo $form->label('cartLabel',t('Cart Link Label'));?>
     <?php echo $form->text('cartLabel',$cartLabel?$cartLabel:t("View Cart"));?>
