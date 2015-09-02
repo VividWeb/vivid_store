@@ -29,7 +29,18 @@ exitModal: function(){
     },
      
     craftProductModal: function(content){
-       $("body").append("<div class='whiteout'>"+content+"</div>"); 
+       $("body").append("<div class='whiteout'>"+content+"</div>");
+
+        $(".whiteout").click(function(){
+            vividStore.exitModal();
+        });
+
+        $(document).keyup("keyup.vividwhiteout", function(e){
+            if(e.keyCode === 27) {
+                vividStore.exitModal();
+                $(document).unbind("keyup.vividwhiteout");
+            }
+        });
     },
 
 //SHOPPING CART
