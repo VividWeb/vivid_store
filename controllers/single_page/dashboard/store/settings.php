@@ -82,7 +82,6 @@ class Settings extends DashboardPageController
                 Config::save('vividstore.emailalerts',$args['emailAlert']);
                 Config::save('vividstore.productPublishTarget',$args['productPublishTarget']);
                 Config::save('vividstore.guestCheckout',$args['guestCheckout']);
-                Config::save('vividstore.cartOverlay',$args['cartOverlay']);
 
                 //save payment methods
                 if($args['paymentMethodHandle']){
