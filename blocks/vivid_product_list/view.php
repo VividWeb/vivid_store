@@ -47,6 +47,26 @@ if($products){
                      * and a default quanity (1)
                      */
                 ?>
+
+                <?php
+                $optionGroups = $product->getProductOptionGroups();
+                $optionItems = $product->getProductOptionItems();
+                foreach($optionGroups as $optionGroup){
+                    ?>
+                    <div class="product-option-group">
+                        <label class="option-group-label"><?=$optionGroup['pogName']?></label>
+                        <select name="pog<?=$optionGroup['pogID']?>">
+                            <?php
+                            foreach($optionItems as $option){
+                                if($option['pogID']==$optionGroup['pogID']){?>
+                                    <option value="<?=$option['poiID']?>"><?=$option['poiName']?></option>
+                                <?php }
+                            }//foreach
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
+
                 <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
                 <input type="hidden" name="quantity" class="product-qty" value="1">
                 <a href="javascript:vividStore.addToCart(<?=$product->getProductID()?>,false)" class="btn btn-primary btn-sm btn-add-to-cart"><?=t("Add to Cart")?></a>

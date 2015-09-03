@@ -130,19 +130,23 @@ class Cart
             if($cart['product']['pID'] == $cartItem['product']['pID']) {
               if( count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
                 if(count($cartItem['productAttributes']) === 0) {
-                  $exists = $k;
+                  $sameproduct = true;
                   break;
                 }
                 foreach($cartItem['productAttributes'] as $key=>$value) {
                   if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
-                    // Do nothing
+                      $sameproduct = true;
                   } else {
                     //different attributes means different "product".
-                    break 2;
+                    $sameproduct = false;
+                    break;
                   }
                 }
 
-                $exists = $k;
+                  if ($sameproduct) {
+                      $exists = $k;
+                  }
+
               }
             }
         }
@@ -181,6 +185,7 @@ class Cart
             $cart[$exists]['product']['qty'] = $newquantity;
         } else {
             $newquantity = $cartItem['product']['qty'];
+
 
             if (!$product->isUnlimited() && !$product->allowBackOrders() && $product->getProductQty() < $newquantity) {
                 $newquantity = $product->getProductQty();
