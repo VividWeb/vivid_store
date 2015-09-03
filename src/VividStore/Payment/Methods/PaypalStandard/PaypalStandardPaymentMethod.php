@@ -164,5 +164,10 @@ class PaypalStandardPaymentMethod extends PaymentMethod
         }
     }
 
-    
+
+    public function getPaymentMinimum() {
+        return 0.03;
+    }
+
+
 }

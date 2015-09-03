@@ -161,7 +161,6 @@ class DiscountRule extends Object
                 $data['drTrigger'],
                 $data['drSingleUseCodes'],
                 $data['drExclusive'],
-                $data['drExclusive'],
                 $data['drCurrency'],
                 $data['drValidFrom_dt'],
                 $data['drValidTo_dt'],
