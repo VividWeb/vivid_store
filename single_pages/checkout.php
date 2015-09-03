@@ -266,12 +266,17 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                             $pm->renderCheckoutForm();
                             echo "</div>";
                         }
-                    }//if payment methods
-                ?>              
+                    } else {  //if payment methods
+                ?>
+                <p class="alert alert-warning"><?= t('There are currently no payment methods available to process your order.'); ?></p>
+                <?php } ?>
                 
                 <div class="clearfix checkout-form-group-buttons">
                     <a href="javascript:;" class="btn btn-default btn-previous-pane"><?=t("Previous")?></a>
+
+                    <?php if($enabledPaymentMethods){ ?>
                     <input type="submit" class="btn btn-default btn-complete-order" value="<?=t("Complete Order")?>">
+                    <?php } ?>
                 </div>
                 
             </div>

@@ -170,5 +170,13 @@ class Method extends Controller
         $class = $this->getMethodController();
         return $class->submitPayment();
     }
+
+    public function getPaymentMinimum() {
+        return 0;
+    }
+
+    public function getPaymentMaximum() {
+        return 1000000000; // raises pinky
+    }
       
 }
