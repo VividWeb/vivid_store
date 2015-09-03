@@ -31,7 +31,8 @@ exitModal: function(){
     craftProductModal: function(content){
        $("body").append("<div class='whiteout'>"+content+"</div>");
 
-        $(".whiteout").click(function(){
+        $(".whiteout").click(function(e){
+            if(e.target != this) return;  // only allow the actual whiteout background to close the dialog
             vividStore.exitModal();
         });
 
