@@ -368,10 +368,12 @@ class Installer
 
     public static function installDefaultTaxClass($pkg)
     {
-        $data = array(
-            'taxClassName' => t('Default')
-        );
-        if(count(TaxClass::getTaxClasses()) < 1){
+        $defaultTaxClass = TaxClass::getByHandle("default");
+        if(!is_object($defaultTaxClass)){
+            $data = array(
+                'taxClassName' => t('Default'),
+                'taxClassLocked' => true
+            );
             TaxClass::add($data);
         }
     }

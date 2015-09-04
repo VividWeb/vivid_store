@@ -131,15 +131,17 @@ if(in_array($controller->getTask(),$addViews)){
                             <?php
                                 $taxClassRates = $tc->getTaxClassRates();
                                 if($taxClassRates){
-                                    foreach($taxClassRates as $taxRateID){
-                                        
+                                    foreach($taxClassRates as $taxRate){
+                                        echo $taxRate->getTaxLabel()."<br>";
                                     }
                                 }
                              ?>
                         </td>
                         <td class="text-right">
                             <a href="<?=URL::to('/dashboard/store/settings/tax/edit_class',$tc->getTaxClassID())?>" class="btn btn-default"><?=t("Edit")?></a>
+                            <?php if(!$tc->isLocked()){?>
                             <a href="<?=URL::to('/dashboard/store/settings/tax/delete_class',$tc->getTaxClassID())?>" class="btn btn-danger"><?=t("Delete")?></a>
+                            <?php } ?>
                         </td>
                     </tr>
                  <?php } ?>
@@ -184,10 +186,10 @@ if(in_array($controller->getTask(),$addViews)){
                 <?php echo $form->label('taxClassRates[]',t("Select Tax Class Rates")); ?>
                 <select name="taxClassRates[]" class="form-control" multiple="multiple">
                     <?php 
-                        $selectedTaxRates = $tc->getTaxClassRates();
+                        $selectedTaxRates = $tc->getTaxClassRateIDs();
                         if(count($taxRates)){
                             foreach($taxRates as $taxRate){?>
-                                <option value="<?=$taxRate->getTaxRateID()?>"><?=$taxRate->getTaxLabel()?></option>
+                                <option value="<?=$taxRate->getTaxRateID()?>" <?php if(in_array($taxRate->getTaxRateID(), $selectedTaxRates)){echo "selected";}?>><?=$taxRate->getTaxLabel()?></option>
                     <?php 
                             }
                         } 

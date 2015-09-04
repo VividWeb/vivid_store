@@ -13,6 +13,7 @@
 		<field name="pQtyUnlim" type="C" size="10"></field>
 		<field name="pBackOrder" type="I"></field>
         <field name="pNoQty" type="I"></field>
+        <field name="pTaxClass" type="I"></field>
 		<field name="pTaxable" type="C" size="10"></field>
 		<field name="pfID" type="I"><unsigned /></field>
 		<field name="pActive" type="C" size="10"></field>

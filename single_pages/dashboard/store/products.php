@@ -57,24 +57,21 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
             <div class="col-sm-7 store-pane active" id="product-overview">
 
-                <div class="form-group">
-                    <?php echo $form->label("pName", t("Product Name"));?>
-                    <?php echo $form->text("pName", $p->getProductName());?>
-                </div>
                 <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pName", t("Product Name"));?>
+                            <?php echo $form->text("pName", $p->getProductName());?>
+                        </div>
+                    </div>
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pActive", t("Active"));?>
                             <?php echo $form->select("pActive", array('1'=>t('Active'),'0'=>t('Inactive')), $p->isActive());?>
                         </div>
                     </div>
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <?php echo $form->label("pFeatured", t("Featured Product"));?>
-                            <?php echo $form->select("pFeatured",array('0'=>t('No'),'1'=>t('Yes')), $p->isFeatured());?>
-                        </div>
-                    </div>
                 </div>
+                
                 <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
@@ -90,8 +87,22 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     </div>
                     <div class="col-xs-6">
                         <div class="form-group">
+                            <?php echo $form->label("pFeatured", t("Featured Product"));?>
+                            <?php echo $form->select("pFeatured",array('0'=>t('No'),'1'=>t('Yes')), $p->isFeatured());?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
                             <?php echo $form->label("pTaxable", t("Taxable"));?>
                             <?php echo $form->select("pTaxable",array('0'=>t('No'),'1'=>t('Yes')), $p->isTaxable());?>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pTaxClass", t("Tax Class"));?>
+                            <?php echo $form->select("pTaxClass",$taxClasses, $p->getTaxClassID());?>
                         </div>
                     </div>
                 </div>

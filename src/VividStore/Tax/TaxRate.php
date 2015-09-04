@@ -107,7 +107,7 @@ class TaxRate
     
     public function isTaxable()
     {
-        $taxAddress = $this->getTaxAddresss;
+        $taxAddress = $this->getTaxAddress();
         $taxCountry = strtolower($this->getTaxCountry());
         $taxState = strtolower(trim($this->getTaxState()));
         $taxCity = strtolower(trim($this->getTaxCity()));
@@ -132,11 +132,13 @@ class TaxRate
             $customerIsTaxable = true;
             if ($userState != $taxState) {
                 $customerIsTaxable = false;
-            } elseif ($userCity != $taxCity) {
-                $customerIsTaxable = false;
+            } 
+            if (!empty($taxCity)){
+                if($userCity != $taxCity) {
+                    $customerIsTaxable = false;
+                }
             }
         }
-
         return $customerIsTaxable;
     }
     
@@ -151,29 +153,31 @@ class TaxRate
                 $product = VividProduct::getByID($pID);
                 if(is_object($product)){
                     if($product->isTaxable()){
-                        $taxCalc = $this->getTaxIncluded();
-
-                        if ($taxCalc == 'extract') {
-                            $taxrate =  10 / ($this->getTaxRate() + 100);
-                        }  else {
-                            $taxrate = $this->getTaxRate() / 100;
-                        }
-
-                        switch($this->getTaxBasedOn()){
-                            case "subtotal":
-                                $productSubTotal = $product->getProductPrice() * $qty;
-                                $tax = $taxrate * $productSubTotal;
-                                $taxtotal = $taxtotal + $tax;
-                                break;
-                            case "grandtotal":
-                                $productSubTotal = $product->getProductPrice() * $qty;
-                                $shippingTotal = Price::getFloat(VividCart::getShippingTotal());
-                                $taxableTotal = $productSubTotal + $shippingTotal;
-                                $tax = $taxrate * $taxableTotal;
-                                $taxtotal = $taxtotal + $tax;
-                                break;
-                        }
-
+                        //if this tax rate is in the tax class associated with this product
+                        if($product->getTaxClass()->taxClassContainsTaxRate($this)){
+                            $taxCalc = $this->getTaxIncluded();
+    
+                            if ($taxCalc == 'extract') {
+                                $taxrate =  10 / ($this->getTaxRate() + 100);
+                            }  else {
+                                $taxrate = $this->getTaxRate() / 100;
+                            }
+    
+                            switch($this->getTaxBasedOn()){
+                                case "subtotal":
+                                    $productSubTotal = $product->getProductPrice() * $qty;
+                                    $tax = $taxrate * $productSubTotal;
+                                    $taxtotal = $taxtotal + $tax;
+                                    break;
+                                case "grandtotal":
+                                    $productSubTotal = $product->getProductPrice() * $qty;
+                                    $shippingTotal = Price::getFloat(VividCart::getShippingTotal());
+                                    $taxableTotal = $productSubTotal + $shippingTotal;
+                                    $tax = $taxrate * $taxableTotal;
+                                    $taxtotal = $taxtotal + $tax;
+                                    break;
+                            }
+                        }//if in products tax class
                     }//if product is taxable
                 }//if obj
             }//foreach

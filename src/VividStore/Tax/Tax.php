@@ -21,20 +21,22 @@ class Tax
         $taxes = array();
         if (count($taxRates) > 0) {
             foreach ($taxRates as $taxRate) {
-                $taxAmount = $taxRate->calculate();
-                if (intval($taxAmount) > 0) {
-                    $tax = true;
+                if($taxRate->isTaxable()){
+                    $taxAmount = $taxRate->calculate();
+                    if (intval($taxAmount) > 0) {
+                        $tax = true;
+                    }
+                    if ($format == true) {
+                        $taxAmount = Price::format($taxAmount);
+                    }
+                    $taxes[] = array(
+                        'name' => $taxRate->getTaxLabel(),
+                        'calculation' => $taxRate->getTaxIncluded(),
+                        'taxamount' => $taxAmount,
+                        'based' => $taxRate->getTaxBasedOn(),
+                        'taxed' => $tax
+                    );
                 }
-                if ($format == true) {
-                    $taxAmount = Price::format($taxAmount);
-                }
-                $taxes[] = array(
-                    'name' => $taxRate->getTaxLabel(),
-                    'calculation' => $taxRate->getTaxIncluded(),
-                    'taxamount' => $taxAmount,
-                    'based' => $taxRate->getTaxBasedOn(),
-                    'taxed' => $tax
-                );
             }
         }
         return $taxes;

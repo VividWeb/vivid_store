@@ -309,9 +309,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <span id="taxes">
                 <?php 
                 if($taxtotal > 0){
-                    foreach($taxes as $tax){?>
+                    foreach($taxes as $tax){
+                        if($tax['taxamount']>0){
+                ?>
                         <strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span><br>
                 <?php 
+                        }
                     }
                 }
                 ?>

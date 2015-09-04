@@ -16,6 +16,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey as StoreProductKey;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
+
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Product extends Object
@@ -56,8 +59,8 @@ class Product extends Object
             }
 
             //update product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
-            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
+            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxClass=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
 
             //update additional images
             $db->Execute('DELETE FROM VividStoreProductImages WHERE pID = ?', $data['pID']);
@@ -131,8 +134,8 @@ class Product extends Object
             $now = $dt->getLocalDateTime();
 
             //add product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
-            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
+            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
 
             //add additional images
             $pID = $db->lastInsertId();
@@ -279,6 +282,9 @@ class Product extends Object
     public function getProductDetail() { return $this->pDetail; }
     public function getProductPrice(){ return $this->pPrice; }
     public function getFormattedPrice(){ return Price::format($this->pPrice); }
+    public function getTaxClassID(){ return $this->pTaxClass; }
+    public function getTaxClass(){ return TaxClass::getByID($this->pTaxClass); }
+    
     public function isTaxable(){
         if($this->pTaxable == "1"){
             return true;
