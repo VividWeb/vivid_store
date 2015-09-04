@@ -110,6 +110,33 @@ class Tax extends DashboardPageController
     }
     public function add_class()
     {
+        $this->set('tc',new TaxClass());
+        $this->set('taxRates',StoreTax::getTaxRates());
+    }
+    public function save_class()
+    {
         
     }
+    public function delete_class($tcID)
+    {
+        TaxClass::getByID($tcID)->delete();
+        $this->redirect("/dashboard/store/settings/tax/class_deleted");   
+    }
+    public function class_deleted()
+    {
+        $this->set("message",t("Tax Class removed"));
+        $this->view();
+    }
+    public function class_added()
+    {
+        $this->set("message",t("Tax Class Added"));
+        $this->view();
+    }
+    
+    public function class_updated()
+    {
+        $this->set("message",t("Tax Class updated"));
+        $this->view();
+    }
+    
 }

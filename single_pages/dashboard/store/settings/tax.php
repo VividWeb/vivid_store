@@ -1,6 +1,6 @@
 <?php 
 defined('C5_EXECUTE') or die(_("Access Denied."));
-$listViews = array('view','success','updated','removed');
+$listViews = array('view','success','updated','removed','class_deleted','class_updated','class_added');
 $addViews = array('add','add_rate','edit');
 $addClassViews = array('add_class','edit_class','save_class');
 
@@ -110,6 +110,7 @@ if(in_array($controller->getTask(),$addViews)){
 <?php } elseif(in_array($controller->getTask(),$listViews)) { ?>
 <div class="ccm-dashboard-header-buttons">
     <a href="<?php echo View::url('/dashboard/store/settings/tax','add')?>" class="btn btn-primary"><?php echo t("Add Tax Rate")?></a>
+    <a href="<?php echo View::url('/dashboard/store/settings/tax','add_class')?>" class="btn btn-primary"><?php echo t("Add Tax Class")?></a>
     <a href="<?php echo View::url('/dashboard/store/settings')?>" class="btn btn-default"><i class="fa fa-gear"></i> <?php echo t("General Settings")?></a>
 </div>
 
@@ -118,7 +119,7 @@ if(in_array($controller->getTask(),$addViews)){
 	<table class="table table-striped">
         <thead>
             <th><?=t("Tax Classes")?></th>
-            <th><?=t("Associated Tax Methods")?></th>
+            <th><?=t("Associated Tax Rates")?></th>
             <th class="text-right"><?=t("Actions")?></th>
         </thead>
         <tbody>
@@ -128,9 +129,9 @@ if(in_array($controller->getTask(),$addViews)){
                         <td><?=$tc->getTaxClassName()?></td>
                         <td>
                             <?php
-                                $taxRates = $tc->getTaxRates();
-                                if($taxRates){
-                                    foreach($taxRates as $taxRateID){
+                                $taxClassRates = $tc->getTaxClassRates();
+                                if($taxClassRates){
+                                    foreach($taxClassRates as $taxRateID){
                                         
                                     }
                                 }
@@ -168,7 +169,7 @@ if(in_array($controller->getTask(),$addViews)){
 	
 </div>
 
-<?php } elseif(in_array($controller->getTask(),$addClassViews)) ?>
+<?php } elseif(in_array($controller->getTask(),$addClassViews)){ ?>
 
 <form id="settings-tax" action="<?=URL::to('/dashboard/store/settings/tax','save_class')?>" method="post" data-states-utility="<?=View::url('/checkout/getstates')?>">
 
@@ -180,13 +181,17 @@ if(in_array($controller->getTask(),$addViews)){
                 <?php echo $form->text('taxClassName',$tc->getTaxClassName()); ?>
             </div>  
             <div class="form-group">
-                <?php echo $form->label('taxClassRates[]',t("Tax Class Rates")); ?>
+                <?php echo $form->label('taxClassRates[]',t("Select Tax Class Rates")); ?>
                 <select name="taxClassRates[]" class="form-control" multiple="multiple">
-                    <?php $taxClassRates = explode(',',$tc->getTaxClassRates()); ?>
-                    <?php foreach($taxClassRates as $taxRateID){?>
-                        <?php $taxRate = TaxRate::getByID($taxRateID); ?>
-                        <option value="<?=$taxRateID?>"<?php if(in_array($code,$selectedCountries)){echo " selected";}?>><?=$country?></option>
-                    <?php } ?>
+                    <?php 
+                        $selectedTaxRates = $tc->getTaxClassRates();
+                        if(count($taxRates)){
+                            foreach($taxRates as $taxRate){?>
+                                <option value="<?=$taxRate->getTaxRateID()?>"><?=$taxRate->getTaxLabel()?></option>
+                    <?php 
+                            }
+                        } 
+                    ?>
                 </select>
             </div>          
         </div>
