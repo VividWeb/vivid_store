@@ -374,7 +374,14 @@ class Installer
                 'taxClassName' => t('Default'),
                 'taxClassLocked' => true
             );
-            TaxClass::add($data);
+            $taxClass = TaxClass::add($data);
+        }
+        //for older versions of store, we need to make sure all products have some sort of tax class.
+        $db = Database::get();
+        $productsWithNoTaxClass = $db->GetAll("SELECT * FROM VividStoreProducts WHERE pTaxClass = ''");
+        $tcID = $taxClass->getTaxClassID();
+        foreach($productsWithNoTaxClass as $p){
+            $db->Query("UPDATE VividStoreProducts SET pTaxClass=? WHERE pID = ?",array($tcID,$p['pID']));
         }
     }
 

@@ -109,6 +109,7 @@ class TaxClass
         $tc->setTaxClassRates($data['taxClassRates']);
         $tc->setTaxClassLock($locked);
         $tc->save();
+        return $tc;
     }
     
     public function update($data)
