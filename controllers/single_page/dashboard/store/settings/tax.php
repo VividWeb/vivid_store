@@ -126,6 +126,11 @@ class Tax extends DashboardPageController
         $errors = $this->validateClass($data);
         $this->error = null; //clear errors
         $this->error = $errors;
+        if($this->post('taxClassID')){
+            $this->edit_class($this->post('taxClassID'));
+        } else {
+            $this->add_class();
+        }
         if (!$errors->has()) {
             if($this->post('taxClassID')){
                 //update
@@ -146,6 +151,11 @@ class Tax extends DashboardPageController
         
         if($data['taxClassName']==""){
             $e->add(t("You need a name for this Tax Class"));
+        }
+        if(\Config::get('vividstore.calculation')=="extract"){
+            if(count($data['taxClassRates'])>1){
+                $e->add(t("You can only have one tax rate with your current tax settings"));
+            }
         }
         
         return $e;

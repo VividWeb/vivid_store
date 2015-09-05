@@ -175,6 +175,11 @@ if(in_array($controller->getTask(),$addViews)){
                 <?php echo $form->label('taxClassName',t("Tax Class Name")); ?>
                 <?php echo $form->text('taxClassName',$tc->getTaxClassName()); ?>
             </div>  
+            <?php if(Config::get("vividstore.calculation")=="extract"){?>
+                <div class="alert alert-info">
+                    <?=t("Since you're prices INCLUDE Tax, you can only specify one tax rate per class. If you need more, you must change this setting in the %stax setting here%s",'<a href="'.URL::to('/dashboard/store/settings').'">','</a>')?>
+                </div>
+            <?php } ?>
             <div class="form-group">
                 <?php echo $form->label('taxClassRates[]',t("Select Tax Class Rates")); ?>
                 <select name="taxClassRates[]" class="form-control" multiple="multiple">
