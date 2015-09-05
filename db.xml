@@ -77,8 +77,8 @@
         <field name="pmID" type="I"></field>
         <field name="smID" type="I"></field>
         <field name="oShippingTotal" type="C" size="10"></field>
-        <field name="oTax" type="C" size="10.4"></field>
-        <field name="oTaxIncluded" type="N" size="10.4"></field>
+        <field name="oTax" type="C" size="255"></field>
+        <field name="oTaxIncluded" type="C" size="255"></field>
         <field name="oTaxName" type="C" size="255"></field>
         <field name="oTotal" type="C" size="10"></field>
     </table>
@@ -113,8 +113,8 @@
         <field name="oID" type="I"></field>
         <field name="oiProductName" type="C" size="255"></field>
         <field name="oiPricePaid" type="N" size="10.4"></field>
-        <field name="oiTax" type="N" size="10.4"></field>
-        <field name="oiTaxIncluded" type="N" size="10.4"></field>
+        <field name="oiTax" type="C" size="255"></field>
+        <field name="oiTaxIncluded" type="C" size="255"></field>
         <field name="oiTaxName" type="C" size="255"></field>
         <field name="oiQty" type="I"></field>
     </table>

@@ -39,19 +39,12 @@ if(in_array($controller->getTask(),$addViews)){
                     </div>
                     
                     <div class="form-group">
-                        <label for="calculation"><?=t("Are Prices Entered with Tax Included?")?></label>
-                        <?php echo $form->select('taxIncluded',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),$taxRate->getTaxIncluded()); ?>
-                    </div>
-
-                    <div class="form-group">
                         <label for="taxBased"><?=t("Tax is Based on the")?></label>
                         <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),$taxRate->getTaxBasedOn()); ?>
                     </div>
                     
                     <h3><?=t("When to Charge Tax")?></h3>
-                    <div class="form-group">                    
-                    <?php echo $form->select('addOrExtract',array('add'=>t("Calculated from total and added to order"),'extract'=>t("Already in product prices, only display as component of total")),$taxRate->getAddOrExtract()); ?>
-                    </div>
+                    
                     
                     <div class="row">
                         

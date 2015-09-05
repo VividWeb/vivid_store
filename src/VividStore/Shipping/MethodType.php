@@ -6,6 +6,8 @@ use Core;
 use Package;
 use View;
 
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
+
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
 /**
@@ -107,6 +109,10 @@ class MethodType
     }
     public function delete()
     {
+        $methods = getAvailableMethods($this->getShippingMethodTypeID());
+        foreach($methods as $method){
+            $method->delete();
+        }
         $em = Database::get()->getEntityManager();
         $em->remove($this);
         $em->flush();

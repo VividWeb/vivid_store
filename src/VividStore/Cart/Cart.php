@@ -296,17 +296,17 @@ class Cart
     }
 
     public function isShippable() {
-        foreach(self::getCart() as $item){
-            //check if items are shippable
-            $product = VividProduct::getByID($item['product']['pID']);
-            if ($product) {
-                if ($product->isShippable()) {
-                    return true; // return as soon as we have shippable product
-                }
+        $shippableItems = self::getShippableItems();
+        $shippingMethods = ShippingMethod::getAvailableMethods();
+        if(count($shippingMethods) > 0){
+            if(count($shippableItems) > 0){
+                return true;
+            } else{
+                return false;
             }
-
+        } else {
+           return false;
         }
-        return false;
     }
 
     public function getShippableItems()

@@ -92,7 +92,9 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
     
     <p>
         <strong><?=t("Subtotal")?>: </strong><?=Price::format($order->getSubTotal())?><br>
-        <strong><?=t("Tax")?>: </strong><?=Price::format($order->getTaxTotal())?><br>
+        <?php foreach($order->getTaxes() as $tax){?>
+            <strong><?=$tax['label']?>:</strong> <?=$tax['amount']?><br>
+        <?php } ?>
         <strong><?=t("Shipping")?>: </strong><?=Price::format($order->getShippingTotal())?><br>
         <strong><?=t("Grand Total")?>: </strong><?=Price::format($order->getTotal())?>
     </p>
@@ -137,7 +139,9 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
         if ($shipping > 0) { ?>
         <strong><?=t("Shipping")?>:</strong>  <?= Price::format($shipping)?><br>
         <?php } ?>
-        <strong><?=($order->oTaxName ? $order->oTaxName : t("Tax"))?>:</strong>  <?= Price::format($order->getTaxTotal())?><br>
+        <?php foreach($order->getTaxes() as $tax){?>
+            <strong><?=$tax['label']?>:</strong> <?=$tax['amount']?>
+        <?php } ?>
         <strong class="text-large"><?=t("Total")?>:</strong>  <?= Price::format($order->getTotal())?><br>
         <strong><?=t("Payment Method")?>:</strong> <?=$order->getPaymentMethodName()?>
     </p>

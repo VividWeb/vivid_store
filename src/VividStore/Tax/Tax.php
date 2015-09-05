@@ -4,6 +4,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use Database;
 
 class Tax
@@ -31,7 +32,6 @@ class Tax
                     }
                     $taxes[] = array(
                         'name' => $taxRate->getTaxLabel(),
-                        'calculation' => $taxRate->getTaxIncluded(),
                         'taxamount' => $taxAmount,
                         'based' => $taxRate->getTaxBasedOn(),
                         'taxed' => $tax
@@ -42,41 +42,25 @@ class Tax
         return $taxes;
     }
 
-    public function getTaxProduct($pID)
+    public function getTaxForProduct($cartItem)
     {
         $product = VividProduct::getByID($productID);
-        foreach (self::getTaxes() as $tax) {
-
-
-            $cart = Cart::getCart();
-            if ($cart) {
-                //foreach TaxRate, see if the product is taxable
-                foreach (self::getTaxes() as $tax) {
-
+        $qty = $cartItem['product']['qty'];
+        $taxRates = self::getTaxRates();
+        $taxes = array();
+        if (count($taxRates) > 0) {
+            foreach ($taxRates as $taxRate) {
+                if($taxRate->isTaxable()){
+                    $taxAmount = $taxRate->calculateProduct($product,$qty);
+                    $taxes[] = array(
+                        'name' => $taxRate->getTaxLabel(),
+                        'taxamount' => $taxAmount,
+                        'based' => $taxRate->getTaxBasedOn()
+                    );
                 }
-                $taxCalc = Config::get('vividstore.calculation');
-                if ($taxCalc == 'extract') {
-                    $taxrate = 10 / (Config::get('vividstore.taxrate') + 100);
-                } else {
-                    $taxrate = Config::get('vividstore.taxrate') / 100;
-                }
-                foreach ($cart as $cartItem) {
-                    if ($cartItem['product']['pID'] == $productID) {
-                        $product = VividProduct::getByID($productID);
-                    }
-                    if (is_object($product)) {
-                        if ($product->isTaxable()) {
-                            //the product is "Taxable", but is the customer?
-                            if (self::isCustomerTaxable()) {
-                                $tax = $taxrate * $product->getProductPrice();
-                                return $tax;
-                            }//if customer is taxable
-                        }//if product is taxable
-                    }//if obj
-                }//foreach
-            }//if cart
-            return 0;
+            }
         }
-
+        return $taxes;
+        
     }
 }

@@ -15,6 +15,7 @@
                     
                         <ul>
                             <li><a href="#settings-currency" data-pane-toggle class="active"><?=t('Currency')?></a></li>
+                            <li><a href="#settings-tax" data-pane-toggle><?=t('Tax')?></a></li>
                             <li><a href="#settings-shipping" data-pane-toggle><?=t('Shipping')?></a></li>
                             <li><a href="#settings-payments" data-pane-toggle><?=t('Payments')?></a></li>
                             <li><a href="#settings-order-statuses" data-pane-toggle><?=t('Order Statuses')?></a></li>
@@ -42,6 +43,15 @@
                     </div>
             
                 </div><!-- #settings-currency -->
+                
+                <div class="col-sm-7 store-pane" id="settings-tax">
+                    
+                    <div class="form-group">
+                        <label for="calculation"><?=t("Are Prices Entered with Tax Included?")?></label>
+                        <?php echo $form->select('calculation',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),Config::get('vividstore.calculation')); ?>
+                    </div>
+                    
+                </div>
                                                 
                 <div class="col-sm-7 store-pane" id="settings-shipping">
                 
