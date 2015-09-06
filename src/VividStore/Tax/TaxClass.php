@@ -61,7 +61,12 @@ class TaxClass
         $taxRates =  explode(',',$this->taxClassRates); 
         $taxes = array();
         foreach($taxRates as $tr){
-            $taxes[] = TaxRate::getByID($tr);
+            if ($tr) {
+                $taxrate = TaxRate::getByID($tr);
+                if ($taxrate) {
+                    $taxes[] = $taxrate;
+                }
+            }
         }
         return $taxes;
     }
