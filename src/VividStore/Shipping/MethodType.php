@@ -109,7 +109,7 @@ class MethodType
     }
     public function delete()
     {
-        $methods = getAvailableMethods($this->getShippingMethodTypeID());
+        $methods = ShippingMethod::getAvailableMethods($this->getShippingMethodTypeID());
         foreach($methods as $method){
             $method->delete();
         }

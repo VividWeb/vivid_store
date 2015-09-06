@@ -108,6 +108,10 @@ class Controller extends Package
         if(is_object($shippingMethodType)) {
             $shippingMethodType->delete();
         }
+        $shippingMethodType = ShippingMethodType::getByHandle('free_shipping');
+        if(is_object($shippingMethodType)) {
+            $shippingMethodType->delete();
+        }
         parent::uninstall();
     }
 
