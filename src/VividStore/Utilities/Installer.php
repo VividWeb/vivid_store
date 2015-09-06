@@ -154,7 +154,7 @@ class Installer
     public static function installBlocks(Package $pkg)
     {
         $bts = BlockTypeSet::getByHandle('vivid_store');
-        if(!is_object){
+        if(!is_object($bts)){
             BlockTypeSet::add("vivid_store","Store", $pkg);
         }
         Installer::installBlock('vivid_product_list', $pkg);
