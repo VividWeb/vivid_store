@@ -361,6 +361,13 @@ class Order extends Object
         }
         return $taxes;
     }
+    public function getTaxTotal(){
+        $taxes = $this->getTaxes();
+        $taxTotal = 0;
+        foreach($taxes as $tax){
+            $taxTotal = $taxTotal + $tax['amount'];
+        }
+    }
     public function getShippingTotal() { return $this->oShippingTotal; }
     public function getShippingMethodName(){
         if($this->smID){

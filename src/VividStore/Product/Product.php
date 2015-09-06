@@ -135,7 +135,7 @@ class Product extends Object
 
             //add product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
-            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
 
             //add additional images
             $pID = $db->lastInsertId();
