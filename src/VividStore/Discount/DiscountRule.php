@@ -107,16 +107,16 @@ class DiscountRule extends Object
     {
         $db = Database::get();
 
+        if ($data['validFrom'] == '0') {
+            $data['drValidFrom_dt'] = null;
+        }
+
+        if ($data['validTo'] == '0') {
+            $data['drValidTo_dt'] = null;
+        }
+
         if($data['drID']){
             //if we know the drID, we're updating.
-
-            if ($data['validFrom'] == '0') {
-                $data['drValidFrom_dt'] = null;
-            }
-
-            if ($data['validTo'] == '0') {
-                $data['drValidTo_dt'] = null;
-            }
 
             //update discount details
             $vals = array(
