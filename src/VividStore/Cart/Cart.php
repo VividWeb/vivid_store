@@ -142,13 +142,12 @@ class Cart
                     break;
                   }
                 }
-
-                  if ($sameproduct) {
-                      $exists = $k;
-                  }
-
               }
             }
+        }
+
+        if ($sameproduct) {
+            $exists = $k;
         }
 
         $removeexistingexclusive  = false;
