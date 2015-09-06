@@ -24,9 +24,9 @@ class Tax
             foreach ($taxRates as $taxRate) {
                 if($taxRate->isTaxable()){
                     $taxAmount = $taxRate->calculate();
-                    if (intval($taxAmount) > 0) {
+                    if ($taxAmount > 0) {
                         $tax = true;
-                    }
+                    } else { $tax = false; }
                     if ($format == true) {
                         $taxAmount = Price::format($taxAmount);
                     }

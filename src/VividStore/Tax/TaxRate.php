@@ -226,7 +226,6 @@ class TaxRate
         $tr->setTaxRate($data['taxRate']);
         $tr->setTaxIncluded($data['taxIncluded']);
         $tr->setTaxBasedOn($data['taxBased']);
-        $tr->setAddOrExtract($data['addOrExtract']);
         $tr->setTaxAddress($data['taxAddress']);
         $tr->setTaxCountry($data['taxCountry']);
         $tr->setTaxState($data['taxState']);
