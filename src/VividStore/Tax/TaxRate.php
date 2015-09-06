@@ -124,9 +124,11 @@ class TaxRate
 
         if ($userCountry == $taxCountry ) {
             $customerIsTaxable = true;
-            if ($userState != $taxState) {
-                $customerIsTaxable = false;
-            } 
+            if (!empty($taxState)){
+                if ($userState != $taxState) {
+                    $customerIsTaxable = false;
+                } 
+            }
             if (!empty($taxCity)){
                 if($userCity != $taxCity) {
                     $customerIsTaxable = false;
