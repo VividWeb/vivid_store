@@ -6,6 +6,13 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
 
 <?php if ($controller->getTask() == 'order'){ ?>
     
+    <div class="ccm-dashboard-header-buttons">
+        <form action="<?=URL::to('/dashboard/store/orders/details/slip')?>" method="post" target="_blank">
+            <input type="hidden" name="oID" value="<?=$order->getOrderID()?>">
+            <button class="btn btn-primary"><?php echo t("Print Order Slip")?></button>
+        </form>
+    </div>
+    
     <h3><?=t("Customer Overview")?></h3>
     <hr>
     <div class="row">
