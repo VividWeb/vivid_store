@@ -613,7 +613,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <?php  } ?>
 
                 <?php  } else {?>
-                    <em><?php echo t('You have\'t created product attributes')?></em>
+                    <em><?php echo t('You haven\'t created product attributes')?></em>
 
                 <?php }?>
 
@@ -775,6 +775,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <thead>
             <th><a><?=t('Primary Image')?></a></th>
             <th><a><?=t('Product Name')?></a></th>
+            <th><a><?=t('Active')?></a></th>
             <th><a><?=t('Stock Level')?></a></th>
             <th><a><?=t('Price')?></a></th>
             <th><a><?=t('Featured')?></a></th>
@@ -789,7 +790,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <tr>
                         <td><?php echo $p->getProductImageThumb();?></td>
                         <td><strong><a href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><?= $p->getProductName() ?></a></strong></td>
-                        <td><?= $p->getProductQty() ?></td>
+                        <td>
+                            <?php
+                            if ($p->isActive()) {
+                                echo "<span class='label label-success'>" . t('Active') . "</span>";
+                            } else {
+                                echo "<span class='label label-default'>" . t('Inactive') . "</span>";
+                            }
+                            ?>
+                        </td>
+                        <td><?= ($p->isUnlimited() ? '<span class="label label-default">' . t('Unlimited') .'</span>' : $p->getProductQty()) ?></td>
                         <td><?= $p->getFormattedPrice() ?></td>
                         <td>
                             <?php
