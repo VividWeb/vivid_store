@@ -799,7 +799,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             }
                             ?>
                         </td>
-                        <td><?= ($p->isUnlimited() ? '<span class="label label-default">' . ('Unlimited') .'</span>' : $p->getProductQty()) ?></td>
+                        <td><?= ($p->isUnlimited() ? '<span class="label label-default">' . t('Unlimited') .'</span>' : $p->getProductQty()) ?></td>
                         <td><?= $p->getFormattedPrice() ?></td>
                         <td>
                             <?php
