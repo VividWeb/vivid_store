@@ -33,6 +33,12 @@ class Shipping extends DashboardPageController
         $this->set('smt',$smt);
         $this->set("task",t("Update"));
     }
+    public function delete($smID)
+    {
+        $sm = ShippingMethod::getByID($smID);
+        $sm->delete();
+        $this->redirect('/dashboard/store/settings/shipping/removed');
+    }
     public function success()
     {
         $this->view();
@@ -42,6 +48,11 @@ class Shipping extends DashboardPageController
     {
         $this->view();
         $this->set("message",t("Successfully updated"));
+    }
+    public function removed()
+    {
+        $this->view();
+        $this->set("message",t("Successfully removed"));
     }
     public function add_method()
     {
