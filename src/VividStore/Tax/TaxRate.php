@@ -42,10 +42,6 @@ class TaxRate
      */
     protected $taxRate;
     
-    /**
-     * @Column(type="string")
-     */
-    protected $taxIncluded;
     
     /**
      * @Column(type="string")
@@ -75,7 +71,6 @@ class TaxRate
     public function setEnabled($enabled){ $this->taxEnabled = $enabled; }
     public function setTaxLabel($label){ $this->taxLabel = $label; }
     public function setTaxRate($rate){ $this->taxRate = $rate; }
-    public function setTaxIncluded($included){ $this->taxIncluded = $included; }
     public function setTaxBasedOn($basedOn){ $this->taxBasedOn = $basedOn; }
     public function setTaxAddress($address){ $this->taxAddress = $address; }
     public function setTaxCountry($country){ $this->taxCountry = $country; }
@@ -86,7 +81,6 @@ class TaxRate
     public function isEnabled(){ return $this->taxEnabled; }
     public function getTaxLabel(){ return $this->taxLabel; }
     public function getTaxRate(){ return $this->taxRate; }
-    public function getTaxIncluded(){ return $this->taxIncluded; }
     public function getTaxBasedOn(){ return $this->taxBasedOn; }
     public function getTaxAddress(){ return $this->taxAddress; }
     public function getTaxCountry(){ return $this->taxCountry; }
@@ -226,7 +220,6 @@ class TaxRate
         $tr->setEnabled($data['taxEnabled']);
         $tr->setTaxLabel($data['taxLabel']);
         $tr->setTaxRate($data['taxRate']);
-        $tr->setTaxIncluded($data['taxIncluded']);
         $tr->setTaxBasedOn($data['taxBased']);
         $tr->setTaxAddress($data['taxAddress']);
         $tr->setTaxCountry($data['taxCountry']);
