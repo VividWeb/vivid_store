@@ -367,6 +367,7 @@ class Order extends Object
         foreach($taxes as $tax){
             $taxTotal = $taxTotal + $tax['amount'];
         }
+        return $taxTotal;
     }
     public function getShippingTotal() { return $this->oShippingTotal; }
     public function getShippingMethodName(){

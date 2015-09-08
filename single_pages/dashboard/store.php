@@ -1,22 +1,152 @@
-<?php defined('C5_EXECUTE') or die("Access Denied.");?>
-	    <div class="ccm-dashboard-header-buttons">
-	        <a href="<?php echo View::url('/dashboard/system/basics/locations', 'add')?>" class="btn btn-primary"><?php echo t("Add Location")?></a>
-	    </div>
+<?php defined('C5_EXECUTE') or die("Access Denied.");
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
+?>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6">
+        <div class="panel panel-sale">
+            <?php $ts = $sr->getTodaysSales(); ?>
+            <div class="panel-heading">
+                <h2 class="panel-title"><?=t("Today's Sales")?></h2>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Total </strong> <?=Price::format($ts['total'])?>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Products</strong> <?=Price::format($ts['productTotal'])?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Tax</strong> <?=Price::format($ts['taxTotal'])?>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Shipping</strong> <?=Price::format($ts['shippingTotal'])?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="panel panel-sale">
+            <?php $ytd = $sr->getYearToDate(); ?>
+            <div class="panel-heading">
+                <h2 class="panel-title"><?=t("Year to Date")?></h2>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Total </strong> <?=Price::format($ytd['total'])?>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Products</strong> <?=Price::format($ytd['productTotal'])?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Tax</strong> <?=Price::format($ytd['taxTotal'])?>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 stat">
+                        <strong>Shipping</strong> <?=Price::format($ytd['shippingTotal'])?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <hr>
+        <h3><?=t("Sales this Week")?></h3>
+        <div id="sales-chart"></div>
+        <hr>
+        <script type="text/javascript">
+        $(function(){
+            new Chartist.Line('#sales-chart', {
+                <?php
+                    $months = array(
+                        new DateTime(date('Y-M-d', strtotime('-6 days'))),
+                        new DateTime(date('Y-M-d', strtotime('-5 days'))),
+                        new DateTime(date('Y-M-d', strtotime('-4 days'))),
+                        new DateTime(date('Y-M-d', strtotime('-3 days'))),
+                        new DateTime(date('Y-M-d', strtotime('-2 days'))),
+                        new DateTime(date('Y-M-d', strtotime('-1 day'))),
+                        new DateTime(date('Y-M-d'))
+                    );
+                ?>
+                
+                labels: [ <?php for($i=0;$i<7;$i++){
+                        if($i!=6){
+                            echo "'".$months[$i]->format("m/d")."',";
+                        } else {
+                            echo "'".$months[$i]->format("m/d")."'";
+                        }
+                    } ?> ],
+                // Our series array that contains series objects or in this case series data arrays
+                series: [
+                    [
+                        <?php 
+                            for($i=0;$i<7;$i++){
+                                $date = $months[$i]->format('Y-m-d');
+                                $report = $sr->getTotalsByRange($date,$date);
+                                if($i==6){
+                                    echo "{meta: '".t('Total')."', value: ".$report['total']."}";
+                                } else {
+                                    echo "{meta: '".t('Total')."', value: ".$report['total']."},";
+                                }
+                            }
+                        ?>              
+                    ]
+                ]
+            },
+            {
+                axisY: {
+                    offset: 80,
+                    labelInterpolationFnc: function(value) {
+                      return "$" + value;
+                    }
+                },
+                plugins: [
+                    Chartist.plugins.tooltip()
+                ],
+                lineSmooth: Chartist.Interpolation.none()
+            }
+            );
+            
         
-	    <div class="ccm-dashboard-form-actions-wrapper">
-	        <div class="ccm-dashboard-form-actions">
-	            <a href="<?php echo URL::to('/dashboard/system/basics/locations/')?>" class="btn btn-default pull-left"><?php echo t("Cancel")?></a>
-	            <button class="pull-right btn btn-success" type="submit" ><?=t('Add Location')?></button>
-	        </div>
-	    </div>
+        });
+        </script>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h3><?=t("Recent Orders")?></h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><?=t("Order #")?></th>
+                    <th><?=t("Date")?></th>
+                    <th><?=t("Products")?></th>
+                    <th><?=t("Tax Total")?></th>
+                    <th><?=t("Shipping")?></th>
+                    <th><?=t("Total")?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($orders as $o){?>
+                <tr>
+                    <td><a href="<?=URL::to('/dashboard/store/orders/order',$o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
+                    <td><?=$o->getOrderDate()?></td>
+                    <td><?=Price::format($o->getSubTotal())?></td>
+                    <td><?=Price::format($o->getTaxTotal())?></td>
+                    <td><?=Price::format($o->getShippingTotal())?></td>
+                    <td><?=Price::format($o->getTotal())?></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
 
-	
-
-	
-		
-	
-	
-	
-
-
-
+    </div>
+</div>
