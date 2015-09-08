@@ -31,6 +31,7 @@ class Products extends DashboardPageController
         $products->setItemsPerPage(10);
         $products->setGroupID($gID);
         $products->activeOnly(false);
+        $products->setShowOutOfStock(true);
 
         if ($this->get('keywords')) {
             $products->setSearch($this->get('keywords'));
