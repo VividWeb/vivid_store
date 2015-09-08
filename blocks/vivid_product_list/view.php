@@ -79,7 +79,11 @@ if($products){
 
                 <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
                 <input type="hidden" name="quantity" class="product-qty" value="1">
+                <?php if($product->isSellable()){?>
                 <a href="javascript:vividStore.addToCart(<?=$product->getProductID()?>,false)" class="btn btn-primary btn-sm btn-add-to-cart"><?=t("Add to Cart")?></a>
+                <?php } else { ?>
+                    <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
+                <?php } ?>
                 <?php } ?>
             
             </form><!-- .product-list-item-inner -->

@@ -41,7 +41,11 @@
         </div>
         <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
         <div class="product-modal-buttons">
+            <?php if($product->isSellable()){?>
             <a href="javascript:vividStore.addToCart(<?=$product->getProductID()?>,true)"><?=t("Add to Cart")?></a>
+            <?php } else {?>
+                <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
+            <?php } ?>
         </div>
     </div>
 </form>

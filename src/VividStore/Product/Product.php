@@ -405,6 +405,19 @@ class Product extends Object
         $db = Database::get();
         $db->Execute("UPDATE VividStoreProducts SET pQty=? WHERE pID=?",array($qty,$this->pID));
     }
+    public function isSellable()
+    {
+        if($this->getProductQty() > 0){
+            return true;
+        } else {
+            if($this->allowBackOrders()){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    
     public function getProductImages()
     {
         $db = Database::get();
