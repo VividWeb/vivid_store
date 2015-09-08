@@ -54,6 +54,9 @@ class ProductList extends AttributedItemList
     public function activeOnly($bool){
         $this->activeOnly = $bool;
     }
+    public function setShowOutOfStock($bool){
+        $this->showOutOfStock = $bool;
+    }
     
     protected function getAttributeKeyClassName()
     {
@@ -122,6 +125,9 @@ class ProductList extends AttributedItemList
                 $query->andWhere("pFeatured = 0");
                 break;
         }
+        if(!$this->showOutOfStock){
+            $query->andWhere("pQty > 0");
+        } 
         if($this->activeOnly){
             $query->andWhere("pActive = 1");
         }

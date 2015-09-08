@@ -88,6 +88,13 @@
     
     <legend><?=t('Display Options')?></legend>
     
+    <div class="checkbox">
+        <label>
+            <?php echo $form->checkbox('showOutOfStock',1,$showOutOfStock);?>
+            <?=t('Show Out of Stock Products')?>
+        </label>
+    </div>
+    
     <label><?=t('Show Featured')?></label>
     
     <div class="radio">
