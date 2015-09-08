@@ -77,7 +77,7 @@ exitModal: function(){
                     var res = jQuery.parseJSON(data);
 
                     if (res.product.pAutoCheckout == '1') {
-                        window.location.href = CCM_APPLICATION_URL + "/checkout";
+                        window.location.href = CHECKOUTURL;
                         return false;
                     }
 
