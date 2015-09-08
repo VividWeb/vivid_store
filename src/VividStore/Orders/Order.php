@@ -237,7 +237,7 @@ class Order extends Object
         }
 
 
-        if (!$customer->isGuest() || $createlogin) {
+        if (!$customer->isGuest() && $createlogin) {
             $user = $customer->getUserInfo()->getUserObject();
 
             //add user to Store Customers group
