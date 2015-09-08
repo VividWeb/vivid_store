@@ -57,7 +57,17 @@ if(is_object($p)){?>
             <?php } ?>
             
             <?php if($showProductPrice){?>
-            <span class="product-price"><?=$p->getFormattedPrice()?></span>
+            <span class="product-price">
+                <?php
+                    $salePrice = $p->getProductSalePrice();
+                    if(isset($salePrice) && $salePrice != ""){
+                        echo '<span class="sale-price">'.t("On Sale: ").$p->getFormattedSalePrice().'</span>';
+                        echo '<span class="original-price">'.$p->getFormattedPrice().'</span>';
+                    } else {
+                        echo $p->getFormatedPrce();
+                    }
+                ?>
+            </span>
             <?php } ?>
             
             <?php if($showProductDescription){?>

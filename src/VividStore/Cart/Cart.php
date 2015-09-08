@@ -260,7 +260,7 @@ class Cart
                 $qty = $cartItem['product']['qty'];
                 $product = VividProduct::getByID($pID);
                 if(is_object($product)){
-                    $productSubTotal = $product->getProductPrice() * $qty;
+                    $productSubTotal = $product->getActivePrice() * $qty;
                     $subtotal = $subtotal + $productSubTotal;
                 }
             }

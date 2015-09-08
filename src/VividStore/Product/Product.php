@@ -59,8 +59,8 @@ class Product extends Object
             }
 
             //update product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
-            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxClass=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
+            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pSalePrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxClass=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
 
             //update additional images
             $db->Execute('DELETE FROM VividStoreProductImages WHERE pID = ?', $data['pID']);
@@ -134,8 +134,8 @@ class Product extends Object
             $now = $dt->getLocalDateTime();
 
             //add product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
-            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
+            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pSalePrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
 
             //add additional images
             $pID = $db->lastInsertId();
@@ -282,6 +282,16 @@ class Product extends Object
     public function getProductDetail() { return $this->pDetail; }
     public function getProductPrice(){ return $this->pPrice; }
     public function getFormattedPrice(){ return Price::format($this->pPrice); }
+    public function getProductSalePrice() { return $this->pSalePrice; }
+    public function getFormattedSalePrice(){ return Price::format($this->pSalePrice); }
+    public function getActivePrice(){
+        $salePrice = $this->getProductSalePrice();
+        if($salePrice != ""|| isset($salePrice)){
+            return $salePrice;
+        } else {
+            return $this->getProductPrice();
+        }
+    }
     public function getTaxClassID(){ return $this->pTaxClass; }
     public function getTaxClass(){ return TaxClass::getByID($this->pTaxClass); }
     

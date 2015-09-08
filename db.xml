@@ -8,6 +8,7 @@
 		<field name="pDesc" type="X2"></field>
 		<field name="pDetail" type="X2"></field>
 		<field name="pPrice" type="C" size="10"></field>
+		<field name="pSalePrice" type="C" size="10"></field>
 		<field name="pFeatured" type="C" size="10"></field>
 		<field name="pQty" type="I"></field>
 		<field name="pQtyUnlim" type="C" size="10"></field>

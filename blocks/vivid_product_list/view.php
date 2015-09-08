@@ -33,7 +33,17 @@ if($products){
                     }// if is_obj
                 ?>
                 <h2 class="product-list-name"><?=$product->getProductName()?></h2>
-                <span class="product-list-price"><?=Price::format($product->getProductPrice())?></span>
+                <span class="product-list-price">
+                    <?php
+                        $salePrice = $product->getProductSalePrice();
+                        if(isset($salePrice) && $salePrice != ""){
+                            echo '<span class="sale-price">'.Price::format($salePrice).'</span>';
+                            echo '<span class="original-price">'.Price::format($product->getProductPrice()).'</span>';
+                        } else {
+                            echo Price::format($product->getProductPrice());
+                        }
+                    ?>
+                </span>
                 <?php if($showDescription){ ?>
                 <div class="product-list-description"><?=$product->getProductDesc()?></div>
                 <?php } ?>

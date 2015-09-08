@@ -162,12 +162,12 @@ class TaxRate
         
                                 switch($this->getTaxBasedOn()){
                                     case "subtotal":
-                                        $productSubTotal = $product->getProductPrice() * $qty;
+                                        $productSubTotal = $product->getActivePrice() * $qty;
                                         $tax = $taxrate * $productSubTotal;
                                         $taxtotal = $taxtotal + $tax;
                                         break;
                                     case "grandtotal":
-                                        $productSubTotal = $product->getProductPrice() * $qty;
+                                        $productSubTotal = $product->getActivePrice() * $qty;
                                         $shippingTotal = Price::getFloat(VividCart::getShippingTotal());
                                         $taxableTotal = $productSubTotal + $shippingTotal;
                                         $tax = $taxrate * $taxableTotal;
@@ -199,12 +199,12 @@ class TaxRate
 
                     switch($this->getTaxBasedOn()){
                         case "subtotal":
-                            $productSubTotal = $productObj->getProductPrice() * $qty;
+                            $productSubTotal = $productObj->getActivePrice() * $qty;
                             $tax = $taxrate * $productSubTotal;
                             $taxtotal = $taxtotal + $tax;
                             break;
                         case "grandtotal":
-                            $productSubTotal = $productObj->getProductPrice() * $qty;
+                            $productSubTotal = $productObj->getActivePrice() * $qty;
                             $shippingTotal = Price::getFloat(VividCart::getShippingTotal());
                             $taxableTotal = $productSubTotal + $shippingTotal;
                             $tax = $taxrate * $taxableTotal;

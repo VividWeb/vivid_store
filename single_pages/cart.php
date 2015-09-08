@@ -52,7 +52,15 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             </div>
             
             <div class="cart-list-item-price">
-                <?=Price::format($product->getProductPrice())?>
+                <?php 
+                    $salePrice = $product->getProductSalePrice();
+                    if(isset($salePrice) && $salePrice != ""){
+                        echo '<span class="original-price">'.Price::format($product->getProductPrice()).'</span>';
+                        echo '<span class="sale-price">'.Price::format($salePrice).'</span>';
+                    } else {
+                        echo Price::format($product->getProductPrice());
+                    }
+                ?>
             </div>
             <div class="cart-list-product-qty">
                 <?php if ($product->allowQuantity()) { ?>

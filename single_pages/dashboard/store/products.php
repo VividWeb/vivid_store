@@ -74,14 +74,30 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 
                 <div class="row">
                     <div class="col-xs-6">
-                        <div class="form-group">
-                            <?php echo $form->label("pPrice", t("Price"));?>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <?= Config::get('vividstore.symbol');?>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <?php echo $form->label("pPrice", t("Price"));?>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <?= Config::get('vividstore.symbol');?>
+                                        </div>
+                                        <?php $price = $p->getProductPrice(); ?>
+                                        <?php echo $form->text("pPrice", $price?$price:'0');?>
+                                    </div>
                                 </div>
-                                <?php $price = $p->getProductPrice(); ?>
-                                <?php echo $form->text("pPrice", $price?$price:'0');?>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <?php echo $form->label("pSalePrice", t("Sale Price"));?>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <?= Config::get('vividstore.symbol');?>
+                                        </div>
+                                        <?php $salePrice = $p->getProductSalePrice(); ?>
+                                        <?php echo $form->text("pSalePrice", $salePrice?$salePrice:'0');?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
