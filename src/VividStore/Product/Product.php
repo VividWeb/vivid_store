@@ -16,6 +16,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey as StoreProductKey;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
+
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Product extends Object
@@ -49,9 +52,15 @@ class Product extends Object
 
             $pID = $data['pID'];
 
+            $product = self::getByID($pID);
+
+            if (!$product->getProductID())  {
+                return false;
+            }
+
             //update product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
-            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
+            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pSalePrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxClass=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
 
             //update additional images
             $db->Execute('DELETE FROM VividStoreProductImages WHERE pID = ?', $data['pID']);
@@ -102,6 +111,22 @@ class Product extends Object
                 }
             }
 
+            $originalDesc = strip_tags(trim($product->getProductDesc()));
+
+            $pageID = $product->getProductPageID();
+            if ($pageID) {
+                $productPage = Page::getByID($pageID);
+
+                if ($productPage) {
+                    $pageDescription = trim($productPage->getAttribute('meta_description'));
+
+                    // if it's the same as the current product description, it hasn't been updated independently of the product
+                    if ($pageDescription == '' || $originalDesc == $pageDescription) {
+                        $productPage->setAttribute('meta_description', strip_tags($data['pDesc']));
+                    }
+                }
+            }
+
         } else {
         //else, we don't know it, so we're adding
 
@@ -109,8 +134,8 @@ class Product extends Object
             $now = $dt->getLocalDateTime();
 
             //add product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
-            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
+            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
+            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pSalePrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
 
             //add additional images
             $pID = $db->lastInsertId();
@@ -236,6 +261,10 @@ class Product extends Object
             $pageTemplate
         );
         $productParentPage->setAttribute('exclude_nav', 1);
+
+        $description = strip_tags($this->getProductDesc());
+        $productParentPage->setAttribute('meta_description', $description);
+
         $cID = $productParentPage->getCollectionID();
         $this->setProductPageID($cID);
     }
@@ -253,6 +282,19 @@ class Product extends Object
     public function getProductDetail() { return $this->pDetail; }
     public function getProductPrice(){ return $this->pPrice; }
     public function getFormattedPrice(){ return Price::format($this->pPrice); }
+    public function getProductSalePrice() { return $this->pSalePrice; }
+    public function getFormattedSalePrice(){ return Price::format($this->pSalePrice); }
+    public function getActivePrice(){
+        $salePrice = $this->getProductSalePrice();
+        if($salePrice != ""|| isset($salePrice)){
+            return $salePrice;
+        } else {
+            return $this->getProductPrice();
+        }
+    }
+    public function getTaxClassID(){ return $this->pTaxClass; }
+    public function getTaxClass(){ return TaxClass::getByID($this->pTaxClass); }
+    
     public function isTaxable(){
         if($this->pTaxable == "1"){
             return true;
@@ -363,6 +405,19 @@ class Product extends Object
         $db = Database::get();
         $db->Execute("UPDATE VividStoreProducts SET pQty=? WHERE pID=?",array($qty,$this->pID));
     }
+    public function isSellable()
+    {
+        if($this->getProductQty() > 0){
+            return true;
+        } else {
+            if($this->allowBackOrders()){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    
     public function getProductImages()
     {
         $db = Database::get();

@@ -1,10 +1,12 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Shipping;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping;
 
 use Database;
 use Core;
 use Package;
 use View;
+
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -51,8 +53,14 @@ class MethodType
     }
     public function setMethodTypeController()
     {
+        $package = Package::getByID($this->pkgID);
+
+        if (!$package) {
+            return false;
+        }
+
         $th = Core::make("helper/text");
-        $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\Src\\VividStore\\Shipping\\Methods";
+        $namespace = "Concrete\\Package\\".$th->camelcase($package->getPackageHandle())."\\Src\\VividStore\\Shipping\\Methods";
         
         $className = $th->camelcase($this->smtHandle)."ShippingMethod";
         $obj = $namespace.'\\'.$className;
@@ -68,7 +76,7 @@ class MethodType
     public static function getByID($smtID) {
         $db = Database::get();
         $em = $db->getEntityManager();
-        $obj = $em->find('Concrete\Package\VividStore\src\VividStore\Shipping\MethodType', $smtID);
+        $obj = $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType', $smtID);
         $obj->setMethodTypeController();
         return $obj;
     }
@@ -77,7 +85,7 @@ class MethodType
         $db = Database::get();
         $em = $db->getEntityManager();
         $obj = $em->
-            getRepository('Concrete\Package\VividStore\src\VividStore\Shipping\MethodType')->
+            getRepository('Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType')->
             findOneBy(array('smtHandle' => $smtHandle));
         if (is_object($obj)) {
             $obj->setMethodTypeController();
@@ -101,6 +109,10 @@ class MethodType
     }
     public function delete()
     {
+        $methods = ShippingMethod::getAvailableMethods($this->getShippingMethodTypeID());
+        foreach($methods as $method){
+            $method->delete();
+        }
         $em = Database::get()->getEntityManager();
         $em->remove($this);
         $em->flush();

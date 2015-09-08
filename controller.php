@@ -52,6 +52,7 @@ class Controller extends Package
 		Installer::installProductAttributes($pkg);
 		Installer::createDDFileset($pkg);
 		Installer::installOrderStatuses($pkg);
+        Installer::installDefaultTaxClass($pkg);
 	}
 
     public function install()
@@ -73,13 +74,16 @@ class Controller extends Package
         Route::register('/cart/getSubTotal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getSubTotal');
         Route::register('/cart/getTaxTotal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getTaxTotal');
         Route::register('/cart/getTotal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getTotal');
+        Route::register('/cart/getShippingTotal','\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getShippingTotal');
         Route::register('/cart/getTotalItems', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartTotal::getTotalItems');
         Route::register('/cart/getmodal', '\Concrete\Package\VividStore\Src\VividStore\Cart\CartModal::getCartModal');
         Route::register('/productmodal', '\Concrete\Package\VividStore\Src\VividStore\Product\ProductModal::getProductModal');
         Route::register('/checkout/getstates', '\Concrete\Package\VividStore\Src\VividStore\Utilities\States::getStateList');
+        Route::register('/checkout/getShippingMethods','\Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout::getShippingMethods');
         Route::register('/checkout/updater','\Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout::updater');
         Route::register('/productfinder','\Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder::getProductMatch');
         Route::register('/checkout/paypalresponse','\Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard\PaypalStandardPaymentMethod::validateCompletion');
+        Route::register('/dashboard/store/orders/details/slip','\Concrete\Package\VividStore\Src\VividStore\Utilities\OrderSlip::renderOrderPrintSlip');
     }
     public function on_start()
     {
@@ -99,8 +103,15 @@ class Controller extends Package
         if(is_object($paypalpm)){
             $paypalpm->delete();
         }
+
 		$shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
-		$shippingMethodType->delete();
+        if(is_object($shippingMethodType)) {
+            $shippingMethodType->delete();
+        }
+        $shippingMethodType = ShippingMethodType::getByHandle('free_shipping');
+        if(is_object($shippingMethodType)) {
+            $shippingMethodType->delete();
+        }
         parent::uninstall();
     }
 

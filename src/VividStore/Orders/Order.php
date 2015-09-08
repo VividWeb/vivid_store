@@ -18,6 +18,7 @@ use UserInfo;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
@@ -48,13 +49,6 @@ class Order extends Object
     }
     public function add($data,$pm,$status=null)
     {
-        $taxBased = Config::get('vividstore.taxBased');
-        $taxlabel = Config::get('vividstore.taxName');
-
-        $this->set('taxlabel',$taxlabel);
-
-        $taxCalc = Config::get('vividstore.calculation');
-
         $db = Database::get();
         
         //get who ordered it
@@ -68,28 +62,34 @@ class Order extends Object
         $smID = \Session::get('smID');
         $shipping = VividCart::getShippingTotal();
         $shipping = Price::formatFloat($shipping);
-
-        $taxName = Config::get('vividstore.taxName');
+        $taxes = Tax::getTaxes();
         $totals = VividCart::getTotals();
         $total = $totals['total'];
         $total = Price::formatFloat($total);
-        $taxvalue = $totals['taxTotal'];
+        $taxCalc = Config::get('vividstore.calculation');
 
-        $tax = 0;
-        $taxIncluded = 0;
+        $taxTotal = array();
+        $taxIncludedTotal = array();
+        $taxLabels = array();
 
-        if ($taxCalc == 'extract') {
-            $taxIncluded = $taxvalue;
-        }  else {
-            $tax = $taxvalue;
+        foreach($taxes as $tax){
+            if ($taxCalc == 'extract') {
+                $taxIncluded[] = Price::formatFloat($tax['taxamount']);
+            }  else {
+                $taxTotal[] = Price::formatFloat($tax['taxamount']);
+            }
+            $taxLabels[] = $tax['name'];
         }
-        $tax = Price::formatFloat($tax);
+        
+        $taxTotal = implode(',',$taxTotal);
+        $taxIncludedTotal = implode(',',$taxIncludedTotal);
+        $taxLabels = implode(',',$taxLabels);
         
         //get payment method
         $pmID = $pm->getPaymentMethodID();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$tax,$taxIncluded,$taxName,$total);
+        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$taxTotal,$taxIncludedTotal,$taxLabels,$total);
         $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,smID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
@@ -125,24 +125,25 @@ class Order extends Object
         $createlogin = false;
 
         foreach ($cart as $cartItem) {
-            //$taxvalue = VividCart::getTaxProduct($cartItem['product']['pID']); // TODO - this needs to be updated
-            $taxvalue = 0;
-            $tax = 0;
-            $taxIncluded = 0;
+            $taxes = Tax::getTaxForProduct($cartItem['product']['pID']);
+            
+            $taxTotal = array();
+            $taxIncludedTotal = array();
+            $taxLabels = array();
 
-            if ($taxCalc == 'extract') {
-                $taxIncluded = $taxvalue;
-            }  else {
-                $tax = $taxvalue;
+            foreach($taxes as $tax){
+                if ($taxCalc == 'extract') {
+                    $taxIncludedTotal[] = Price::formatFloat($tax['taxamount']);
+                }  else {
+                    $taxTotal[] = Price::formatFloat($tax['taxamount']);
+                }
+                $taxLabels[] = $tax['name'];
             }
+            $taxTotal = implode(',',$taxTotal);
+            $taxIncludedTotal = implode(',',$taxIncludedTotal);
+            $taxLabels = implode(',',$taxLabels);
 
-            $productTaxName = $taxName;
-
-            if ($taxvalue == 0) {
-                $productTaxName = '';
-            }
-
-            OrderItem::add($cartItem,$oID,$tax,$taxIncluded,$productTaxName);
+            OrderItem::add($cartItem,$oID,$taxTotal,$taxIncludedTotal,$taxLabels);
             $product = VividProduct::getByID($cartItem['product']['pID']);
             if ($product && $product->hasUserGroups()) {
                 $groupstoadd = array_merge($groupstoadd, $product->getProductUserGroups());
@@ -348,7 +349,26 @@ class Order extends Object
         }
         return $subtotal;
     }
-    public function getTaxTotal() { return $this->oTax + $this->oTaxIncluded; }
+    public function getTaxes() {
+        $taxAmounts = explode(",",$this->oTax);
+        $taxLabels = explode(",",$this->oTaxName);
+        $taxes = array();
+        for($i=0;$i<count($taxAmounts);$i++){
+            $taxes[] = array(
+                'label' => $taxLabels[$i],
+                'amount' => $taxAmounts[$i]
+            );
+        }
+        return $taxes;
+    }
+    public function getTaxTotal(){
+        $taxes = $this->getTaxes();
+        $taxTotal = 0;
+        foreach($taxes as $tax){
+            $taxTotal = $taxTotal + $tax['amount'];
+        }
+        return $taxTotal;
+    }
     public function getShippingTotal() { return $this->oShippingTotal; }
     public function getShippingMethodName(){
         if($this->smID){

@@ -33,7 +33,17 @@ if($products){
                     }// if is_obj
                 ?>
                 <h2 class="product-list-name"><?=$product->getProductName()?></h2>
-                <span class="product-list-price"><?=Price::format($product->getProductPrice())?></span>
+                <span class="product-list-price">
+                    <?php
+                        $salePrice = $product->getProductSalePrice();
+                        if(isset($salePrice) && $salePrice != ""){
+                            echo '<span class="sale-price">'.Price::format($salePrice).'</span>';
+                            echo '<span class="original-price">'.Price::format($product->getProductPrice()).'</span>';
+                        } else {
+                            echo Price::format($product->getProductPrice());
+                        }
+                    ?>
+                </span>
                 <?php if($showDescription){ ?>
                 <div class="product-list-description"><?=$product->getProductDesc()?></div>
                 <?php } ?>
@@ -47,9 +57,33 @@ if($products){
                      * and a default quanity (1)
                      */
                 ?>
+
+                <?php
+                $optionGroups = $product->getProductOptionGroups();
+                $optionItems = $product->getProductOptionItems();
+                foreach($optionGroups as $optionGroup){
+                    ?>
+                    <div class="product-option-group">
+                        <label class="option-group-label"><?=$optionGroup['pogName']?></label>
+                        <select name="pog<?=$optionGroup['pogID']?>">
+                            <?php
+                            foreach($optionItems as $option){
+                                if($option['pogID']==$optionGroup['pogID']){?>
+                                    <option value="<?=$option['poiID']?>"><?=$option['poiName']?></option>
+                                <?php }
+                            }//foreach
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
+
                 <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
                 <input type="hidden" name="quantity" class="product-qty" value="1">
+                <?php if($product->isSellable()){?>
                 <a href="javascript:vividStore.addToCart(<?=$product->getProductID()?>,false)" class="btn btn-primary btn-sm btn-add-to-cart"><?=t("Add to Cart")?></a>
+                <?php } else { ?>
+                    <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
+                <?php } ?>
                 <?php } ?>
             
             </form><!-- .product-list-item-inner -->

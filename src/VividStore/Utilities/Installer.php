@@ -25,7 +25,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingM
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
-
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -154,7 +154,7 @@ class Installer
     public static function installBlocks(Package $pkg)
     {
         $bts = BlockTypeSet::getByHandle('vivid_store');
-        if(!is_object){
+        if(!is_object($bts)){
             BlockTypeSet::add("vivid_store","Store", $pkg);
         }
         Installer::installBlock('vivid_product_list', $pkg);
@@ -363,6 +363,25 @@ class Installer
                 $orderStatus = OrderStatus::getByID($row['osID']);
                 $orderStatus->update($status, true);
             }
+        }
+    }
+
+    public static function installDefaultTaxClass($pkg)
+    {
+        $defaultTaxClass = TaxClass::getByHandle("default");
+        if(!is_object($defaultTaxClass)){
+            $data = array(
+                'taxClassName' => t('Default'),
+                'taxClassLocked' => true
+            );
+            $defaultTaxClass = TaxClass::add($data);
+        }
+        //for older versions of store, we need to make sure all products have some sort of tax class.
+        $db = Database::get();
+        $productsWithNoTaxClass = $db->GetAll("SELECT * FROM VividStoreProducts WHERE pTaxClass = ''");
+        $tcID = $defaultTaxClass->getTaxClassID();
+        foreach($productsWithNoTaxClass as $p){
+            $db->Query("UPDATE VividStoreProducts SET pTaxClass=? WHERE pID = ?",array($tcID,$p['pID']));
         }
     }
 

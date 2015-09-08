@@ -13,6 +13,7 @@
     .product-detail-block .product-featured { display: inline-block; margin: 0 10px; padding: 3px 8px; background: rgba(0,0,0,0.05); border-radius: 5px;}
     .product-detail-block .product-name { margin: 10px 0; }
     .product-detail-block .product-price { display: block; font-size: 22px; margin: 0 0 20px; }
+    	.product-detail-block .product-price .original-price { opacity: 0.6; text-decoration: line-through; font-size: 80%; display: block; }
     .product-detail-block .product-description {  }
     .product-detail-block .product-dimensions { padding: 10px; background: #eee; background: rgba(0,0,0,0.03); border-bottom: 1px solid rgba(0,0,0,0.1); }
     .product-detail-block .product-weight {  padding: 10px; background: #eee; background: rgba(0,0,0,0.03); border-bottom: 1px solid rgba(0,0,0,0.1); }

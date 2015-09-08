@@ -130,9 +130,20 @@ class Checkout extends PageController
                 vividStore.loadViaHash();
             </script>
         ");
-        $this->set("enabledPaymentMethods",PaymentMethod::getEnabledMethods());
-        
-        
+
+        $enabledMethods = PaymentMethod::getEnabledMethods();
+
+        $availableMethods = array();
+
+        foreach($enabledMethods as $em) {
+            $emmc = $em->getMethodController();
+
+            if ($totals['total'] >= $emmc->getPaymentMinimum() && $totals['total'] <=  $emmc->getPaymentMaximum()) {
+                $availableMethods[] = $em;
+            }
+        }
+
+        $this->set("enabledPaymentMethods",$availableMethods);
     }
     
     public function failed()

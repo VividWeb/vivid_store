@@ -8,6 +8,7 @@ use Core;
 use Loader;
 use Config;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -82,7 +83,6 @@ class Settings extends DashboardPageController
                 Config::save('vividstore.emailalerts',$args['emailAlert']);
                 Config::save('vividstore.productPublishTarget',$args['productPublishTarget']);
                 Config::save('vividstore.guestCheckout',$args['guestCheckout']);
-                Config::save('vividstore.cartOverlay',$args['cartOverlay']);
 
                 //save payment methods
                 if($args['paymentMethodHandle']){
@@ -168,6 +168,16 @@ class Settings extends DashboardPageController
         if (!isset($args['osName'])) {
             $e->add(t('You must have at least one Order Status.'));
         }
+        
+        //before changing tax settings to "Extract", make sure there's only one rate per class
+        $taxClasses = TaxClass::getTaxClasses();
+        foreach($taxClasses as $taxClass){
+            $taxClassRates = $taxClass->getTaxClassRates();
+            if(count($taxClassRates)>1){
+                $e->add(t("The %s Tax Class can't contain more than 1 Tax Rate if you change how the taxes are calculated",$taxClass->getTaxClassName()));
+            }
+        }
+        
         return $e;
         
     }

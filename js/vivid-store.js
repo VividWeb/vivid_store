@@ -29,7 +29,19 @@ exitModal: function(){
     },
      
     craftProductModal: function(content){
-       $("body").append("<div class='whiteout'>"+content+"</div>"); 
+       $("body").append("<div class='whiteout'>"+content+"</div>");
+
+        $(".whiteout").click(function(e){
+            if(e.target != this) return;  // only allow the actual whiteout background to close the dialog
+            vividStore.exitModal();
+        });
+
+        $(document).keyup("keyup.vividwhiteout", function(e){
+            if(e.keyCode === 27) {
+                vividStore.exitModal();
+                $(document).unbind("keyup.vividwhiteout");
+            }
+        });
     },
 
 //SHOPPING CART
@@ -405,9 +417,9 @@ $("#checkout-form-group-billing").submit(function(e){
                 url: CARTURL+"/getTaxTotal",
                 success: function(results){
                     var taxes = JSON.parse(results);
-                    $("#taxes").html("");
+                    $("#taxes").html("");  
                     for(var i=0;i<taxes.length;i++){
-                        if(taxes[i].taxamount > 0){
+                        if(taxes[i].taxed===true){
                             $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
                         }
                     }

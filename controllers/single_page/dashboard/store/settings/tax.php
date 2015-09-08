@@ -9,6 +9,7 @@ use Core;
 use Package;
 
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -19,6 +20,7 @@ class Tax extends DashboardPageController
     public function view()
     {
         $this->set("taxRates",StoreTax::getTaxRates());
+        $this->set("taxClasses",TaxClass::getTaxClasses());
     }
     public function add()
     {
@@ -86,8 +88,6 @@ class Tax extends DashboardPageController
                 $this->add();
             }
         }
-                
-        
     }
     public function validate($data)
     {
@@ -108,4 +108,79 @@ class Tax extends DashboardPageController
         return $e;
         
     }
+    public function add_class()
+    {
+        $this->set('task',t("Add"));
+        $this->set('tc',new TaxClass());
+        $this->set('taxRates',StoreTax::getTaxRates());
+    }
+    public function edit_class($tcID)
+    {
+        $this->set('task',t("Update"));
+        $this->set('tc', TaxClass::getByID($tcID));
+        $this->set('taxRates',StoreTax::getTaxRates());
+    }
+    public function save_class()
+    {
+        $data = $this->post();
+        $errors = $this->validateClass($data);
+        $this->error = null; //clear errors
+        $this->error = $errors;
+        if($this->post('taxClassID')){
+            $this->edit_class($this->post('taxClassID'));
+        } else {
+            $this->add_class();
+        }
+        if (!$errors->has()) {
+            if($this->post('taxClassID')){
+                //update
+                $taxRate = TaxClass::getByID($this->post('taxClassID'));
+                $taxRate->update($data);
+                $this->redirect('/dashboard/store/settings/tax/class_updated');
+            } else {
+                //add.
+                TaxClass::add($data);
+                $this->redirect('/dashboard/store/settings/tax/class_added');
+            }
+        }
+    }
+    public function validateClass($data)
+    {
+        $this->error = null;
+        $e = Loader::helper('validation/error');
+        
+        if($data['taxClassName']==""){
+            $e->add(t("You need a name for this Tax Class"));
+        }
+        if(\Config::get('vividstore.calculation')=="extract"){
+            if(count($data['taxClassRates'])>1){
+                $e->add(t("You can only have one tax rate with your current tax settings"));
+            }
+        }
+        
+        return $e;
+        
+    }
+    public function delete_class($tcID)
+    {
+        TaxClass::getByID($tcID)->delete();
+        $this->redirect("/dashboard/store/settings/tax/class_deleted");   
+    }
+    public function class_deleted()
+    {
+        $this->set("message",t("Tax Class removed"));
+        $this->view();
+    }
+    public function class_added()
+    {
+        $this->set("message",t("Tax Class Added"));
+        $this->view();
+    }
+    
+    public function class_updated()
+    {
+        $this->set("message",t("Tax Class updated"));
+        $this->view();
+    }
+    
 }

@@ -57,15 +57,48 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
             <div class="col-sm-7 store-pane active" id="product-overview">
 
-                <div class="form-group">
-                    <?php echo $form->label("pName", t("Product Name"));?>
-                    <?php echo $form->text("pName", $p->getProductName());?>
-                </div>
                 <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pName", t("Product Name"));?>
+                            <?php echo $form->text("pName", $p->getProductName());?>
+                        </div>
+                    </div>
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pActive", t("Active"));?>
                             <?php echo $form->select("pActive", array('1'=>t('Active'),'0'=>t('Inactive')), $p->isActive());?>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <?php echo $form->label("pPrice", t("Price"));?>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <?= Config::get('vividstore.symbol');?>
+                                        </div>
+                                        <?php $price = $p->getProductPrice(); ?>
+                                        <?php echo $form->text("pPrice", $price?$price:'0');?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <?php echo $form->label("pSalePrice", t("Sale Price"));?>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <?= Config::get('vividstore.symbol');?>
+                                        </div>
+                                        <?php $salePrice = $p->getProductSalePrice(); ?>
+                                        <?php echo $form->text("pSalePrice", $salePrice?$salePrice:'0');?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-6">
@@ -78,20 +111,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
-                            <?php echo $form->label("pPrice", t("Price"));?>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <?= Config::get('vividstore.symbol');?>
-                                </div>
-                                <?php $price = $p->getProductPrice(); ?>
-                                <?php echo $form->text("pPrice", $price?$price:'0');?>
-                            </div>
+                            <?php echo $form->label("pTaxable", t("Taxable"));?>
+                            <?php echo $form->select("pTaxable",array('0'=>t('No'),'1'=>t('Yes')), $p->isTaxable());?>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="form-group">
-                            <?php echo $form->label("pTaxable", t("Taxable"));?>
-                            <?php echo $form->select("pTaxable",array('0'=>t('No'),'1'=>t('Yes')), $p->isTaxable());?>
+                            <?php echo $form->label("pTaxClass", t("Tax Class"));?>
+                            <?php echo $form->select("pTaxClass",$taxClasses, $p->getTaxClassID());?>
                         </div>
                     </div>
                 </div>
@@ -126,7 +153,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pNoQty", t("Offer quantity selection"));?>
-                            <?php echo $form->select("pNoQty",array('0'=>t('Yes'),'1'=>t('No, only allow one of this product in a cart')), $p->isTaxable());?>
+                            <?php echo $form->select("pNoQty",array('0'=>t('Yes'),'1'=>t('No, only allow one of this product in a cart')), !$p->allowQuantity());?>
                         </div>
                     </div>
 
@@ -602,7 +629,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <?php  } ?>
 
                 <?php  } else {?>
-                    <em><?php echo t('You have\'t created product attributes')?></em>
+                    <em><?php echo t('You haven\'t created product attributes')?></em>
 
                 <?php }?>
 
@@ -764,6 +791,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <thead>
             <th><a><?=t('Primary Image')?></a></th>
             <th><a><?=t('Product Name')?></a></th>
+            <th><a><?=t('Active')?></a></th>
             <th><a><?=t('Stock Level')?></a></th>
             <th><a><?=t('Price')?></a></th>
             <th><a><?=t('Featured')?></a></th>
@@ -778,7 +806,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <tr>
                         <td><?php echo $p->getProductImageThumb();?></td>
                         <td><strong><a href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><?= $p->getProductName() ?></a></strong></td>
-                        <td><?= $p->getProductQty() ?></td>
+                        <td>
+                            <?php
+                            if ($p->isActive()) {
+                                echo "<span class='label label-success'>" . t('Active') . "</span>";
+                            } else {
+                                echo "<span class='label label-default'>" . t('Inactive') . "</span>";
+                            }
+                            ?>
+                        </td>
+                        <td><?= ($p->isUnlimited() ? '<span class="label label-default">' . t('Unlimited') .'</span>' : $p->getProductQty()) ?></td>
                         <td><?= $p->getFormattedPrice() ?></td>
                         <td>
                             <?php

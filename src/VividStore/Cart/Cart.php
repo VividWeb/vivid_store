@@ -130,20 +130,24 @@ class Cart
             if($cart['product']['pID'] == $cartItem['product']['pID']) {
               if( count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
                 if(count($cartItem['productAttributes']) === 0) {
-                  $exists = $k;
+                  $sameproduct = true;
                   break;
                 }
                 foreach($cartItem['productAttributes'] as $key=>$value) {
                   if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
-                    // Do nothing
+                      $sameproduct = true;
                   } else {
                     //different attributes means different "product".
-                    break 2;
+                    $sameproduct = false;
+                    break;
                   }
                 }
-                $exists = $k;
               }
             }
+        }
+
+        if ($sameproduct) {
+            $exists = $k;
         }
 
         $removeexistingexclusive  = false;
@@ -160,21 +164,27 @@ class Cart
         $cart = self::getCart();
 
         if ($exists !== false) {
+            $existingproductcount = $cart[$exists]['product']['qty'];
+
             //we have a match, update the qty
             if ($product->allowQuantity()) {
                 $newquantity = $cart[$exists]['product']['qty'] + $cartItem['product']['qty'];
+
+                if (!$product->isUnlimited() &&  !$product->allowBackOrders() && $product->getProductQty() < max($newquantity, $existingproductcount)) {
+                    $newquantity = $product->getProductQty();
+                }
+
+                $added = $newquantity - $existingproductcount;
+
             } else {
+                $added = 1;
                 $newquantity = 1;
             }
 
-            if (!$product->isUnlimited() &&  !$product->allowBackOrders() && $product->getProductQty() < max($newquantity, $existingproductcount)) {
-                $newquantity = $product->getProductQty();
-            }
-
-            $added = $newquantity- $existingproductcount;
             $cart[$exists]['product']['qty'] = $newquantity;
         } else {
             $newquantity = $cartItem['product']['qty'];
+
 
             if (!$product->isUnlimited() && !$product->allowBackOrders() && $product->getProductQty() < $newquantity) {
                 $newquantity = $product->getProductQty();
@@ -189,6 +199,7 @@ class Cart
             }
 
             $added = $newquantity;
+
         }
 
 
@@ -249,7 +260,7 @@ class Cart
                 $qty = $cartItem['product']['qty'];
                 $product = VividProduct::getByID($pID);
                 if(is_object($product)){
-                    $productSubTotal = $product->getProductPrice() * $qty;
+                    $productSubTotal = $product->getActivePrice() * $qty;
                     $subtotal = $subtotal + $productSubTotal;
                 }
             }
@@ -284,17 +295,17 @@ class Cart
     }
 
     public function isShippable() {
-        foreach(self::getCart() as $item){
-            //check if items are shippable
-            $product = VividProduct::getByID($item['product']['pID']);
-            if ($product) {
-                if ($product->isShippable()) {
-                    return true; // return as soon as we have shippable product
-                }
+        $shippableItems = self::getShippableItems();
+        $shippingMethods = ShippingMethod::getAvailableMethods();
+        if(count($shippingMethods) > 0){
+            if(count($shippableItems) > 0){
+                return true;
+            } else{
+                return false;
             }
-
+        } else {
+           return false;
         }
-        return false;
     }
 
     public function getShippableItems()

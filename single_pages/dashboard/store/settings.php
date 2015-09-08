@@ -20,7 +20,7 @@
                             <li><a href="#settings-payments" data-pane-toggle><?=t('Payments')?></a></li>
                             <li><a href="#settings-order-statuses" data-pane-toggle><?=t('Order Statuses')?></a></li>
                             <li><a href="#settings-notifications" data-pane-toggle><?=t('Notifications')?></a></li>
-                            <li><a href="#settings-checkout" data-pane-toggle><?=t('Cart and Checkout')?></a></li>
+                            <li><a href="#settings-checkout" data-pane-toggle><?=t('Checkout')?></a></li>
                         </ul>
                     
                     </div>
@@ -44,94 +44,15 @@
             
                 </div><!-- #settings-currency -->
                 
-                <div class="col-sm-7 store-pane" id="settings-tax" data-states-utility="<?=View::url('/checkout/getstates')?>">
-                
-                    <h3><?=t("Tax Configuration")?></h3>
-
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <?php echo $form->label('taxEnabled',t('Enable Tax')); ?>
-                                <?php echo $form->select('taxEnabled',array('no'=>t('No'),'yes'=>t('Yes')),Config::get('vividstore.taxenabled')); ?>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label for="taxName"><?=t("Tax Label")?></label>
-                                <?php echo $form->text('taxName',Config::get('vividstore.taxName'));?>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <?php echo $form->label('taxRate',t('Tax Rate %')); ?>
-                                <div class="input-group">
-                                    <?php echo $form->text('taxRate',Config::get('vividstore.taxrate')); ?>
-                                    <div class="input-group-addon">%</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-sm-7 store-pane" id="settings-tax">
                     
                     <div class="form-group">
                         <label for="calculation"><?=t("Are Prices Entered with Tax Included?")?></label>
                         <?php echo $form->select('calculation',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),Config::get('vividstore.calculation')); ?>
                     </div>
-
-                    <div class="form-group">
-                        <label for="taxBased"><?=t("Tax is Based on the")?></label>
-                        <?php echo $form->select('taxBased',array('subtotal'=>t("Product Total"),'grandtotal'=>t("Product Total + Shipping")),Config::get('vividstore.taxBased')); ?>
-                    </div>
                     
-                    <h3><?=t("When to Charge Tax")?></h3>
-                    
-                    <?php echo $form->select('calculation',array('add'=>t("Calculated from total and added to order"),'extract'=>t("Already in product prices, only display as component of total")),Config::get('vividstore.calculation')); ?>
-                    
-                    <div class="row">
-                        
-                        <div class="col-sm-5">
-                   
-                            <div class="form-group">
-                                <label for="taxAddress" class="control-label"><?=t("If the Customers...")?></label>
-                            <?php echo $form->select('taxAddress',array('shipping'=>t("Shipping Address"),'billing'=>t("Billing Address")),Config::get('vividstore.taxAddress')); ?>
-                            </div>
-                        
-                        </div>
-                        
-                        <div class="col-sm-7">
-                        
-                            <p><strong><?=t("Matches...")?></strong></p>
-                            <div class="form-horizontal">
-                            <div class="form-group">
-                                <label for="taxCountry" class="col-sm-5 control-label"><?=t("Country")?> <small class="text-muted"><?=t("Required")?></small></label>
-                                <div class="col-sm-7">    
-                                    <?php $country = Config::get('vividstore.taxcountry'); ?>
-                                    <?php echo $form->select('taxCountry',$countries,$country?$country:'US',array("onchange"=>"updateTaxStates()")); ?>    
-                                </div>
-                            </div>
-                            
-                            
-                            <div class="form-group">
-                                <label for="taxState" class="col-sm-5 control-label"><?=t("Region")?> <small class="text-muted"><?=t("Optional")?></small></label>
-                                <div class="col-sm-7"> 
-                                    <?php $state = Config::get('vividstore.taxstate'); ?>
-                                    <?php echo $form->select('taxState',$states,$state?$state:"", array('disabled'=>'disabled','class'=>"form-control")); ?>
-                                    <?php echo $form->hidden("savedTaxState",$state); ?>
-                                </div>
-                            </div>
-        
-                            <div class="form-group">
-                                <label for="taxState" class="col-sm-5 control-label"><?=t("City")?> <small class="text-muted"><?=t("Optional")?></small></label>
-                                <div class="col-sm-7"> 
-                                    <?php echo $form->text('taxCity',Config::get('vividstore.taxcity'));?>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-
-                    </div>
-
                 </div>
-                                
+                                                
                 <div class="col-sm-7 store-pane" id="settings-shipping">
                 
                     <h3><?=t("Terminology")?></h3>
@@ -284,12 +205,6 @@
 
                 <!-- #settings-customers -->
                 <div class="col-sm-7 store-pane" id="settings-checkout">
-
-                    <h3><?=t("Shopping Cart")?></h3>
-                    <div class="form-group">
-                        <?php echo $form->label('cartOverlay',t('When Clicking on "View Cart" in Utility Links:')); ?>
-                        <?php echo $form->select('cartOverlay',array(false=>"Go to Cart Page",true=>"Display Cart Overlay"), Config::get('vividstore.cartOverlay')); ?>
-                    </div>
 
                     <h3><?php echo t('Guest checkout');?></h3>
                     <div class="form-group">

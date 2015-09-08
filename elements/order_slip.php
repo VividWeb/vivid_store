@@ -1,22 +1,15 @@
 <?php
-defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 ?>
-
-<?php if ($controller->getTask() == 'order'){ ?>
-    
-    <div class="ccm-dashboard-header-buttons">
-        <form action="<?=URL::to('/dashboard/store/orders/details/slip')?>" method="post" target="_blank">
-            <input type="hidden" name="oID" value="<?=$order->getOrderID()?>">
-            <button class="btn btn-primary"><?php echo t("Print Order Slip")?></button>
-        </form>
-    </div>
-    
-    <h3><?=t("Customer Overview")?></h3>
+<link href="/concrete/css/app.css" rel="stylesheet" type="text/css" media="all">
+<div class="ccm-ui">
+    <div class="container">
+<h3><?=t("Customer Overview")?></h3>
     <hr>
+    
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-xs-12">
             <?php $orderemail = $order->getAttribute("email");
 
             if ($orderemail) { ?>
@@ -32,7 +25,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             <?php } ?>
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-xs-6">
             <h4><?=t("Billing Information")?></h4>
             <p>
                 <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
@@ -40,7 +33,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                 <br /> <br /><?php echo t('Phone'); ?>: <?=$order->getAttribute("billing_phone")?>
             </p>
         </div>
-        <div class="col-sm-6">
+        <div class="col-xs-6">
             <?php if ($order->getAttribute("shipping_address")->address1) { ?>
             <h4><?=t("Shipping Information")?></h4>
             <p>
@@ -50,6 +43,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             <?php } ?>
         </div>
     </div>
+    
     <h3><?=t("Order Info")?></h3>
     <hr>
     <table class="table table-striped">
@@ -157,144 +151,5 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
 
 
     <?php } ?>
-
-    <h3><?=t("Order Status History")?></h3>
-    <hr>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><?=t("Update Status")?></h4>
-                </div>
-                <div class="panel-body">
-
-                    <form action="<?=View::url("/dashboard/store/orders/updatestatus",$order->getOrderID())?>" method="post">
-                        <div class="form-group">
-                            <?php echo $form->select("orderStatus",$orderStatuses,$order->getStatus());?>
-                        </div>
-                        <input type="submit" class="btn btn-default" value="<?=t("Update")?>">
-                    </form>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th><strong><?=t("Status")?></strong></th>
-                    <th><?=t("Date")?></th>
-                    <th><?=t("User")?></th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                $history = $order->getStatusHistory();
-                if($history){
-                    foreach($history as $status){
-                        ?>
-                        <tr>
-                            <td><?=$status->getOrderStatusName()?></td>
-                            <td><?=$status->getDate()?></td>
-                            <td><?=$status->getUserName()?></td>
-                        </tr>
-                    <?php
-                    }
-                }
-                ?>
-                </tbody>
-            </table>
-        </div>
-
     </div>
-
-    <h3><?=t("Manage Order")?></h3>
-    <hr>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><?=t("Order Options")?></h4>
-                </div>
-                <div class="panel-body">
-                    
-                    <a id="btn-delete-order" href="<?=View::url("/dashboard/store/orders/remove", $order->getOrderID())?>" class="btn btn-danger"><?=t("Delete Order")?></a>
-                    
-                </div>
-            </div>
-        </div>
     </div>
-    
-    
-<?php } else { ?>
-
-    <div class="ccm-dashboard-header-buttons">
-    </div>
-
-<div class="ccm-dashboard-content-full">
-    <form role="form" class="form-inline ccm-search-fields">
-        <div class="ccm-search-fields-row">
-            <?php if($statuses){?>
-                <ul id="group-filters" class="nav nav-pills">
-                    <li><a href="<?php echo View::url('/dashboard/store/orders/')?>"><?=t('All Statuses')?></a></li>
-                    <?php foreach($statuses as $status){ ?>
-                        <li><a href="<?php echo View::url('/dashboard/store/orders/', $status->getHandle())?>"><?=$status->getReadableHandle();?></a></li>
-                    <?php } ?>
-                </ul>
-            <?php } ?>
-        </div>
-
-
-        <div class="ccm-search-fields-row ccm-search-fields-submit">
-            <div class="form-group">
-                <div class="ccm-search-main-lookup-field">
-                    <i class="fa fa-search"></i>
-                    <?php echo $form->search('keywords', $searchRequest['keywords'], array('placeholder' => t('Search Orders')))?>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary pull-right"><?php echo t('Search')?></button>
-
-        </div>
-
-    </form>
-
-    <table class="ccm-search-results-table">
-        <thead>
-            <th><a><?=t("Order %s","#")?></a></th>
-            <th><a><?=t("Customer Name")?></a></th>
-            <th><a><?=t("Order Date")?></a></th>
-            <th><a><?=t("Total")?></a></th>
-            <th><a><?=t("Status")?></a></th>
-            <th><a><?=t("View")?></a></th>
-        </thead>
-        <tbody>
-            <?php
-                foreach($orderList as $order){
-            ?>
-                <tr>
-                    <td><a href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=$order->getOrderID()?></a></td>
-                    <td><?=$order->getAttribute('billing_last_name').", ".$order->getAttribute('billing_first_name')?></td>
-                    <td><?=$order->getOrderDate()?></td>
-                <td><?=Price::format($order->getTotal())?></td>
-                    <td><?=ucwords($order->getStatus())?></td>
-                    <td><a class="btn btn-primary" href="<?=View::url('/dashboard/store/orders/order/',$order->getOrderID())?>"><?=t("View")?></a></td>
-                </tr>
-            <?php } ?>
-        </tbody>
-    </table>
-</div>
-
-<?php if ($paginator->getTotalPages() > 1) { ?>
-    <?= $pagination ?>
-<?php } ?>
-
-<?php } ?>
-
-<style>
-    @media (max-width: 992px) {
-        div#ccm-dashboard-content div.ccm-dashboard-content-full {
-            margin-left: -20px !important;
-            margin-right: -20px !important;
-        }
-    }
-</style>

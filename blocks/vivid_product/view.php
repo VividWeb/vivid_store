@@ -57,7 +57,17 @@ if(is_object($p)){?>
             <?php } ?>
             
             <?php if($showProductPrice){?>
-            <span class="product-price"><?=$p->getFormattedPrice()?></span>
+            <span class="product-price">
+                <?php
+                    $salePrice = $p->getProductSalePrice();
+                    if(isset($salePrice) && $salePrice != ""){
+                        echo '<span class="sale-price">'.t("On Sale: ").$p->getFormattedSalePrice().'</span>';
+                        echo '<span class="original-price">'.$p->getFormattedPrice().'</span>';
+                    } else {
+                        echo $p->getFormatedPrce();
+                    }
+                ?>
+            </span>
             <?php } ?>
             
             <?php if($showProductDescription){?>
@@ -114,7 +124,11 @@ if(is_object($p)){?>
             <?php if($showCartButton) {?>
             <div class="product-button-shell">
                 <input type="hidden" name="pID" value="<?=$p->getProductID()?>">
+                <?php if($p->isSellable()){?>
                 <a href="javascript:vividStore.addToCart(<?=$p->getProductID()?>,false)" class="btn btn-primary"><?=t("Add to Cart")?></a>
+                <?php } else { ?>
+                    <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
+                <?php } ?>
             </div>
             <?php } ?>
             

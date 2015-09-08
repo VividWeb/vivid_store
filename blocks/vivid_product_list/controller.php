@@ -98,6 +98,7 @@ class Controller extends BlockController
         $products->setItemsPerPage($this->maxProducts);
         $products->setGroupIDs($this->getGroupFilters());
         $products->setFeatureType($this->showFeatured);
+        $products->setShowOutOfStock($this->showOutOfStock);
         $products->setGroupMatchAny($this->groupMatchAny);
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
@@ -130,6 +131,7 @@ class Controller extends BlockController
     }
     public function save($args)
     {
+        $args['showOutOfStock'] = isset($args['showOutOfStock']) ? 1 : 0;
         $args['showDescription'] = isset($args['showDescription']) ? 1 : 0;
         $args['showQuickViewLink'] = isset($args['showQuickViewLink']) ? 1 : 0;
         $args['showPageLink'] = isset($args['showPageLink']) ? 1 : 0;

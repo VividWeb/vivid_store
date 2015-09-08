@@ -18,6 +18,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProd
 use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
 
 
 defined('C5_EXECUTE') or die("Access Denied.");
@@ -30,6 +31,7 @@ class Products extends DashboardPageController
         $products->setItemsPerPage(10);
         $products->setGroupID($gID);
         $products->activeOnly(false);
+        $products->setShowOutOfStock(true);
 
         if ($this->get('keywords')) {
             $products->setSearch($this->get('keywords'));
@@ -170,6 +172,11 @@ class Products extends DashboardPageController
             $templates[$pt->getPageTemplateID()] = $pt->getPageTemplateName();
         }
         $this->set('pageTemplates',$templates);
+        $taxClasses = array();
+        foreach(TaxClass::getTaxClasses() as $taxClass){
+            $taxClasses[$taxClass->getTaxClassID()] = $taxClass->getTaxClassName();
+        }
+        $this->set('taxClasses',$taxClasses);
     }
     public function save()
     {
