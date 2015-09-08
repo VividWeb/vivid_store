@@ -126,7 +126,7 @@ class ProductList extends AttributedItemList
                 break;
         }
         if(!$this->showOutOfStock){
-            $query->andWhere("pQty > 0");
+            $query->andWhere("pQty > 0 OR pQtyUnlim = 1");
         } 
         if($this->activeOnly){
             $query->andWhere("pActive = 1");

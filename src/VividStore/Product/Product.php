@@ -407,7 +407,7 @@ class Product extends Object
     }
     public function isSellable()
     {
-        if($this->getProductQty() > 0){
+        if($this->getProductQty() > 0 || $this->isUnlimited()){
             return true;
         } else {
             if($this->allowBackOrders()){
