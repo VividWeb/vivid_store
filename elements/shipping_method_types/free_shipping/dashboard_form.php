@@ -1,5 +1,4 @@
 <?php extract($vars); ?>
-
 <div class="row">
     <div class="col-xs-12 col-sm-6">
         <div class="form-group">
@@ -10,7 +9,7 @@
     <div class="col-xs-12 col-sm-6">
         <div class="form-group">
             <?php echo $form->label('countriesSelected',t("If Certain Countries, which?")); ?>
-            <select class="form-control" multiple="multiple">
+            <select class="form-control" multiple name="countriesSelected[]">
                 <?php $selectedCountries = explode(',',$smtm->getCountriesSelected()); ?>
                 <?php foreach($countryList as $code=>$country){?>
                     <option value="<?=$code?>"<?php if(in_array($code,$selectedCountries)){echo " selected";}?>><?=$country?></option>
