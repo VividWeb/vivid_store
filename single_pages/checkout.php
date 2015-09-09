@@ -51,7 +51,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     <div class="vivid-store-col-2">
                         <div class="form-group">
                             <label for="checkout-billing-first-name"><?=t("First Name")?></label>
-                            <?php echo $form->text('checkout-billing-first-name',$customer->getValue("billing_first_name")); ?>
+                            <?php echo $form->text('checkout-billing-first-name',$customer->getValue("billing_first_name"),array("required"=>"required")); ?>
                         </div>
                    </div>     
                    <div class="vivid-store-col-2">
