@@ -213,25 +213,24 @@ class Order extends Object
                 // login the newly created user
                 User::loginByUserID($user->getUserID());
 
-                // update the order created with the user from the newly created user
-                $order->associateUser($user->getUserID());
-
-                // update the new user's attributes
-                $customer = new Customer($user->getUserID());
-                $customer->setValue('billing_first_name', $billing_first_name);
-                $customer->setValue('billing_last_name', $billing_last_name);
-                $customer->setValue('billing_address', $billing_address);
-                $customer->setValue('billing_phone', $billing_phone);
-                $customer->setValue('shipping_first_name', $shipping_first_name);
-                $customer->setValue('shipping_last_name', $shipping_last_name);
-                $customer->setValue('shipping_address', $shipping_address);
-
-
             } else {  // if the user already exists, don't log them in, but send them a notice
                 $email = $user->getUserEmail();
                 $mh->load('new_access', 'vivid_store');
             }
 
+            // update the order created with the user from the newly created user
+            $order->associateUser($user->getUserID());
+
+            // update the new user's attributes
+            $customer = new Customer($user->getUserID());
+            $customer->setValue('billing_first_name', $billing_first_name);
+            $customer->setValue('billing_last_name', $billing_last_name);
+            $customer->setValue('billing_address', $billing_address);
+            $customer->setValue('billing_phone', $billing_phone);
+            $customer->setValue('shipping_first_name', $shipping_first_name);
+            $customer->setValue('shipping_last_name', $shipping_last_name);
+            $customer->setValue('shipping_address', $shipping_address);
+                
             $mh->to($email);
             $mh->sendMail();
         }
