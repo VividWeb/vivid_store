@@ -156,33 +156,27 @@ class Order extends Object
 
         if ($createlogin && $customer->isGuest()) {
             $email = $customer->getEmail();
-
             $user = UserInfo::getByEmail($email);
-            $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
-
-            $mh = Loader::helper('mail');
-            $mh->addParameter('siteName', Config::get('concrete.site'));
-
-            //$member_redirect_page_id = Config::get('snipcart_membership.complete_cID');
-            $navhelper = Core::make('helper/navigation');
-
-//                    if ($member_redirect_page_id) {
-//                        $target = Page::getById($member_redirect_page_id);
-//                    } else {
-            $target = Page::getByPath('/login');
-//                    }
-
-            if ($target) {
-                $link = $navhelper->getLinkToCollection($target, true);
-
-                if ($link) {
-                    $mh->addParameter('link', $link);
-                }
-            } else {
-                $mh->addParameter('link', '');
-            }
 
             if (!$user) {
+                $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
+
+                $mh = Loader::helper('mail');
+                $mh->addParameter('siteName', Config::get('concrete.site'));
+
+                $navhelper = Core::make('helper/navigation');
+                $target = Page::getByPath('/login');
+
+                if ($target) {
+                    $link = $navhelper->getLinkToCollection($target, true);
+
+                    if ($link) {
+                        $mh->addParameter('link', $link);
+                    }
+                } else {
+                    $mh->addParameter('link', '');
+                }
+
                 $valc = Loader::helper('concrete/validation');
 
                 $min = Config::get('concrete.user.username.minimum');
@@ -213,32 +207,33 @@ class Order extends Object
                 // login the newly created user
                 User::loginByUserID($user->getUserID());
 
-                // update the order created with the user from the newly created user
-                $order->associateUser($user->getUserID());
-
-                // update the new user's attributes
-                $customer = new Customer($user->getUserID());
-                $customer->setValue('billing_first_name', $billing_first_name);
-                $customer->setValue('billing_last_name', $billing_last_name);
-                $customer->setValue('billing_address', $billing_address);
-                $customer->setValue('billing_phone', $billing_phone);
-                $customer->setValue('shipping_first_name', $shipping_first_name);
-                $customer->setValue('shipping_last_name', $shipping_last_name);
-                $customer->setValue('shipping_address', $shipping_address);
-
-
-            } else {  // if the user already exists, don't log them in, but send them a notice
-                $email = $user->getUserEmail();
-                $mh->load('new_access', 'vivid_store');
+            } else {
+                // we're attempting to create a new user with an email that has already been used
+                // earlier validation must have failed at this point, don't fetch the user
+                $user = null;
             }
 
             $mh->to($email);
             $mh->sendMail();
+        } elseif ($createlogin) {  // or if we found a user (because they are logged in) and need to use it to create logins
+            $user = $customer->getUserInfo();
         }
 
 
-        if (!$customer->isGuest() && $createlogin) {
-            $user = $customer->getUserInfo()->getUserObject();
+        if ($user) {  // $user is going to either be the new one, or the user of the currently logged in customer
+
+            // update the order created with the user from the newly created user
+            $order->associateUser($user->getUserID());
+
+            // update the  user's attributes
+            $customer = new Customer($user->getUserID());
+            $customer->setValue('billing_first_name', $billing_first_name);
+            $customer->setValue('billing_last_name', $billing_last_name);
+            $customer->setValue('billing_address', $billing_address);
+            $customer->setValue('billing_phone', $billing_phone);
+            $customer->setValue('shipping_first_name', $shipping_first_name);
+            $customer->setValue('shipping_last_name', $shipping_last_name);
+            $customer->setValue('shipping_address', $shipping_address);
 
             //add user to Store Customers group
             $group = \Group::getByName('Store Customer');
@@ -249,13 +244,11 @@ class Order extends Object
             foreach ($groupstoadd as $id) {
                 $g = Group::getByID($id);
                 if ($g) {
-                    $user->enterGroup($g);
-
+                    $user->getUserObject()->enterGroup($g);
                 }
             }
 
             $user->refreshUserGroups();
-
         }
 
         $discounts = VividCart::getDiscounts();

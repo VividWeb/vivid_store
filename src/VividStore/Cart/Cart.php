@@ -443,12 +443,29 @@ class Cart
         return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
     }
 
+    // determines if a cart requires a customer to be logged in
     public function requiresLogin() {
         if(self::getCart()){
             foreach(self::getCart() as $item) {
                 $product = VividProduct::getByID($item['product']['pID']);
                 if ($product) {
                     if (($product->hasUserGroups() || $product->hasDigitalDownload()) && !$product->createsLogin()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // determines if the cart contains a product that will auto-create a user account
+    public function createsAccount() {
+        if(self::getCart()){
+            foreach(self::getCart() as $item) {
+                $product = VividProduct::getByID($item['product']['pID']);
+                if ($product) {
+                    if ($product->createsLogin()) {
                         return true;
                     }
                 }
