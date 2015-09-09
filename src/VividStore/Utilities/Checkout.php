@@ -7,7 +7,9 @@ use Loader;
 use Session;
 use Illuminate\Filesystem\Filesystem;
 use View;
-
+use User;
+use UserInfo;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -17,11 +19,29 @@ class Checkout extends RouteController
     //public $error;
     public function updater()
     {
+
         if(isset($_POST)){
             $data = $_POST;
             $billing = false;
-            if ($data['adrType']=='billing'){ $billing=true; }
-            $e = $this->validateAddress($data,$shipping);
+            if ($data['adrType']=='billing'){
+                $billing=true;
+
+                $u = new User();
+                $guest = !$u->isLoggedIn();
+
+                $requiresLoginOrDifferentEmail = false;
+
+                if ($guest) {
+                    $requiresLoginOrDifferentEmail = $this->validateAccountEmail($data['email']);
+                }
+            }
+
+            $e = $this->validateAddress($data,$billing);
+
+            if ($requiresLoginOrDifferentEmail){
+                $e->add(t('The email address you have entered has already been used to create an account. Please login first or enter a different email address.'));
+            }
+
             if($e->has()){
                 echo $e->outputJSON();
             } else {
@@ -36,6 +56,19 @@ class Checkout extends RouteController
         } else {
             echo "Im not sure youre supposed to be here.";
         }
+    }
+
+    private function validateAccountEmail($email) {
+        $createaccount = VividCart::createsAccount();
+
+        $user = UserInfo::getByEmail($email);
+
+        if ($createaccount && $user) {  // if we are a guest, and we need a login for the products, and we already have a user account with that email
+            return true;
+        } else {
+            return false;
+        }
+
     }
     
     private function updateBilling($data)
