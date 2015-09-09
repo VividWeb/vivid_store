@@ -276,29 +276,36 @@ class Order extends Object
         $alertEmails = explode(",", Config::get('vividstore.notificationemails'));
         $alertEmails = array_map('trim',$alertEmails);
         
-            //receipt
-            $mh->from($fromEmail);
-            $mh->to($customer->getEmail());
+        //receipt
+        $mh->from($fromEmail);
+        $mh->to($customer->getEmail());
 
-            $mh->addParameter("order", $order);
-            $mh->addParameter("taxbased", $taxBased);
-            $mh->addParameter("taxlabel", $taxlabel);
-            $mh->load("order_receipt","vivid_store");
-            $mh->sendMail();
+        $mh->addParameter("order", $order);
+        $mh->addParameter("taxbased", $taxBased);
+        $mh->addParameter("taxlabel", $taxlabel);
+        $mh->load("order_receipt","vivid_store");
+        $mh->sendMail();
 
-            //order notification
-            $mh->from($fromEmail);
-            foreach($alertEmails as $alertEmail){
+        $validNotification = false;
+
+        //order notification
+        $mh->from($fromEmail);
+        foreach ($alertEmails as $alertEmail) {
+            if ($alertEmail) {
                 $mh->to($alertEmail);
+                $validNotification = true;
             }
+        }
+
+        if ($validNotification) {
             $mh->addParameter("order", $order);
             $mh->addParameter("taxbased", $taxBased);
             $mh->addParameter("taxlabel", $taxlabel);
 
-            $mh->load("new_order_notification","vivid_store");
+            $mh->load("new_order_notification", "vivid_store");
             $mh->sendMail();
-            
-        
+        }
+
         VividCart::clear();
         return $order;
     }
