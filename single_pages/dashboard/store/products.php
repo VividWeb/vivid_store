@@ -95,7 +95,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                             <?= Config::get('vividstore.symbol');?>
                                         </div>
                                         <?php $salePrice = $p->getProductSalePrice(); ?>
-                                        <?php echo $form->text("pSalePrice", $salePrice?$salePrice:'0');?>
+                                        <?php echo $form->text("pSalePrice", $salePrice);?>
                                     </div>
                                 </div>
                             </div>

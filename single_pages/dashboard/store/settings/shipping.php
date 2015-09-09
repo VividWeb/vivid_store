@@ -77,7 +77,7 @@ if(in_array($controller->getTask(),$addViews)){
 						<td><?=$method->getName()?></td>
 						<td class="text-right">
 							<a href="<?=URL::to('/dashboard/store/settings/shipping/edit',$method->getShippingMethodID())?>" class="btn btn-default"><?=t("Edit")?></a>
-							<a href="" class="btn btn-danger"><?=t("Delete")?></a>
+							<a href="<?=URL::to('/dashboard/store/settings/shipping/delete',$method->getShippingMethodID())?>" class="btn btn-danger"><?=t("Delete")?></a>
 						</td>
 					</tr>
 					<?php } ?>

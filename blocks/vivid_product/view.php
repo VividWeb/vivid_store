@@ -64,7 +64,7 @@ if(is_object($p)){?>
                         echo '<span class="sale-price">'.t("On Sale: ").$p->getFormattedSalePrice().'</span>';
                         echo '<span class="original-price">'.$p->getFormattedPrice().'</span>';
                     } else {
-                        echo $p->getFormatedPrce();
+                        echo $p->getFormattedPrice();
                     }
                 ?>
             </span>

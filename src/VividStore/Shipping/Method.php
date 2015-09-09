@@ -102,6 +102,7 @@ class Method
     }
     public function delete()
     {
+        $this->getShippingMethodTypeMethod()->delete();
         $em = Database::get()->getEntityManager();
         $em->remove($this);
         $em->flush();

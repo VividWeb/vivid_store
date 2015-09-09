@@ -41,5 +41,11 @@ abstract class MethodTypeMethod extends Controller
         $em->persist($this);
         $em->flush();
     }
+    public function delete()
+    {
+        $em = Database::get()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
+    }
     
 }
