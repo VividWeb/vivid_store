@@ -59,11 +59,9 @@ class Checkout extends RouteController
     }
 
     private function validateAccountEmail($email) {
-        $createaccount = VividCart::createsAccount();
-
         $user = UserInfo::getByEmail($email);
 
-        if ($createaccount && $user) {  // if we are a guest, and we need a login for the products, and we already have a user account with that email
+        if ($user) {
             return true;
         } else {
             return false;
