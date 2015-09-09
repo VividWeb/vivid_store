@@ -42,7 +42,6 @@ class TaxRate
      */
     protected $taxRate;
     
-    
     /**
      * @Column(type="string")
      */
