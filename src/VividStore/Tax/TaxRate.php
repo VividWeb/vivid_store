@@ -41,11 +41,6 @@ class TaxRate
      * @Column(type="decimal")
      */
     protected $taxRate;
-
-    /**
-     * @Column(type="string")
-     */
-    protected $taxIncluded;
     
     /**
      * @Column(type="string")
