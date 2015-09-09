@@ -71,7 +71,6 @@ class TaxRate
      * @Column(type="string")
      */
     protected $taxCity;
-
     
     public function setEnabled($enabled){ $this->taxEnabled = $enabled; }
     public function setTaxLabel($label){ $this->taxLabel = $label; }
