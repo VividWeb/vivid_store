@@ -125,7 +125,7 @@ class Order extends Object
         $createlogin = false;
 
         foreach ($cart as $cartItem) {
-            $taxes = Tax::getTaxForProduct($cartItem['product']['pID']);
+            $taxes = Tax::getTaxForProduct($cartItem);
             
             $taxTotal = array();
             $taxIncludedTotal = array();
