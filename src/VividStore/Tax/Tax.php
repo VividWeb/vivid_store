@@ -44,7 +44,7 @@ class Tax
 
     public function getTaxForProduct($cartItem)
     {
-        $product = VividProduct::getByID($productID);
+        $product = VividProduct::getByID($cartItem['product']['pID']);
         $qty = $cartItem['product']['qty'];
         $taxRates = self::getTaxRates();
         $taxes = array();

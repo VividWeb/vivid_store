@@ -286,7 +286,7 @@ class Product extends Object
     public function getFormattedSalePrice(){ return Price::format($this->pSalePrice); }
     public function getActivePrice(){
         $salePrice = $this->getProductSalePrice();
-        if($salePrice != ""|| isset($salePrice)){
+        if($salePrice != ""){
             return $salePrice;
         } else {
             return $this->getProductPrice();

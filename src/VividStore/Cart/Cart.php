@@ -378,12 +378,11 @@ class Cart
         $subTotal = Price::getFloat(Cart::getSubTotal());
         $taxTotal = 0;
         $taxes = Tax::getTaxes();
+        $taxCalc = Config::get('vividstore.calculation');
 
-        if($taxes){
+        if($taxes && $taxCalc != 'extract'){
             foreach($taxes as $tax) {
-                if ($tax['calculation'] != 'extract') {
-                    $taxTotal += $tax['taxamount'];
-                }
+                $taxTotal += $tax['taxamount'];
             }
         }
 
@@ -414,9 +413,11 @@ class Cart
         $taxes = Tax::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
+        $taxCalc = Config::get('vividstore.calculation');
+
         if($taxes){
             foreach($taxes as $tax) {
-                if ($tax['calculation'] != 'extract') {
+                if ($taxCalc != 'extract') {
                     $addedTaxTotal += $tax['taxamount'];
                 } else {
                     $includedTaxTotal += $tax['taxamount'];
