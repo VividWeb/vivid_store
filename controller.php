@@ -6,8 +6,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 use Route;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use Asset;
+use AssetList;
 
 class Controller extends Package
 {
@@ -88,6 +88,21 @@ class Controller extends Package
     public function on_start()
     {
         $this->registerRoutes();
+
+        $al = AssetList::getInstance();
+        $al->register( 'css', 'vivid-store', 'css/vivid-store.css', array('version' => '1', 'position' => Asset::ASSET_POSITION_HEADER, 'minify' => false, 'combine' => false), $this );
+        $al->register( 'css', 'vividStoreDashboard', 'css/vividStoreDashboard.css', array('version' => '1', 'position' => Asset::ASSET_POSITION_HEADER, 'minify' => false, 'combine' => false), $this );
+        $al->register( 'javascript', 'vivid-store', 'js/vivid-store.js', array('version' => '1', 'position' => Asset::ASSET_POSITION_FOOTER, 'minify' => false, 'combine' => false), $this );
+        $al->register( 'javascript', 'vividStoreFunctions', 'js/vividStoreFunctions.js', array('version' => '1', 'position' => Asset::ASSET_POSITION_FOOTER, 'minify' => false, 'combine' => false), $this );
+
+        $al->register( 'javascript', 'chartist', 'js/chartist.js', array('version' => '0.9.4', 'position' => Asset::ASSET_POSITION_FOOTER, 'minify' => false, 'combine' => false), $this );
+        $al->register( 'css', 'chartist', 'css/chartist.css', array('version' => '0.9.4', 'position' => Asset::ASSET_POSITION_HEADER, 'minify' => false, 'combine' => false), $this );
+        $al->registerGroup('chartist',
+            array(
+                array('javascript', 'chartist'),
+                array('css', 'chartist'),
+            )
+        );
     }
     public function uninstall()
     {

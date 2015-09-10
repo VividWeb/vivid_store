@@ -42,10 +42,9 @@ class Products extends DashboardPageController
         $this->set('products',$paginator->getCurrentPageResults());
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
+
         $grouplist = VividProductGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         
@@ -156,11 +155,9 @@ class Products extends DashboardPageController
         $this->set('tp', new TaskPermission());
         $this->set('al', Core::make('helper/concrete/asset_library'));
                 
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
         $this->addHeaderItem('<style type="text/css">.redactor_editor{padding:20px}</style>');
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
         
         $attrList = StoreProductKey::getList();
         $this->set('attribs',$attrList);
@@ -243,10 +240,8 @@ class Products extends DashboardPageController
     {
         $grouplist = VividProductGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
     }
     public function groupadded()
     {

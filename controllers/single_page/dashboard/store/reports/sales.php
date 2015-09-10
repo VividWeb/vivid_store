@@ -19,8 +19,7 @@ class Sales extends DashboardPageController
         $this->set('sr',$sr);
         $pkg = Package::getByHandle('vivid_store');
         $packagePath = $pkg->getRelativePath();
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/chartist.css'));
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/chartist.js'));
+        $this->requireAsset('chartist');
         $today = date('Y-m-d');
         $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
         $this->set('defaultFromDate',$thirtyDaysAgo);
@@ -46,8 +45,8 @@ class Sales extends DashboardPageController
         $this->set('orders',$paginator->getCurrentPageResults());
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
-        
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
+
+        $this->requireAsset('css', 'vividStoreDashboard');
      
     }
     public function export()
