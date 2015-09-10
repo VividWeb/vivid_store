@@ -36,10 +36,9 @@ class Settings extends DashboardPageController
         $pkg = Package::getByHandle('vivid_store');
         $pkgconfig = $pkg->getConfig();
         $this->set('pkgconfig',$pkgconfig);
-        $packagePath = $pkg->getRelativePath();
         $this->addHeaderItem('<style type="text/css">.redactor_editor{padding:20px}</style>');
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
     }
     public function success()
     {

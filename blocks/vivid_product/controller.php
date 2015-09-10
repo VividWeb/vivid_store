@@ -51,8 +51,8 @@ class Controller extends BlockController
                 var QTYMESSAGE = '".t('Quantity must be greater than zero')."';
             </script>
         ");
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));
+        $this->requireAsset('javascript', 'vivid-store');
+        $this->requireAsset('css', 'vivid-store');
         $this->requireAsset('core/lightbox');
     }
     public function save($args)

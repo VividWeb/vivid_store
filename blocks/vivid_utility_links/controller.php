@@ -28,12 +28,16 @@ class Controller extends BlockController
     }
     public function view()
     {
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));
         $this->set("itemCount",VividCart::getTotalItemsInCart());
         $this->set("total",Price::format(VividCart::getSubTotal()));
+
+    }
+
+    public function registerViewAssets()
+    {
+        $this->requireAsset('javascript', 'vivid-store');
+        $this->requireAsset('css', 'vivid-store');
+
         $this->addHeaderItem("
             <script type=\"text/javascript\">
                 var PRODUCTMODAL = '".View::url('/productmodal')."';
@@ -43,6 +47,7 @@ class Controller extends BlockController
             </script>
         ");
     }
+
     public function save($args)
     {
         $args['showCartItems'] = isset($args['showCartItems']) ? 1 : 0;

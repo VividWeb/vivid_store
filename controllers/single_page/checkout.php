@@ -123,8 +123,8 @@ class Checkout extends PageController
         ");
 
         $packagePath = $pkg->getRelativePath();
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vivid-store.js','vivid-store'));
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vivid-store.css','vivid-store'));
+        $this->requireAsset('javascript', 'vivid-store');
+        $this->requireAsset('css', 'vivid-store');
         $this->addFooterItem("
             <script type=\"text/javascript\">
                 vividStore.loadViaHash();

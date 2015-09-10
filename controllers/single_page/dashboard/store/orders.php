@@ -34,11 +34,8 @@ class Orders extends DashboardPageController
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
         $this->set('orderStatuses', OrderStatus::getList());
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
-
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
         $this->set('statuses', OrderStatus::getAll());
 
     }
@@ -47,9 +44,7 @@ class Orders extends DashboardPageController
         $order = VividOrder::getByID($oID);
         $this->set("order",$order);
         $this->set('orderStatuses', OrderStatus::getList());
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
-        $this->addFooterItem(Core::make('helper/html')->javascript($packagePath.'/js/vividStoreFunctions.js'));
+        $this->requireAsset('javascript', 'vividStoreFunctions');
     }
     public function removed()
     {
