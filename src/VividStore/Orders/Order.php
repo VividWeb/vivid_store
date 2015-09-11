@@ -121,9 +121,7 @@ class Order extends Object
 
         //add the order items
         $cart = VividCart::getCart();
-        $groupstoadd = array();
-        $createlogin = false;
-
+        
         foreach ($cart as $cartItem) {
             $taxes = Tax::getTaxForProduct($cartItem);
             
@@ -144,16 +142,40 @@ class Order extends Object
             $taxLabels = implode(',',$taxLabels);
 
             OrderItem::add($cartItem,$oID,$taxTotal,$taxIncludedTotal,$taxLabels);
-            $product = VividProduct::getByID($cartItem['product']['pID']);
+            
+        }
+
+        $discounts = VividCart::getDiscounts();
+
+        if ($discounts) {
+            foreach($discounts as $discount) {
+                $order->addDiscount($discount, VividCart::getCode());
+            }
+        }
+
+        //if the payment method is not external, go ahead and complete the order.
+        if(!$pm->external){
+            $order->completeOrder();
+        }
+                
+        return $order;
+    }
+    public function completeOrder()
+    {
+        $groupstoadd = array();
+        $createlogin = false;
+        $orderItems = $this->getOrderItems();
+        $customer = new Customer();
+        foreach($orderItems as $orderItem){
+            $product = $orderItem->getProductObject();
             if ($product && $product->hasUserGroups()) {
                 $groupstoadd = array_merge($groupstoadd, $product->getProductUserGroups());
             }
-
             if ($product && $product->pCreateUserAccount) {
                 $createlogin = true;
             }
         }
-
+        
         if ($createlogin && $customer->isGuest()) {
             $email = $customer->getEmail();
             $user = UserInfo::getByEmail($email);
@@ -218,12 +240,11 @@ class Order extends Object
         } elseif ($createlogin) {  // or if we found a user (because they are logged in) and need to use it to create logins
             $user = $customer->getUserInfo();
         }
-
-
-        if ($user) {  // $user is going to either be the new one, or the user of the currently logged in customer
+        
+         if ($user) {  // $user is going to either be the new one, or the user of the currently logged in customer
 
             // update the order created with the user from the newly created user
-            $order->associateUser($user->getUserID());
+            $this->associateUser($user->getUserID());
 
             // update the  user's attributes
             $customer = new Customer($user->getUserID());
@@ -250,19 +271,11 @@ class Order extends Object
 
             $user->refreshUserGroups();
         }
-
-        $discounts = VividCart::getDiscounts();
-
-        if ($discounts) {
-            foreach($discounts as $discount) {
-                $order->addDiscount($discount, VividCart::getCode());
-            }
-        }
-
+        
         VividCart::clearCode();
-
+        
         // create order event and dispatch
-        $event = new OrderEvent($order);
+        $event = new OrderEvent($this);
         Events::dispatch('on_vividstore_order', $event);
         
         //send out the alerts
@@ -280,7 +293,7 @@ class Order extends Object
         $mh->from($fromEmail);
         $mh->to($customer->getEmail());
 
-        $mh->addParameter("order", $order);
+        $mh->addParameter("order", $this);
         $mh->addParameter("taxbased", $taxBased);
         $mh->addParameter("taxlabel", $taxlabel);
         $mh->load("order_receipt","vivid_store");
@@ -298,7 +311,7 @@ class Order extends Object
         }
 
         if ($validNotification) {
-            $mh->addParameter("order", $order);
+            $mh->addParameter("order", $this);
             $mh->addParameter("taxbased", $taxBased);
             $mh->addParameter("taxlabel", $taxlabel);
 
@@ -307,7 +320,9 @@ class Order extends Object
         }
 
         VividCart::clear();
-        return $order;
+        
+        return $this;
+
     }
     public function remove()
     {
