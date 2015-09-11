@@ -73,7 +73,7 @@ class Shipping extends DashboardPageController
                 $shippingMethodType = ShippingMethodType::getByID($this->post('shippingMethodTypeID'));
                 $shippingMethodTypeMethod = $shippingMethodType->addMethod($this->post());
                 //make a shipping method that correlates with it.
-                ShippingMethod::add($shippingMethodTypeMethod,$shippingMethodType,$this->post('methodName'),$this->post('methodEnabled'));
+                ShippingMethod::add($shippingMethodTypeMethod,$shippingMethodType,$this->post('methodName'),true);
                 $this->redirect('/dashboard/store/settings/shipping/success');
             }
         } else {

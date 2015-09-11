@@ -151,6 +151,60 @@ class Installer
             ShippingMethodType::add($handle,$name,$pkg);
         }
     }
+    
+    public static function migrateOldShippingMethod(Package $pkg)
+    {
+        $shippingMethodEnabled = Config::get('vividstore.shippingenabled');
+        //if it wasn't even enabled, then why bother.
+        if($shippingMethodEnabled){
+            $basePrice = Config::get('vividstore.shippingbase');
+            $perItem = Config::get('vividstore.shippingitem');
+            $data = array(
+                'baseRate' => $basePrice,
+                'rateType' => 'quantity',
+                'minimumAmount' => 0,
+                'maximumAmount' => 0,
+                'minimumWeight' => 0,
+                'maximumWeight' => 0,
+                'countries' => 'all'
+            );
+            $shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
+            $shippingMethodTypeMethod = $shippingMethodType->addMethod($data);
+            ShippingMethod::add($shippingMethodTypeMethod,$shippingMethodType,'Flat Rate',true);
+        }
+    }
+    
+    public static function migrateOldTaxRates(Package $pkg)
+    {
+        $taxEnabled = Config::get('vividstore.taxenabled');
+        //if it wasn't even enabled, then why bother.
+        if($taxEnabled){
+            $taxCountry = Config::get('vividstore.taxcountry');
+            $taxState = Config::get('vividstore.taxstate');
+            $taxCity = Config::get('vividstore.taxcity');
+            $taxAddress = Config::get('vividstore.taxAddress');
+            $taxMatch = Config::get('vividstore.taxMatch');
+            $taxbased = Config::get('vividstore.taxBased');
+            $taxrate = Config::get('vividstore.taxrate');
+            $taxCaculation = Config::get('vividstore.calculation');
+            $taxName = Config::get('vividstore.taxName');
+                       
+            $data = array(
+                'taxEnabled' => true,
+                'taxLabel' => $taxName,
+                'taxRate' => $taxrate,
+                'taxBased' => $taxbased,
+                'taxAddress' => $taxAddress,
+                'taxCountry' => $taxCountry,
+                'taxState' => $taxState,
+                'taxCity' => $taxCity
+            );
+            $taxRate = TaxRate::add($data);
+            $taxClass = TaxClass::getByHandle('default');
+            $taxClass->addTaxClassRate($taxRate->getTaxRateID());
+        }
+    }
+    
     public static function installBlocks(Package $pkg)
     {
         $bts = BlockTypeSet::getByHandle('vivid_store');

@@ -74,6 +74,13 @@ class TaxClass
     public function getTaxClassRateIDs(){
         return explode(',',$this->taxClassRates);   
     }
+    public function addTaxClassRate($trID){
+        $taxClassRates = $this->taxClassRates;
+        $taxClassRates = explode(",",$taxClassRates);
+        $taxClassRates[] = $trID;
+        $this->setTaxClassRates($taxClassRates);
+        $this->save();
+    }
     public function taxClassContainsTaxRate(TaxRate $taxRate){
         $trID = $taxRate->getTaxRateID();
         if(in_array($trID,$this->getTaxClassRateIDs())){
