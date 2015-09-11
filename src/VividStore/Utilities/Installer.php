@@ -21,11 +21,13 @@ use \Concrete\Core\Attribute\Type as AttributeType;
 use AttributeSet;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -162,6 +164,7 @@ class Installer
             $data = array(
                 'baseRate' => $basePrice,
                 'rateType' => 'quantity',
+                'perItemRate' => $perItem,
                 'minimumAmount' => 0,
                 'maximumAmount' => 0,
                 'minimumWeight' => 0,
