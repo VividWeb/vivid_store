@@ -13,6 +13,7 @@ extract($vars);
 <input type="hidden" name="zip" value="<?=$customer->getValue("billing_address")->postal_code?>">
 <input type="hidden" name="country" value="<?=$customer->getValue("billing_address")->country?>">
 <input type="hidden" name="amount" value="<?=$total?>">
+<input type="hidden" name="currency_code" value="<?=$currencyCode?>">
 <input type="hidden" name="business" value="<?=$paypalEmail?>">
 <input type="hidden" name="notify_url" value="<?=$notifyURL?>">
 <input type="hidden" name="item_name" value="<?=t('Order from %s', $siteName)?>">

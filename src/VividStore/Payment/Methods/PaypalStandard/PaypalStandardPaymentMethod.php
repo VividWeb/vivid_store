@@ -22,6 +22,31 @@ class PaypalStandardPaymentMethod extends PaymentMethod
     {
         $this->set('paypalEmail',Config::get('vividstore.paypalEmail'));
         $this->set('paypalTestMode',Config::get('vividstore.paypalTestMode'));
+        $this->set('paypalCurrency',Config::get('vividstore.paypalCurrency'));
+        $currencies = array(
+            'AUD' => "Australian Dollar",
+            'CAD' => "Canadian Dollar",
+            'CZK' => "Czech Koruna",
+            'DKK' => "Danish Krone",
+            'EUR' => "Euro",
+            'HKD' => "Hong Kong Dollar",
+            'HUF' => "Hungarian Forint",
+            'ILS' => "Israeli New Sheqel",
+            'JPY' => "Japanese Yen",
+            'MXN' => "Mexican Peso",
+            'NOK' => "Norwegian Krone",
+            'NZD' => "New Zealand Dollar",
+            'PHP' => "Philippine Peso",
+            'PLN' => "Polish Zloty",
+            'GBP' => "Pound Sterling",
+            'SGD' => "Singapore Dollar",
+            'SEK' => "Swedish Krona",
+            'CHF' => "Swiss Franc",
+            'TWD' => "Taiwan New Dollar",
+            'THB' => "Thai Baht",
+            'USD' => "U.S. Dollar"
+        );
+        $this->set('currencies',$currencies);
         $this->set('form',Core::make("helper/form"));
     }
     
@@ -29,6 +54,7 @@ class PaypalStandardPaymentMethod extends PaymentMethod
     {
         Config::save('vividstore.paypalEmail',$data['paypalEmail']);
         Config::save('vividstore.paypalTestMode',$data['paypalTestMode']);
+        Config::save('vividstore.paypalCurrency',$data['paypalCurrency']);
     }
     public function validate($args,$e)
     {
@@ -59,6 +85,11 @@ class PaypalStandardPaymentMethod extends PaymentMethod
         $this->set('notifyURL',URL::to('/checkout/paypalresponse'));
         $this->set('orderID',$order->getOrderID());
         $this->set('returnURL',URL::to('/checkout/complete'));
+        $currencyCode = Config::get('vividstore.paypalCurrency');
+        if(!$currencyCode){
+            $currencyCode = "USD";
+        }
+        $this->set('currencyCode',$currencyCode);
     }
     
     public function submitPayment()
