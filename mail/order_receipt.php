@@ -35,6 +35,7 @@ ob_start();
                         </p>
                     </td>
                     <td>
+                       <?php if ($order->isShippable()) { ?>
                         <strong><?=t('Shipping Information')?></strong>
                         <p>
                             <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?><br>
@@ -43,8 +44,8 @@ ob_start();
                                 echo $order->getAttribute("shipping_address")->address2 . "<br>";
                             } ?>
                             <?=$order->getAttribute("shipping_address")->city?>, <?=$order->getAttribute("shipping_address")->state_province?> <?=$order->getAttribute("shipping_address")->postal_code?><br>
-                            
                         </p>
+                        <?php } ?>
                     </td>
                 </tr>
             </table>
@@ -53,11 +54,11 @@ ob_start();
             <table border="0" cellpawidth="0" cellspacing="0" width="100%">
                 <thead>
                     <tr>
-                        <th style="border-bottom: 1px solid #aaa;"><?=t('Product Name')?></th>
-                        <th style="border-bottom: 1px solid #aaa;"><?=t('Options')?></th>
-                        <th style="border-bottom: 1px solid #aaa;"><?=t('Qty')?></th>
-                        <th style="border-bottom: 1px solid #aaa;"><?=t('Price')?></th>
-                        <th style="border-bottom: 1px solid #aaa;"><?=t('Subtotal')?></th>
+                        <th style="border-bottom: 1px solid #aaa; text-align: left;"><?=t('Product Name')?></th>
+                        <th style="border-bottom: 1px solid #aaa; text-align: left;"><?=t('Options')?></th>
+                        <th style="border-bottom: 1px solid #aaa; text-align: left;"><?=t('Qty')?></th>
+                        <th style="border-bottom: 1px solid #aaa; text-align: left;"><?=t('Price')?></th>
+                        <th style="border-bottom: 1px solid #aaa; text-align: left;"><?=t('Subtotal')?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,7 +95,7 @@ ob_start();
                 </tbody>
             </table>
             
-            <div style="margin: 30px 0;">
+
             <?php
                 $downloads = array();
                 $orderItems = $order->getOrderItems();
@@ -108,6 +109,7 @@ ob_start();
                     }
                 }
                 if(count($downloads) > 0){?>
+                    <div style="margin: 30px 0;">
                     <p><strong><?=t("Your Downloads")?></strong></p>
                     <p><?=t("Note: You must be logged in to download files")?></p>
                     <ul class="order-downloads">
@@ -118,21 +120,16 @@ ob_start();
                         }
                     }?>
                     </ul>
+                    </div>
                 <?php } ?>
-            </div>
-            
+
             <p>
-                <?php
-                $taxtotal = $order->getTaxTotal();
-
-                if($taxtotal > 0 && $taxbased == 'subtotal') { ?>
-                    <strong><?=($taxlabel ? $taxlabel : t("Tax"))?>:</strong>  <?=Price::format($order->getTaxTotal())?><br>
+                <?php if ($order->isShippable()) { ?>
+                <strong><?=t("Shipping")?>:</strong>  <?=Price::format($order->getShippingTotal())?><br>
                 <?php } ?>
 
-                <strong><?=t("Shipping")?>:</strong>  <?=Price::format($order->getShippingTotal())?><br>
-
-                <?php if($taxtotal > 0 && $taxbased == 'grandtotal') { ?>
-                    <strong><?=($taxlabel ? $taxlabel : t("Tax"))?>:</strong>  <?=Price::format($order->getTaxTotal())?><br>
+                <?php foreach($order->getTaxes() as $tax){?>
+                    <strong><?=$tax['label']?>:</strong> <?=Price::format($tax['amount'] ? $tax['amount'] : $tax['amountIncluded'])?><br>
                 <?php } ?>
 
                 <strong class="text-large"><?=t("Total")?>:</strong>  <?=Price::format($order->getTotal())?>

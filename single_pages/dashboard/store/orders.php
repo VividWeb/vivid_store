@@ -40,6 +40,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                 <br /> <br /><?php echo t('Phone'); ?>: <?=$order->getAttribute("billing_phone")?>
             </p>
         </div>
+        <?php if ($order->isShippable()) { ?>
         <div class="col-sm-6">
             <?php if ($order->getAttribute("shipping_address")->address1) { ?>
             <h4><?=t("Shipping Information")?></h4>
@@ -49,6 +50,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             </p>
             <?php } ?>
         </div>
+        <?php } ?>
     </div>
     <h3><?=t("Order Info")?></h3>
     <hr>
@@ -99,15 +101,19 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
     
     <p>
         <strong><?=t("Subtotal")?>: </strong><?=Price::format($order->getSubTotal())?><br>
-        <?php foreach($order->getTaxes() as $tax){?>
-            <strong><?=$tax['label']?>:</strong> <?=$tax['amount']?><br>
-        <?php } ?>
+        <?php if ($order->isShippable()) { ?>
         <strong><?=t("Shipping")?>: </strong><?=Price::format($order->getShippingTotal())?><br>
+        <?php } ?>
+        <?php foreach($order->getTaxes() as $tax){?>
+            <strong><?=$tax['label']?>:</strong> <?=Price::format($tax['amount'] ? $tax['amount'] : $tax['amountIncluded'])?><br>
+        <?php } ?>
         <strong><?=t("Grand Total")?>: </strong><?=Price::format($order->getTotal())?>
     </p>
     <p>
         <strong><?=t("Payment Method")?>: </strong><?=$order->getPaymentMethodName()?><br>
+        <?php if ($order->isShippable()) { ?>
         <strong><?=t("Shipping Method")?>: </strong><?=$order->getShippingMethodName()?>
+        <?php } ?>
     </p>
 
     <?php $applieddiscounts = $order->getAppliedDiscounts();
