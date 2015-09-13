@@ -74,7 +74,7 @@ class Order extends Object
 
         foreach($taxes as $tax){
             if ($taxCalc == 'extract') {
-                $taxIncluded[] = Price::formatFloat($tax['taxamount']);
+                $taxIncludedTotal[] = Price::formatFloat($tax['taxamount']);
             }  else {
                 $taxTotal[] = Price::formatFloat($tax['taxamount']);
             }
@@ -113,9 +113,13 @@ class Order extends Object
         $order->setAttribute("billing_last_name",$billing_last_name);
         $order->setAttribute("billing_address",$billing_address);
         $order->setAttribute("billing_phone",$billing_phone);
-        $order->setAttribute("shipping_first_name",$shipping_first_name);
-        $order->setAttribute("shipping_last_name",$shipping_last_name);
-        $order->setAttribute("shipping_address",$shipping_address);
+
+        if ($smID) {
+            $order->setAttribute("shipping_first_name",$shipping_first_name);
+            $order->setAttribute("shipping_last_name",$shipping_last_name);
+            $order->setAttribute("shipping_address",$shipping_address);
+        }
+
 
         $customer->setLastOrderID($oID);
 
@@ -127,23 +131,23 @@ class Order extends Object
         foreach ($cart as $cartItem) {
             $taxes = Tax::getTaxForProduct($cartItem);
             
-            $taxTotal = array();
-            $taxIncludedTotal = array();
-            $taxLabels = array();
+            $taxProductTotal = array();
+            $taxProductIncludedTotal = array();
+            $taxProductLabels = array();
 
             foreach($taxes as $tax){
                 if ($taxCalc == 'extract') {
-                    $taxIncludedTotal[] = Price::formatFloat($tax['taxamount']);
+                    $taxProductIncludedTotal[] = Price::formatFloat($tax['taxamount']);
                 }  else {
-                    $taxTotal[] = Price::formatFloat($tax['taxamount']);
+                    $taxProductTotal[] = Price::formatFloat($tax['taxamount']);
                 }
-                $taxLabels[] = $tax['name'];
+                $taxProductLabels[] = $tax['name'];
             }
-            $taxTotal = implode(',',$taxTotal);
-            $taxIncludedTotal = implode(',',$taxIncludedTotal);
-            $taxLabels = implode(',',$taxLabels);
+            $taxProductTotal = implode(',',$taxProductTotal);
+            $taxProductIncludedTotal = implode(',',$taxProductIncludedTotal);
+            $taxProductLabels = implode(',',$taxProductLabels);
 
-            OrderItem::add($cartItem,$oID,$taxTotal,$taxIncludedTotal,$taxLabels);
+            OrderItem::add($cartItem,$oID,$taxProductTotal,$taxProductIncludedTotal,$taxProductLabels);
             $product = VividProduct::getByID($cartItem['product']['pID']);
             if ($product && $product->hasUserGroups()) {
                 $groupstoadd = array_merge($groupstoadd, $product->getProductUserGroups());
@@ -231,9 +235,12 @@ class Order extends Object
             $customer->setValue('billing_last_name', $billing_last_name);
             $customer->setValue('billing_address', $billing_address);
             $customer->setValue('billing_phone', $billing_phone);
-            $customer->setValue('shipping_first_name', $shipping_first_name);
-            $customer->setValue('shipping_last_name', $shipping_last_name);
-            $customer->setValue('shipping_address', $shipping_address);
+
+            if ($smID) {
+                $customer->setValue('shipping_first_name', $shipping_first_name);
+                $customer->setValue('shipping_last_name', $shipping_last_name);
+                $customer->setValue('shipping_address', $shipping_address);
+            }
 
             //add user to Store Customers group
             $group = \Group::getByName('Store Customer');
@@ -281,8 +288,6 @@ class Order extends Object
         $mh->to($customer->getEmail());
 
         $mh->addParameter("order", $order);
-        $mh->addParameter("taxbased", $taxBased);
-        $mh->addParameter("taxlabel", $taxlabel);
         $mh->load("order_receipt","vivid_store");
         $mh->sendMail();
 
@@ -299,12 +304,12 @@ class Order extends Object
 
         if ($validNotification) {
             $mh->addParameter("order", $order);
-            $mh->addParameter("taxbased", $taxBased);
-            $mh->addParameter("taxlabel", $taxlabel);
-
             $mh->load("new_order_notification", "vivid_store");
             $mh->sendMail();
         }
+
+        // unset the shipping type, as next order might be unshippable
+        \Session::set('smID', '');
 
         VividCart::clear();
         return $order;
@@ -351,12 +356,14 @@ class Order extends Object
     }
     public function getTaxes() {
         $taxAmounts = explode(",",$this->oTax);
+        $taxAmountsIncluded = explode(",",$this->oTaxIncluded);
         $taxLabels = explode(",",$this->oTaxName);
         $taxes = array();
         for($i=0;$i<count($taxAmounts);$i++){
             $taxes[] = array(
                 'label' => $taxLabels[$i],
-                'amount' => $taxAmounts[$i]
+                'amount' => $taxAmounts[$i],
+                'amountIncluded' => $taxAmountsIncluded[$i],
             );
         }
         return $taxes;
@@ -369,11 +376,23 @@ class Order extends Object
         }
         return $taxTotal;
     }
+    public function getIncludedTaxTotal(){
+        $taxes = $this->getTaxes();
+        $taxTotal = 0;
+        foreach($taxes as $tax){
+            $taxTotal = $taxTotal + $tax['amountIncluded'];
+        }
+        return $taxTotal;
+    }
+
     public function getShippingTotal() { return $this->oShippingTotal; }
     public function getShippingMethodName(){
         if($this->smID){
             return ShippingMethod::getByID($this->smID)->getName();
         }
+    }
+    public function isShippable(){
+        return ($this->smID > 0);
     }
     
     public function updateStatus($status)

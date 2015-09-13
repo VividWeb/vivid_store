@@ -1,6 +1,16 @@
 <?php
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
+
+$taxCalc = Config::get('vividstore.calculation');
+
+if ($taxCalc == 'extract') {
+	$taxValue = 'includedTaxTotal';
+	$extraTaxLable =  t('Incl.');
+} else {
+	$taxValue = 'taxTotal';
+	$extraTaxLable = '';
+}
 ?>
 
 <div class="row">
@@ -13,18 +23,18 @@ use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Total </strong> <?=Price::format($ts['total'])?>
+						<strong><?=t('Total')?> </strong> <?=Price::format($ts['total'])?>
 					</div>
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Products</strong> <?=Price::format($ts['productTotal'])?>
+						<strong><?=t('Products')?></strong> <?=Price::format($ts['productTotal'])?>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Tax</strong> <?=Price::format($ts['taxTotal'])?>
+						<strong><?=t('Tax')?> <?=$extraTaxLable?></strong> <?=Price::format($ts[$taxValue])?>
 					</div>
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Shipping</strong> <?=Price::format($ts['shippingTotal'])?>
+						<strong><?=t('Shipping')?></strong> <?=Price::format($ts['shippingTotal'])?>
 					</div>
 				</div>
 			</div>
@@ -34,23 +44,23 @@ use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
 		<div class="panel panel-sale">
 			<?php $td = SalesReport::getThirtyDays(); ?>
 			<div class="panel-heading">
-				<h2 class="panel-title">Past 30 Days</h2>
+				<h2 class="panel-title"><?=t('Past 30 Days')?></h2>
 			</div>
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Total </strong> <?=Price::format($td['total'])?>
+						<strong><?=t('Total')?></strong> <?=Price::format($td['total'])?>
 					</div>
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Products</strong> <?=Price::format($td['productTotal'])?>
+						<strong><?=t('Products')?></strong> <?=Price::format($td['productTotal'])?>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Tax</strong> <?=Price::format($td['taxTotal'])?>
+						<strong><?=t('Tax')?> <?=$extraTaxLable?></strong> <?=Price::format($td[$taxValue])?>
 					</div>
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Shipping</strong> <?=Price::format($td['shippingTotal'])?>
+						<strong><?=t('Shipping')?></strong> <?=Price::format($td['shippingTotal'])?>
 					</div>
 				</div>
 			</div>
@@ -65,18 +75,18 @@ use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Total </strong> <?=Price::format($ytd['total'])?>
+						<strong><?=t('Total')?></strong> <?=Price::format($ytd['total'])?>
 					</div>
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Products</strong> <?=Price::format($ytd['productTotal'])?>
+						<strong><?=t('Products')?></strong> <?=Price::format($ytd['productTotal'])?>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Tax</strong> <?=Price::format($ytd['taxTotal'])?>
+						<strong><?=t('Tax')?> <?=$extraTaxLable?></strong> <?=Price::format($ytd[$taxValue])?>
 					</div>
 					<div class="col-xs-12 col-sm-6 stat">
-						<strong>Shipping</strong> <?=Price::format($ytd['shippingTotal'])?>
+						<strong><?=t('Shipping')?></strong> <?=Price::format($ytd['shippingTotal'])?>
 					</div>
 				</div>
 			</div>
@@ -188,8 +198,8 @@ $(function(){
 		<thead>
 			<tr>
 				<th><?=t("Products")?></th>
-				<th><?=t("Tax")?></th>
 				<th><?=t("Shipping")?></th>
+				<th><?=t("Tax")?> <?=$extraTaxLable?></th>
 				<th><?=t("Total")?></th>
 				<!--<th><?=t("Export")?></th>-->
 			</tr>
@@ -197,8 +207,8 @@ $(function(){
 		<tbody>
 			<tr>
 				<td><?=Price::format($ordersTotals['productTotal'])?></td>
-				<td><?=Price::format($ordersTotals['taxTotal'])?></td>
 				<td><?=Price::format($ordersTotals['shippingTotal'])?></td>
+				<td><?=Price::format($ordersTotals[$taxValue])?></td>
 				<td><?=Price::format($ordersTotals['total'])?></td>
 				<!--<td><a href="<?=URL::to('/dashboard/store/reports/sales/export?fromDate='.$dateFrom.'&toDate='.$dateTo)?>" class="btn btn-default"><?=t('Export to CSV')?></a></td>-->
 			</tr>
@@ -211,8 +221,8 @@ $(function(){
 			<th><?=t("Order #")?></th>
 			<th><?=t("Date")?></th>
 			<th><?=t("Products")?></th>
-			<th><?=t("Tax Total")?></th>
 			<th><?=t("Shipping")?></th>
+			<th><?=t("Tax")?> <?=$extraTaxLable?></th>
 			<th><?=t("Total")?></th>
 		</tr>
 	</thead>
@@ -222,8 +232,18 @@ $(function(){
 			<td><a href="<?=URL::to('/dashboard/store/orders/order',$o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
 			<td><?=$o->getOrderDate()?></td>
 			<td><?=Price::format($o->getSubTotal())?></td>
-			<td><?=Price::format($o->getTaxTotal())?></td>
 			<td><?=Price::format($o->getShippingTotal())?></td>
+			<td>
+				<?php
+				$tax = $o->getTaxTotal();
+				$includedTax = $o->getIncludedTaxTotal();
+				if ($tax) {
+					echo Price::format($tax);
+				} elseif ($includedTax) {
+					echo Price::format($includedTax);
+				}
+				?>
+			</td>
 			<td><?=Price::format($o->getTotal())?></td>
 		</tr>
 		<?php } ?>

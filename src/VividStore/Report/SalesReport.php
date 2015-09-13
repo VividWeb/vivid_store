@@ -25,11 +25,13 @@ class SalesReport extends OrderList
         $total = 0;
         $productTotal = 0;
         $taxTotal = 0;
+        $includedTaxTotal = 0;
         $shippingTotal = 0;
         foreach($sr->getResults() as $order){
             $total = $total + $order->getTotal();
             $productTotal = $productTotal + $order->getSubTotal();
             $taxTotal = $taxTotal + $order->getTaxTotal();
+            $includedTaxTotal = $includedTaxTotal + $order->getIncludedTaxTotal();
             $shippingTotal = $shippingTotal + $order->getShippingTotal();
         }
         
@@ -37,6 +39,7 @@ class SalesReport extends OrderList
             "total" => $total,
             "productTotal" => $productTotal,
             "taxTotal" => $taxTotal,
+            "includedTaxTotal" => $includedTaxTotal,
             "shippingTotal" => $shippingTotal,
             "orders" => $sr
         );
