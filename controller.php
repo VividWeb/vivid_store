@@ -34,7 +34,7 @@ class Controller extends Package
 		if (version_compare($pkg->getPackageVersion(), '2.1', '<')) {
             Installer::renameDatabaseTables($pkg);
         }
-		if (version_compare(APP_VERSION, '5.7.4', '<')) {
+        if (version_compare(APP_VERSION, '5.7.4', '<')) {
 			Installer::refreshDatabase($pkg);
 		}
 		Installer::installSinglePages($pkg);
@@ -53,6 +53,10 @@ class Controller extends Package
 		Installer::createDDFileset($pkg);
 		Installer::installOrderStatuses($pkg);
         Installer::installDefaultTaxClass($pkg);
+        if (version_compare($pkg->getPackageVersion(), '3.0', '<')) {
+            Installer::migrateOldShippingMethod($pkg);
+            Installer::migrateOldTaxRates($pkg);   
+        }
 	}
 
     public function install()

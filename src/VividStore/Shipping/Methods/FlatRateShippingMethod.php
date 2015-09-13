@@ -29,11 +29,11 @@ class FlatRateShippingMethod extends MethodTypeMethod
      */
     protected $rateType;
     /**
-     * @Column(type="decimal")
+     * @Column(type="decimal",nullable=true)
      */
     protected $perItemRate;
 	/**
-     * @Column(type="decimal")
+     * @Column(type="decimal",nullable=true)
      */
     protected $perWeightRate;
     /**
@@ -93,7 +93,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
     
     public function addMethodTypeMethod($data)
     {
-        return $this->addOrUpdate('update',$data);    
+        return $this->addOrUpdate('add',$data);    
     }
     public function update($data)
     {

@@ -337,7 +337,8 @@ $("#checkout-form-group-billing").submit(function(e){
                         }
                     });
                 } else {
-                    alert($errors.errors.join('\n'));
+                    $("#checkout-form-group-billing .checkout-form-group-body").prepend('<div class="vivid-store-col-1"><div class="alert alert-danger"></div></div>');
+                    $("#checkout-form-group-billing .alert").html($errors.errors.join('<br>'));
                     $('.whiteout').remove();
                 }
             },
@@ -392,10 +393,16 @@ $("#checkout-form-group-billing").submit(function(e){
                         }
                     });
                 } else {
-                    alert($errors.errors.join('\n'));
+                    $("#checkout-form-group-shipping .checkout-form-group-body").prepend('<div class="vivid-store-col-1"><div class="alert alert-danger"></div></div>');
+                    $("#checkout-form-group-shipping .alert").html($errors.errors.join('<br>'));
                     $('.whiteout').remove();
                 }
             },
+            error: function(data){
+                alert("something went wrong");
+                $(".whiteout").remove();
+                
+            } 
        });
        
     });

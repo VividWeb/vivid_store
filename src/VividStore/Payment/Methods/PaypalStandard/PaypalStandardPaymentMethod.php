@@ -187,6 +187,7 @@ class PaypalStandardPaymentMethod extends PaymentMethod
         $res = trim(end($tokens));
         if (strcmp ($res, "VERIFIED") == 0) {
             $order = VividOrder::getByID($_POST['invoice']);
+            $order->completeOrder();
             $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
         } elseif (strcmp ($res, "INVALID") == 0) {
             // log for manual investigation
