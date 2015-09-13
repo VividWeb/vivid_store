@@ -145,7 +145,7 @@ class Order extends Object
             $taxProductIncludedTotal = implode(',',$taxProductIncludedTotal);
             $taxProductLabels = implode(',',$taxProductLabels);
 
-            OrderItem::add($cartItem,$oID,$taxTotal,$taxIncludedTotal,$taxLabels);
+            OrderItem::add($cartItem,$oID,$taxProductTotal,$taxProductIncludedTotal,$taxProductLabels);
             
         }
 
@@ -166,6 +166,7 @@ class Order extends Object
     }
     public function completeOrder()
     {
+        $smID = \Session::get('smID');
         $groupstoadd = array();
         $createlogin = false;
         $orderItems = $this->getOrderItems();
@@ -244,11 +245,19 @@ class Order extends Object
         } elseif ($createlogin) {  // or if we found a user (because they are logged in) and need to use it to create logins
             $user = $customer->getUserInfo();
         }
-        
+
          if ($user) {  // $user is going to either be the new one, or the user of the currently logged in customer
 
             // update the order created with the user from the newly created user
             $this->associateUser($user->getUserID());
+
+            $billing_first_name = $customer->getValue("billing_first_name");
+            $billing_last_name = $customer->getValue("billing_last_name");
+            $billing_address = $customer->getValueArray("billing_address");
+            $billing_phone = $customer->getValue("billing_phone");
+            $shipping_first_name = $customer->getValue("shipping_first_name");
+            $shipping_last_name = $customer->getValue("shipping_last_name");
+            $shipping_address = $customer->getValueArray("shipping_address");
 
             // update the  user's attributes
             $customer = new Customer($user->getUserID());
@@ -256,6 +265,7 @@ class Order extends Object
             $customer->setValue('billing_last_name', $billing_last_name);
             $customer->setValue('billing_address', $billing_address);
             $customer->setValue('billing_phone', $billing_phone);
+
 
             if ($smID) {
                 $customer->setValue('shipping_first_name', $shipping_first_name);
@@ -300,7 +310,7 @@ class Order extends Object
         $mh->from($fromEmail);
         $mh->to($customer->getEmail());
 
-        $mh->addParameter("order", $order);
+        $mh->addParameter("order", $this);
         $mh->load("order_receipt","vivid_store");
         $mh->sendMail();
 
@@ -316,7 +326,7 @@ class Order extends Object
         }
 
         if ($validNotification) {
-            $mh->addParameter("order", $order);
+            $mh->addParameter("order", $this);
             $mh->load("new_order_notification", "vivid_store");
             $mh->sendMail();
         }
@@ -369,17 +379,21 @@ class Order extends Object
         }
         return $subtotal;
     }
-    public function getTaxes() {
-        $taxAmounts = explode(",",$this->oTax);
-        $taxAmountsIncluded = explode(",",$this->oTaxIncluded);
-        $taxLabels = explode(",",$this->oTaxName);
+    public function getTaxes()
+    {
         $taxes = array();
-        for($i=0;$i<count($taxAmounts);$i++){
-            $taxes[] = array(
-                'label' => $taxLabels[$i],
-                'amount' => $taxAmounts[$i],
-                'amountIncluded' => $taxAmountsIncluded[$i],
-            );
+        if ($this->oTax || $this->oTaxIncluded) {
+            $taxAmounts = explode(",", $this->oTax);
+            $taxAmountsIncluded = explode(",", $this->oTaxIncluded);
+            $taxLabels = explode(",", $this->oTaxName);
+            $taxes = array();
+            for ($i = 0; $i < count($taxLabels); $i++) {
+                $taxes[] = array(
+                    'label' => $taxLabels[$i],
+                    'amount' => $taxAmounts[$i],
+                    'amountIncluded' => $taxAmountsIncluded[$i],
+                );
+            }
         }
         return $taxes;
     }
