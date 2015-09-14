@@ -24,7 +24,7 @@ class OrderItem extends Object
         $db = Database::get();
         $product = VividProduct::getByID($data['product']['pID']);
         $productName = $product->getProductName();
-        $productPrice = Price::getFloat($product->getFormattedPrice());
+        $productPrice = $product->getActivePrice();
         $qty = $data['product']['qty'];
         if (!$product->pQtyUnlim) {
             $inStock = $product->getProductQty();
