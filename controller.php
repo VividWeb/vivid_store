@@ -67,8 +67,14 @@ class Controller extends Package
 
     public function upgrade()
     {
-        parent::upgrade();
-		$this->installStore();
+        $pkg = Package::getByHandle('vivid_store');
+        $e = \Loader::helper('validation/error');
+        if (version_compare($pkg->getPackageVersion(), '4.0', '<')) {
+            $e->add('crape');
+        } else {
+            Installer::upgrade($pkg);
+    		$this->installStore();
+        }
     }
 
 

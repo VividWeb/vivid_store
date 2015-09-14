@@ -60,6 +60,12 @@ class Order extends Object
         
         //get the price details
         $smID = \Session::get('smID');
+        $sm = ShippingMethod::getByID($smID);
+        $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
+        $shippingMethodName = $sm->getName();
+        $smName = $shippingMethodTypeName.": ".$shippingMethodName;
+        
+        
         $shipping = VividCart::getShippingTotal();
         $shipping = Price::formatFloat($shipping);
         $taxes = Tax::getTaxes();
@@ -86,11 +92,11 @@ class Order extends Object
         $taxLabels = implode(',',$taxLabels);
         
         //get payment method
-        $pmID = $pm->getPaymentMethodID();
+        $pmName = $pm->getPaymentMethodName();
 
         //add the order
-        $vals = array($customer->getUserID(),$now,$pmID,$smID,$shipping,$taxTotal,$taxIncludedTotal,$taxLabels,$total);
-        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmID,smID,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
+        $vals = array($customer->getUserID(),$now,$pmName,$smName,$shipping,$taxTotal,$taxIncludedTotal,$taxLabels,$total);
+        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmName,smName,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
         $oID = $db->lastInsertId();
         $order = Order::getByID($oID);
         if($status){
@@ -358,12 +364,7 @@ class Order extends Object
         return $items;
     }
     public function getOrderID(){ return $this->oID; }
-    public function getPaymentMethodName() {
-        $pm = PaymentMethod::getByID($this->pmID);
-        if(is_object($pm)){
-            return $pm->getPaymentMethodName();
-        }
-    }
+    public function getPaymentMethodName() { return $this->pmName; }
     public function getStatus(){ return $this->oStatus; }
     public function getCustomerID(){ return $this->cID; }
     public function getOrderDate(){ return $this->oDate; }
@@ -415,11 +416,7 @@ class Order extends Object
     }
 
     public function getShippingTotal() { return $this->oShippingTotal; }
-    public function getShippingMethodName(){
-        if($this->smID){
-            return ShippingMethod::getByID($this->smID)->getName();
-        }
-    }
+    public function getShippingMethodName(){ return $this->smName; }
     public function isShippable(){
         return ($this->smID > 0);
     }

@@ -75,8 +75,8 @@
         <field name="cID" type="I"></field>
         <field name="oDate" type="T"></field>
         <field name="oStatus" type="C" size="50"></field>
-        <field name="pmID" type="I"></field>
-        <field name="smID" type="I"></field>
+        <field name="pmName" type="C" size="50"></field>
+        <field name="smName" type="C" size="50"></field>
         <field name="oShippingTotal" type="C" size="10"></field>
         <field name="oTax" type="C" size="255"></field>
         <field name="oTaxIncluded" type="C" size="255"></field>

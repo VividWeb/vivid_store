@@ -444,12 +444,12 @@ class Installer
 
     //The following is copied from 7.5.1's upgrade method. 
     //upgradeDatabase() has been changed to not drop tables unrelated to ORM.
-    public function upgrade()
+    public function upgrade(Package $pkg)
     {
-        $this->upgradeDatabase();
+        $this->upgradeDatabase($pkg);
 
         // now we refresh all blocks
-        $items = $this->getPackageItems();
+        $items = $pkg->getPackageItems();
         if (is_array($items['block_types'])) {
             foreach ($items['block_types'] as $item) {
                 $item->refresh();
@@ -458,23 +458,23 @@ class Installer
         Localization::clearCache();
     }
     
-    public static function upgradeDatabase()
+    public static function upgradeDatabase($pkg)
     {
-        $dbm = $this->getDatabaseStructureManager();
-        $this->destroyProxyClasses();
+        $dbm = $pkg->getDatabaseStructureManager();
+        $pkg->destroyProxyClasses();
         if ($dbm->hasEntities()) {
             $dbm->generateProxyClasses();
             //$dbm->dropObsoleteDatabaseTables(camelcase($this->getPackageHandle()));
             $dbm->installDatabase();
         }
 
-        if (file_exists($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
+        if (file_exists($pkg->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
             // Legacy db.xml
             // currently this is just done from xml
             $db = Database::get();
             $db->beginTransaction();
 
-            $parser = Schema::getSchemaParser(simplexml_load_file($this->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
+            $parser = Schema::getSchemaParser(simplexml_load_file($pkg->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
             $parser->setIgnoreExistingTables(false);
             $toSchema = $parser->parse($db);
 
