@@ -59,7 +59,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                             </div>
 
                             <div class="cart-list-item-price">
-                                <?=Price::format($product->getProductPrice())?>
+                                <?=Price::format($product->getActivePrice())?>
                             </div>
 
                             <div class="cart-list-product-qty">

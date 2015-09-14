@@ -292,6 +292,7 @@ class Product extends Object
             return $this->getProductPrice();
         }
     }
+    public function getFormattedActivePrice(){ return Price::format($this->getActivePrice()); }
     public function getTaxClassID(){ return $this->pTaxClass; }
     public function getTaxClass(){ return TaxClass::getByID($this->pTaxClass); }
     
