@@ -20,20 +20,20 @@ class FreeShippingShippingMethod extends MethodTypeMethod
 {
     
     /**
-     * @Column(type="decimal")
+     * @Column(type="float")
      */
     protected $minimumAmount;
     /**
-     * @Column(type="decimal")
+     * @Column(type="float")
      */
     protected $maximumAmount;
     
     /**
-     * @Column(type="decimal")
+     * @Column(type="float")
      */
     protected $minimumWeight;
     /**
-     * @Column(type="decimal")
+     * @Column(type="float")
      */
     protected $maximumWeight;
     /**

@@ -38,7 +38,7 @@ class TaxRate
     protected $taxLabel;
     
     /**
-     * @Column(type="decimal")
+     * @Column(type="float")
      */
     protected $taxRate;
     
