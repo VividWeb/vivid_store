@@ -376,7 +376,7 @@ class Cart
 
     public function getTotal()
     {
-        $subTotal = Price::getFloat(Cart::getSubTotal());
+        $subTotal = Cart::getSubTotal();
         $taxTotal = 0;
         $taxes = Tax::getTaxes();
         $taxCalc = Config::get('vividstore.calculation');

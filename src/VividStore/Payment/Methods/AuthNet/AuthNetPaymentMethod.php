@@ -76,7 +76,7 @@ class AuthNetPaymentMethod extends PaymentMethod
         $transaction->setSandbox(AUTHORIZENET_SANDBOX);
         $transaction->setFields(
             array(
-                'amount' => Price::getFloat(VividCart::getTotal()),
+                'amount' => VividCart::getTotal(),
                 'card_num' => $_POST['authnet-checkout-credit-card'],
                 'exp_date' => $_POST['authnet-checkout-exp-month'].$_POST['authnet-checkout-exp-year']
             )
