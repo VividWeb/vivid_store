@@ -1,4 +1,6 @@
-<?php extract($vars); ?>
+<?php 
+defined('C5_EXECUTE') or die("Access Denied.");
+extract($vars); ?>
 
 
 <div class="row">

@@ -1,4 +1,5 @@
 <?php
+defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 

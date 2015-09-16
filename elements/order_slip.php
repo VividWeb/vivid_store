@@ -1,4 +1,5 @@
 <?php
+defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 ?>
