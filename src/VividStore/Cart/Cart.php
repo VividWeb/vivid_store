@@ -267,7 +267,7 @@ class Cart
         }
 
         $discounts = self::getDiscounts();
-
+        /*
         foreach($discounts as $discount) {
             if ($discount->drDeductFrom == 'subtotal') {
                 if ($discount->drDeductType  == 'value' ) {
@@ -279,8 +279,9 @@ class Cart
                 }
             }
         }
-
+        */
         return max($subtotal,0);
+        
     }
 
     public function getTotalItemsInCart(){
@@ -386,11 +387,10 @@ class Cart
             }
         }
 
-
-        $shippingTotal = Price::getFloat(Cart::getShippingTotal());
-
+        
+        $shippingTotal = Cart::getShippingTotal();
         $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
-
+        
         $discounts = self::getDiscounts();
         foreach($discounts as $discount) {
             if ($discount->drDeductFrom == 'total') {
@@ -403,13 +403,13 @@ class Cart
                 }
             }
         }
-
+        
         return $grandTotal;
     }
 
     // returns an array of formatted cart totals
     public function getTotals() {
-        $subTotal = Price::getFloat(Cart::getSubTotal());
+        $subTotal = Cart::getSubTotal();
         $taxes = Tax::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
@@ -425,10 +425,25 @@ class Cart
             }
         }
 
-        $shippingTotal = Price::getFloat(Cart::getShippingTotal());
-        $total = ($subTotal + $addedTaxTotal + $shippingTotal);
-
+        $shippingTotal = Cart::getShippingTotal();
+        $discountedSubtotal = $subTotal;
         $discounts = self::getDiscounts();
+        foreach($discounts as $discount) {
+            if ($discount->drDeductFrom == 'subtotal') {
+                
+                if ($discount->drDeductType  == 'value' ) {
+                    $discountedSubtotal -= $discount->drValue;
+                }
+
+                if ($discount->drDeductType  == 'percentage' ) {
+                    $discountedSubtotal -= ($discount->drPercentage / 100 * $discountedSubtotal);
+                }
+            }
+        }
+        
+        $total = ($discountedSubtotal + $addedTaxTotal + $shippingTotal);
+        
+        
         foreach($discounts as $discount) {
             if ($discount->drDeductFrom == 'total') {
                 if ($discount->drDeductType  == 'value' ) {

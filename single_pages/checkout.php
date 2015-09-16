@@ -300,52 +300,56 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         ?>
 
 
-        <p>
-            <strong><?=t("Items Subtotal")?>:</strong> <?=Price::format($subtotal);?>
-            <?php if($calculation == 'extract'){
-                echo '<small class="text-muted">'.t("inc. taxes")."</small>";
-            }?>
-            <br>
-            <span id="taxes">
+        <ul class="checkout-totals-line-items">
+            <li class="line-item sub-total">
+                <strong><?=t("Items Subtotal")?>:</strong> <?=Price::format($subtotal);?>
+                <?php if($calculation == 'extract'){
+                    echo '<small class="text-muted">'.t("inc. taxes")."</small>";
+                }?>
+            </li>
+            <div class="taxes">
                 <?php 
-                if($taxtotal > 0){
-                    foreach($taxes as $tax){
-                        if($tax['taxamount']>0){
-                ?>
-                        <strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span><br>
-                <?php 
+                    if($taxtotal > 0){
+                        foreach($taxes as $tax){
+                            if($tax['taxamount']>0){ ?>
+                                <li class="line-item tax-item"><strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span></li>
+                            <?php }
                         }
                     }
-                }
                 ?>
-            </span>
+            </div>
+            
             <?php if ($shippingEnabled) { ?>
-            <strong><?=t("Shipping")?>:</strong> <span id="shipping-total"><?=Price::format($shippingtotal);?></span><br>
+            <li class="line-item shipping"><strong><?=t("Shipping")?>:</strong> <span id="shipping-total"><?=Price::format($shippingtotal);?></span></li>
             <?php } ?>
-        </p>
-
-        <?php if(!empty($discounts)) { ?>
-            <p><strong><?= (count($discounts) == 1 ? t('Discount') : t('Discounts'));?>:</strong>
-
+            <?php if(!empty($discounts)) { ?>
+            <li class="line-item discounts">
+                <strong><?= (count($discounts) == 1 ? t('Discount Applied') : t('Discounts Applied'));?>:</strong>
                 <?php
-                $discountstrings = array();
-
-                foreach($discounts as $discount) { ?>
-                    <?php  $discountstrings[] = h($discount->getDisplay()); ?>
-                <?php }
-
-                echo implode(', ', $discountstrings);
+                    $discountstrings = array();
+                    $discountAmount = 0;
+                    foreach($discounts as $discount) {
+                        $discountstrings[] = h($discount->getDisplay());
+                        if ($discount->drDeductFrom == 'subtotal') {
+                            if ($discount->drDeductType  == 'value' ) {
+                                $discountAmount += $discount->drValue;
+                            }
+            
+                            if ($discount->drDeductType  == 'percentage' ) {
+                                $discountAmount += ($discount->drPercentage / 100 * $subtotal);
+                            }
+                        }
+                    }
+                    echo implode(', ', $discountstrings);
                 ?>
-            </p>
-        <?php }?>
-
-        <?php if ($discountsWithCodesExist && !$hasCode) { ?>
-            <p><a href="<?= View::url('/cart');?>"><?= t('Enter discount code'); ?></a></p>
-        <?php } ?>
-
-
-
-        <p><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></p>
+                <div class="discount-amount">- <?=Price::format($discountAmount)?></div>
+            </li>
+            <?php }?>
+            <?php if ($discountsWithCodesExist && !$hasCode) { ?>
+                <p><a href="<?= View::url('/cart');?>"><?= t('Enter discount code'); ?></a></p>
+            <?php } ?>
+            <li class="line-item grand-total"><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></li>
+        </ul>
         
     </div>
 

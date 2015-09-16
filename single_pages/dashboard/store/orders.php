@@ -99,23 +99,6 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
         </tbody>
     </table>
     
-    <p>
-        <strong><?=t("Subtotal")?>: </strong><?=Price::format($order->getSubTotal())?><br>
-        <?php if ($order->isShippable()) { ?>
-        <strong><?=t("Shipping")?>: </strong><?=Price::format($order->getShippingTotal())?><br>
-        <?php } ?>
-        <?php foreach($order->getTaxes() as $tax){?>
-            <strong><?=$tax['label']?>:</strong> <?=Price::format($tax['amount'] ? $tax['amount'] : $tax['amountIncluded'])?><br>
-        <?php } ?>
-        <strong><?=t("Grand Total")?>: </strong><?=Price::format($order->getTotal())?>
-    </p>
-    <p>
-        <strong><?=t("Payment Method")?>: </strong><?=$order->getPaymentMethodName()?><br>
-        <?php if ($order->isShippable()) { ?>
-        <strong><?=t("Shipping Method")?>: </strong><?=$order->getShippingMethodName()?>
-        <?php } ?>
-    </p>
-
     <?php $applieddiscounts = $order->getAppliedDiscounts();
 
     if (!empty($applieddiscounts)) { ?>
@@ -146,23 +129,24 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             </tbody>
         </table>
     
-    <p>
-        <strong><?=t("Items Subtotal")?>:</strong>  <?= Price::format($order->getSubTotal())?><br>
-        <?php $shipping = $order->getShippingTotal();
-        if ($shipping > 0) { ?>
-        <strong><?=t("Shipping")?>:</strong>  <?= Price::format($shipping)?><br>
+    <?php } ?>
+    
+     <p>
+        <strong><?=t("Subtotal")?>: </strong><?=Price::format($order->getSubTotal())?><br>
+        <?php if ($order->isShippable()) { ?>
+        <strong><?=t("Shipping")?>: </strong><?=Price::format($order->getShippingTotal())?><br>
         <?php } ?>
         <?php foreach($order->getTaxes() as $tax){?>
-            <strong><?=$tax['label']?>:</strong> <?=$tax['amount']?>
+            <strong><?=$tax['label']?>:</strong> <?=Price::format($tax['amount'] ? $tax['amount'] : $tax['amountIncluded'])?><br>
         <?php } ?>
-        <strong class="text-large"><?=t("Total")?>:</strong>  <?= Price::format($order->getTotal())?><br>
-        <strong><?=t("Payment Method")?>:</strong> <?=$order->getPaymentMethodName()?>
+        <strong><?=t("Grand Total")?>: </strong><?=Price::format($order->getTotal())?>
     </p>
-
-
-
-
-    <?php } ?>
+    <p>
+        <strong><?=t("Payment Method")?>: </strong><?=$order->getPaymentMethodName()?><br>
+        <?php if ($order->isShippable()) { ?>
+        <strong><?=t("Shipping Method")?>: </strong><?=$order->getShippingMethodName()?>
+        <?php } ?>
+    </p>
 
     <h3><?=t("Order Status History")?></h3>
     <hr>

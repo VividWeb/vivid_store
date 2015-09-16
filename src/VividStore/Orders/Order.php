@@ -67,11 +67,9 @@ class Order extends Object
         
         
         $shipping = VividCart::getShippingTotal();
-        $shipping = Price::formatFloat($shipping);
         $taxes = Tax::getTaxes();
         $totals = VividCart::getTotals();
         $total = $totals['total'];
-        $total = Price::formatFloat($total);
         $taxCalc = Config::get('vividstore.calculation');
 
         $taxTotal = array();
@@ -80,9 +78,9 @@ class Order extends Object
 
         foreach($taxes as $tax){
             if ($taxCalc == 'extract') {
-                $taxIncludedTotal[] = Price::formatFloat($tax['taxamount']);
+                $taxIncludedTotal[] = $tax['taxamount'];
             }  else {
-                $taxTotal[] = Price::formatFloat($tax['taxamount']);
+                $taxTotal[] = $tax['taxamount'];
             }
             $taxLabels[] = $tax['name'];
         }
@@ -141,9 +139,9 @@ class Order extends Object
 
             foreach($taxes as $tax){
                 if ($taxCalc == 'extract') {
-                    $taxProductIncludedTotal[] = Price::formatFloat($tax['taxamount']);
+                    $taxProductIncludedTotal[] = $tax['taxamount'];
                 }  else {
-                    $taxProductTotal[] = Price::formatFloat($tax['taxamount']);
+                    $taxProductTotal[] = $tax['taxamount'];
                 }
                 $taxProductLabels[] = $tax['name'];
             }
@@ -418,7 +416,7 @@ class Order extends Object
     public function getShippingTotal() { return $this->oShippingTotal; }
     public function getShippingMethodName(){ return $this->smName; }
     public function isShippable(){
-        return ($this->smID > 0);
+        return ($this->smName != "");
     }
     
     public function updateStatus($status)

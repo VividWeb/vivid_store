@@ -83,6 +83,10 @@
      .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links a { padding: 5px 15px; }
 }
 
+.checkout-totals-line-items { list-style: none !important; padding: 0; margin: 30px 0; }
+    .checkout-totals-line-items .line-item { padding: 3px 5px; }
+    .checkout-totals-line-items .line-item.grand-total { font-size: 120%; margin-top: 15px; background: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px; }
+
 .checkout-cart-list {
     padding: 0;
 }

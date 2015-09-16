@@ -28,7 +28,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     </div>
 
                     <div class="checkout-cart-item-price">
-                        <?=Price::format($product->getProductPrice())?>
+                        <?=Price::format($product->getActivePrice())?>
                     </div>
 
                     <?php if ($product->allowQuantity()) { ?>

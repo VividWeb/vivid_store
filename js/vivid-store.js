@@ -325,7 +325,7 @@ $("#checkout-form-group-billing").submit(function(e){
                             $("#taxes").html("");
                             for(var i=0;i<taxes.length;i++){
                                 if(taxes[i].taxed===true){
-                                    $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                    $("#taxes").append('<li class="line-item tax-item"><strong>'+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><li>");
                                 }
                             }
                         } 
@@ -380,7 +380,7 @@ $("#checkout-form-group-billing").submit(function(e){
                             $("#taxes").html("");  
                             for(var i=0;i<taxes.length;i++){
                                 if(taxes[i].taxed===true){
-                                    $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+                                    $("#taxes").append('<li class="line-item tax-item"><strong>'+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span></li>");
                                 }
                             }
                         } 
