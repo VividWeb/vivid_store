@@ -28,41 +28,41 @@ class Controller extends Package
         return t("Vivid Store");
     }
 
-	public function installStore()
-	{
-		$pkg = Package::getByHandle('vivid_store');
-		if (version_compare($pkg->getPackageVersion(), '2.1', '<')) {
+    public function installStore()
+    {
+        $pkg = Package::getByHandle('vivid_store');
+        if (version_compare($pkg->getPackageVersion(), '2.1', '<')) {
             Installer::renameDatabaseTables($pkg);
         }
         if (version_compare(APP_VERSION, '5.7.4', '<')) {
-			Installer::refreshDatabase($pkg);
-		}
-		Installer::installSinglePages($pkg);
-		Installer::installProductParentPage($pkg);
+    	   Installer::refreshDatabase($pkg);
+        }
+        Installer::installSinglePages($pkg);
+        Installer::installProductParentPage($pkg);
         Installer::installStoreProductPageType($pkg);
-		Installer::updateConfigStorage($pkg);
-		Installer::setDefaultConfigValues($pkg);
-		Installer::installPaymentMethods($pkg);
-		Installer::installShippingMethods($pkg);
+        Installer::updateConfigStorage($pkg);
+        Installer::setDefaultConfigValues($pkg);
+        Installer::installPaymentMethods($pkg);
+        Installer::installShippingMethods($pkg);
         Installer::installBlocks($pkg);
-		Installer::setPageTypeDefaults($pkg);
-		Installer::installCustomerGroups($pkg);
-		Installer::installUserAttributes($pkg);
-		Installer::installOrderAttributes($pkg);
-		Installer::installProductAttributes($pkg);
-		Installer::createDDFileset($pkg);
-		Installer::installOrderStatuses($pkg);
+        Installer::setPageTypeDefaults($pkg);
+        Installer::installCustomerGroups($pkg);
+        Installer::installUserAttributes($pkg);
+        Installer::installOrderAttributes($pkg);
+        Installer::installProductAttributes($pkg);
+        Installer::createDDFileset($pkg);
+        Installer::installOrderStatuses($pkg);
         Installer::installDefaultTaxClass($pkg);
         if (version_compare($pkg->getPackageVersion(), '3.0', '<')) {
             Installer::migrateOldShippingMethod($pkg);
             Installer::migrateOldTaxRates($pkg);   
         }
-	}
+    }
 
     public function install()
     {
         $pkg = parent::install();
-		$this->installStore();
+        $this->installStore();
     }
 
     public function upgrade()
@@ -120,12 +120,12 @@ class Controller extends Package
         if(is_object($invoicepm)){
             $invoicepm->delete();
         }
-		$paypalpm = PaymentMethod::getByHandle('paypal_standard');
+        $paypalpm = PaymentMethod::getByHandle('paypal_standard');
         if(is_object($paypalpm)){
             $paypalpm->delete();
         }
-
-		$shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
+        
+        $shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
         if(is_object($shippingMethodType)) {
             $shippingMethodType->delete();
         }
