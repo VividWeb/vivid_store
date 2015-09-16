@@ -9,7 +9,6 @@ use Illuminate\Filesystem\Filesystem;
 use View;
 use User;
 use UserInfo;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));

@@ -2,7 +2,6 @@
 namespace Concrete\Package\VividStore\Block\VividProductList;
 
 use \Concrete\Core\Block\BlockController;
-use Package;
 use Core;
 use View;
 use Page;

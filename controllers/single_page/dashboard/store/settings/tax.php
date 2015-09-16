@@ -6,7 +6,6 @@ use \Concrete\Core\Page\Controller\DashboardPageController;
 use View;
 use Loader;
 use Core;
-use Package;
 
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;

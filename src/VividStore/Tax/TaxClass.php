@@ -1,11 +1,9 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 
-use Package;
 use Core;
 use Database;
 
-use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 

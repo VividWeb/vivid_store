@@ -2,7 +2,6 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage;
 
 use PageController;
-use Core;
 use View;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;

@@ -2,7 +2,6 @@
 namespace Concrete\Package\VividStore\Block\VividUtilityLinks;
 
 use \Concrete\Core\Block\BlockController;
-use Package;
 use Core;
 use View;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;

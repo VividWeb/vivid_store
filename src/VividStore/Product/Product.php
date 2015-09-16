@@ -16,7 +16,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey as StoreProductKey;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));

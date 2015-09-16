@@ -1,9 +1,7 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use Database;
 

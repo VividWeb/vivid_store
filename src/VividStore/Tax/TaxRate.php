@@ -1,8 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 
-use Package;
-use Core;
 use Database;
 use Config;
 

@@ -5,7 +5,6 @@ use \Concrete\Core\Controller\Controller;
 use View;
 use Illuminate\Filesystem\Filesystem;
 
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));

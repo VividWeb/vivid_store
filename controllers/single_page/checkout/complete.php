@@ -2,7 +2,6 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage\Checkout;
 
 use PageController;
-use Core;
 use View;
 
 

@@ -3,7 +3,6 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store\Reports;
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
-use Core;
 use Package;
 
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;

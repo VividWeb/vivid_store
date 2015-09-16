@@ -5,7 +5,6 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use Core;
 use View;
-use Package;
 use FilePermissions;
 use TaskPermission;
 use File;

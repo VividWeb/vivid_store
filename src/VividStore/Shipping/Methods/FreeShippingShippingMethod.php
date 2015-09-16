@@ -5,7 +5,6 @@ use Package;
 use Core;
 use Database;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodTypeMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer;
