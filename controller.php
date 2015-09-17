@@ -86,6 +86,7 @@ class Controller extends Package
         Route::register('/productmodal', '\Concrete\Package\VividStore\Src\VividStore\Product\ProductModal::getProductModal');
         Route::register('/checkout/getstates', '\Concrete\Package\VividStore\Src\VividStore\Utilities\States::getStateList');
         Route::register('/checkout/getShippingMethods','\Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout::getShippingMethods');
+        Route::register('/tester','\Concrete\Package\VividStore\Src\VividStore\Utilities\Tester::test');
         Route::register('/checkout/updater','\Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout::updater');
         Route::register('/productfinder','\Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder::getProductMatch');
         Route::register('/checkout/paypalresponse','\Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard\PaypalStandardPaymentMethod::validateCompletion');

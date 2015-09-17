@@ -12,8 +12,6 @@ use Log;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class PaypalStandardPaymentMethod extends PaymentMethod
 {
     public $external = true;

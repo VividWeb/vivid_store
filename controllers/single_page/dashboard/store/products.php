@@ -13,6 +13,7 @@ use PageType;
 use GroupList;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Image;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\Group;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
@@ -187,12 +188,20 @@ class Products extends DashboardPageController
             $this->error = null; //clear errors
             $this->error = $errors;
             if (!$errors->has()) {
-                
+                    
+                //save the product
                 $product = VividProduct::save($data);
+                //save product attributes
                 $aks = StoreProductKey::getList();
                 foreach($aks as $uak) {
                     $uak->saveAttributeForm($product);
                 }
+                //save images
+                Image::addImagesForProduct($data,$product);
+                //save usergroups
+                //save productgroups
+                //save product options
+                //save files
                 if($data['pID']){
                     $this->redirect('/dashboard/store/products/', 'updated');
                 } else {
@@ -276,6 +285,6 @@ class Products extends DashboardPageController
     }
     public function deletegroup($gID)
     {
-        VividProductGroup::getByID($gID)->remove();
+        Group::getByID($gID)->remove();
     }
 }

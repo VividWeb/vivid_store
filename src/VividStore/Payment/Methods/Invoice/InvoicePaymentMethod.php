@@ -5,7 +5,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use Core;
 use Config;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class InvoicePaymentMethod extends PaymentMethod
 {
     public function dashboardForm()

@@ -8,7 +8,6 @@ use Core;
 use Config;
 use \AuthorizeNet\Service\Aim as AuthorizeNetAIM;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class AuthNetPaymentMethod extends PaymentMethod
 {
     public function dashboardForm()

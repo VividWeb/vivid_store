@@ -12,7 +12,8 @@ use Core;
 use User;
 use Config;
 
-use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Image;
+use \Concrete\Package\VividStore\Src\VividStore\Groups\Group;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey as StoreProductKey;
@@ -61,15 +62,7 @@ class Product extends Object
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
             $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pSalePrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxClass=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
 
-            //update additional images
-            $db->Execute('DELETE FROM VividStoreProductImages WHERE pID = ?', $data['pID']);
-            $count = count($data['pifID']);
-            if($count>0){
-                for($i=0;$i<$count;$i++){
-                    $vals = array($data['pID'],$data['pifID'][$i],$data['piSort'][$i]);
-                    $db->Execute("INSERT INTO VividStoreProductImages (pID,pifID,piSort) VALUES (?,?,?)",$vals);
-                }
-            }
+           
 
             //update user groups
             $db->Execute('DELETE FROM VividStoreProductUserGroups WHERE pID = ?', $data['pID']);
@@ -136,15 +129,7 @@ class Product extends Object
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
             $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pSalePrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
 
-            //add additional images
-            $pID = $db->lastInsertId();
-            $count = count($data['pifID']);
-            if($count>0){
-                for($i=0;$i<$count;$i++){
-                    $vals = array($pID,$data['pifID'][$i],$data['piSort'][$i]);
-                    $db->Execute("INSERT INTO VividStoreProductImages (pID,pifID,piSort) VALUES (?,?,?)",$vals);
-                }
-            }
+            
 
             //insert user groups
             if (!empty($data['pUserGroups'])) {
@@ -306,9 +291,11 @@ class Product extends Object
     public function getGroupID(){ return $this->gID; }
     public function getGroupName()
     {
-        $group = ProductGroup::getByID($this->gID);
-        if(is_object($group)){
-            return $group->getGroupName();
+        if($this->gID > 0){
+            $group = Group::getByID($this->gID);
+            if(is_object($group)){
+                return $group->getGroupName();
+            }
         }
     }
     public function isFeatured(){ return $this->pFeatured; }
@@ -420,9 +407,7 @@ class Product extends Object
     
     public function getProductImages()
     {
-        $db = Database::get();
-        $productImages = $db->GetAll("SELECT * FROM VividStoreProductImages WHERE pID=? ORDER BY piSort",$this->pID);
-        return $productImages;
+        return Image::getImagesForProduct($this);
     }
 
     public function getProductImagesObjects(){
@@ -430,8 +415,8 @@ class Product extends Object
         $images = $this->getProductImages();
 
         foreach($images as $img) {
-            if ($img['pifID'] > 0) {
-                $fileObj = File::getByID($img['pifID']);
+            if ($img->getFileID() > 0) {
+                $fileObj = File::getByID($img->getFileID());
 
                 if ($fileObj) {
                     $objects[]= $fileObj;
