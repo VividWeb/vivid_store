@@ -216,8 +216,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <select multiple="multiple" name="pProductGroups[]" class="existing-select2 select2-select" style="width: 100%">
                         <?php
                             if (!empty($productgroups)) {
+                                if (!is_array($pgroups)) {
+                                    $pgroups = array();
+                                }
                                 foreach ($productgroups as $pgkey=>$pglabel) { ?>
-                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $productgroups) ? 'selected="selected"' : ''); ?>>  <?php echo $pglabel; ?></option>
+                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $pgroups) ? 'selected="selected"' : ''); ?>>  <?php echo $pglabel; ?></option>
                         <?php   }
                             } ?>
                     </select>
