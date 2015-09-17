@@ -40,7 +40,11 @@ class DiscountCode extends Object
     }
 
     public function isUsed() {
+        return (bool)($this->oID > 0);
+    }
 
+    public function markUsed($oID) {
+        return (bool)($this->oID > 0);
     }
 
     public function remove() {
