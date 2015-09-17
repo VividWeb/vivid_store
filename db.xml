@@ -53,10 +53,6 @@
         <field name="pID" type="I"></field>
         <field name="dffID" type="I"></field>
     </table>
-    <table name="VividStoreGroups">
-        <field name="gID" type="I"><key /><unsigned /><autoincrement/></field>
-        <field name="groupName" type="C" size="100"></field>
-    </table>
     <table name="VividStoreProductGroups">
         <field name="pID" type="I"></field>
         <field name="gID" type="I"></field>

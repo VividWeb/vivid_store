@@ -855,13 +855,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 <?php } elseif (in_array($controller->getTask(),$groupViews)){ ?>
 
-    <?php if($grouplist){?>
+    <?php if($grouplist){ ?>
         <h3><?=t("Groups")?></h3>
         <ul class="list-unstyled group-list" data-delete-url="<?php echo View::url('/dashboard/store/products/deletegroup')?>" data-save-url="<?php echo View::url('/dashboard/store/products/editgroup')?>">
-            <?php foreach($grouplist as $groupItem){
-                $group = VividProductGroup::getByID($groupItem->getGroupID());
-                ?>
-
+            <?php foreach($grouplist as $group){?>
                 <li data-group-id="<?=$group->getGroupID()?>">
                     <span class="group-name"><?=$group->getGroupName()?></span>
                     <input class="hideme edit-group-name" type="text" value="<?=$group->getGroupName()?>">
@@ -870,7 +867,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <span class="hideme btn btn-warning btn-save-group-name"><i class="fa fa-save"></i></span>
                     <span class="btn btn-danger btn-delete-group"><i class="fa fa-trash"></i></span>
                 </li>
-
             <?php } ?>
         </ul>
 

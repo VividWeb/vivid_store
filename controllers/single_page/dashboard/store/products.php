@@ -14,7 +14,7 @@ use GroupList;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Groups\Group;
 use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
@@ -250,19 +250,17 @@ class Products extends DashboardPageController
     public function addgroup()
     {
         $this->groups();
-        $data = $this->post();
         $this->error = null; //clear errors
-        $errors = $this->validateGroup($data);
+        $errors = $this->validateGroup($this->post());
         $this->error = $errors;
         if (!$errors->has()) {
-            VividProductGroup::add($data);
+            Group::add($this->post('groupName'));
             $this->redirect('/dashboard/store/products/', 'groupadded');
         }
     }
     public function editgroup($gID)
     {
-        $data = $this->post();
-        VividProductGroup::getByID($gID)->update($data);
+        Group::getByID($gID)->update($this->post('gName'));
     }
     public function validateGroup($args)
     {
