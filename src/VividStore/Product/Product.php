@@ -12,8 +12,9 @@ use Core;
 use User;
 use Config;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Image;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\Group;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Groups\Group as VividStoreGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey as StoreProductKey;
@@ -64,23 +65,6 @@ class Product extends Object
 
            
 
-            //update user groups
-            $db->Execute('DELETE FROM VividStoreProductUserGroups WHERE pID = ?', $data['pID']);
-            if (!empty($data['pUserGroups'])) {
-                foreach($data['pUserGroups'] as $gID){
-                    $vals = array($data['pID'],$gID);
-                    $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
-                }
-            }
-
-            //update product groups
-            $db->Execute('DELETE FROM VividStoreProductGroups WHERE pID = ?', $data['pID']);
-            if (!empty($data['pProductGroups'])) {
-                foreach($data['pProductGroups'] as $gID){
-                    $vals = array($pID,$gID);
-                    $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
-                }
-            }
 
             //update option groups
             $db->Execute('DELETE FROM VividStoreProductOptionGroups WHERE pID = ?', $data['pID']);
@@ -139,14 +123,7 @@ class Product extends Object
                 }
             }
 
-            //insert product groups
-            if (!empty($data['pProductGroups'])) {
-                foreach($data['pProductGroups'] as $gID){
-                    $vals = array($pID,$gID);
-                    $db->Execute("INSERT INTO VividStoreProductGroups (pID,gID) VALUES (?,?)",$vals);
-                }
-            }
-
+          
 
             //add option groups
             $count = count($data['pogSort']);
@@ -407,7 +384,7 @@ class Product extends Object
     
     public function getProductImages()
     {
-        return Image::getImagesForProduct($this);
+        return ProductImage::getImagesForProduct($this);
     }
 
     public function getProductImagesObjects(){

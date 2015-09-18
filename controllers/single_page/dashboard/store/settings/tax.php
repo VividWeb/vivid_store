@@ -8,10 +8,8 @@ use Loader;
 use Core;
 
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
-
-defined('C5_EXECUTE') or die("Access Denied.");
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate as StoreTaxRate;
 
 class Tax extends DashboardPageController
 {
@@ -19,7 +17,7 @@ class Tax extends DashboardPageController
     public function view()
     {
         $this->set("taxRates",StoreTax::getTaxRates());
-        $this->set("taxClasses",TaxClass::getTaxClasses());
+        $this->set("taxClasses",StoreTaxClass::getTaxClasses());
     }
     public function add()
     {
@@ -32,12 +30,12 @@ class Tax extends DashboardPageController
     {
         $this->set('pageTitle',t("Edit Tax Rate"));
         $this->set("task",t("Update"));
-        $this->set("taxRate",TaxRate::getByID($trID));
+        $this->set("taxRate",StoreTaxRate::getByID($trID));
         $this->loadFormAssets();
     }
     public function delete($trID)
     {
-        TaxRate::getByID($trID)->delete();
+        StoreTaxRate::getByID($trID)->delete();
         $this->redirect('/dashboard/store/settings/tax/removed');
     }
     public function loadFormAssets()
@@ -70,11 +68,11 @@ class Tax extends DashboardPageController
         if (!$errors->has()) {
             if($this->post('taxRateID')){
                 //update
-                TaxRate::add($data);
+                StoreTaxRate::add($data);
                 $this->redirect('/dashboard/store/settings/tax/updated');
             } else {
                 //first we send the data to the shipping method type.
-                TaxRate::add($data);
+                StoreTaxRate::add($data);
                 $this->redirect('/dashboard/store/settings/tax/success');
             }
         } else {
@@ -109,12 +107,12 @@ class Tax extends DashboardPageController
     {
         $this->set('task',t("Add"));
         $this->set('tc',new TaxClass());
-        $this->set('taxRates',StoreTax::getTaxRates());
+        $this->set('taxRates',StoreTaxRate::getTaxRates());
     }
     public function edit_class($tcID)
     {
         $this->set('task',t("Update"));
-        $this->set('tc', TaxClass::getByID($tcID));
+        $this->set('tc', StoreTaxClass::getByID($tcID));
         $this->set('taxRates',StoreTax::getTaxRates());
     }
     public function save_class()
@@ -131,12 +129,12 @@ class Tax extends DashboardPageController
         if (!$errors->has()) {
             if($this->post('taxClassID')){
                 //update
-                $taxRate = TaxClass::getByID($this->post('taxClassID'));
-                $taxRate->update($data);
+                $taxClass = StoreTaxClass::getByID($this->post('taxClassID'));
+                $taxClass->update($data);
                 $this->redirect('/dashboard/store/settings/tax/class_updated');
             } else {
                 //add.
-                TaxClass::add($data);
+                StoreTaxClass::add($data);
                 $this->redirect('/dashboard/store/settings/tax/class_added');
             }
         }

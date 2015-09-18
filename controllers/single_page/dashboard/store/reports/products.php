@@ -4,11 +4,10 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store\Repo
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
-use \Concrete\Package\VividStore\Src\VividStore\Report\ProductReport;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
+use \Concrete\Package\VividStore\Src\VividStore\Report\ProductReport as StoreProductReport;
 use \Concrete\Core\Search\Pagination\Pagination;
 
-defined('C5_EXECUTE') or die("Access Denied.");
 class Products extends DashboardPageController
 {
 
@@ -18,12 +17,12 @@ class Products extends DashboardPageController
         $dateTo = $this->post('dateTo');
         
         if(!$dateFrom){
-            $dateFrom = OrderList::getDateOfFirstOrder();
+            $dateFrom = StoreOrderList::getDateOfFirstOrder();
         }
         if(!$dateTo){
             $dateTo = date('Y-m-d');
         }
-        $pr = new ProductReport($dateFrom,$dateTo);
+        $pr = new StoreProductReport($dateFrom,$dateTo);
         $orderBy = $this->post('orderBy');
         if(!$orderBy){
             $orderBy = 'quantity';

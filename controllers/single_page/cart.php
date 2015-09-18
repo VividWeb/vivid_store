@@ -4,9 +4,9 @@ namespace Concrete\Package\VividStore\Controller\SinglePage;
 use PageController;
 use View;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart extends PageController
@@ -18,25 +18,25 @@ class Cart extends PageController
 
         if ($this->isPost()) {
             if ($this->post('action') == 'code' && $this->post('code')) {
-                $codesuccess = VividCart::storeCode($this->post('code'));
+                $codesuccess = StoreCart::storeCode($this->post('code'));
                 $codeerror = !$codesuccess;
             }
 
             if ($this->post('action') == 'update') {
                 $data = $this->post();
-                $result = VividCart::update($data);
+                $result = StoreCart::update($data);
                 $added = $result['added'];
                 $returndata = array('success'=>true, 'quantity'=>(int)$data['pQty'], 'action'=>'update','added'=>$added);
             }
 
             if ($this->post('action') == 'clear') {
-                VividCart::clear();
+                StoreCart::clear();
                 $returndata = array('success'=>true, 'action'=>'clear');
             }
 
             if ($this->post('action') == 'remove') {
                 $data = $this->post();
-                $result = VividCart::remove($data['instance']);
+                $result = StoreCart::remove($data['instance']);
                 $returndata = array('success'=>true, 'action'=>'remove');
             }
         }
@@ -46,9 +46,9 @@ class Cart extends PageController
         $this->set('codeerror', $codeerror);
         $this->set('codesuccess', $codesuccess);
 
-        $this->set('cart',VividCart::getCart());
-        $this->set('discounts',VividCart::getDiscounts());
-        $this->set('total',VividCart::getSubTotal());
+        $this->set('cart',StoreCart::getCart());
+        $this->set('discounts',StoreCart::getDiscounts());
+        $this->set('total',StoreCart::getSubTotal());
         $this->addHeaderItem("
             <script type=\"text/javascript\">
                 var PRODUCTMODAL = '".View::url('/productmodal')."';
@@ -65,7 +65,7 @@ class Cart extends PageController
     public function add()
     {
         $data = $this->post();
-        $result = VividCart::add($data);
+        $result = StoreCart::add($data);
 
         $added = $result['added'];
 
@@ -77,14 +77,14 @@ class Cart extends PageController
     }
 
     public function code() {
-        VividCart::storeCode($this->post('code'));
+        StoreCart::storeCode($this->post('code'));
         exit();
     }
 
     public function update()
     {
         $data = $this->post();
-        $result = VividCart::update($data);
+        $result = StoreCart::update($data);
         $added = $result['added'];
         $returndata = array('success'=>true, 'quantity'=>(int)$data['pQty'], 'action'=>'update','added'=>$added);
         echo json_encode($returndata);
@@ -93,14 +93,14 @@ class Cart extends PageController
     public function remove()
     {
         $instanceID = $_POST['instance'];
-        VividCart::remove($instanceID);
+        StoreCart::remove($instanceID);
         $returndata = array('success'=>true,'action'=>'remove');
         echo json_encode($returndata);
         exit();
     }
     public function clear()
     {
-        VividCart::clear();
+        StoreCart::clear();
         $returndata = array('success'=>true,'action'=>'clear');
         echo json_encode($returndata);
         exit();

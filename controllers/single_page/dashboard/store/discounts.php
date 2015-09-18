@@ -3,15 +3,15 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRuleList;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode as StoreDiscountCode;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRuleList as StoreDiscountRuleList;
 use Session;
 
 class Discounts extends DashboardPageController
 {
     public function view() {
-        $discountRuleList = new DiscountRuleList();
+        $discountRuleList = new StoreDiscountRuleList();
         $discountRuleList->setItemsPerPage(10);
 
         $paginator = $discountRuleList->getPagination();
@@ -29,14 +29,14 @@ class Discounts extends DashboardPageController
 
     public function edit($drID) {
 
-        $discountRule = DiscountRule::getByID($drID);
+        $discountRule = StoreDiscountRule::getByID($drID);
 
         $this->set('d', $discountRule);
         $this->set('pageTitle', t('Edit Discount Rule'));
     }
 
     public function codes($drID, $successcount = null) {
-        $discountRule = DiscountRule::getByID($drID);
+        $discountRule = StoreDiscountRule::getByID($drID);
 
         $this->set('d', $discountRule);
         if ($discountRule) {
@@ -58,7 +58,7 @@ class Discounts extends DashboardPageController
     public function delete() {
         if ($this->isPost()) {
             $data = $this->post();
-            $dr = DiscountRule::getByID($data['drID']);
+            $dr = StoreDiscountRule::getByID($data['drID']);
 
             if ($dr) {
                 $dr->remove();
@@ -72,7 +72,7 @@ class Discounts extends DashboardPageController
     public function deletecode() {
         if ($this->isPost()) {
             $data = $this->post();
-            $dc = DiscountCode::getByID($data['dcID']);
+            $dc = StoreDiscountCode::getByID($data['dcID']);
 
             if ($dc) {
                 $ruleid = $dc->drID;
@@ -101,7 +101,7 @@ class Discounts extends DashboardPageController
                     $code = trim($code);
 
                     if ($code) {
-                        if (!DiscountCode::add($drID, $code)) {
+                        if (!StoreDiscountCode::add($drID, $code)) {
                             $failed[] = $code;
                         } else {
                             $successcount++;
@@ -127,10 +127,10 @@ class Discounts extends DashboardPageController
                 $this->edit($data['drID']);
             }
 
-            $errors = DiscountCode::validate($data);
+            $errors = StoreDiscountCode::validate($data);
             if (!$errors->has()) {
 
-                $discountrule = DiscountRule::save($data);
+                $discountrule = StoreDiscountRule::save($data);
 
                 if($data['drID']){
                     $this->redirect('/dashboard/store/discounts/', 'updated');

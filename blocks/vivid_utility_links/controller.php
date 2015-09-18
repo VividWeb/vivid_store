@@ -4,8 +4,8 @@ namespace Concrete\Package\VividStore\Block\VividUtilityLinks;
 use \Concrete\Core\Block\BlockController;
 use Core;
 use View;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
@@ -27,8 +27,8 @@ class Controller extends BlockController
     }
     public function view()
     {
-        $this->set("itemCount",VividCart::getTotalItemsInCart());
-        $this->set("total",Price::format(VividCart::getSubTotal()));
+        $this->set("itemCount",StoreCart::getTotalItemsInCart());
+        $this->set("total",StorePrice::format(StoreCart::getSubTotal()));
 
     }
 

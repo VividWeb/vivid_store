@@ -10,8 +10,6 @@ use \Concrete\Core\Attribute\Type as AttributeType;
 
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 
-defined('C5_EXECUTE') or die("Access Denied.");
-
 class Attributes extends DashboardPageController
 {
     
