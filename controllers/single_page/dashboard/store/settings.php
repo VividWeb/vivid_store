@@ -7,11 +7,11 @@ use Package;
 use Core;
 use Loader;
 use Config;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 
-defined('C5_EXECUTE') or die("Access Denied.");
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\PaymentMethod as StorePaymentMethod;
+
 class Settings extends DashboardPageController
 {
 

@@ -5,16 +5,15 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store\Repo
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use Package;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
-use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
+use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport as StoreSalesReport;
 
-defined('C5_EXECUTE') or die("Access Denied.");
 class Sales extends DashboardPageController
 {
 
     public function view()
     {
-        $sr = new SalesReport();
+        $sr = new StoreSalesReport();
         $this->set('sr',$sr);
         $pkg = Package::getByHandle('vivid_store');
         $packagePath = $pkg->getRelativePath();
@@ -34,7 +33,7 @@ class Sales extends DashboardPageController
         $ordersTotals = $sr::getTotalsByRange($dateFrom,$dateTo);
         $this->set('ordersTotals',$ordersTotals);
         
-        $orders = new OrderList();
+        $orders = new StoreOrderList();
         $orders->setFromDate($dateFrom);
         $orders->setToDate($dateTo);
         $orders->setItemsPerPage(10);

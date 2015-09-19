@@ -6,8 +6,8 @@ use Core;
 use View;
 use Page;
 use Database;
-use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
+use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as StoreGroupList;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
@@ -61,7 +61,7 @@ class Controller extends BlockController
 
     public function getGroupList()
     {
-        $grouplist = VividProductGroupList::getGroupList();
+        $grouplist = StoreGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
     }
     public function view()

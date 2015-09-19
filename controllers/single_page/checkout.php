@@ -10,12 +10,12 @@ use Config;
 use Loader;
 use UserAttributeKey;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as Cart;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Checkout extends PageController
@@ -24,13 +24,13 @@ class Checkout extends PageController
     {
         $pkg = Package::getByHandle('vivid_store');
 
-        $customer = new Customer();
+        $customer = new StoreCustomer();
         $this->set('customer', $customer);
         $guestCheckout = Config::get('vividstore.guestCheckout');
         $this->set('guestCheckout', ($guestCheckout ? $guestCheckout : 'off'));
-        $this->set('requiresLogin', VividCart::requiresLogin());
+        $this->set('requiresLogin', StoreCart::requiresLogin());
 
-        if(VividCart::getTotalItemsInCart() == 0){
+        if(StoreCart::getTotalItemsInCart() == 0){
             $this->redirect("/cart/");
         }
         $this->set('form',Core::make("helper/form"));
@@ -83,7 +83,7 @@ class Checkout extends PageController
             $shippingCountries = $allcountries;
         }
 
-        $discountsWithCodesExist = DiscountRule::discountsWithCodesExist();
+        $discountsWithCodesExist = StoreDiscountRule::discountsWithCodesExist();
 
         $this->set("discountsWithCodesExist",$discountsWithCodesExist);
 
@@ -99,7 +99,7 @@ class Checkout extends PageController
 
         $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
 
-        $totals = VividCart::getTotals();
+        $totals = StoreCart::getTotals();
 
         $this->set('subtotal',$totals['subTotal']);
         $this->set('taxes',$totals['taxes']);
@@ -111,7 +111,7 @@ class Checkout extends PageController
 
         $this->set('shippingtotal',$totals['shippingTotal']);
         $this->set('total',$totals['total']);
-        $this->set('shippingEnabled', VividCart::isShippable());
+        $this->set('shippingEnabled', StoreCart::isShippable());
 
         $this->addHeaderItem("
             <script type=\"text/javascript\">
@@ -130,7 +130,7 @@ class Checkout extends PageController
             </script>
         ");
 
-        $enabledMethods = PaymentMethod::getEnabledMethods();
+        $enabledMethods = StorePaymentMethod::getEnabledMethods();
 
         $availableMethods = array();
 
@@ -166,7 +166,7 @@ class Checkout extends PageController
                 $pmsess = Session::get('paymentMethod');
                 $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
                 Session::set('paymentMethod',$pmsess);
-                $order = VividOrder::add($data,$pm,'incomplete');
+                $order = StoreOrder::add($data,$pm,'incomplete');
                 Session::set('orderID',$order->getOrderID());
                 $this->redirect('/checkout/external');
             } else {

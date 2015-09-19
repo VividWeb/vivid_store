@@ -42,20 +42,10 @@
         <field name="poiName" type="C" size="255"></field>
         <field name="poiSort" type="I"></field>
     </table>
-	<table name="VividStoreProductImages">
-        <field name="piID" type="I"><key /><unsigned /><autoincrement/></field>
-        <field name="pID" type="I"></field>
-        <field name="pifID" type="I"></field>
-        <field name="piSort" type="I"></field>
-    </table>
     <table name="VividStoreDigitalFiles">
         <field name="dfID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="pID" type="I"></field>
         <field name="dffID" type="I"></field>
-    </table>
-    <table name="VividStoreProductGroups">
-        <field name="pID" type="I"></field>
-        <field name="gID" type="I"></field>
     </table>
     <table name="VividStoreProductLocations">
         <field name="pID" type="I"><key /></field>

@@ -8,8 +8,6 @@ use Package;
 use Controller;
 use View;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-
 class Method extends Controller
 {
     private $pmID;

@@ -110,7 +110,7 @@ msgstr "In winkelwagen Knop Text"
 #: src/Attribute/Value/StoreOrderValue.php:5
 #: src/Attribute/Value/StoreProductValue.php:5 src/VividStore/Cart/Cart.php:13
 #: src/VividStore/Cart/CartTotal.php:8 src/VividStore/Groups/GroupList.php:5
-#: src/VividStore/Groups/ProductGroup.php:5 src/VividStore/Orders/Order.php:29
+#: src/VividStore/Groups/Group.php:5 src/VividStore/Orders/Order.php:29
 #: src/VividStore/Orders/OrderItem.php:10
 #: src/VividStore/Orders/OrderList.php:11 src/VividStore/Payment/Method.php:12
 #: src/VividStore/Payment/Methods/AuthNet/AuthNetPaymentMethod.php:10

@@ -110,7 +110,7 @@ msgstr "カートへ追加ボタンのテキスト"
 #: vivid_store/src/VividStore/Cart/Cart.php:12
 #: vivid_store/src/VividStore/Cart/CartTotal.php:7
 #: vivid_store/src/VividStore/Groups/GroupList.php:5
-#: vivid_store/src/VividStore/Groups/ProductGroup.php:5
+#: vivid_store/src/VividStore/Groups/Group.php:5
 #: vivid_store/src/VividStore/Orders/Item.php:10
 #: vivid_store/src/VividStore/Orders/Order.php:26
 #: vivid_store/src/VividStore/Orders/OrderList.php:12

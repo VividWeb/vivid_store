@@ -7,7 +7,8 @@ use Core;
 use View;
 use Page;
 use URL;
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
+
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
@@ -32,9 +33,9 @@ class Controller extends BlockController
             
         if($this->productLocation == 'page'){
             $cID = Page::getCurrentPage()->getCollectionID();
-            $p = VividProduct::getByCollectionID($cID);
+            $p = StoreProduct::getByCollectionID($cID);
         } else {
-            $p = VividProduct::getByID($this->pID);
+            $p = StoreProduct::getByID($this->pID);
         }
         $this->set('p',$p);
     }

@@ -12,8 +12,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class PaypalStandardPaymentMethod extends StorePaymentMethod
 {
     public $external = true;

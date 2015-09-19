@@ -1,6 +1,5 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied."));
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 if($products){
     echo "<div class='product-list clearfix'>";
 
@@ -37,10 +36,10 @@ if($products){
                     <?php
                         $salePrice = $product->getProductSalePrice();
                         if(isset($salePrice) && $salePrice != ""){
-                            echo '<span class="sale-price">'.Price::format($salePrice).'</span>';
-                            echo '<span class="original-price">'.Price::format($product->getProductPrice()).'</span>';
+                            echo '<span class="sale-price">'.$product->getFormattedSalePrice().'</span>';
+                            echo '<span class="original-price">'.$product->getFormattedPrice().'</span>';
                         } else {
-                            echo Price::format($product->getProductPrice());
+                            echo $product->getFormattedPrice();
                         }
                     ?>
                 </span>

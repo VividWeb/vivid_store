@@ -12,21 +12,20 @@ use Loader;
 use PageType;
 use GroupList;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as VividProductList;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\Group;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as VividProductGroupList;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StoreProductImage;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
+use \Concrete\Package\VividStore\Src\VividStore\Groups\Group as StoreGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as StoreGroupList;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
-
-
-defined('C5_EXECUTE') or die("Access Denied.");
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 
 class Products extends DashboardPageController
 {
 
     public function view($gID=null){
-        $products = new VividProductList();
+        $products = new StoreProductList();
         $products->setItemsPerPage(10);
         $products->setGroupID($gID);
         $products->activeOnly(false);
@@ -44,7 +43,7 @@ class Products extends DashboardPageController
         $this->requireAsset('css', 'vividStoreDashboard');
         $this->requireAsset('javascript', 'vividStoreFunctions');
 
-        $grouplist = VividProductGroupList::getGroupList();
+        $grouplist = StoreGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         
     }
@@ -67,14 +66,14 @@ class Products extends DashboardPageController
         $this->loadFormAssets();
         $this->set("actionType",t("Add"));
         
-        $grouplist = VividProductGroupList::getGroupList();
+        $grouplist = StoreGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }
         $this->set("productgroups",$productgroups);
 
-        $gl = new GroupList();
+        $gl = new StoreGroupList();
         $gl->setItemsPerPage(1000);
         $gl->filterByAssignable();
         $usergroups = $gl->get();
@@ -96,7 +95,7 @@ class Products extends DashboardPageController
         $this->set("actionType",t("Update"));
         
         //get the product
-        $product = VividProduct::getByID($pID);
+        $product = StoreProduct::getByID($pID);
 
         if (!$product) {
             $this->redirect('/dashboard/store/products/');
@@ -110,13 +109,13 @@ class Products extends DashboardPageController
         $this->set('pgroups', $product->getProductGroupIDs());
 
         //populate "Groups" select box options
-        $grouplist = VividProductGroupList::getGroupList();
+        $grouplist = VividGroupList::getGroupList();
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }
         $this->set("productgroups",$productgroups);
 
-        $gl = new GroupList();
+        $gl = new StoreGroupList();
         $gl->setItemsPerPage(1000);
         $gl->filterByAssignable();
         $usergroups = $gl->get();
@@ -135,12 +134,12 @@ class Products extends DashboardPageController
     }
     public function generate($pID,$templateID=null)
     {
-        VividProduct::getByID($pID)->generatePage($templateID);
+        StoreProduct::getByID($pID)->generatePage($templateID);
         $this->redirect('/dashboard/store/products/edit',$pID);
     }
     public function delete($pID)
     {
-        $product = VividProduct::getByID($pID);
+        $product = StoreProduct::getByID($pID);
         $product->remove();
         $this->redirect('/dashboard/store/products/removed');
     }
@@ -169,7 +168,7 @@ class Products extends DashboardPageController
         }
         $this->set('pageTemplates',$templates);
         $taxClasses = array();
-        foreach(TaxClass::getTaxClasses() as $taxClass){
+        foreach(StoreTaxClass::getTaxClasses() as $taxClass){
             $taxClasses[$taxClass->getTaxClassID()] = $taxClass->getTaxClassName();
         }
         $this->set('taxClasses',$taxClasses);
@@ -187,12 +186,23 @@ class Products extends DashboardPageController
             $this->error = null; //clear errors
             $this->error = $errors;
             if (!$errors->has()) {
-                
-                $product = VividProduct::save($data);
+                    
+                //save the product
+                $product = StoreProduct::save($data);
+                //save product attributes
                 $aks = StoreProductKey::getList();
                 foreach($aks as $uak) {
                     $uak->saveAttributeForm($product);
                 }
+                //save images
+                StoreProductImage::addImagesForProduct($data,$product);
+                //save usergroups
+                
+                //save productgroups
+                StoreProductGroup::addGroupsForProduct($data,$product);
+                
+                //save product options
+                //save files
                 if($data['pID']){
                     $this->redirect('/dashboard/store/products/', 'updated');
                 } else {
@@ -237,7 +247,7 @@ class Products extends DashboardPageController
     // GROUPS PAGE
     public function groups()
     {
-        $grouplist = VividProductGroupList::getGroupList();
+        $grouplist = StoreGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         $this->requireAsset('css', 'vividStoreDashboard');
         $this->requireAsset('javascript', 'vividStoreFunctions');
@@ -254,13 +264,13 @@ class Products extends DashboardPageController
         $errors = $this->validateGroup($this->post());
         $this->error = $errors;
         if (!$errors->has()) {
-            Group::add($this->post('groupName'));
+            StoreGroup::add($this->post('groupName'));
             $this->redirect('/dashboard/store/products/', 'groupadded');
         }
     }
     public function editgroup($gID)
     {
-        Group::getByID($gID)->update($this->post('gName'));
+        StoreGroup::getByID($gID)->update($this->post('gName'));
     }
     public function validateGroup($args)
     {
@@ -276,6 +286,6 @@ class Products extends DashboardPageController
     }
     public function deletegroup($gID)
     {
-        VividProductGroup::getByID($gID)->remove();
+        StoreGroup::getByID($gID)->remove();
     }
 }

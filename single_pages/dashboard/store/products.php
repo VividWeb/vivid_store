@@ -7,7 +7,6 @@ $groupViews = array('groups','groupadded','addgroup');
 $attributeViews = array('attributes','attributeadded','attributeremoved');
 $ps = Core::make('helper/form/page_selector');
 
-use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup as VividProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 ?>
@@ -216,8 +215,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <select multiple="multiple" name="pProductGroups[]" class="existing-select2 select2-select" style="width: 100%">
                         <?php
                             if (!empty($productgroups)) {
+                                if (!is_array($pgroups)) {
+                                    $pgroups = array();
+                                }
                                 foreach ($productgroups as $pgkey=>$pglabel) { ?>
-                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $productgroups) ? 'selected="selected"' : ''); ?>>  <?php echo $pglabel; ?></option>
+                            <option value="<?php echo $pgkey;?>" <?php echo (in_array($pgkey, $pgroups) ? 'selected="selected"' : ''); ?>>  <?php echo $pglabel; ?></option>
                         <?php   }
                             } ?>
                     </select>
@@ -386,9 +388,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         ?>
                         itemsContainer.append(itemTemplate({
 
-                            pifID: '<?php echo $image['pifID'] ?>',
-                            <?php if($image['pifID']) { ?>
-                            thumb: '<?php echo File::getByID($image['pifID'])->getThumbnailURL('file_manager_listing');?>',
+                            pifID: '<?php echo $image->getFileID(); ?>',
+                            <?php if($image->getFileID() > 0) { ?>
+                            thumb: '<?php echo File::getByID($image->getFileID())->getThumbnailURL('file_manager_listing');?>',
                             <?php } else { ?>
                             thumb: '',
                             <?php } ?>

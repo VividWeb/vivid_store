@@ -5,16 +5,16 @@ use PageController;
 use View;
 
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Complete extends PageController
 {
     public function view()
     {
-        $customer = new Customer();
-        $order = VividOrder::getByID($customer->getLastOrderID());
+        $customer = new StoreCustomer();
+        $order = StoreOrder::getByID($customer->getLastOrderID());
 
         if(is_object($order)){
             $this->set("order",$order);
