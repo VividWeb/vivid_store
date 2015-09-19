@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Groups;
+namespace Concrete\Package\VividStore\Src\VividStore\Group;
 
 use Database;
 use Concrete\Core\Foundation\Object as Object;
@@ -30,7 +30,7 @@ class Group
     public static function getByID($gID) {
         $db = Database::connection();
         $em = $db->getEntityManager();
-        return $em->find('Concrete\Package\VividStore\Src\VividStore\Groups\Group', $gID);
+        return $em->find('Concrete\Package\VividStore\Src\VividStore\Group\Group', $gID);
     }
     
     public static function add($groupName)

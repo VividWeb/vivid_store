@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Groups;
+namespace Concrete\Package\VividStore\Src\VividStore\Group;
 
 use Database;
 
@@ -10,7 +10,7 @@ class GroupList
     {
         $queryBuilder = Database::get()->getEntityManager()->createQueryBuilder();
         return $queryBuilder->select('g')
-            ->from('\Concrete\Package\VividStore\Src\VividStore\Groups\Group','g')
+            ->from('\Concrete\Package\VividStore\Src\VividStore\Group\Group','g')
             ->getQuery()
             ->getResult();
     }
