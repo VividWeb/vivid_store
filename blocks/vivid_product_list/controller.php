@@ -7,7 +7,7 @@ use View;
 use Page;
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as StoreGroupList;
+use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController

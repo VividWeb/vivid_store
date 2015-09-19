@@ -7,7 +7,6 @@ use View;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 
-defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
 {
     protected $btTable = 'btVividUtilityLinks';

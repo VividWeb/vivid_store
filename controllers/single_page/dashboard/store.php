@@ -9,8 +9,6 @@ use Core;
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
 use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
 
-
-defined('C5_EXECUTE') or die("Access Denied.");
 class Store extends DashboardPageController
 {
 

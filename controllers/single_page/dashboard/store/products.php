@@ -16,8 +16,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StoreProductImage;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\Group as StoreGroup;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\GroupList as StoreGroupList;
+use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 

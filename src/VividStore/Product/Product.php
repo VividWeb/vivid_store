@@ -12,10 +12,10 @@ use Core;
 use User;
 use Config;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage;
-use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup;
-use \Concrete\Package\VividStore\Src\VividStore\Groups\Group as VividStoreGroup;
-use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey ;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StoreProductImage;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
+use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -382,7 +382,7 @@ class Product extends Object
     
     public function getProductImages()
     {
-        return ProductImage::getImagesForProduct($this);
+        return StoreProductImage::getImagesForProduct($this);
     }
 
     public function getProductImagesObjects(){

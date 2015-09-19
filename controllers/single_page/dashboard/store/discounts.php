@@ -3,10 +3,11 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
+use Session;
+
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode as StoreDiscountCode;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRuleList as StoreDiscountRuleList;
-use Session;
 
 class Discounts extends DashboardPageController
 {
