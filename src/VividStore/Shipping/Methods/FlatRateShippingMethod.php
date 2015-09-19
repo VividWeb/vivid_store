@@ -5,18 +5,16 @@ use Package;
 use Core;
 use Database;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodTypeMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodTypeMethod as StoreShippingMethodTypeMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
 /**
  * @Entity
  * @Table(name="VividStoreFlatRateMethods")
  */
-class FlatRateShippingMethod extends MethodTypeMethod
+class FlatRateShippingMethod extends StoreShippingMethodTypeMethod
 {
     
     /**
@@ -184,7 +182,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
 
     public function isWithinRange()
     {
-        $subtotal = VividCart::getSubTotal();
+        $subtotal = StoreCart::getSubTotal();
         $max = $this->getMaximumAmount();
         if($max!=0){
             if($subtotal >= $this->getMinimumAmount() && $subtotal <= $this->getMaximumAmount()){
@@ -201,7 +199,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
     
     public function isWithinWeight()
     {
-        $totalWeight = VividCart::getCartWeight();
+        $totalWeight = StoreCart::getCartWeight();
         $maxWeight = $this->getMaximumWeight();
         if($max!=0){
             if($totalWeight >= $this->getMinimumWeight() && $totalWeight <= $this->getMaximumWeight()){
@@ -218,7 +216,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
     
     public function isWithinSelectedCountries()
     {
-        $customer = new Customer();
+        $customer = new StoreCustomer();
         $custCountry = $customer->getValue('shipping_address')->country;
         if($this->getCountries() != 'all'){
             $selectedCountries = explode(',',$this->getCountriesSelected());
@@ -234,7 +232,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
     
     public function getRate()
     {
-        $shippableItems = VividCart::getShippableItems();
+        $shippableItems = StoreCart::getShippableItems();
         if(count($shippableItems) > 0 ){
             if($this->getRateType() == 'quantity'){
                 $shippingTotal = $this->getQuantityBasedRate($shippableItems);
@@ -252,7 +250,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
         $baserate = $this->getBaseRate();
         $totalWeight = 0;
         foreach($shippableItems as $item){
-            $product = VividProduct::getByID($item['product']['pID']);
+            $product = StoreProduct::getByID($item['product']['pID']);
             if($product->isShippable()){
                 $totalProductWeight = $item['product']['qty'] * $product->getProductWeight();
                 $totalWeight = $totalWeight + $totalProductWeight;
@@ -271,7 +269,7 @@ class FlatRateShippingMethod extends MethodTypeMethod
         //go through items
         foreach($shippableItems as $item){
             //check if items are shippable
-            $product = VividProduct::getByID($item['product']['pID']);
+            $product = StoreProduct::getByID($item['product']['pID']);
             if($product->isShippable()){
                 $totalQty = $totalQty + $item['product']['qty'];
             }

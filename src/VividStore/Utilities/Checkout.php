@@ -1,7 +1,7 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
-use \Concrete\Core\Controller\Controller as RouteController;
+use Controller;
 use Core;
 use Loader;
 use Session;
@@ -9,11 +9,10 @@ use Illuminate\Filesystem\Filesystem;
 use View;
 use User;
 use UserInfo;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
-class Checkout extends RouteController
+class Checkout extends Controller
 {
     //public $error;
     public function updater()
@@ -71,7 +70,7 @@ class Checkout extends RouteController
     private function updateBilling($data)
     {
         //update the users billing address
-        $customer = new Customer();
+        $customer = new StoreCustomer();
 
         if ($customer->isGuest()){
             $customer->setEmail(trim($data['email']));
@@ -99,7 +98,7 @@ class Checkout extends RouteController
     {
         //update the users shipping address
         $this->validateAddress($data);
-        $customer = new Customer();
+        $customer = new StoreCustomer();
         $customer->setValue("shipping_first_name",trim($data['fName']));
         Session::set('shipping_first_name',trim($data['fName']));
         $customer->setValue("shipping_last_name",trim($data['lName']));
@@ -120,7 +119,7 @@ class Checkout extends RouteController
     {
         $e = Core::make('helper/validation/error');
         $vals = Loader::helper('validation/strings');
-        $customer = new Customer();
+        $customer = new StoreCustomer();
 
         if($billing){
             if ($customer->isGuest()) {

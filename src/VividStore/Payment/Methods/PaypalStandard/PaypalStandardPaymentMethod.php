@@ -1,20 +1,20 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard;
 
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use Core;
 use URL;
 use Config;
 use Session;
 use Log;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
-
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
-class PaypalStandardPaymentMethod extends PaymentMethod
+class PaypalStandardPaymentMethod extends StorePaymentMethod
 {
     public $external = true;
     
@@ -59,7 +59,7 @@ class PaypalStandardPaymentMethod extends PaymentMethod
     public function validate($args,$e)
     {
         
-        $pm = PaymentMethod::getByHandle('paypal_standard');
+        $pm = StorePaymentMethod::getByHandle('paypal_standard');
         if($args['paymentMethodEnabled'][$pm->getPaymentMethodID()]==1){
             if($args['paypalEmail']==""){
                 $e->add(t("PayPal Email must be set"));
@@ -75,9 +75,9 @@ class PaypalStandardPaymentMethod extends PaymentMethod
     public function redirectForm()
     {
         $customer = new Customer();
-        $totals = VividCart::getTotals();
+        $totals = StoreCart::getTotals();
         $paypalEmail = Config::get('vividstore.paypalEmail');
-        $order = VividOrder::getByID(Session::get('orderID'));
+        $order = StoreOrder::getByID(Session::get('orderID'));
         $this->set('paypalEmail',$paypalEmail);
         $this->set('siteName',Config::get('concrete.site'));
         $this->set('customer', $customer);
@@ -186,9 +186,9 @@ class PaypalStandardPaymentMethod extends PaymentMethod
         $tokens = explode("\r\n\r\n", trim($res));
         $res = trim(end($tokens));
         if (strcmp ($res, "VERIFIED") == 0) {
-            $order = VividOrder::getByID($_POST['invoice']);
+            $order = StoreOrder::getByID($_POST['invoice']);
             $order->completeOrder();
-            $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
+            $order->updateStatus(StoreOrderStatus::getStartingStatus()->getHandle());
         } elseif (strcmp ($res, "INVALID") == 0) {
             // log for manual investigation
             // Add business logic here which deals with invalid IPN messages

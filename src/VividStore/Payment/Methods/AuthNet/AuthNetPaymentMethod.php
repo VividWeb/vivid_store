@@ -1,15 +1,14 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\AuthNet;
 
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 use Core;
 use Config;
 use \AuthorizeNet\Service\Aim as AuthorizeNetAIM;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-class AuthNetPaymentMethod extends PaymentMethod
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+
+class AuthNetPaymentMethod extends StorePaymentMethod
 {
     public function dashboardForm()
     {
@@ -32,7 +31,7 @@ class AuthNetPaymentMethod extends PaymentMethod
     
     public function validate($args,$e)
     {
-        $pm = PaymentMethod::getByHandle('auth_net');
+        $pm = StorePaymentMethod::getByHandle('auth_net');
         if($args['paymentMethodEnabled'][$pm->getPaymentMethodID()]==1){
             if($args['authnetTransactionKey']==""){
                 $e->add(t("Transaction Key must be set"));
@@ -76,7 +75,7 @@ class AuthNetPaymentMethod extends PaymentMethod
         $transaction->setSandbox(AUTHORIZENET_SANDBOX);
         $transaction->setFields(
             array(
-                'amount' => VividCart::getTotal(),
+                'amount' => StoreCart::getTotal(),
                 'card_num' => $_POST['authnet-checkout-credit-card'],
                 'exp_date' => $_POST['authnet-checkout-exp-month'].$_POST['authnet-checkout-exp-year']
             )
@@ -93,5 +92,3 @@ class AuthNetPaymentMethod extends PaymentMethod
 
     
 }
-
-return __NAMESPACE__;

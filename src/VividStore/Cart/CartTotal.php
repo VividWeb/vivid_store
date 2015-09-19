@@ -2,35 +2,34 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Cart;
 
 use \Concrete\Core\Controller\Controller as RouteController;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class CartTotal extends RouteController
 {
         
     public function getSubTotal()
     {
-        echo Price::format(VividCart::getSubTotal());
+        echo StorePrice::format(StoreCart::getSubTotal());
     }
     public function getTotal()
     {
-        echo Price::format(VividCart::getTotal());
+        echo StorePrice::format(StoreCart::getTotal());
     }
     public function getTaxTotal()
     {
-        echo json_encode(Tax::getTaxes(true));
+        echo json_encode(StoreTax::getTaxes(true));
     }
     public function getShippingTotal()
     {
         $smID = $_POST['smID'];
-        echo Price::format(VividCart::getShippingTotal($smID));
+        echo StorePrice::format(StoreCart::getShippingTotal($smID));
     }
     public function getTotalItems()
     {
-        echo VividCart::getTotalItemsInCart();
+        echo StoreCart::getTotalItemsInCart();
     }
     
 }

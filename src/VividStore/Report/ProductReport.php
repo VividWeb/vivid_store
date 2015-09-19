@@ -5,10 +5,8 @@ use Concrete\Core\Search\ItemList\ItemList as AbstractItemList;
 use Concrete\Core\Search\Pagination\Pagination;
 use Pagerfanta\Adapter\ArrayAdapter;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
 
 class ProductReport extends AbstractItemList
 {
@@ -24,12 +22,12 @@ class ProductReport extends AbstractItemList
     public function setOrderItemsByRange($from=null,$to=null)
     {
         if(!isset($from)){
-            $from = OrderList::getDateOfFirstOrder();
+            $from = StoreOrderList::getDateOfFirstOrder();
         }
         if(!$to){
             $to = date('Y-m-d');
         }
-        $orders = new OrderList();
+        $orders = new StoreOrderList();
         $orders->setFromDate($from);
         $orders->setToDate($to);
         $this->orderItems = $orders->getOrderItems();
@@ -45,7 +43,7 @@ class ProductReport extends AbstractItemList
             } else {
                 //first figure out what the current product name is.
                 //if the product no longer exist, the OI name is fine.
-                $product = Product::getByID($oi->getProductID());
+                $product = StoreProduct::getByID($oi->getProductID());
                 if(is_object($product)){
                     $name = $product->getProductName();
                 } else { $name = $oi->getProductName(); }

@@ -4,10 +4,10 @@ namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 use Database;
 use Config;
 
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer;
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -97,7 +97,7 @@ class TaxRate
         $taxState = strtolower(trim($this->getTaxState()));
         $taxCity = strtolower(trim($this->getTaxCity()));
         
-        $customer = new Customer;
+        $customer = new StoreCustomer();
         $customerIsTaxable = false;
 
         switch($taxAddress){
@@ -131,13 +131,13 @@ class TaxRate
     
     public function calculate()
     {
-        $cart = VividCart::getCart();
+        $cart = StoreCart::getCart();
         $taxtotal = 0;
         if($cart){
             foreach ($cart as $cartItem){
                 $pID = $cartItem['product']['pID'];
                 $qty = $cartItem['product']['qty'];
-                $product = VividProduct::getByID($pID);
+                $product = StoreProduct::getByID($pID);
                 if(is_object($product)){
                     if($product->isTaxable()){
                         //if this tax rate is in the tax class associated with this product
@@ -159,7 +159,7 @@ class TaxRate
                                         break;
                                     case "grandtotal":
                                         $productSubTotal = $product->getActivePrice() * $qty;
-                                        $shippingTotal = Price::getFloat(VividCart::getShippingTotal());
+                                        $shippingTotal = StorePrice::getFloat(StoreCart::getShippingTotal());
                                         $taxableTotal = $productSubTotal + $shippingTotal;
                                         $tax = $taxrate * $taxableTotal;
                                         $taxtotal = $taxtotal + $tax;
@@ -196,7 +196,7 @@ class TaxRate
                             break;
                         case "grandtotal":
                             $productSubTotal = $productObj->getActivePrice() * $qty;
-                            $shippingTotal = Price::getFloat(VividCart::getShippingTotal());
+                            $shippingTotal = StorePrice::getFloat(StoreCart::getShippingTotal());
                             $taxableTotal = $productSubTotal + $shippingTotal;
                             $tax = $taxrate * $taxableTotal;
                             $taxtotal = $taxtotal + $tax;

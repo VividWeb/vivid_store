@@ -1,8 +1,8 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use Database;
 
 class Tax
@@ -10,7 +10,7 @@ class Tax
     public static function getTaxRates()
     {
         $em = Database::get()->getEntityManager();
-        $taxRates = $em->createQuery('select u from \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate u')->getResult();
+        $taxRates = $em->createQuery('select tr from \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate tr')->getResult();
         return $taxRates;
     }
 
@@ -26,7 +26,7 @@ class Tax
                         $tax = true;
                     } else { $tax = false; }
                     if ($format == true) {
-                        $taxAmount = Price::format($taxAmount);
+                        $taxAmount = StorePrice::format($taxAmount);
                     }
                     $taxes[] = array(
                         'name' => $taxRate->getTaxLabel(),
@@ -42,7 +42,7 @@ class Tax
 
     public function getTaxForProduct($cartItem)
     {
-        $product = VividProduct::getByID($cartItem['product']['pID']);
+        $product = StoreProduct::getByID($cartItem['product']['pID']);
         $qty = $cartItem['product']['qty'];
         $taxRates = self::getTaxRates();
         $taxes = array();

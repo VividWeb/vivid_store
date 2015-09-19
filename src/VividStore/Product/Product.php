@@ -12,11 +12,11 @@ use Core;
 use User;
 use Config;
 
-use \Concrete\Package\VividStore\Src\VividStore\Groups\ProductGroup;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
-use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
-use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey as StoreProductKey;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
+use \Concrete\Package\VividStore\Src\VividStore\Groups\Group as StoreGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue;
+use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey ;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -280,9 +280,9 @@ class Product extends Object
     public function getProductDesc(){ return $this->pDesc; }
     public function getProductDetail() { return $this->pDetail; }
     public function getProductPrice(){ return $this->pPrice; }
-    public function getFormattedPrice(){ return Price::format($this->pPrice); }
+    public function getFormattedPrice(){ return StorePrice::format($this->pPrice); }
     public function getProductSalePrice() { return $this->pSalePrice; }
-    public function getFormattedSalePrice(){ return Price::format($this->pSalePrice); }
+    public function getFormattedSalePrice(){ return StorePrice::format($this->pSalePrice); }
     public function getActivePrice(){
         $salePrice = $this->getProductSalePrice();
         if($salePrice != ""){
@@ -291,9 +291,9 @@ class Product extends Object
             return $this->getProductPrice();
         }
     }
-    public function getFormattedActivePrice(){ return Price::format($this->getActivePrice()); }
+    public function getFormattedActivePrice(){ return StorePrice::format($this->getActivePrice()); }
     public function getTaxClassID(){ return $this->pTaxClass; }
-    public function getTaxClass(){ return TaxClass::getByID($this->pTaxClass); }
+    public function getTaxClass(){ return StoreTaxClass::getByID($this->pTaxClass); }
     
     public function isTaxable(){
         if($this->pTaxable == "1"){
@@ -306,7 +306,7 @@ class Product extends Object
     public function getGroupID(){ return $this->gID; }
     public function getGroupName()
     {
-        $group = ProductGroup::getByID($this->gID);
+        $group = StoreGrou0::pgetByID($this->gID);
         if(is_object($group)){
             return $group->getGroupName();
         }

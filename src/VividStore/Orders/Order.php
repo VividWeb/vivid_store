@@ -14,20 +14,18 @@ use Loader;
 use Page;
 use UserInfo;
 
-
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as OrderItem;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as StoreOrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as OrderEvent;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\History as OrderHistory;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as StoreShippingMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as StoreOrderEvent;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class Order extends Object
 {
     public static function getByID($oID) {
@@ -50,7 +48,7 @@ class Order extends Object
         $db = Database::get();
         
         //get who ordered it
-        $customer = new Customer();
+        $customer = new StoreCustomer();
         
         //what time is it?
         $dt = Core::make('helper/date');
@@ -58,15 +56,15 @@ class Order extends Object
         
         //get the price details
         $smID = \Session::get('smID');
-        $sm = ShippingMethod::getByID($smID);
+        $sm = StoreShippingMethod::getByID($smID);
         $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
         $shippingMethodName = $sm->getName();
         $smName = $shippingMethodTypeName.": ".$shippingMethodName;
         
         
-        $shipping = VividCart::getShippingTotal();
-        $taxes = Tax::getTaxes();
-        $totals = VividCart::getTotals();
+        $shipping = StoreCart::getShippingTotal();
+        $taxes = StoreTax::getTaxes();
+        $totals = StoreCart::getTotals();
         $total = $totals['total'];
         $taxCalc = Config::get('vividstore.calculation');
 
@@ -98,7 +96,7 @@ class Order extends Object
         if($status){
             $order->updateStatus($status);
         } else {
-            $order->updateStatus(OrderStatus::getStartingStatus()->getHandle());
+            $order->updateStatus(StoreOrderStatus::getStartingStatus()->getHandle());
         }
 
         $email = $customer->getEmail();
@@ -126,10 +124,10 @@ class Order extends Object
         $customer->setLastOrderID($oID);
 
         //add the order items
-        $cart = VividCart::getCart();
+        $cart = StoreCart::getCart();
         
         foreach ($cart as $cartItem) {
-            $taxes = Tax::getTaxForProduct($cartItem);
+            $taxes = StoreTax::getTaxForProduct($cartItem);
             
             $taxProductTotal = array();
             $taxProductIncludedTotal = array();
@@ -147,15 +145,15 @@ class Order extends Object
             $taxProductIncludedTotal = implode(',',$taxProductIncludedTotal);
             $taxProductLabels = implode(',',$taxProductLabels);
 
-            OrderItem::add($cartItem,$oID,$taxProductTotal,$taxProductIncludedTotal,$taxProductLabels);
+            StoreOrderItem::add($cartItem,$oID,$taxProductTotal,$taxProductIncludedTotal,$taxProductLabels);
             
         }
 
-        $discounts = VividCart::getDiscounts();
+        $discounts = StoreCart::getDiscounts();
 
         if ($discounts) {
             foreach($discounts as $discount) {
-                $order->addDiscount($discount, VividCart::getCode());
+                $order->addDiscount($discount, StoreCart::getCode());
             }
         }
 
@@ -172,7 +170,7 @@ class Order extends Object
         $groupstoadd = array();
         $createlogin = false;
         $orderItems = $this->getOrderItems();
-        $customer = new Customer();
+        $customer = new StoreCustomer();
         foreach($orderItems as $orderItem){
             $product = $orderItem->getProductObject();
             if ($product && $product->hasUserGroups()) {
@@ -262,7 +260,7 @@ class Order extends Object
             $shipping_address = $customer->getValueArray("shipping_address");
 
             // update the  user's attributes
-            $customer = new Customer($user->getUserID());
+            $customer = new StoreCustomer($user->getUserID());
             $customer->setValue('billing_first_name', $billing_first_name);
             $customer->setValue('billing_last_name', $billing_last_name);
             $customer->setValue('billing_address', $billing_address);
@@ -291,10 +289,10 @@ class Order extends Object
             $user->refreshUserGroups();
         }
         
-        VividCart::clearCode();
+        StoreCart::clearCode();
         
         // create order event and dispatch
-        $event = new OrderEvent($this);
+        $event = new StoreOrderEvent($this);
         Events::dispatch('on_vividstore_order', $event);
         
         //send out the alerts
@@ -336,7 +334,7 @@ class Order extends Object
         // unset the shipping type, as next order might be unshippable
         \Session::set('smID', '');
 
-        VividCart::clear();
+        StoreCart::clear();
         
         return $this;
 
@@ -354,7 +352,7 @@ class Order extends Object
         $items = array();
 
         foreach($rows as $row){
-            $items[] = OrderItem::getByID($row['oiID']);
+            $items[] = StoreOrderItem::getByID($row['oiID']);
         }
 
         return $items;
@@ -419,10 +417,10 @@ class Order extends Object
     
     public function updateStatus($status)
     {
-        OrderHistory::updateOrderStatusHistory($this, $status);
+        StoreOrderStatusHistory::updateOrderStatusHistory($this, $status);
     }
     public function getStatusHistory() {
-        return OrderHistory::getForOrder($this);
+        return StoreOrderStatusHistory::getForOrder($this);
     }
     public function setAttribute($ak, $value)
     {

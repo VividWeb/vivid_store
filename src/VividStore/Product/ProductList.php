@@ -5,9 +5,8 @@ use Concrete\Core\Search\Pagination\Pagination;
 use Concrete\Core\Search\ItemList\Database\AttributedItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 
-use \Concrete\Package\VividStore\Src\VividStore\Report\ProductReport;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Report\ProductReport as StoreProductReport;
 
 class ProductList extends AttributedItemList
 {
@@ -105,7 +104,7 @@ class ProductList extends AttributedItemList
                 $query->orderBy('pDateAdded','DESC');
                 break;
             case "popular":
-                $pr = new ProductReport();
+                $pr = new StoreProductReport();
                 $pr->sortByPopularity();
                 $products = $pr->getProducts();
                 $pIDs = array();
@@ -147,7 +146,7 @@ class ProductList extends AttributedItemList
     
     public function getResult($queryRow)
     {
-        return Product::getByID($queryRow['pID']);
+        return StoreProduct::getByID($queryRow['pID']);
     }
     
     protected function createPaginationObject()

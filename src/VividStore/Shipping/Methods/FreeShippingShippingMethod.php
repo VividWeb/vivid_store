@@ -5,17 +5,15 @@ use Package;
 use Core;
 use Database;
 
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodTypeMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodTypeMethod as StoreMethodTypeMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
 /**
  * @Entity
  * @Table(name="VividStoreFreeShippingMethods")
  */
-class FreeShippingShippingMethod extends MethodTypeMethod
+class FreeShippingShippingMethod extends StoreMethodTypeMethod
 {
     
     /**
@@ -142,7 +140,7 @@ class FreeShippingShippingMethod extends MethodTypeMethod
 
     public function isWithinRange()
     {
-        $subtotal = VividCart::getSubTotal();
+        $subtotal = StoreCart::getSubTotal();
         $max = $this->getMaximumAmount();
         if($max!=0){
             if($subtotal >= $this->getMinimumAmount() && $subtotal <= $this->getMaximumAmount()){
@@ -159,7 +157,7 @@ class FreeShippingShippingMethod extends MethodTypeMethod
     
     public function isWithinWeight()
     {
-        $totalWeight = VividCart::getCartWeight();
+        $totalWeight = StoreCart::getCartWeight();
         $maxWeight = $this->getMaximumWeight();
         if($max!=0){
             if($totalWeight >= $this->getMinimumWeight() && $totalWeight <= $this->getMaximumWeight()){
@@ -176,7 +174,7 @@ class FreeShippingShippingMethod extends MethodTypeMethod
     
     public function isWithinSelectedCountries()
     {
-        $customer = new Customer();
+        $customer = new StoreCustomer();
         $custCountry = $customer->getValue('shipping_address')->country;
         if($this->getCountries() != 'all'){
             $selectedCountries = explode(',',$this->getCountriesSelected());

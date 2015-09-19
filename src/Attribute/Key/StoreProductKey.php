@@ -5,7 +5,7 @@ use Database;
 use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Core\Attribute\Key\Key as Key;
-defined('C5_EXECUTE') or die(_("Access Denied."));
+
 class StoreProductKey extends Key {
 
     public function getAttributes($pID, $method = 'getValue') {

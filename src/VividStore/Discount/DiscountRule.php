@@ -2,7 +2,8 @@
 
 namespace Concrete\Package\VividStore\Src\Vividstore\Discount;
 
-use Concrete\Core\Foundation\Object as Object;use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use Concrete\Core\Foundation\Object as Object;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use Database;
 use Core;
 
@@ -212,7 +213,7 @@ class DiscountRule extends Object
             }
 
             if ($this->drDeductType == 'value') {
-                return Price::format($this->drValue) . ' ' . t('off');
+                return StorePrice::format($this->drValue) . ' ' . t('off');
             }
         }
     }

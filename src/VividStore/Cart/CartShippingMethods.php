@@ -5,7 +5,6 @@ use \Concrete\Core\Controller\Controller;
 use View;
 use Illuminate\Filesystem\Filesystem;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class CartShippingMethods extends Controller
 {

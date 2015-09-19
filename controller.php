@@ -1,13 +1,14 @@
 <?php
 namespace Concrete\Package\VividStore;
-use Package;
 
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
+use Package;
 use Route;
 use Asset;
 use AssetList;
+
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as StoreMethodType;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 
 class Controller extends Package
 {
@@ -112,24 +113,24 @@ class Controller extends Package
     }
     public function uninstall()
     {
-        $authnetpm = PaymentMethod::getByHandle('auth_net');
+        $authnetpm = StorePaymentMethod::getByHandle('auth_net');
         if(is_object($authnetpm)){
             $authnetpm->delete();
         }
-        $invoicepm = PaymentMethod::getByHandle('invoice');
+        $invoicepm = StorePaymentMethod::getByHandle('invoice');
         if(is_object($invoicepm)){
             $invoicepm->delete();
         }
-        $paypalpm = PaymentMethod::getByHandle('paypal_standard');
+        $paypalpm = StorePaymentMethod::getByHandle('paypal_standard');
         if(is_object($paypalpm)){
             $paypalpm->delete();
         }
         
-        $shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
+        $shippingMethodType = StoreMethodType::getByHandle('flat_rate');
         if(is_object($shippingMethodType)) {
             $shippingMethodType->delete();
         }
-        $shippingMethodType = ShippingMethodType::getByHandle('free_shipping');
+        $shippingMethodType = StoreMethodType::getByHandle('free_shipping');
         if(is_object($shippingMethodType)) {
             $shippingMethodType->delete();
         }

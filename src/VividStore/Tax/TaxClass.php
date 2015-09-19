@@ -5,8 +5,6 @@ use Core;
 use Database;
 
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-
 /**
  * @Entity
  * @Table(name="VividStoreTaxClasses")

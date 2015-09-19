@@ -1,12 +1,12 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\Invoice;
 
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use Core;
 use Config;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-class InvoicePaymentMethod extends PaymentMethod
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+
+class InvoicePaymentMethod extends StorePaymentMethod
 {
     public function dashboardForm()
     {
@@ -64,5 +64,3 @@ class InvoicePaymentMethod extends PaymentMethod
     }
 
 }
-
-return __NAMESPACE__;

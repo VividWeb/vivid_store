@@ -19,15 +19,16 @@ use \Concrete\Core\Attribute\Key\Category as AttributeKeyCategory;
 use \Concrete\Core\Attribute\Key\UserKey as UserAttributeKey;
 use \Concrete\Core\Attribute\Type as AttributeType;
 use AttributeSet;
-use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate;
+
+use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as StoreShippingMethodType;
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate as StoreTaxRate;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -135,9 +136,9 @@ class Installer
     }
     public static function installPaymentMethod($handle,$name,$pkg=null,$displayName=null,$enabled=false)
     {
-        $pm = PaymentMethod::getByHandle($handle);
+        $pm = StorePaymentMethod::getByHandle($handle);
         if (!is_object($pm)) {
-            PaymentMethod::add($handle,$name,$pkg,$displayName,$enabled);
+            StorePaymentMethod::add($handle,$name,$pkg,$displayName,$enabled);
         }
     }
     public static function installShippingMethods(Package $pkg)
@@ -148,9 +149,9 @@ class Installer
     
     public static function installShippingMethod($handle,$name,$pkg)
     {
-        $smt = ShippingMethodType::getByHandle($handle);
+        $smt = StoreShippingMethodType::getByHandle($handle);
         if(!is_object($smt)){
-            ShippingMethodType::add($handle,$name,$pkg);
+            StoreShippingMethodType::add($handle,$name,$pkg);
         }
     }
     
@@ -171,9 +172,9 @@ class Installer
                 'maximumWeight' => 0,
                 'countries' => 'all'
             );
-            $shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
+            $shippingMethodType = StoreShippingMethodType::getByHandle('flat_rate');
             $shippingMethodTypeMethod = $shippingMethodType->addMethod($data);
-            ShippingMethod::add($shippingMethodTypeMethod,$shippingMethodType,'Flat Rate',true);
+            StoreShippingMethod::add($shippingMethodTypeMethod,$shippingMethodType,'Flat Rate',true);
         }
     }
     
@@ -202,8 +203,8 @@ class Installer
                 'taxState' => $taxState,
                 'taxCity' => $taxCity
             );
-            $taxRate = TaxRate::add($data);
-            $taxClass = TaxClass::getByHandle('default');
+            $taxRate = StoreTaxRate::add($data);
+            $taxClass = StoreTaxClass::getByHandle('default');
             $taxClass->addTaxClassRate($taxRate->getTaxRateID());
         }
     }
@@ -403,7 +404,7 @@ class Installer
 
     public static function installOrderStatuses(Package $package)
     {
-        $table = OrderStatus::getTableName();
+        $table = StoreOrderStatus::getTableName();
         $db = Database::get();
         $statuses = array(
             array('osHandle' => 'incomplete', 'osName' => t('Incomplete'), 'osInformSite' => 1, 'osInformCustomer' => 0, 'osIsStartingStatus' => 0),
@@ -415,9 +416,9 @@ class Installer
         foreach ($statuses as $status) {
             $row = $db->GetRow("SELECT * FROM " . $table . " WHERE osHandle=?", array($status['osHandle']));
             if (!isset($row['osHandle'])) {
-                OrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer'], $status['osIsStartingStatus']);
+                StoreOrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer'], $status['osIsStartingStatus']);
             } else {
-                $orderStatus = OrderStatus::getByID($row['osID']);
+                $orderStatus = StoreOrderStatus::getByID($row['osID']);
                 $orderStatus->update($status, true);
             }
         }
@@ -425,13 +426,13 @@ class Installer
 
     public static function installDefaultTaxClass($pkg)
     {
-        $defaultTaxClass = TaxClass::getByHandle("default");
+        $defaultTaxClass = StoreTaxClass::getByHandle("default");
         if(!is_object($defaultTaxClass)){
             $data = array(
                 'taxClassName' => t('Default'),
                 'taxClassLocked' => true
             );
-            $defaultTaxClass = TaxClass::add($data);
+            $defaultTaxClass = StoreTaxClass::add($data);
         }
         //for older versions of store, we need to make sure all products have some sort of tax class.
         $db = Database::get();

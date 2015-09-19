@@ -1,20 +1,19 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
-use \Concrete\Core\Controller\Controller as RouteController;
+use \Concrete\Core\Controller\Controller;
 use View;
 use Illuminate\Filesystem\Filesystem;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
-class ProductModal extends RouteController
+class ProductModal extends Controller
 {
         
     public function getProductModal()
     {
         $pID = $this->post('pID');
-        $product = VividProduct::getByID($pID);
+        $product = StoreProduct::getByID($pID);
         if(Filesystem::exists(DIR_BASE."/application/elements/product_modal.php")){
             View::element("product_modal",array("product"=>$product));
         } else {

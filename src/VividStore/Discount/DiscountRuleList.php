@@ -4,7 +4,8 @@ namespace Concrete\Package\VividStore\Src\Vividstore\Discount;
 use Concrete\Core\Search\Pagination\Pagination;
 use Concrete\Core\Search\ItemList\Database\ItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
-use Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule;
+
+use Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 
 class DiscountRuleList extends ItemList
 {
@@ -57,7 +58,7 @@ class DiscountRuleList extends ItemList
 
     public function getResult($queryRow)
     {
-        $dr = DiscountRule::getByID($queryRow['drID']);
+        $dr = StoreDiscountRule::getByID($queryRow['drID']);
 
         if ($dr) {
             $dr->retrieveStatistics();

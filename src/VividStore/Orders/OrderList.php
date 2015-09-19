@@ -6,10 +6,9 @@ use Concrete\Core\Search\Pagination\Pagination;
 use Concrete\Core\Search\ItemList\Database\AttributedItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 
-use Concrete\Package\VividStore\Src\VividStore\Orders\Order as VividOrder;
-use Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as VividOrderItem;
+use Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as StoreOrderItem;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class OrderList  extends AttributedItemList
 {
 
@@ -85,7 +84,7 @@ class OrderList  extends AttributedItemList
     
     public function getResult($queryRow)
     {
-        return VividOrder::getByID($queryRow['oID']);
+        return StoreOrder::getByID($queryRow['oID']);
     }
     
     protected function createPaginationObject()
@@ -118,7 +117,7 @@ class OrderList  extends AttributedItemList
             $oID = $order->getOrderID();
             $OrderOrderItems = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$oID);
             foreach($OrderOrderItems as $oi){
-                $oi = VividOrderItem::getByID($oi['oiID']);
+                $oi = StoreOrder::getByID($oi['oiID']);
                 $orderItems[] = $oi;
             }
         }

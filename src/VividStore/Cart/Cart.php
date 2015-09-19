@@ -5,13 +5,12 @@ use Session;
 use Config;
 use Database;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as Customer;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as DiscountRule;
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as Product;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as StoreShippingMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
@@ -56,14 +55,14 @@ class Cart
 
             self::$discounts = array();
 
-            $rules = DiscountRule::findAutomaticDiscounts();
+            $rules = StoreDiscountRule::findAutomaticDiscounts();
             if (count($rules) > 0) {
                 self::$discounts = array_merge(self::$discounts, $rules);
             }
 
             $code = trim(Session::get('vividstore.code'));
             if ($code) {
-                $rules = DiscountRule::findDiscountRuleByCode($code);
+                $rules = StoreDiscountRule::findDiscountRuleByCode($code);
 
                 if (count($rules) > 0) {
                     self::$discounts = array_merge(self::$discounts, $rules);
@@ -258,7 +257,7 @@ class Cart
             foreach ($cart as $cartItem){
                 $pID = $cartItem['product']['pID'];
                 $qty = $cartItem['product']['qty'];
-                $product = VividProduct::getByID($pID);
+                $product = StoreProduct::getByID($pID);
                 if(is_object($product)){
                     $productSubTotal = $product->getActivePrice() * $qty;
                     $subtotal = $subtotal + $productSubTotal;
@@ -317,7 +316,7 @@ class Cart
         if (self::getCart()) {
             foreach (self::getCart() as $item) {
                 //check if items are shippable
-                $product = VividProduct::getByID($item['product']['pID']);
+                $product = StoreProduct::getByID($item['product']['pID']);
                 if ($product->isShippable()) {
                     $shippableItems[] = $item;
                 }
@@ -332,7 +331,7 @@ class Cart
         $totalWeight = 0;
         if(self::getCart()){
             foreach(self::getCart() as $item){
-                $product = VividProduct::getByID($item['product']['pID']);
+                $product = StoreProduct::getByID($item['product']['pID']);
                 if($product->isShippable()){
                     $totalProductWeight = $product->getProductWeight() * $item['product']['qty'];
                     $totalWeight = $totalWeight + $totalProductWeight;
@@ -378,7 +377,7 @@ class Cart
     {
         $subTotal = Cart::getSubTotal();
         $taxTotal = 0;
-        $taxes = Tax::getTaxes();
+        $taxes = StoreTax::getTaxes();
         $taxCalc = Config::get('vividstore.calculation');
 
         if($taxes && $taxCalc != 'extract'){
@@ -410,7 +409,7 @@ class Cart
     // returns an array of formatted cart totals
     public function getTotals() {
         $subTotal = Cart::getSubTotal();
-        $taxes = Tax::getTaxes();
+        $taxes = StoreTax::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
         $taxCalc = Config::get('vividstore.calculation');
@@ -463,7 +462,7 @@ class Cart
     public function requiresLogin() {
         if(self::getCart()){
             foreach(self::getCart() as $item) {
-                $product = VividProduct::getByID($item['product']['pID']);
+                $product = StoreProduct::getByID($item['product']['pID']);
                 if ($product) {
                     if (($product->hasUserGroups() || $product->hasDigitalDownload()) && !$product->createsLogin()) {
                         return true;
@@ -479,7 +478,7 @@ class Cart
     public function createsAccount() {
         if(self::getCart()){
             foreach(self::getCart() as $item) {
-                $product = VividProduct::getByID($item['product']['pID']);
+                $product = StoreProduct::getByID($item['product']['pID']);
                 if ($product) {
                     if ($product->createsLogin()) {
                         return true;
@@ -492,7 +491,7 @@ class Cart
     }
 
     public static function storeCode($code) {
-        $rule = DiscountRule::findDiscountRuleByCode($code);
+        $rule = StoreDiscountRule::findDiscountRuleByCode($code);
 
         if (!empty($rule)) {
             Session::set('vividstore.code',$code);

@@ -5,8 +5,9 @@ use Concrete\Core\Foundation\Object as Object;
 use Database;
 use User;
 use UserInfo;
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-defined('C5_EXECUTE') or die(_("Access Denied."));
+
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+
 class OrderItem extends Object
 {
     public static function getByID($oiID) {
@@ -21,7 +22,7 @@ class OrderItem extends Object
     public function add($data,$oID,$tax=0,$taxIncluded=0,$taxName='')
     {
         $db = Database::get();
-        $product = VividProduct::getByID($data['product']['pID']);
+        $product = StoreProduct::getByID($data['product']['pID']);
         $productName = $product->getProductName();
         $productPrice = $product->getActivePrice();
         $qty = $data['product']['qty'];
@@ -38,8 +39,8 @@ class OrderItem extends Object
         
         foreach($data['productAttributes'] as $optionGroup=>$selectedOption){
             $optionGroupID = str_replace("pog","",$optionGroup);
-            $optionGroupName = VividProduct::getProductOptionGroupNameByID($optionGroupID);
-            $optionValue = VividProduct::getProductOptionValueByID($selectedOption);
+            $optionGroupName = StoreProduct::getProductOptionGroupNameByID($optionGroupID);
+            $optionValue = StoreProduct::getProductOptionValueByID($selectedOption);
             
             
             $values = array($oiID,$optionGroupName,$optionValue);
@@ -95,6 +96,6 @@ class OrderItem extends Object
     }
     public function getProductObject($pID = null)
     {
-        return VividProduct::getByID($this->pID);
+        return StoreProduct::getByID($this->pID);
     }
 }

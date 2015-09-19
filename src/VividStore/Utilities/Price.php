@@ -2,7 +2,6 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Config;
-defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Price
 {

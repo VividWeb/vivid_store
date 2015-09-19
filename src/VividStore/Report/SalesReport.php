@@ -1,9 +1,7 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Report;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
 
 class SalesReport extends OrderList
 {
