@@ -14,7 +14,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '3.1dev1';
+    protected $pkgVersion = '3.1dev2';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
         'src/Omnipay' => '\Omnipay'

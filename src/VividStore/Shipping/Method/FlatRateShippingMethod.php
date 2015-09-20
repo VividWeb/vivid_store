@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Methods;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Method;
 
 use Package;
 use Core;

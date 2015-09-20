@@ -1,11 +1,11 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Methods;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Method;
 
 use Package;
 use Core;
 use Database;
 
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodTypeMethod as StoreMethodTypeMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodTypeMethod as StoreShippingMethodTypeMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
@@ -13,7 +13,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustom
  * @Entity
  * @Table(name="VividStoreFreeShippingMethods")
  */
-class FreeShippingShippingMethod extends StoreMethodTypeMethod
+class FreeShippingShippingMethod extends StoreShippingMethodTypeMethod
 {
     
     /**

@@ -18,8 +18,17 @@ abstract class ShippingMethodTypeMethod extends Controller
      */
     protected $smID;
     
+    /**
+     * @Column(type="boolean",nullable=true)
+     * enables the option for it to be disabled instead of deleted
+     */
+    protected $disableEnabled;
+    
     
     public function setShippingMethodID($smID){ $this->smID = $smID; }
+    public function enabledDisableButton($bool = false){ $this->disableEnabled = $bool; }
+    
+    public function disableEnabled(){ return $this->disableEnabled; }
     
     abstract public static function getByID($smtmID);
     

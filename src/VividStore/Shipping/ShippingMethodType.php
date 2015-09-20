@@ -36,7 +36,13 @@ class ShippingMethodType
      */
     protected $pkgID;
     
+    /**
+     * @Column(type="integer",nullable=true)
+     */
+    protected $hideFromAddMenu;
+    
     private $methodTypeController;
+    
     
     public function setHandle($handle)
     {
@@ -59,13 +65,15 @@ class ShippingMethodType
         }
 
         $th = Core::make("helper/text");
-        $namespace = "Concrete\\Package\\".$th->camelcase($package->getPackageHandle())."\\Src\\VividStore\\Shipping\\Methods";
+        $namespace = "Concrete\\Package\\".$th->camelcase($package->getPackageHandle())."\\Src\\VividStore\\Shipping\\Method";
         
         $className = $th->camelcase($this->smtHandle)."ShippingMethod";
         $obj = $namespace.'\\'.$className;
         $this->methodTypeController = new $obj();
     }
+    public function hideFromAddMenu($bool = false){ $this->hideFromAddMenu; }
     
+    public function isHiddenFromAddMenu(){ return $this->hideFromAddMenu; }
     public function getShippingMethodTypeID() { return $this->smtID; }
     public function getHandle(){ return $this->smtHandle; }
     public function getShippingMethodTypeName() { return $this->smtName; }
@@ -91,14 +99,17 @@ class ShippingMethodType
             return $obj;
         }
     }
-    public static function add($smtHandle,$smtName,$pkg)
+    public static function add($smtHandle,$smtName,$pkg,$hideFromAddMenu=false)
     {
         $smt = new self();
         $smt->setHandle($smtHandle);
         $smt->setName($smtName);
         $pkgID = $pkg->getPackageID();
         $smt->setPackageID($pkgID);
+        $smt->hideFromAddMenu($hideFromAddMenu);
         $smt->save();
+        $smt->setMethodTypeController();
+        return $smt;
     }
     public function save()
     {

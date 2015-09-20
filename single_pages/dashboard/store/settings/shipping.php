@@ -54,7 +54,9 @@ if(in_array($controller->getTask(),$addViews)){
         <a href="" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?=t('Add Method')?> <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
             <?php foreach($methodTypes as $smt){?>
-            <li><a href="<?=URL::to('/dashboard/store/settings/shipping/add',$smt->getShippingMethodTypeID())?>"><?=$smt->getShippingMethodTypeName()?></a></li>
+                <?php if(!$methodType->isHiddenFromAddMenu()){?>
+                    <li><a href="<?=URL::to('/dashboard/store/settings/shipping/add',$smt->getShippingMethodTypeID())?>"><?=$smt->getShippingMethodTypeName()?></a></li>
+                <?php } ?>
             <?php } ?>
         </ul>
     </div>
@@ -77,7 +79,11 @@ if(in_array($controller->getTask(),$addViews)){
 						<td><?=$method->getName()?></td>
 						<td class="text-right">
 							<a href="<?=URL::to('/dashboard/store/settings/shipping/edit',$method->getShippingMethodID())?>" class="btn btn-default"><?=t("Edit")?></a>
+							<?php if($method->getShippingMethodTypeMethod()->isHiddenFromAddMenu()){?>
+							    <a href="" class="btn btn-default"><?=t("Disable")?></a>
+							<?php } else { ?>
 							<a href="<?=URL::to('/dashboard/store/settings/shipping/delete',$method->getShippingMethodID())?>" class="btn btn-danger"><?=t("Delete")?></a>
+						    <?php } ?>
 						</td>
 					</tr>
 					<?php } ?>

@@ -3,7 +3,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Report;
 
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
 
-class SalesReport extends OrderList
+class SalesReport extends StoreOrderList
 {
     
     public function __construct()
