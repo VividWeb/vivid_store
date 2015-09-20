@@ -52,7 +52,7 @@ class ShippingMethod
     public static function getByID($smID) {
         $db = Database::get();
         $em = $db->getEntityManager();
-        return $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\Method', $smID);
+        return $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod', $smID);
     }
     
     public static function getAvailableMethods($methodTypeID=null)
