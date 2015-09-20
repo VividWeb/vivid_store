@@ -26,7 +26,7 @@ abstract class ShippingMethodTypeMethod extends Controller
     
     
     public function setShippingMethodID($smID){ $this->smID = $smID; }
-    public function enabledDisableButton($bool = false){ $this->disableEnabled = $bool; }
+    public function enableDisableButton($bool = false){ $this->disableEnabled = $bool; }
     
     public function disableEnabled(){ return $this->disableEnabled; }
     
