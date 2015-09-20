@@ -71,7 +71,7 @@ class ShippingMethodType
         $obj = $namespace.'\\'.$className;
         $this->methodTypeController = new $obj();
     }
-    public function hideFromAddMenu($bool = false){ $this->hideFromAddMenu; }
+    public function hideFromAddMenu($bool = false){ $this->hideFromAddMenu = $bool; }
     
     public function isHiddenFromAddMenu(){ return $this->hideFromAddMenu; }
     public function getShippingMethodTypeID() { return $this->smtID; }
