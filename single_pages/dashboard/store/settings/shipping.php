@@ -3,7 +3,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 $addViews = array('add','add_method','edit');
 $editViews = array('edit');
 
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as ShippingMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 
 if(in_array($controller->getTask(),$addViews)){
 /// Add Shipping Method View    
@@ -54,7 +54,7 @@ if(in_array($controller->getTask(),$addViews)){
         <a href="" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?=t('Add Method')?> <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
             <?php foreach($methodTypes as $smt){?>
-                <?php if(!$methodType->isHiddenFromAddMenu()){?>
+                <?php if(!$smt->isHiddenFromAddMenu()){?>
                     <li><a href="<?=URL::to('/dashboard/store/settings/shipping/add',$smt->getShippingMethodTypeID())?>"><?=$smt->getShippingMethodTypeName()?></a></li>
                 <?php } ?>
             <?php } ?>
@@ -74,7 +74,7 @@ if(in_array($controller->getTask(),$addViews)){
 					<th class="text-right"><?=t("Actions")?></th>
 				</thead>
 				<tbody>
-					<?php foreach(ShippingMethod::getAvailableMethods($methodType->getShippingMethodTypeID()) as $method){ ?>
+					<?php foreach(StoreShippingMethod::getAvailableMethods($methodType->getShippingMethodTypeID()) as $method){ ?>
 					<tr>
 						<td><?=$method->getName()?></td>
 						<td class="text-right">

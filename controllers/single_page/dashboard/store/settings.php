@@ -10,7 +10,7 @@ use Config;
 
 use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
-use \Concrete\Package\VividStore\Src\VividStore\Payment\PaymentMethod as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 
 class Settings extends DashboardPageController
 {
@@ -26,8 +26,8 @@ class Settings extends DashboardPageController
        $this->set("pageSelector",Core::make('helper/form/page_selector'));
        $this->set("countries",Core::make('helper/lists/countries')->getCountries());
        $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
-       $this->set("installedPaymentMethods",PaymentMethod::getMethods());
-       $this->set("orderStatuses",OrderStatus::getAll());
+       $this->set("installedPaymentMethods",StorePaymentMethod::getMethods());
+       $this->set("orderStatuses",StoreOrderStatus::getAll());
        $productPublishTarget = Config::get('vividstore.productPublishTarget');
        $this->set('productPublishTarget',$productPublishTarget);
     }
@@ -87,13 +87,13 @@ class Settings extends DashboardPageController
                 if($args['paymentMethodHandle']){
                     
                     foreach($args['paymentMethodEnabled'] as $pmID=>$value){
-                        $pm = PaymentMethod::getByID($pmID);
+                        $pm = StorePaymentMethod::getByID($pmID);
                         $pm->setEnabled($value);
                         $controller = $pm->getMethodController();
                         $controller->save($args);
                     }
                     foreach($args['paymentMethodDisplayName'] as $pmID=>$value){
-                        $pm = PaymentMethod::getByID($pmID);
+                        $pm = StorePaymentMethod::getByID($pmID);
                         $pm->setDisplayName($value);
                     }
                 }
@@ -111,7 +111,7 @@ class Settings extends DashboardPageController
     private function saveOrderStatuses($data) {
         if (isset($data['osID'])) {
             foreach ($data['osID'] as $key => $id) {
-                $orderStatus = OrderStatus::getByID($id);
+                $orderStatus = StoreOrderStatus::getByID($id);
                 $orderStatusSettings = array(
                     'osName' => ((isset($data['osName'][$key]) && $data['osName'][$key]!='') ?
                         $data['osName'][$key] : $orderStatus->getReadableHandle()),
@@ -122,10 +122,10 @@ class Settings extends DashboardPageController
                 $orderStatus->update($orderStatusSettings);
             }
             if (isset($data['osIsStartingStatus'])) {
-                OrderStatus::setNewStartingStatus(OrderStatus::getByID($data['osIsStartingStatus'])->getHandle());
+                StoreOrderStatus::setNewStartingStatus(StoreOrderStatus::getByID($data['osIsStartingStatus'])->getHandle());
             } else {
-                $orderStatuses = OrderStatus::getAll();
-                OrderStatus::setNewStartingStatus($orderStatuses[0]->getHandle());
+                $orderStatuses = StoreOrderStatus::getAll();
+                StoreOrderStatus::setNewStartingStatus($orderStatuses[0]->getHandle());
             }
         }
     }
@@ -159,7 +159,7 @@ class Settings extends DashboardPageController
             $e->add(t('At least one payment method must be enabled'));
         }
         foreach($args['paymentMethodEnabled'] as $pmID=>$value){
-            $pm = PaymentMethod::getByID($pmID);
+            $pm = StorePaymentMethod::getByID($pmID);
             $controller = $pm->getMethodController();
             $e = $controller->validate($args,$e);
         }
@@ -169,7 +169,7 @@ class Settings extends DashboardPageController
         }
         
         //before changing tax settings to "Extract", make sure there's only one rate per class
-        $taxClasses = TaxClass::getTaxClasses();
+        $taxClasses = StoreTaxClass::getTaxClasses();
         foreach($taxClasses as $taxClass){
             $taxClassRates = $taxClass->getTaxClassRates();
             if(count($taxClassRates)>1){
