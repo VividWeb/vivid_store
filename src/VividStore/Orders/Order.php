@@ -58,11 +58,14 @@ class Order extends Object
         
         //get the price details
         $smID = \Session::get('smID');
-        $sm = ShippingMethod::getByID($smID);
-        $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
-        $shippingMethodName = $sm->getName();
-        $smName = $shippingMethodTypeName.": ".$shippingMethodName;
-        
+        if($smID > 0){
+            $sm = ShippingMethod::getByID($smID);
+            $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
+            $shippingMethodName = $sm->getName();
+            $smName = $shippingMethodTypeName.": ".$shippingMethodName;
+        } else {
+            $smName = "No Shipping Method";
+        }
         
         $shipping = VividCart::getShippingTotal();
         $taxes = Tax::getTaxes();
