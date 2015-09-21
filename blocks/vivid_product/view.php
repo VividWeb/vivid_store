@@ -133,11 +133,12 @@ if(is_object($p)){?>
             <?php } ?>
             
         </div>
-        
+        <?php if($showProductDetails){?>
         <div class="vivid-store-col-1 product-detailed-description">
             <h2><?=t("Product Details")?></h2>
             <?=$p->getProductDetail()?>
         </div>
+        <?php } ?>
     </div>
     
 </form>
