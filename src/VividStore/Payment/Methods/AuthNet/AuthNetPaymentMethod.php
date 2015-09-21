@@ -6,7 +6,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as VividCart;
 use Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 use Core;
 use Config;
-use \AuthorizeNet\Service\Aim as AuthorizeNetAIM;
+use \AuthorizeNet\Service\Aim\Request as AuthorizeNetAIM;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class AuthNetPaymentMethod extends PaymentMethod
