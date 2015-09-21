@@ -9,7 +9,6 @@ use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
 
-defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
 {
     protected $btTable = 'btVividStoreProductList';
@@ -67,7 +66,7 @@ class Controller extends BlockController
     public function view()
     {
 
-        $products = new VividProductList();
+        $products = new StoreProductList();
         $products->setSortBy($this->sortOrder);
 
         if ($this->filter == 'current' || $this->filter == 'current_children') {
