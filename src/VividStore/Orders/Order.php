@@ -56,11 +56,14 @@ class Order extends Object
         
         //get the price details
         $smID = \Session::get('smID');
-        $sm = StoreShippingMethod::getByID($smID);
-        $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
-        $shippingMethodName = $sm->getName();
-        $smName = $shippingMethodTypeName.": ".$shippingMethodName;
-        
+        if($smID){
+            $sm = StoreShippingMethod::getByID($smID);
+            $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
+            $shippingMethodName = $sm->getName();
+            $smName = $shippingMethodTypeName.": ".$shippingMethodName;
+        } else {
+            $smName = t("None");
+        }
         
         $shipping = StoreCart::getShippingTotal();
         $taxes = StoreTax::getTaxes();
