@@ -3,7 +3,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\AuthNet;
 
 use Core;
 use Config;
-use \AuthorizeNet\Service\Aim as AuthorizeNetAIM;
+use \AuthorizeNet\Service\Aim\Request as AuthorizeNetAIM;
 
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
