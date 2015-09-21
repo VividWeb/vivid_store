@@ -115,7 +115,7 @@ class Products extends DashboardPageController
         }
         $this->set("productgroups",$productgroups);
 
-        $gl = new StoreGroupList();
+        $gl = new GroupList();
         $gl->setItemsPerPage(1000);
         $gl->filterByAssignable();
         $usergroups = $gl->get();
