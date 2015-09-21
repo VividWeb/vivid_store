@@ -109,7 +109,7 @@ class Products extends DashboardPageController
         $this->set('pgroups', $product->getProductGroupIDs());
 
         //populate "Groups" select box options
-        $grouplist = VividGroupList::getGroupList();
+        $grouplist = StoreGroupList::getGroupList();
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }

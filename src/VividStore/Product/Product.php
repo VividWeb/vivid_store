@@ -17,8 +17,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StorePro
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 
 class Product extends Object
 {
