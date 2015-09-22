@@ -5,7 +5,7 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store\Repo
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use Package;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderList as StoreOrderList;
 use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport as StoreSalesReport;
 
 class Sales extends DashboardPageController

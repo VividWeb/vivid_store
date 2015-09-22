@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Orders;
+namespace Concrete\Package\VividStore\Src\VividStore\Order;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
@@ -18,13 +18,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderItem as StoreOrderItem;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderItem as StoreOrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as StoreOrderEvent;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 
 class Order extends Object
 {

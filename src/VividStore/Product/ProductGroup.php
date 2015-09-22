@@ -51,10 +51,12 @@ class ProductGroup
         foreach($existingGroups as $group){
             $group->delete();
         }
-        
+
         //add new ones.
-        foreach($data['pUserGroups'] as $gID){
-            self::add($product->getProductID(),$gID);
+        if (!empty($data['pProductGroups'])) {
+            foreach ($data['pProductGroups'] as $gID) {
+                self::add($product->getProductID(), $gID);
+            }
         }
     }
     
@@ -62,7 +64,7 @@ class ProductGroup
     {
         $productGroup = new self();
         $productGroup->setProductID($pID);
-        $productGroup->getGroupID($gID);
+        $productGroup->setGroupID($gID);
         $productGroup->save();
         return $productGroup;
     }

@@ -6,7 +6,7 @@ use \Concrete\Core\Page\Controller\DashboardPageController;
 use Package;
 use Core;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderList;
 use \Concrete\Package\VividStore\Src\VividStore\Report\SalesReport;
 
 class Store extends DashboardPageController

@@ -8,7 +8,7 @@ use Core;
 use Loader;
 use Config;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 

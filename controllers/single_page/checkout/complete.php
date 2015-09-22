@@ -5,7 +5,7 @@ use PageController;
 use View;
 
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
