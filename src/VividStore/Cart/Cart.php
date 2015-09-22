@@ -6,9 +6,7 @@ use Config;
 use Database;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as StoreShippingMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 
@@ -34,7 +32,7 @@ class Cart
             $update = false;
             // loop through and check if product hasn't been deleted. Remove from cart session if not found.
             foreach($cart as $cartitem) {
-                $product =Product::getByID((int)$cartitem['product']['pID']);
+                $product = StoreProduct::getByID((int)$cartitem['product']['pID']);
 
                 if ($product) {
                     // check that we dont have a non-quantity product in cart with a quantity > 1
@@ -88,7 +86,7 @@ class Cart
     public function add($data)
     {
 
-        $product = Product::getByID((int)$data['pID']);
+        $product = StoreProduct::getByID((int)$data['pID']);
 
         if (!$product) {
             return false;
@@ -152,7 +150,7 @@ class Cart
         $removeexistingexclusive  = false;
 
         foreach(self::getCart() as $k=>$cart) {
-            $cartproduct = Product::getByID((int)$cart['product']['pID']);
+            $cartproduct = StoreProduct::getByID((int)$cart['product']['pID']);
 
             if ($cartproduct && $cartproduct->isExclusive()) {
                 self::remove($k);
@@ -213,7 +211,7 @@ class Cart
         $qty = $data['pQty'];
         $cart = self::getCart();
 
-        $product = Product::getByID((int)$cart[$instanceID]['product']['pID']);
+        $product = StoreProduct::getByID((int)$cart[$instanceID]['product']['pID']);
 
         if ($qty > 0 && $product) {
             $newquantity = $qty;
@@ -296,7 +294,7 @@ class Cart
 
     public function isShippable() {
         $shippableItems = self::getShippableItems();
-        $shippingMethods = ShippingMethod::getAvailableMethods();
+        $shippingMethods = StoreShippingMethod::getAvailableMethods();
         if(count($shippingMethods) > 0){
             if(count($shippableItems) > 0){
                 return true;
@@ -345,12 +343,12 @@ class Cart
     public function getShippingTotal($smID=null){
         
         if($smID){
-            $shippingMethod = ShippingMethod::getByID($smID);
+            $shippingMethod = StoreShippingMethod::getByID($smID);
             Session::set('smID',$smID);
         } else {
             $sessionShippingMethodID = Session::get('smID');
             if(!empty($sessionShippingMethodID)){
-                $shippingMethod = ShippingMethod::getByID($sessionShippingMethodID);
+                $shippingMethod = StoreShippingMethod::getByID($sessionShippingMethodID);
             }
         }
         if(is_object($shippingMethod)){

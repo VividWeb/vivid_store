@@ -1,14 +1,15 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus;
+namespace Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus;
 
 use \Concrete\Core\Foundation\Object as Object;
 use Database;
 use Events;
 use User;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderEvent as StoreOrderEvent;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
+use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusH;
 
 class OrderStatusHistory extends Object
 {
@@ -64,7 +65,7 @@ class OrderStatusHistory extends Object
         $data = $db->GetRow("SELECT * FROM " . self::getTableName() . " WHERE oshID=?", $oshID);
         $history = null;
         if (!empty($data)) {
-            $history = new History();
+            $history = new OrderStatusHistory();
             $history->setPropertiesFromArray($data);
         }
         return ($history instanceof OrderStatusHistory) ? $history : false;

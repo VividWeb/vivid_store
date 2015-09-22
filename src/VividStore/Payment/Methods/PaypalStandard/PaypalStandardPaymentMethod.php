@@ -9,9 +9,9 @@ use Log;
 
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 
 class PaypalStandardPaymentMethod extends StorePaymentMethod
 {

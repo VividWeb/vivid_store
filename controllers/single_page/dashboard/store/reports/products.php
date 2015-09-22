@@ -4,7 +4,7 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store\Repo
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderList as StoreOrderList;
 use \Concrete\Package\VividStore\Src\VividStore\Report\ProductReport as StoreProductReport;
 use \Concrete\Core\Search\Pagination\Pagination;
 

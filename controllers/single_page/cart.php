@@ -59,7 +59,7 @@ class Cart extends PageController
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
 
-        $discountsWithCodesExist = DiscountRule::discountsWithCodesExist();
+        $discountsWithCodesExist = StoreDiscountRule::discountsWithCodesExist();
         $this->set("discountsWithCodesExist",$discountsWithCodesExist);
     }
     public function add()
@@ -69,7 +69,7 @@ class Cart extends PageController
 
         $added = $result['added'];
 
-        $product = VividProduct::getByID($data['pID']);
+        $product = StoreProduct::getByID($data['pID']);
         $returndata = array('success'=>true,'quantity'=>(int)$data['quantity'],'added'=>$added,'product'=>$product, 'action'=>'add');
         echo json_encode($returndata);
         exit();

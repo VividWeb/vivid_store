@@ -10,7 +10,7 @@ use Config;
 use Loader;
 use UserAttributeKey;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
@@ -85,9 +85,9 @@ class Checkout extends PageController
 
         $this->set("discountsWithCodesExist",$discountsWithCodesExist);
 
-        $this->set('cart', Cart::getCart());
-        $this->set('discounts', Cart::getDiscounts());
-        $this->set('hasCode', Cart::hasCode());
+        $this->set('cart', StoreCart::getCart());
+        $this->set('discounts', StoreCart::getDiscounts());
+        $this->set('hasCode', StoreCart::hasCode());
 
         $this->set("billingCountries",$billingCountries);
         $this->set("shippingCountries",$shippingCountries);
@@ -154,35 +154,36 @@ class Checkout extends PageController
         
         //process payment
         $pmHandle = $data['payment-method'];
-        $pm = PaymentMethod::getByHandle($pmHandle);
-        if(!($pm instanceof PaymentMethod)){
+        $pm = StorePaymentMethod::getByHandle($pmHandle);
+        if(!($pm instanceof Method)){
             //There was no payment method enabled somehow.
             //so we'll force invoice.
-            $pm = PaymentMethod::getByHandle('invoice');
+            $pm = StorePaymentMethod::getByHandle('invoice');
+        }
+
+        if($pm->getMethodController()->external == true){
+            $pmsess = Session::get('paymentMethod');
+            $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
+            Session::set('paymentMethod',$pmsess);
+            $order = StoreOrder::add($data,$pm,'incomplete');
+            Session::set('orderID',$order->getOrderID());
+            $this->redirect('/checkout/external');
         } else {
-            if($pm->getMethodController()->external == true){
+            $payment = $pm->submitPayment();
+            if($payment['error']==1){
                 $pmsess = Session::get('paymentMethod');
                 $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
                 Session::set('paymentMethod',$pmsess);
-                $order = StoreOrder::add($data,$pm,'incomplete');
-                Session::set('orderID',$order->getOrderID());
-                $this->redirect('/checkout/external');
+                $pesess = Session::get('paymentErrors');
+                $pesess = $payment['errorMessage'];
+                Session::set('paymentErrors',$pesess);
+                $this->redirect("/checkout/failed#payment");
             } else {
-                $payment = $pm->submitPayment();
-                if($payment['error']==1){
-                    $pmsess = Session::get('paymentMethod');
-                    $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
-                    Session::set('paymentMethod',$pmsess);
-                    $pesess = Session::get('paymentErrors');
-                    $pesess = $payment['errorMessage'];
-                    Session::set('paymentErrors',$pesess);
-                    $this->redirect("/checkout/failed#payment");
-                } else {
-                    VividOrder::add($data,$pm);
-                    $this->redirect('/checkout/complete');
-                }
+                StoreOrder::add($data,$pm);
+                $this->redirect('/checkout/complete');
             }
         }
+
     }
     public function external()
     {
@@ -191,7 +192,7 @@ class Checkout extends PageController
         exit();die();
         */
         foreach($pm as $pmID=>$handle){
-            $pm = PaymentMethod::getByID($pmID);
+            $pm = StorePaymentMethod::getByID($pmID);
         }
         //$pm = PaymentMethod::getByHandle($pm[3]);
         $this->set('pm',$pm);

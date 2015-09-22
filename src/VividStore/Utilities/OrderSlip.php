@@ -5,7 +5,7 @@ use Controller;
 use View;
 use Illuminate\Filesystem\Filesystem;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 
 class OrderSlip extends Controller
 {

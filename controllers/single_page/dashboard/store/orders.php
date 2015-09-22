@@ -4,9 +4,9 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
 
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderStatus\OrderStatus as StoreOrderStatus;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\Order as StoreOrder;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderList as StoreOrderList;
+use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 
 class Orders extends DashboardPageController
 {

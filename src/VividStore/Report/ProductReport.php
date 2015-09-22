@@ -6,7 +6,7 @@ use Concrete\Core\Search\Pagination\Pagination;
 use Pagerfanta\Adapter\ArrayAdapter;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Orders\OrderList as StoreOrderList;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderList as StoreOrderList;
 
 class ProductReport extends AbstractItemList
 {
