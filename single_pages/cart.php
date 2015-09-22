@@ -106,7 +106,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         <form method="post" action="<?= View::url('/cart/');?>">
         <input type="text" name="code" />
             <input type="hidden" name="action" value="code" />
-            <button type="submit" class=""><?= t('Apply');?></button>
+            <button type="submit" class="btn-cart-discount-apply"><?= t('Apply');?></button>
         </form>
     <?php } ?>
 
