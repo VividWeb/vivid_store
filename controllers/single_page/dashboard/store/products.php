@@ -66,7 +66,7 @@ class Products extends DashboardPageController
         $this->loadFormAssets();
         $this->set("actionType",t("Add"));
         
-        $grouplist = StoreGroupList::getGroupList();
+        $grouplist = GroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         foreach($grouplist as $productgroup){
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
