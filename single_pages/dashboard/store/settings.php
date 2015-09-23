@@ -60,13 +60,15 @@
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <?php echo $form->label('weightUnit',t('Units for Weight'));?>
-                                <?php echo $form->select('weightUnit',array('lb'=>t('lb'),'kg'=>t('kg')),Config::get('vividstore.weightUnit'));?>
+                                <?php // do not add other units to this list. these are specific to making calculated shipping work ?>
+                                <?php echo $form->select('weightUnit',array('lb'=>t('lb'),'kg'=>t('kg'),'g'=>t('g')),Config::get('vividstore.weightUnit'));?>
                             </div>
                         </div> 
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <?php echo $form->label('sizeUnit',t('Units for Size'));?>
-                                <?php echo $form->select('sizeUnit',array('in'=>t('in'),'cm'=>t('cm')),Config::get('vividstore.sizeUnit'));?>
+                                <?php // do not add other units to this list. these are specific to making calculated shipping work ?>
+                                <?php echo $form->select('sizeUnit',array('in'=>t('in'),'cm'=>t('cm'),'mm'=>t('mm')),Config::get('vividstore.sizeUnit'));?>
                             </div>
                         </div>                        
                     </div>

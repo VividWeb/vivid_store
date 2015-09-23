@@ -50,69 +50,87 @@ if(in_array($controller->getTask(),$listViews)){?>
         <input type="hidden" name="id" value="<?=$id?>">
         <div class="row">
             <div class="col-xs-12">
-                <?=$form->label('reference',t("Package/Box Name"))?>
-                <?=$form->text('reference',$reference)?>
+                <div class="form-group">
+                    <?=$form->label('reference',t("Package/Box Name"))?>
+                    <?=$form->text('reference',$reference)?>
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-4">
+                <div class="form-group">
                 <?=$form->label('outerWidth',t("Outer Width of Box"))?>
-                <div class="input-group">
-                    <?=$form->text('outerWidth',$outerWidth)?>
-                    <span class="input-group-addon">mm</span>
+                    <div class="input-group">
+                        <?=$form->text('outerWidth',$outerWidth)?>
+                        <span class="input-group-addon">mm</span>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-4">
-                <?=$form->label('outerLength',t("Outer Length of Box"))?>
-                <div class="input-group">
-                    <?=$form->text('outerLength',$outerLength)?>
-                    <span class="input-group-addon">mm</span>
+                <div class="form-group">
+                    <?=$form->label('outerLength',t("Outer Length of Box"))?>
+                    <div class="input-group">
+                        <?=$form->text('outerLength',$outerLength)?>
+                        <span class="input-group-addon">mm</span>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-4">
-                <?=$form->label('outerDepth',t("Outer Depth of Box"))?>
-                <div class="input-group">
-                    <?=$form->text('outerDepth',$outerDepth)?>
-                    <span class="input-group-addon">mm</span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <?=$form->label('innerWidth',t("Inner Width of Box"))?>
-                <div class="input-group">
-                    <?=$form->text('innerWidth',$innerWidth)?>
-                    <span class="input-group-addon">mm</span>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-4">
-                <?=$form->label('innerLength',t("Inner Length of Box"))?>
-                <div class="input-group">
-                    <?=$form->text('innerLength',$innerLength)?>
-                    <span class="input-group-addon">mm</span>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-4">
-                <?=$form->label('innerDepth',t("Inner Depth of Box"))?>
-                <div class="input-group">
-                    <?=$form->text('innerDepth',$innerDepth)?>
-                    <span class="input-group-addon">mm</span>
+                <div class="form-group">
+                    <?=$form->label('outerDepth',t("Outer Depth of Box"))?>
+                    <div class="input-group">
+                        <?=$form->text('outerDepth',$outerDepth)?>
+                        <span class="input-group-addon">mm</span>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-4">
-                <?=$form->label('emptyWeight',t("Empty Box Weight"))?>
-                <div class="input-group">
-                    <?=$form->text('emptyWeight',$emptyWeight)?>
-                    <span class="input-group-addon">g</span>
+                <div class="form-group">
+                    <?=$form->label('innerWidth',t("Inner Width of Box"))?>
+                    <div class="input-group">
+                        <?=$form->text('innerWidth',$innerWidth)?>
+                        <span class="input-group-addon">mm</span>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-4">
-                <?=$form->label('maxWeight',t("Max Weight"))?>
-                <div class="input-group">
-                    <?=$form->text('maxWeight',$maxWeight)?>
-                    <span class="input-group-addon">g</span>
+                <div class="form-group">
+                    <?=$form->label('innerLength',t("Inner Length of Box"))?>
+                    <div class="input-group">
+                        <?=$form->text('innerLength',$innerLength)?>
+                        <span class="input-group-addon">mm</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <div class="form-group">
+                    <?=$form->label('innerDepth',t("Inner Depth of Box"))?>
+                    <div class="input-group">
+                        <?=$form->text('innerDepth',$innerDepth)?>
+                        <span class="input-group-addon">mm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4">
+                <div class="form-group">
+                    <?=$form->label('emptyWeight',t("Empty Box Weight"))?>
+                    <div class="input-group">
+                        <?=$form->text('emptyWeight',$emptyWeight)?>
+                        <span class="input-group-addon">g</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <div class="form-group">
+                    <?=$form->label('maxWeight',t("Max Weight"))?>
+                    <div class="input-group">
+                        <?=$form->text('maxWeight',$maxWeight)?>
+                        <span class="input-group-addon">g</span>
+                    </div>
                 </div>
             </div>
         </div>
