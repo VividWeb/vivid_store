@@ -14,10 +14,11 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '3.1dev2';
+    protected $pkgVersion = '3.1dev3';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
-        'src/Omnipay' => '\Omnipay'
+        'src/Omnipay' => '\Omnipay',
+        'src/BoxPacker' => 'DVDoug\BoxPacker'
     );
     public function getPackageDescription()
     {

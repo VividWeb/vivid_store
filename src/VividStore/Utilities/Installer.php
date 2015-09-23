@@ -44,6 +44,7 @@ class Installer
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
+        Installer::installSinglePage('/dashboard/store/settings/shipping/clerk',$pkg);
         Installer::installSinglePage('/dashboard/store/settings/tax',$pkg);
         Installer::installSinglePage('/dashboard/store/reports', $pkg);
         Installer::installSinglePage('/dashboard/store/reports/sales', $pkg);
