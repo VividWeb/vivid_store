@@ -139,7 +139,7 @@ class ClerkPackage implements \DVDoug\BoxPacker\Box
     public function addOrUpdate($data,$addOrUpdate)
     {
         if($addOrUpdate=='update'){
-            $package = $this;
+            $package = self::getByID($data['id']);
         } elseif($addOrUpdate=='add') {
             $package = new self();
         }

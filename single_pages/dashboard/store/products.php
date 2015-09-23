@@ -262,6 +262,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <?php echo $form->label("pShippable", t("Product is Shippable"));?>
                     <?php echo $form->select("pShippable",array('1'=>t('Yes'),'0'=>t('No')), $p->isShippable());?>
                 </div>
+                
+                <div class="alert alert-info">
+                    <?=t("Keep in mind that the following information is not for the product itself, but for the shipping dimensions and weight")?>
+                </div>
 
                 <div class="row">
                     <div class="col-xs-6">

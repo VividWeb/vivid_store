@@ -21,7 +21,7 @@ class ShippingClerk
         }
         $cartItems = StoreCart::getCart();
         foreach($cartItems as $cartItem){
-            $product = StoreProduct::getByID((int)$cartitem['product']['pID']);
+            $product = StoreProduct::getByID((int)$cartItem['product']['pID']);
             $description = $product->getProductName();
             $width = $product->getDimensions('w');
             $length = $product->getDimensions('l');
@@ -30,8 +30,9 @@ class ShippingClerk
             $weight = $product->getProductWeight();
             //TODO: convert to g if in lbs.
             $packer->addItem(new StoreClerkItem($description, $width, $length, $depth, $weight));
+            //TODO: If an item doesn't fit in any box, make it it's own box.
         }
-        
+                
         return $packer->pack();
     }
 }

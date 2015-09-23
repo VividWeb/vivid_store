@@ -33,6 +33,7 @@ class Clerk extends DashboardPageController
         $this->set('innerLength',$package->getInnerLength());
         $this->set('maxWeight',$package->getMaxWeight());
         $this->set('emptyWeight',$package->getEmptyWeight());
+        $this->set('id',$id);
         $this->set('task',t("Update"));
     }
     public function save()

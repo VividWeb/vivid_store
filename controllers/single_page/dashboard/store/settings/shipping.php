@@ -76,7 +76,11 @@ class Shipping extends DashboardPageController
                 $this->redirect('/dashboard/store/settings/shipping/success');
             }
         } else {
-            $this->add($this->post('shippingMethodTypeID'));
+            if($this->post('shippingMethodID')){
+                $this->edit($this->post('shippingMethodID'));
+            } else {
+                $this->add($this->post('shippingMethodTypeID'));
+            }
         }
                 
         

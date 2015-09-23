@@ -59,18 +59,18 @@ if(in_array($controller->getTask(),$listViews)){?>
         <div class="row">
             <div class="col-xs-12 col-sm-4">
                 <div class="form-group">
-                <?=$form->label('outerWidth',t("Outer Width of Box"))?>
+                    <?=$form->label('outerLength',t("Outer Length of Box (longest side)"))?>
                     <div class="input-group">
-                        <?=$form->text('outerWidth',$outerWidth)?>
+                        <?=$form->text('outerLength',$outerLength)?>
                         <span class="input-group-addon">mm</span>
                     </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-4">
                 <div class="form-group">
-                    <?=$form->label('outerLength',t("Outer Length of Box"))?>
+                <?=$form->label('outerWidth',t("Outer Width of Box"))?>
                     <div class="input-group">
-                        <?=$form->text('outerLength',$outerLength)?>
+                        <?=$form->text('outerWidth',$outerWidth)?>
                         <span class="input-group-addon">mm</span>
                     </div>
                 </div>
@@ -88,18 +88,18 @@ if(in_array($controller->getTask(),$listViews)){?>
         <div class="row">
             <div class="col-xs-12 col-sm-4">
                 <div class="form-group">
-                    <?=$form->label('innerWidth',t("Inner Width of Box"))?>
+                    <?=$form->label('innerLength',t("Inner Length of Box (longest side)"))?>
                     <div class="input-group">
-                        <?=$form->text('innerWidth',$innerWidth)?>
+                        <?=$form->text('innerLength',$innerLength)?>
                         <span class="input-group-addon">mm</span>
                     </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-4">
                 <div class="form-group">
-                    <?=$form->label('innerLength',t("Inner Length of Box"))?>
+                    <?=$form->label('innerWidth',t("Inner Width of Box"))?>
                     <div class="input-group">
-                        <?=$form->text('innerLength',$innerLength)?>
+                        <?=$form->text('innerWidth',$innerWidth)?>
                         <span class="input-group-addon">mm</span>
                     </div>
                 </div>
