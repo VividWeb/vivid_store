@@ -25,6 +25,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustom
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode as StoreDiscountCode;
 
 class Order extends Object
 {
@@ -156,7 +157,18 @@ class Order extends Object
 
         if ($discounts) {
             foreach($discounts as $discount) {
-                $order->addDiscount($discount, StoreCart::getCode());
+
+                if ($discount->requiresCode()) {
+                    $order->addDiscount($discount, StoreCart::getCode());
+                    if ($discount->isSingleUse()) {
+                        $code = StoreDiscountCode::getByCode(StoreCart::getCode());
+                        if ($code) {
+                            $code->markUsed($oID);
+                        }
+                    }
+                } else {
+                    $order->addDiscount($discount);
+                }
             }
         }
 

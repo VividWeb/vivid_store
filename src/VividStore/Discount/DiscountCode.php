@@ -15,7 +15,9 @@ class DiscountCode extends Object
     }
 
     static function getByCode($code) {
-
+        $db = Database::get();
+        $data = $db->GetRow("SELECT * FROM VividStoreDiscountCodes WHERE dcCode=?",$code);
+        return self::load($data);
     }
 
     public function load($data) {
@@ -40,7 +42,12 @@ class DiscountCode extends Object
     }
 
     public function isUsed() {
+        return (bool)($this->oID > 0);
+    }
 
+    public function markUsed($oID) {
+        $db = Database::get();
+        $db->Execute("UPDATE VividStoreDiscountCodes set oID = ?  WHERE dcID=?",array((int)$oID, $this->dcID));
     }
 
     public function remove() {
@@ -51,22 +58,6 @@ class DiscountCode extends Object
     static function validate($args)
     {
         $e = Loader::helper('validation/error');
-
-        if(!trim($args['drName'])){
-            $e->add(t('You must enter a name'));
-        }
-
-        if(!trim($args['drDisplay'])){
-            $e->add(t('You must enter display text'));
-        }
-
-        if($args['drDeductType']  == 'percentage' && !trim($args['drPercentage'])){
-            $e->add(t('You must enter a discount percentage'));
-        }
-
-        if($args['drDeductType']  == 'value' && !trim($args['drValue'])){
-            $e->add(t('You must enter a discount value'));
-        }
 
         return $e;
 

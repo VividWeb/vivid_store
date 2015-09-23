@@ -330,15 +330,25 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     $discountAmount = 0;
                     foreach($discounts as $discount) {
                         $discountstrings[] = h($discount->getDisplay());
-                        if ($discount->drDeductFrom == 'subtotal') {
-                            if ($discount->drDeductType  == 'value' ) {
-                                $discountAmount += $discount->drValue;
-                            }
-            
-                            if ($discount->drDeductType  == 'percentage' ) {
+                        if ($discount->drDeductType  == 'value' ) {
+                            $discountAmount += $discount->drValue;
+                        }
+
+                        if ($discount->drDeductType  == 'percentage' ) {
+                            if ($discount->drDeductFrom == 'subtotal') {
                                 $discountAmount += ($discount->drPercentage / 100 * $subtotal);
                             }
+
+                            if ($discount->drDeductFrom == 'total') {
+                                $discountAmount += ($discount->drPercentage / 100 * ($subtotal + $shippingtotal));
+                            }
+
+                            if ($discount->drDeductFrom == 'shipping') {
+                                $discountAmount += ($discount->drPercentage / 100 * $shippingtotal);
+                            }
+
                         }
+
                     }
                     echo implode(', ', $discountstrings);
                 ?>

@@ -42,7 +42,6 @@ class DiscountRule extends Object
         return $discounts;
     }
 
-
     public function retrieveStatistics() {
         $db = Database::get();
         $r = $db->query("select count(*) as total, COUNT(CASE WHEN oID is NULL THEN 1 END) AS available from VividStoreDiscountCodes where drID = ?", array($this->drID));
@@ -216,6 +215,14 @@ class DiscountRule extends Object
                 return StorePrice::format($this->drValue) . ' ' . t('off');
             }
         }
+    }
+
+    public function isSingleUse() {
+        return (bool)$this->drSingleUseCodes;
+    }
+
+    public function requiresCode() {
+        return ($this->drTrigger == 'code');
     }
 
 }
