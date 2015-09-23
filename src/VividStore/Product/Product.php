@@ -112,13 +112,7 @@ class Product extends Object
 
             $pID = $db->lastInsertId();
 
-            //insert user groups
-            if (!empty($data['pUserGroups'])) {
-                foreach($data['pUserGroups'] as $gID){
-                    $vals = array($pID,$gID);
-                    $db->Execute("INSERT INTO VividStoreProductUserGroups (pID,gID) VALUES (?,?)",$vals);
-                }
-            }
+          
 
             //add option groups
             $count = count($data['pogSort']);

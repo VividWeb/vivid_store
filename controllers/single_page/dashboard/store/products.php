@@ -201,8 +201,14 @@ class Products extends DashboardPageController
                 //save productgroups
                 StoreProductGroup::addGroupsForProduct($data,$product);
                 
+                //save product user groups
+                StoreProductUserGroup::addUserGroupsForProduct($data,$product);
+                
                 //save product options
+                
                 //save files
+                
+                
                 if($data['pID']){
                     $this->redirect('/dashboard/store/products/', 'updated');
                 } else {
