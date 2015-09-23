@@ -2,7 +2,7 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Shipping;
 
 use Database;
-
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as StoreShippingMethodType;
 
 /**
  * @Entity
