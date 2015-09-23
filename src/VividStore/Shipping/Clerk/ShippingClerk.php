@@ -1,7 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk;
 
-use \DVDoug\BoxPacker\ItemList as ClerkItemList;
 use \DVDoug\BoxPacker\Packer as ClerkPacker;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
