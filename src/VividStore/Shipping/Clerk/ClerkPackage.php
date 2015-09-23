@@ -133,7 +133,7 @@ class ClerkPackage implements \DVDoug\BoxPacker\Box
     public static function getByID($id) {
         $db = Database::get();
         $em = $db->getEntityManager();
-        return $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\Cleark\ClerkPackage', $id);
+        return $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk\ClerkPackage', $id);
     }
     
     public function addOrUpdate($data,$addOrUpdate)

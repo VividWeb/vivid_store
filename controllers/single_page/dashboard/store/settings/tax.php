@@ -23,7 +23,7 @@ class Tax extends DashboardPageController
     {
         $this->set('pageTitle',t("Add Tax Rate"));
         $this->set("task",t("Add"));
-        $this->set("taxRate",new TaxRate()); //shuts up errors when adding
+        $this->set("taxRate",new StoreTaxRate()); //shuts up errors when adding
         $this->loadFormAssets();
     }
     public function edit($trID)
