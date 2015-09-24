@@ -55,7 +55,7 @@ class ProductLocation
         }
         
         //add new ones.
-        if (!empty($data['cID'])) {
+        if (!empty($locations['cID'])) {
             foreach($locations['cID'] as $cID){
                 self::add($product->getProductID(),$cID);
             }

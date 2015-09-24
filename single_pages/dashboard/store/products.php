@@ -199,12 +199,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
                 <div class="form-group" id="page_pickers">
                     <div class="page_picker">
-                        <?php echo $ps->selectPage('cID[]', $pages[0]['cID'] ?  $pages[0]['cID'] : false); ?>
+                        <?php echo $ps->selectPage('cID[]', $locationPages[0]->getCollectionID() ?  $locationPages[0]->getCollectionID() : false); ?>
                     </div>
 
                     <?php for($i = 1; $i < 7; $i++) { ?>
                         <div class="page_picker <?= ($pages[$i -1]['cID']  ? '' : 'picker_hidden' ); ?>">
-                            <?php echo $ps->selectPage('cID[]',  $pages[$i]['cID'] ?  $pages[$i]['cID'] : false); ?>
+                            <?php echo $ps->selectPage('cID[]',  $locationPages[$i]->getCollectionID() ?  $locationPages[$i]->getCollectionID() : false); ?>
                         </div>
 
                     <?php } ?>

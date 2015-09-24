@@ -3,6 +3,8 @@ namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+
 /**
  * @Entity
  * @Table(name="VividStoreProductUserGroups")
@@ -37,14 +39,24 @@ class ProductUserGroup
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup', $pgID);
     }
     
-    public static function getUserGroupsForProduct(\Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getUserGroupsForProduct(StoreProduct $product)
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup')->findBy(array('pID' => $product->getProductID()));
     }
     
-    public static function addUserGroupsForProduct(array $data, \Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getUserGroupIDsForProduct($product)
+    {
+        $userGroups = self::getUserGroupsForProduct($product);
+        $groupIDs = array();
+        foreach($userGroups as $userGroup) {
+            $groupIDs[] = $userGroup->getUserGroupID();
+        }
+        return $groupIDs;
+    }
+    
+    public static function addUserGroupsForProduct(array $data, StoreProduct $product)
     {
         //clear out existing groups
         $existingUserGroups = self::getUserGroupsForProduct($product);

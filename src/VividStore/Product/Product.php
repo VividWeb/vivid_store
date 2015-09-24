@@ -1,7 +1,6 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
-use Concrete\Core\Foundation\Object as Object;
 use Package;
 use Page;
 use PageType;
@@ -19,114 +18,342 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 
-class Product extends Object
+/**
+ * @Entity
+ * @Table(name="VividStoreProducts")
+ */
+class Product 
 {
 
-    public static function getByID($pID)
+    /** 
+     * @Id @Column(type="integer") 
+     * @GeneratedValue 
+     */
+    protected $pID;
+    
+    /**
+     * @Column(type="integer",nullable=true)
+     */
+    protected $cID; 
+    
+    /**
+     * @Column(type="string")
+     */
+    protected $pName; 
+    
+    /**
+     * @Column(type="text",nullable=true)
+     */
+    protected $pDesc; 
+    
+    /**
+     * @Column(type="text",nullable=true)
+     */
+    protected $pDetail; 
+    
+    /**
+     * @Column(type="decimal", precision=2, scale=10)
+     */
+    protected $pPrice; 
+    
+    /**
+     * @Column(type="decimal", precision=2, scale=10, nullable=true)
+     */
+    protected $pSalePrice; 
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pFeatured; 
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pQty; 
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pQtyUnlim;
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pNoQty;
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pTaxClass;
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pTaxable;
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pfID;
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pActive;
+    
+    /**
+     * @Column(type="datetime")
+     */
+    protected $pDateAdded;
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pShippable;
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pWidth;
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pHeight;
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pLength;
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pWeight;
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pCreateUserAccount;
+    
+    /**
+     * @Column(type="bool")
+     */
+    protected $pAutoCheckout;
+    
+    /**
+     * @Column(type="integer")
+     */
+    protected $pExclusive;
+    
+    public function setCollectionID($cID){ $this->cID = $cID; }
+    public function setProductName($name){ $this->pName = $name; }
+    public function setProductDescription($description){ $this->pDesc = $description; }
+    public function setProductDetail($detail){ $this->pDetail = $detail; }
+    public function setProductPrice($price){ $this->pPrice = $price; }
+    public function setProductSalePrice($price){ $this->pSalePrice = $price; }
+    public function setIsFeatured($bool){ $this->pFeatured = $bool; }
+    public function setProductQty($qty){ $this->pQty = $qty; }
+    public function setIsUnlimited($bool){ $this->pQtyUnlim = $bool; }
+    public function setAllowBackOrder($bool){ $this->pBackOrder = $bool; }
+    public function setNoQty($bool){ $this->pNoQty = $bool; }
+    public function setProductTaxClass($taxClass){ $this->pTaxClass = $taxClass; }
+    public function setIsTaxable($bool){ $this->pTaxable = $bool; }
+    public function setProductImageID($fID){ $this->pfID = $fID; }
+    public function setIsActive($bool){ $this->pActive = $bool; }
+    public function setProductDateAdded($date){ $this->pDateAdded = $date; }
+    public function setIsShippable($bool){ $this->pShippable = $bool; }
+    public function setProductWidth($width){ $this->pWidth = $width; }
+    public function setProductHeight($height){ $this->pHeight = $height; }
+    public function setProductLength($length){ $this->pLength = $length; }
+    public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = $bool; }
+    public function setAutoCheckout($bool){ $this->pAutoCheckout = $bool; }
+    public function setIsExclusive($bool){ $this->pExclusive = $bool; }
+    public function updateProductQty($qty)
     {
-        $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreProducts WHERE pID=?",$pID);
-        return self::load($data);
+        $this->setProductQty($qty);
+        $this->save();
     }
+    
+    public static function getByID($pID) {
+        $db = Database::connection();
+        $em = $db->getEntityManager();
+        return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\Product', $pID);
+    }
+    
     public static function getByCollectionID($cID)
     {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreProducts WHERE cID=?",$cID);
-        return self::load($data);
+        $em = $db->getEntityManager();
+        return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\Product')->findOneBy(array('cID' => $cID));
     }
-    public function load($data)
-    {
-        if(!empty($data)){
-            $product = new Product();
-            $product->setPropertiesFromArray($data);
-        }
-        return($product instanceof Product) ? $product : false;
-    }
+
     public function save($data)
     {
-        $db = Database::get();
         if($data['pID']){
-        //if we know the pID, we're updating.
-
-
-            //update product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
-            $db->Execute('UPDATE VividStoreProducts SET gID=?,pName=?,pDesc=?,pDetail=?,pPrice=?,pSalePrice=?,pFeatured=?,pQty=?,pQtyUnlim=?,pBackOrder=?,pNoQty=?,pTaxClass=?,pTaxable=?,pfID=?,pActive=?,pShippable=?,pWidth=?,pHeight=?,pLength=?,pWeight=?,pCreateUserAccount=?,pAutoCheckout=?, pExclusive=? WHERE pID = ?', $vals);
-
-           
-
-
-            //update option groups
-            $db->Execute('DELETE FROM VividStoreProductOptionGroups WHERE pID = ?', $data['pID']);
-            $db->Execute('DELETE FROM VividStoreProductOptionItems WHERE pID = ?', $data['pID']);
-            $count = count($data['pogSort']);
-            $ii=0;//set counter for items
-            if($count>0){
-                for($i=0;$i<$count;$i++){
-                    $vals = array($data['pID'],$data['pogName'][$i],$data['pogSort'][$i]);
-                    $db->Execute("INSERT INTO VividStoreProductOptionGroups (pID,pogName,pogSort) VALUES (?,?,?)",$vals);
-                        //add option items
-                        $pogID = $db->lastInsertId();
-                        $itemsInGroup = count($data['optGroup'.$i]);
-                        if($itemsInGroup>0){
-                            for($gi=0;$gi<$itemsInGroup;$gi++,$ii++){
-                                $vals = array($data['pID'],$pogID,$data['poiName'][$ii],$data['poiSort'][$ii]);
-                                $db->Execute("INSERT INTO VividStoreProductOptionItems (pID,pogID,poiName,poiSort) VALUES (?,?,?,?)",$vals);
-                            }
-                        }
-                }
-            }
-
+            //if we know the pID, we're updating.
+            $product = self::getByID($data['pID']);
             $product->setProductPageDescription($data['pDesc']);
-
         } else {
-        //else, we don't know it, so we're adding
-
+            //else, we don't know it and we're adding a new product
+            $product = new self();
             $dt = Core::make('helper/date');
             $now = $dt->getLocalDateTime();
-
-            //add product details
-            $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
-            $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pSalePrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
-
-            //add option groups
-            $count = count($data['pogSort']);
-            $ii=0;//set counter for items
-            if($count>0){
-                for($i=0;$i<$count;$i++){
-                    $vals = array($pID,$data['pogName'][$i],$data['pogSort'][$i]);
-                    $db->Execute("INSERT INTO VividStoreProductOptionGroups (pID,pogName,pogSort) VALUES (?,?,?)",$vals);
-                        //add option items
-                        $pogID = $db->lastInsertId();
-                        $itemsInGroup = count($data['optGroup'.$i]);
-                        if($itemsInGroup>0){
-                            for($gi=0;$gi<$itemsInGroup;$gi++,$ii++){
-                                $vals = array($pID,$pogID,$data['poiName'][$ii],$data['poiSort'][$ii]);
-                                $db->Execute("INSERT INTO VividStoreProductOptionItems (pID,pogID,poiName,poiSort) VALUES (?,?,?,?)",$vals);
-                            }
-                        }
-                }
-            }
-            $product = Product::getByID($pID);
+            $product->setProductDateAdded($now);
+        }
+        $product->setProductName($data['pName']);
+        $product->setProductDescription($data['pDesc']);
+        $product->setProductDetail($data['pDetail']);
+        $product->setProductPrice($data['pPrice']);
+        $product->setProductSalePrice($data['pSalePrice']);
+        $product->setIsFeatured($data['pFeatured']);
+        $product->setProductQty($data['pQty']);
+        $product->setIsUnlimited($data['pQtyUnlim']);
+        $product->setAllowBackOrder($data['pBackOrder']);
+        $product->setNoQty($data['pNoQty']);
+        $product->setProductTaxClass($data['pTaxClass']);
+        $product->setIsTaxable($data['pTaxable']);
+        $product->setProductImageID($data['pfID']);
+        $product->setIsActive($data['pActive']);
+        $product->setIsShippable($data['pShippable']);
+        $product->setProductWidth($data['pWidth']);
+        $product->setProductHeight($data['pHeight']);
+        $product->setProductLength($data['pLength']);
+        $product->setAutoCheckout($data['pAutoCheckout']);
+        $product->setIsExclusive($data['pExclusive']);
+        $product->save();
+        if(!$data['pID']){
             $product->generatePage($data['selectPageTemplate']);
+        }
+        return $product;
+    }
 
+    public function getProductID(){ return $this->pID; }
+    public function getProductName(){ return $this->pName; }
+    public function getProductPageID() { return $this->cID; }
+    public function getProductDesc(){ return $this->pDesc; }
+    public function getProductDetail() { return $this->pDetail; }
+    public function getProductPrice(){ return $this->pPrice; }
+    public function getFormattedPrice(){ return StorePrice::format($this->pPrice); }
+    public function getProductSalePrice() { return $this->pSalePrice; }
+    public function getFormattedSalePrice(){ return StorePrice::format($this->pSalePrice); }
+    public function getActivePrice(){
+        $salePrice = $this->getProductSalePrice();
+        if($salePrice != ""){
+            return $salePrice;
+        } else {
+            return $this->getProductPrice();
+        }
+    }
+    public function getFormattedActivePrice(){ return StorePrice::format($this->getActivePrice()); }
+    public function getTaxClassID(){ return $this->pTaxClass; }
+    public function getTaxClass(){ return StoreTaxClass::getByID($this->pTaxClass); }
+    
+    public function isTaxable(){
+        if($this->pTaxable == "1"){
+            return true;
+        } else {
+            return false;
         }
 
     }
+    public function isFeatured(){ return $this->pFeatured; }
+    public function isActive(){ return $this->pActive; }
+    public function isShippable() { return $this->pShippable; }
+    public function getDimensions($whl=null){
+        switch($whl){
+            case "w":
+                return $this->pWidth;
+                break;
+            case "h":
+                return $this->pHeight;
+                break;
+            case "l":
+                return $this->pLength;
+                break;
+            default:
+                return $this->pLength."x".$this->pWidth."x".$this->pHeight;
+                break;
+        }
+    }
+    public function getProductWeight(){ return $this->pWeight; }
+    public function getProductImageID() { return $this->pfID; }
+    public function getProductImageObj(){
+        if($this->pfID){
+            $fileObj = File::getByID($this->pfID);
+            return $fileObj;
+        }
+    }
+    public function hasDigitalDownload() { return count($this->getProductDownloadFiles()) > 0 ? true : false; }
+    public function getProductDownloadFiles(){ return StoreProductFile::getFilesForProduct($this); }
+    public function getProductDownloadFileObjects(){ return StoreProductFile::getFileObjectsForProduct($this); }
+    public function createsLogin(){ return (bool)$this->pCreateUserAccount; }
+    public function allowQuantity() { return !(bool)$this->pNoQty; }
+    public function isExclusive() { return (bool)$this->pExclusive; }
+    public function isUnlimited() { return (bool)$this->pQtyUnlim; }
+    public function allowBackOrders() { return (bool)$this->pBackOrder; }
+    public function hasUserGroups(){ return count($this->getProductUserGroups()) > 0 ? true : false; }
+    public function getProductUserGroups(){ return StoreProductUserGroup::getUserGroupsForProduct($this); }
+    public function getProductUserGroupIDs(){ return StoreProductUserGroup::getUserGroupIDsForProduct($this); }
+    public function getProductImage(){
+        $fileObj = $this->getProductImageObj();
+        if(is_object($fileObj)){
+            return "<img src='".$fileObj->getRelativePath()."'>";
+        }
+    }
+    public function getProductImageThumb(){
+        $fileObj = $this->getProductImageObj();
+        if(is_object($fileObj)){
+            return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>";
+        }
+    }
+    public function getProductQty(){ return $this->pQty; }
+    
+    public function isSellable()
+    {
+        if($this->getProductQty() > 0 || $this->isUnlimited()){
+            return true;
+        } else {
+            if($this->allowBackOrders()){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    
+    public function getProductImages() { return StoreProductImage::getImagesForProduct($this); }
+    public function getProductImagesObjects() { return StoreProductImage::getImageObjectsForProduct($this); }
+    public function getProductLocationPages() { return StoreProductLocation::getLocationsForProduct($this); }
+
+    //TODO getProductOptions
+
+
+    public function getProductGroupIDs() { return StoreProductGroup::getGroupIDsForProduct($this); }
+    public function getProductGroups() { return StoreProductGroup::getGroupsForProduct($this); }
+
+    public function save()
+    {
+        $em = Database::get()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
+    }
+    
     public function remove()
     {
-        $db = Database::get();
-        $db->Execute("DELETE FROM VividStoreProducts WHERE pID=?",$this->pID);
-        $db->Execute("DELETE FROM VividStoreProductImages WHERE pID=?",$this->pID);
-        $db->Execute("DELETE FROM VividStoreProductOptionGroups WHERE pID=?",$this->pID);
-        $db->Execute("DELETE FROM VividStoreProductOptionItems WHERE pID=?",$this->pID);
-
-        //delete page from sitemap
+        //getStoreProductImages
+        //getStoreProductOptions
+        //getStoreProductFiles
+        //getAllThatJazz
+        $em = Database::get()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
         $page = Page::getByID($this->cID);
         if(is_object($page)){
             $page->delete();
         }
     }
+    
     public function generatePage($templateID=null){
         $pkg = Package::getByHandle('vivid_store');
         $targetCID = Config::get('vividstore.productPublishTarget');
@@ -169,234 +396,11 @@ class Product extends Object
     }
     public function setProductPageID($cID)
     {
-        $db = Database::get();
-        $vals = array($cID,$this->pID);
-        $db->Execute('UPDATE VividStoreProducts SET cID=? WHERE pID = ?', $vals);
-
-    }
-    public function getProductID(){ return $this->pID; }
-    public function getProductName(){ return $this->pName; }
-    public function getProductPageID() { return $this->cID; }
-    public function getProductDesc(){ return $this->pDesc; }
-    public function getProductDetail() { return $this->pDetail; }
-    public function getProductPrice(){ return $this->pPrice; }
-    public function getFormattedPrice(){ return StorePrice::format($this->pPrice); }
-    public function getProductSalePrice() { return $this->pSalePrice; }
-    public function getFormattedSalePrice(){ return StorePrice::format($this->pSalePrice); }
-    public function getActivePrice(){
-        $salePrice = $this->getProductSalePrice();
-        if($salePrice != ""){
-            return $salePrice;
-        } else {
-            return $this->getProductPrice();
-        }
-    }
-    public function getFormattedActivePrice(){ return StorePrice::format($this->getActivePrice()); }
-    public function getTaxClassID(){ return $this->pTaxClass; }
-    public function getTaxClass(){ return StoreTaxClass::getByID($this->pTaxClass); }
-    
-    public function isTaxable(){
-        if($this->pTaxable == "1"){
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-    public function getGroupID(){ return $this->gID; }
-    public function getGroupName()
-    {
-        if($this->gID > 0){
-            $group = Group::getByID($this->gID);
-            if(is_object($group)){
-                return $group->getGroupName();
-            }
-        }
-    }
-    public function isFeatured(){ return $this->pFeatured; }
-    public function isActive(){ return $this->pActive; }
-    public function isShippable() { return $this->pShippable; }
-    public function getDimensions($whl=null){
-        switch($whl){
-            case "w":
-                return $this->pWidth;
-                break;
-            case "h":
-                return $this->pHeight;
-                break;
-            case "l":
-                return $this->pLength;
-                break;
-            default:
-                return $this->pLength."x".$this->pWidth."x".$this->pHeight;
-                break;
-        }
-    }
-    public function getProductWeight(){ return $this->pWeight; }
-    public function getProductImageID() { return $this->pfID; }
-    public function getProductImageObj(){
-        if($this->pfID){
-            $fileObj = File::getByID($this->pfID);
-            return $fileObj;
-        }
-    }
-    public function hasDigitalDownload()
-    {
-        $files = $this->getProductDownloadFileIDs();
-        return count($files)>0 ? true : false;
-    }
-    public function getProductDownloadFileIDs()
-    {
-        $db = Database::get();
-        $results = $db->GetAll("SELECT dffID FROM VividStoreDigitalFiles WHERE pID=?",$this->pID);
-        return $results;
-    }
-    public function getProductDownloadFileObjects(){
-        $results = $this->getProductDownloadFileIDs();
-        $fileObjects = array();
-        foreach($results as $result){
-            $fileObjects[] = File::getByID($result['dffID']);
-        }
-        return $fileObjects;
-    }
-    public function hasUserGroups(){
-        $db = Database::get();
-        $usergroupcount = $db->GetOne("SELECT COUNT(*) AS userGroupCount FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);
-        return ($usergroupcount > 0);
-    }
-    public function createsLogin(){
-      return (bool)$this->pCreateUserAccount;
-    }
-    public function allowQuantity() {
-        return !(bool)$this->pNoQty;
-    }
-    public function isExclusive() {
-        return (bool)$this->pExclusive;
-    }
-    public function isUnlimited() {
-        return (bool)$this->pQtyUnlim;
-    }
-    public function allowBackOrders() {
-        return (bool)$this->pBackOrder;
-    }
-    public function getProductUserGroups(){
-        $db = Database::get();
-        $productGroupResult = $db->GetAll("SELECT gID FROM VividStoreProductUserGroups WHERE pID=?",$this->pID);
-        $productGroups = array();
-
-        foreach($productGroupResult as $pg) {
-            $productGroups[] = $pg['gID'];
-        }
-        return $productGroups;
-    }
-    public function getProductImage(){
-        $fileObj = $this->getProductImageObj();
-        if(is_object($fileObj)){
-            return "<img src='".$fileObj->getRelativePath()."'>";
-        }
-    }
-    public function getProductImageThumb(){
-        $fileObj = $this->getProductImageObj();
-        if(is_object($fileObj)){
-            return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>";
-        }
-    }
-    public function getProductQty(){ return $this->pQty; }
-    public function setProductQty($qty)
-    {
-        $db = Database::get();
-        $db->Execute("UPDATE VividStoreProducts SET pQty=? WHERE pID=?",array($qty,$this->pID));
-    }
-    public function isSellable()
-    {
-        if($this->getProductQty() > 0 || $this->isUnlimited()){
-            return true;
-        } else {
-            if($this->allowBackOrders()){
-                return true;
-            } else {
-                return false;
-            }
-        }
+        $this->setCollectionID($cID);
+        $this->save();
     }
     
-    public function getProductImages()
-    {
-        return StoreProductImage::getImagesForProduct($this);
-    }
-
-    public function getProductImagesObjects(){
-        $objects = array();
-        $images = $this->getProductImages();
-
-        foreach($images as $img) {
-            if ($img->getFileID() > 0) {
-                $fileObj = File::getByID($img->getFileID());
-
-                if ($fileObj) {
-                    $objects[]= $fileObj;
-                }
-            }
-        }
-
-        return $objects;
-    }
-
-    public function getProductOptionGroups()
-    {
-        $db = Database::get();
-        $optionGroups = $db->GetAll("SELECT * FROM VividStoreProductOptionGroups WHERE pID=? ORDER BY pogSort",$this->pID);
-        return $optionGroups;
-    }
-    public function getProductOptionGroupNameByID($id)
-    {
-        $db = Database::get();
-        $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroups WHERE pogID=?",$id);
-        return $optionGroup['pogName'];
-    }
-    public function getProductOptionItems()
-    {
-        $db = Database::get();
-        $optionItems = $db->GetAll("SELECT * FROM VividStoreProductOptionItems WHERE pID=? ORDER BY poiSort",$this->pID);
-        return $optionItems;
-    }
-
-    public function getProductPages()
-    {
-        $db = Database::get();
-        $pages = $db->GetAll("SELECT cID FROM VividStoreProductLocations WHERE pID=?",$this->pID);
-        return $pages;
-    }
-
-     public function getProductOptionValueByID($id)
-    {
-        $db = Database::get();
-        $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
-        return $optionItem['poiName'];
-    }
-
-
-    public function getProductGroupIDs()
-    {
-        $db = Database::get();
-        $groups = $db->GetAll("SELECT gID FROM VividStoreProductGroups WHERE pID=?",$this->pID);
-        $values = array();
-        foreach($groups as $g) {
-            $values[] = $g['gID'];
-        }
-        return $values;
-    }
-
-    public function getProductGroups()
-    {
-        $db = Database::get();
-        $groups = $db->GetAll("SELECT pg.gID, groupName  FROM VividStoreProductGroups pg INNER JOIN VividStoreGroups g on pg.gID = g.gID WHERE pID=?",$this->pID);
-        $values = array();
-        foreach($groups as $g) {
-            $values[$g['gID']] = $g['groupName'];
-        }
-        return $values;
-    }
+    
 
     /* TO-DO
      * This isn't completely accurate as an order status may be incomplete and never change,

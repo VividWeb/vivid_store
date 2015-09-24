@@ -3,6 +3,8 @@ namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+
 /**
  * @Entity
  * @Table(name="VividStoreProductGroups")
@@ -37,26 +39,39 @@ class ProductGroup
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup', $pgID);
     }
     
-    public static function getGroupsForProduct(\Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getGroupsForProduct(StoreProduct $product)
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup')->findBy(array('pID' => $product->getProductID()));
     }
     
-    public static function addGroupsForProduct(array $data, \Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getGroupIDsForProduct(StoreProduct $product)
     {
-        //clear out existing groups
-        $existingGroups = self::getGroupsForProduct($product);
-        foreach($existingGroups as $group){
-            $group->delete();
+        $groups = self::getGroupsForProduct($product);
+        $ids = array();
+        foreach($groups as $g) {
+            $ids[] = $g->getGroupID();
         }
-
+        return $ids;
+    }
+    
+    public static function addGroupsForProduct(array $data, StoreProduct $product)
+    {
+        self::removeGroupsForProduct($product);
         //add new ones.
         if (!empty($data['pProductGroups'])) {
             foreach ($data['pProductGroups'] as $gID) {
                 self::add($product->getProductID(), $gID);
             }
+        }
+    }
+    
+    public static function removeGroupsForProduct(StoreProduct $product)
+    {
+        $existingGroups = self::getGroupsForProduct($product);
+        foreach($existingGroups as $group){
+            $group->delete();
         }
     }
     

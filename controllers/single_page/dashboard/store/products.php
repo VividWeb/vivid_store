@@ -13,9 +13,12 @@ use PageType;
 use GroupList;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StoreProductImage;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StoreProductImage;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
@@ -105,7 +108,7 @@ class Products extends DashboardPageController
         $this->set("images",$product->getProductImages());
         $this->set("groups",$product->getProductOptionGroups());
         $this->set('optItems',$product->getProductOptionItems());
-        $this->set('pages', $product->getProductPages());
+        $this->set('locationPages', $product->getProductLocationPages());
         $this->set('pgroups', $product->getProductGroupIDs());
 
         //populate "Groups" select box options
@@ -196,18 +199,21 @@ class Products extends DashboardPageController
                 }
                 //save images
                 StoreProductImage::addImagesForProduct($data,$product);
-                //save usergroups
                 
-                //save productgroups
+                //save product groups
                 StoreProductGroup::addGroupsForProduct($data,$product);
                 
                 //save product user groups
                 StoreProductUserGroup::addUserGroupsForProduct($data,$product);
                 
                 //save product options
+                StoreProductOption::addProductOptions($data,$product);
                 
                 //save files
                 StoreProductFile::addFilesForProduct($data,$product);
+                
+                //save category locations
+                StoreProductLocation::addLocationsForProduct($data,$product);
                 
                 if($data['pID']){
                     $this->redirect('/dashboard/store/products/', 'updated');

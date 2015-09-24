@@ -3,6 +3,8 @@ namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+
 /**
  * @Entity
  * @Table(name="VividStoreProductImages")
@@ -46,14 +48,24 @@ class ProductImage
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductImage', $piID);
     }
     
-    public static function getImagesForProduct(\Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getImagesForProduct(StoreProduct $product)
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductImage')->findBy(array('pID' => $product->getProductID()));
     }
     
-    public static function addImagesForProduct(array $images, \Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getImageObjectsForProduct(StoreProduct $product)
+    {
+        $images = self::getImagesForProduct($product);
+        $imageObjects = array();
+        foreach($images as $img){
+            $imageObjects[] = File::getByID($img->getFileID());
+        }
+        return $imageObjects;
+    }
+    
+    public static function addImagesForProduct(array $images, StoreProduct $product)
     {
         //clear out existing images
         $existingImages = self::getImagesForProduct($product);

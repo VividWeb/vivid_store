@@ -29,7 +29,7 @@ class OrderItem extends Object
         if (!$product->pQtyUnlim) {
             $inStock = $product->getProductQty();
             $newStock = $inStock - $qty;
-            $product->setProductQty($newStock);
+            $product->updateProductQty($newStock);
         }
         $pID = $product->getProductID();
         $values = array($oID,$pID,$productName,$productPrice,$tax,$taxIncluded,$taxName,$qty);

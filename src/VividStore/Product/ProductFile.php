@@ -3,6 +3,8 @@ namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+
 /**
  * @Entity
  * @Table(name="VividStoreDigitalFiles")
@@ -14,7 +16,7 @@ class ProductFile
      * @Id @Column(type="integer") 
      * @GeneratedValue 
      */
-    protected $id;
+    protected $dfID;
     
     /**
      * @Column(type="integer")
@@ -29,7 +31,7 @@ class ProductFile
     private function setProductID($pID){ $this->pID = $pID; }
     private function setFileID($fID){ $this->dffID = $fID; }
     
-    public function getID(){ return $this->piID; }
+    public function getID(){ return $this->dfID; }
     public function getProductID() { return $this->pID; }
     public function getFileID() { return $this->dffID; }
     
@@ -39,14 +41,24 @@ class ProductFile
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductFile', $id);
     }
     
-    public static function getFilesForProduct(\Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getFilesForProduct(StoreProduct $product)
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductFile')->findBy(array('pID' => $product->getProductID()));
     }
     
-    public static function addFilesForProduct(array $files, \Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getFileObjectsForProduct(StoreProduct $product)
+    {
+        $results = self::getFilesForProduct($product);
+        $fileObjects = array();
+        foreach($results as $result){
+            $fileObjects[] = File::getByID($result->getFileID());
+        }
+        return $fileObjects;
+    }
+    
+    public static function addFilesForProduct(array $files,StoreProduct $product)
     {
         //clear out existing images
         $existingFiles = self::getFilesForProduct($product);
