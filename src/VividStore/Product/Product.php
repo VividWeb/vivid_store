@@ -48,13 +48,6 @@ class Product extends Object
         if($data['pID']){
         //if we know the pID, we're updating.
 
-            $pID = $data['pID'];
-
-            $product = self::getByID($pID);
-
-            if (!$product->getProductID())  {
-                return false;
-            }
 
             //update product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$data['pExclusive'],$data['pID']);
@@ -84,21 +77,7 @@ class Product extends Object
                 }
             }
 
-            $originalDesc = strip_tags(trim($product->getProductDesc()));
-
-            $pageID = $product->getProductPageID();
-            if ($pageID) {
-                $productPage = Page::getByID($pageID);
-
-                if ($productPage) {
-                    $pageDescription = trim($productPage->getAttribute('meta_description'));
-
-                    // if it's the same as the current product description, it hasn't been updated independently of the product
-                    if ($pageDescription == '' || $originalDesc == $pageDescription) {
-                        $productPage->setAttribute('meta_description', strip_tags($data['pDesc']));
-                    }
-                }
-            }
+            $product->setProductPageDescription($data['pDesc']);
 
         } else {
         //else, we don't know it, so we're adding
@@ -109,10 +88,6 @@ class Product extends Object
             //add product details
             $vals = array($data['gID'],$data['pName'],$data['pDesc'],$data['pDetail'],$data['pPrice'],$data['pSalePrice'],$data['pFeatured'],$data['pQty'],$data['pQtyUnlim'],$data['pBackOrder'],$data['pNoQty'],$data['pTaxClass'],$data['pTaxable'],$data['pfID'],$data['pActive'],$data['pShippable'],$data['pWidth'],$data['pHeight'],$data['pLength'],$data['pWeight'],$data['pCreateUserAccount'],$data['pAutoCheckout'],$now);
             $db->Execute("INSERT INTO VividStoreProducts (gID,pName,pDesc,pDetail,pPrice,pSalePrice,pFeatured,pQty,pQtyUnlim,pBackOrder,pNoQty,pTaxClass,pTaxable,pfID,pActive,pShippable,pWidth,pHeight,pLength,pWeight,pCreateUserAccount,pAutoCheckout,pDateAdded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",$vals);
-
-            $pID = $db->lastInsertId();
-
-          
 
             //add option groups
             $count = count($data['pogSort']);
@@ -136,44 +111,6 @@ class Product extends Object
             $product->generatePage($data['selectPageTemplate']);
 
         }
-
-        //save files
-        $db->Execute("DELETE FROM VividStoreDigitalFiles WHERE pID=?",$pID);
-        $u = User::getByUserID(1);
-        $ui = \UserInfo::getByID($u->getUserID());
-        if($data['dffID']){
-            foreach($data['dffID'] as $dffID){
-                if($dffID){
-                    $db->Execute("INSERT INTO VividStoreDigitalFiles(dffID,pID) VALUES (?,?)",array($dffID,$pID));
-                    $fileObj = File::getByID($dffID);
-                    $fs = \FileSet::getByName("Digital Downloads");
-                    $fs->addFileToSet($fileObj);
-                    $fileObj->resetPermissions(1);
-                    $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
-                    $pk->setPermissionObject($fileObj);
-                    $pao = $pk->getPermissionAssignmentObject();
-                    $groupEntity = \Concrete\Core\Permission\Access\Entity\GroupEntity::getOrCreate(\Group::getByID(GUEST_GROUP_ID));
-                    $pa = $pk->getPermissionAccessObject();
-                    if ($pa) {
-                        $pa->removeListItem($groupEntity);
-                        $pao->assignPermissionAccess($pa);
-                    }
-
-                }
-            }
-        }
-
-        $db->Execute("DELETE FROM VividStoreProductLocations where pID = ?",array($pID));
-
-        foreach($data['cID'] as $cID) {
-            if ($cID > 0) {
-                $db->Execute("REPLACE INTO VividStoreProductLocations(pID,cID) VALUES (?,?)",array($pID,(int)$cID));
-            }
-        }
-
-        $product = Product::getByID($pID);
-        return $product;
-
 
     }
     public function remove()
@@ -212,11 +149,23 @@ class Product extends Object
         );
         $productParentPage->setAttribute('exclude_nav', 1);
 
-        $description = strip_tags($this->getProductDesc());
-        $productParentPage->setAttribute('meta_description', $description);
-
-        $cID = $productParentPage->getCollectionID();
         $this->setProductPageID($cID);
+        $this->setProductPageDescription($this->getProductDesc());
+    }
+    public function setProductPageDescription($newDescription)
+    {
+        $productDescription = strip_tags(trim($product->getProductDesc()));
+        $pageID = $product->getProductPageID();
+        if ($pageID) {
+            $productPage = Page::getByID($pageID);
+            if (is_object($productPage)) {
+                $pageDescription = trim($productPage->getAttribute('meta_description'));
+                // if it's the same as the current product description, it hasn't been updated independently of the product
+                if ($pageDescription == '' || $productDescription == $pageDescription) {
+                    $productPage->setAttribute('meta_description', strip_tags($newDescription));
+                }
+            }
+        }
     }
     public function setProductPageID($cID)
     {

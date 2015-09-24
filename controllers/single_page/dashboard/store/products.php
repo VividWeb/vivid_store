@@ -207,7 +207,7 @@ class Products extends DashboardPageController
                 //save product options
                 
                 //save files
-                
+                StoreProductFile::addFilesForProduct($data,$product);
                 
                 if($data['pID']){
                     $this->redirect('/dashboard/store/products/', 'updated');

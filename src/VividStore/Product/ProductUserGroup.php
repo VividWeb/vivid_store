@@ -62,11 +62,11 @@ class ProductUserGroup
     
     public static function add($pID,$gID)
     {
-        $productGroup = new self();
-        $productGroup->setProductID($pID);
-        $productGroup->setUserGroupID($gID);
-        $productGroup->save();
-        return $productGroup;
+        $productUserGroup = new self();
+        $productUserGroup->setProductID($pID);
+        $productUserGroup->setUserGroupID($gID);
+        $productUserGroup->save();
+        return $productUserGroup;
     }
     
     public function save()
