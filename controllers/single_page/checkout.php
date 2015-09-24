@@ -155,7 +155,7 @@ class Checkout extends PageController
         //process payment
         $pmHandle = $data['payment-method'];
         $pm = StorePaymentMethod::getByHandle($pmHandle);
-        if(!($pm !== false)){
+        if($pm === false){
             //There was no payment method enabled somehow.
             //so we'll force invoice.
             $pm = StorePaymentMethod::getByHandle('invoice');
