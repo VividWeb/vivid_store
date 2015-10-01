@@ -156,7 +156,7 @@ class Product
     public function setProductPrice($price){ $this->pPrice = $price; }
     public function setProductSalePrice($price){ $this->pSalePrice = $price; }
     public function setIsFeatured($bool){ $this->pFeatured = $bool; }
-    public function setProductQty($qty){ $this->pQty = $qty; }
+    public function setProductQty($qty){ $this->pQty = ($qty ? $qty : 0);  }
     public function setIsUnlimited($bool){ $this->pQtyUnlim = $bool; }
     public function setAllowBackOrder($bool){ $this->pBackOrder = $bool; }
     public function setNoQty($bool){ $this->pNoQty = $bool; }
@@ -169,9 +169,10 @@ class Product
     public function setProductWidth($width){ $this->pWidth = $width; }
     public function setProductHeight($height){ $this->pHeight = $height; }
     public function setProductLength($length){ $this->pLength = $length; }
-    public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = $bool; }
-    public function setAutoCheckout($bool){ $this->pAutoCheckout = $bool; }
-    public function setIsExclusive($bool){ $this->pExclusive = $bool; }
+    public function setProductWeight($weight){ $this->pWeight = $weight; }
+    public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = (!is_null($bool) ? $bool : false); }
+    public function setAutoCheckout($bool){ $this->pAutoCheckout = (!is_null($bool) ? $bool : false) ; }
+    public function setIsExclusive($bool){ $this->pExclusive = (!is_null($bool) ? $bool : false); }
     public function updateProductQty($qty)
     {
         $this->setProductQty($qty);
@@ -201,8 +202,7 @@ class Product
             //else, we don't know it and we're adding a new product
             $product = new self();
             $dt = Core::make('helper/date');
-            $now = $dt->getLocalDateTime();
-            $product->setProductDateAdded($now);
+            $product->setProductDateAdded(new \Datetime());
         }
         $product->setProductName($data['pName']);
         $product->setProductDescription($data['pDesc']);
@@ -218,10 +218,12 @@ class Product
         $product->setIsTaxable($data['pTaxable']);
         $product->setProductImageID($data['pfID']);
         $product->setIsActive($data['pActive']);
+        $product->setCreatesUserAccount($data['pCreateUserAccount']);
         $product->setIsShippable($data['pShippable']);
         $product->setProductWidth($data['pWidth']);
         $product->setProductHeight($data['pHeight']);
         $product->setProductLength($data['pLength']);
+        $product->setProductWeight($data['pWeight']);
         $product->setAutoCheckout($data['pAutoCheckout']);
         $product->setIsExclusive($data['pExclusive']);
         $product->save();
