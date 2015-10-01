@@ -124,7 +124,9 @@ class Checkout extends PageController
         $this->requireAsset('css', 'vivid-store');
         $this->addFooterItem("
             <script type=\"text/javascript\">
-                vividStore.loadViaHash();
+                $(function() {
+                    vividStore.loadViaHash();
+                });
             </script>
         ");
 
