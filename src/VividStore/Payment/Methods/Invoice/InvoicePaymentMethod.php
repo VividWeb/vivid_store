@@ -35,8 +35,8 @@ class InvoicePaymentMethod extends StorePaymentMethod
     public function submitPayment()
     {
         
-        //nothing to do except return true
-        return true;
+        //nothing to do except return success
+        return array('error'=>0, 'transactionReference'=>'');
         
     }
 

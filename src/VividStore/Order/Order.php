@@ -44,7 +44,7 @@ class Order extends Object
         $data = $db->GetRow("SELECT * FROM VividStoreOrders WHERE cID=? ORDER BY oID DESC",$cID);
         return Order::getByID($data['oID']);
     }
-    public function add($data,$pm,$status=null)
+    public function add($data,$pm,$transactionReference='',$status=null)
     {
         $db = Database::get();
         
@@ -174,13 +174,17 @@ class Order extends Object
 
         //if the payment method is not external, go ahead and complete the order.
         if(!$pm->external){
-            $order->completeOrder();
+            $order->completeOrder($transactionReference);
         }
                 
         return $order;
     }
-    public function completeOrder()
+    public function completeOrder($transactionReference = null)
     {
+        if ($transactionReference) {
+            $this->setTransactionReference($transactionReference);
+        }
+
         $smID = \Session::get('smID');
         $groupstoadd = array();
         $createlogin = false;
@@ -502,5 +506,14 @@ class Order extends Object
         $db = Database::get();
         $rows = $db->Execute("Update VividStoreOrders set cID=? where oID = ?",array($uID, $this->oID));
         return $rows;
+    }
+
+    public function setTransactionReference($transactionReference){
+        $db = Database::get();
+        $db->Execute("Update VividStoreOrders set transactionReference=? where oID = ?",array($transactionReference, $this->oID));
+    }
+
+    public function getTransactionReference() {
+        return $this->transactionReference;
     }
 }
