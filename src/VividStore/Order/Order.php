@@ -191,7 +191,7 @@ class Order extends Object
             if ($product && $product->hasUserGroups()) {
                 $groupstoadd = array_merge($groupstoadd, $product->getProductUserGroups());
             }
-            if ($product && $product->pCreateUserAccount) {
+            if ($product && $product->createsLogin()) {
                 $createlogin = true;
             }
         }

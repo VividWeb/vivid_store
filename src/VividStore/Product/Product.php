@@ -13,6 +13,9 @@ use Config;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StoreProductImage;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
@@ -52,17 +55,17 @@ class Product
     protected $pDetail; 
     
     /**
-     * @Column(type="decimal", precision=2, scale=10)
+     * @Column(type="decimal", precision=10, scale=2)
      */
     protected $pPrice; 
     
     /**
-     * @Column(type="decimal", precision=2, scale=10, nullable=true)
+     * @Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     protected $pSalePrice; 
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pFeatured; 
     
@@ -72,12 +75,12 @@ class Product
     protected $pQty; 
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pQtyUnlim;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pNoQty;
     
@@ -87,7 +90,7 @@ class Product
     protected $pTaxClass;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pTaxable;
     
@@ -97,7 +100,7 @@ class Product
     protected $pfID;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pActive;
     
@@ -107,7 +110,7 @@ class Product
     protected $pDateAdded;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pShippable;
     
@@ -132,12 +135,12 @@ class Product
     protected $pWeight;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pCreateUserAccount;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pAutoCheckout;
     
@@ -151,9 +154,9 @@ class Product
     public function setProductDescription($description){ $this->pDesc = $description; }
     public function setProductDetail($detail){ $this->pDetail = $detail; }
     public function setProductPrice($price){ $this->pPrice = $price; }
-    public function setProductSalePrice($price){ $this->pSalePrice = $price; }
+    public function setProductSalePrice($price){ $this->pSalePrice = ($price != '' ? $price : null); }
     public function setIsFeatured($bool){ $this->pFeatured = $bool; }
-    public function setProductQty($qty){ $this->pQty = $qty; }
+    public function setProductQty($qty){ $this->pQty = ($qty ? $qty : 0);  }
     public function setIsUnlimited($bool){ $this->pQtyUnlim = $bool; }
     public function setAllowBackOrder($bool){ $this->pBackOrder = $bool; }
     public function setNoQty($bool){ $this->pNoQty = $bool; }
@@ -166,9 +169,10 @@ class Product
     public function setProductWidth($width){ $this->pWidth = $width; }
     public function setProductHeight($height){ $this->pHeight = $height; }
     public function setProductLength($length){ $this->pLength = $length; }
-    public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = $bool; }
-    public function setAutoCheckout($bool){ $this->pAutoCheckout = $bool; }
-    public function setIsExclusive($bool){ $this->pExclusive = $bool; }
+    public function setProductWeight($weight){ $this->pWeight = $weight; }
+    public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = (!is_null($bool) ? $bool : false); }
+    public function setAutoCheckout($bool){ $this->pAutoCheckout = (!is_null($bool) ? $bool : false) ; }
+    public function setIsExclusive($bool){ $this->pExclusive = (!is_null($bool) ? $bool : false); }
     public function updateProductQty($qty)
     {
         $this->setProductQty($qty);
@@ -188,7 +192,7 @@ class Product
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\Product')->findOneBy(array('cID' => $cID));
     }
 
-    public function save($data)
+    public function saveProduct($data)
     {
         if($data['pID']){
             //if we know the pID, we're updating.
@@ -198,8 +202,7 @@ class Product
             //else, we don't know it and we're adding a new product
             $product = new self();
             $dt = Core::make('helper/date');
-            $now = $dt->getLocalDateTime();
-            $product->setProductDateAdded($now);
+            $product->setProductDateAdded(new \Datetime());
         }
         $product->setProductName($data['pName']);
         $product->setProductDescription($data['pDesc']);
@@ -215,10 +218,12 @@ class Product
         $product->setIsTaxable($data['pTaxable']);
         $product->setProductImageID($data['pfID']);
         $product->setIsActive($data['pActive']);
+        $product->setCreatesUserAccount($data['pCreateUserAccount']);
         $product->setIsShippable($data['pShippable']);
         $product->setProductWidth($data['pWidth']);
         $product->setProductHeight($data['pHeight']);
         $product->setProductLength($data['pLength']);
+        $product->setProductWeight($data['pWeight']);
         $product->setAutoCheckout($data['pAutoCheckout']);
         $product->setIsExclusive($data['pExclusive']);
         $product->save();
@@ -291,6 +296,7 @@ class Product
     public function allowQuantity() { return !(bool)$this->pNoQty; }
     public function isExclusive() { return (bool)$this->pExclusive; }
     public function isUnlimited() { return (bool)$this->pQtyUnlim; }
+    public function autoCheckout() { return (bool)$this->pAutoCheckout; }
     public function allowBackOrders() { return (bool)$this->pBackOrder; }
     public function hasUserGroups(){ return count($this->getProductUserGroups()) > 0 ? true : false; }
     public function getProductUserGroups(){ return StoreProductUserGroup::getUserGroupsForProduct($this); }
@@ -376,13 +382,13 @@ class Product
         );
         $productParentPage->setAttribute('exclude_nav', 1);
 
-        $this->setProductPageID($cID);
+        $this->setProductPageID($productParentPage->getCollectionID());
         $this->setProductPageDescription($this->getProductDesc());
     }
     public function setProductPageDescription($newDescription)
     {
-        $productDescription = strip_tags(trim($product->getProductDesc()));
-        $pageID = $product->getProductPageID();
+        $productDescription = strip_tags(trim($this->getProductDesc()));
+        $pageID = $this->getProductPageID();
         if ($pageID) {
             $productPage = Page::getByID($pageID);
             if (is_object($productPage)) {
@@ -458,5 +464,14 @@ class Product
         }
 
         return $av;
+    }
+
+
+    public function getProductOptionGroups() {
+        return array();
+    }
+
+    public function getProductOptionItems() {
+        return array();
     }
 }
