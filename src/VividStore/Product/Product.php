@@ -15,6 +15,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StorePro
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
@@ -190,7 +191,7 @@ class Product
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\Product')->findOneBy(array('cID' => $cID));
     }
 
-    public function save($data)
+    public function saveProduct($data)
     {
         if($data['pID']){
             //if we know the pID, we're updating.
@@ -293,6 +294,7 @@ class Product
     public function allowQuantity() { return !(bool)$this->pNoQty; }
     public function isExclusive() { return (bool)$this->pExclusive; }
     public function isUnlimited() { return (bool)$this->pQtyUnlim; }
+    public function autoCheckout() { return (bool)$this->pAutoCheckout; }
     public function allowBackOrders() { return (bool)$this->pBackOrder; }
     public function hasUserGroups(){ return count($this->getProductUserGroups()) > 0 ? true : false; }
     public function getProductUserGroups(){ return StoreProductUserGroup::getUserGroupsForProduct($this); }
@@ -334,12 +336,12 @@ class Product
     public function getProductGroupIDs() { return StoreProductGroup::getGroupIDsForProduct($this); }
     public function getProductGroups() { return StoreProductGroup::getGroupsForProduct($this); }
 
-//    public function save()
-//    {
-//        $em = Database::get()->getEntityManager();
-//        $em->persist($this);
-//        $em->flush();
-//    }
+    public function save()
+    {
+        $em = Database::get()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
+    }
     
     public function remove()
     {
@@ -378,13 +380,13 @@ class Product
         );
         $productParentPage->setAttribute('exclude_nav', 1);
 
-        $this->setProductPageID($cID);
+        $this->setProductPageID($productParentPage->getCollectionID());
         $this->setProductPageDescription($this->getProductDesc());
     }
     public function setProductPageDescription($newDescription)
     {
-        $productDescription = strip_tags(trim($product->getProductDesc()));
-        $pageID = $product->getProductPageID();
+        $productDescription = strip_tags(trim($this->getProductDesc()));
+        $pageID = $this->getProductPageID();
         if ($pageID) {
             $productPage = Page::getByID($pageID);
             if (is_object($productPage)) {
