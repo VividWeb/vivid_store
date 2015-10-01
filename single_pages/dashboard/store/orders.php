@@ -143,8 +143,12 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
     </p>
     <p>
         <strong><?=t("Payment Method")?>: </strong><?=$order->getPaymentMethodName()?><br>
+        <?php $transactionReference = $order->getTransactionReference();
+        if ($transactionReference) { ?>
+             <strong><?=t("Transaction Reference")?>: </strong><?=$transactionReference?><br>
+        <?php } ?>
         <?php if ($order->isShippable()) { ?>
-        <strong><?=t("Shipping Method")?>: </strong><?=$order->getShippingMethodName()?>
+        <br /><strong><?=t("Shipping Method")?>: </strong><?=$order->getShippingMethodName()?>
         <?php } ?>
     </p>
 

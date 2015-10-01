@@ -95,7 +95,7 @@ class PaypalStandardPaymentMethod extends StorePaymentMethod
     {
         
         //nothing to do except return true
-        return true;
+        return array('error'=>0, 'transactionReference'=>'');
         
     }
     public function getAction()
@@ -186,7 +186,7 @@ class PaypalStandardPaymentMethod extends StorePaymentMethod
         $res = trim(end($tokens));
         if (strcmp ($res, "VERIFIED") == 0) {
             $order = StoreOrder::getByID($_POST['invoice']);
-            $order->completeOrder();
+            $order->completeOrder($_POST['txn_id']);
             $order->updateStatus(StoreOrderStatus::getStartingStatus()->getHandle());
         } elseif (strcmp ($res, "INVALID") == 0) {
             // log for manual investigation
