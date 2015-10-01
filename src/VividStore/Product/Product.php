@@ -13,6 +13,8 @@ use Config;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StoreProductImage;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
@@ -52,17 +54,17 @@ class Product
     protected $pDetail; 
     
     /**
-     * @Column(type="decimal", precision=2, scale=10)
+     * @Column(type="decimal", precision=10, scale=2)
      */
     protected $pPrice; 
     
     /**
-     * @Column(type="decimal", precision=2, scale=10, nullable=true)
+     * @Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     protected $pSalePrice; 
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pFeatured; 
     
@@ -72,12 +74,12 @@ class Product
     protected $pQty; 
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pQtyUnlim;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pNoQty;
     
@@ -87,7 +89,7 @@ class Product
     protected $pTaxClass;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pTaxable;
     
@@ -97,7 +99,7 @@ class Product
     protected $pfID;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pActive;
     
@@ -107,7 +109,7 @@ class Product
     protected $pDateAdded;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pShippable;
     
@@ -132,12 +134,12 @@ class Product
     protected $pWeight;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pCreateUserAccount;
     
     /**
-     * @Column(type="bool")
+     * @Column(type="boolean")
      */
     protected $pAutoCheckout;
     
@@ -332,12 +334,12 @@ class Product
     public function getProductGroupIDs() { return StoreProductGroup::getGroupIDsForProduct($this); }
     public function getProductGroups() { return StoreProductGroup::getGroupsForProduct($this); }
 
-    public function save()
-    {
-        $em = Database::get()->getEntityManager();
-        $em->persist($this);
-        $em->flush();
-    }
+//    public function save()
+//    {
+//        $em = Database::get()->getEntityManager();
+//        $em->persist($this);
+//        $em->flush();
+//    }
     
     public function remove()
     {
@@ -458,5 +460,14 @@ class Product
         }
 
         return $av;
+    }
+
+
+    public function getProductOptionGroups() {
+        return array();
+    }
+
+    public function getProductOptionItems() {
+        return array();
     }
 }
