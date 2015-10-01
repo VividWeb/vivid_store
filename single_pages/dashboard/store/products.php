@@ -677,7 +677,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <div class="ccm-search-field-content ccm-search-field-content-select2">
                         <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;" placeholder="<?php echo t('Select user groups');?>">
                             <?php
-                            $selectedusergroups = $p->getProductUserGroups();
+                            $selectedusergroups = $p->getProductUserGroupIDs();
                             foreach ($usergroups as $ugkey=>$uglabel) { ?>
                                 <option value="<?php echo $ugkey;?>" <?php echo (in_array($ugkey, $selectedusergroups) ? 'selected="selected"' : ''); ?>>  <?php echo $uglabel; ?></option>
                             <?php } ?>

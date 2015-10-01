@@ -26,7 +26,7 @@ class OrderItem extends Object
         $productName = $product->getProductName();
         $productPrice = $product->getActivePrice();
         $qty = $data['product']['qty'];
-        if (!$product->pQtyUnlim) {
+        if (!$product->isUnlimited()) {
             $inStock = $product->getProductQty();
             $newStock = $inStock - $qty;
             $product->updateProductQty($newStock);

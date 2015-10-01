@@ -154,7 +154,7 @@ class Product
     public function setProductDescription($description){ $this->pDesc = $description; }
     public function setProductDetail($detail){ $this->pDetail = $detail; }
     public function setProductPrice($price){ $this->pPrice = $price; }
-    public function setProductSalePrice($price){ $this->pSalePrice = $price; }
+    public function setProductSalePrice($price){ $this->pSalePrice = ($price != '' ? $price : null); }
     public function setIsFeatured($bool){ $this->pFeatured = $bool; }
     public function setProductQty($qty){ $this->pQty = ($qty ? $qty : 0);  }
     public function setIsUnlimited($bool){ $this->pQtyUnlim = $bool; }
