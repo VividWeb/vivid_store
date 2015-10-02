@@ -831,7 +831,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <td>
                             <?php $productgroups = $p->getProductGroups();
                             foreach($productgroups as $pg) { ?>
-                                <span class="label label-primary"><?= $pg; ?></span>
+                                <span class="label label-primary"><?= $pg->gName; ?></span>
                              <?php } ?>
 
                             <?php if (empty($productgroups)) { ?>
