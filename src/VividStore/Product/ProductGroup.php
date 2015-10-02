@@ -2,6 +2,8 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
+use \Concrete\Package\VividStore\Src\VividStore\Group as StoreGroup;
+use DoctrineProxies\__CG__\Concrete\Package\VividStore\Src\VividStore\Product\Product;
 
 /**
  * @Entity
@@ -41,7 +43,12 @@ class ProductGroup
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
-        return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup')->findBy(array('pID' => $product->getProductID()));
+        $groups = $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup')->findBy(array('pID' => $product->getProductID()));
+        foreach ($groups as $key => $value) {
+            $group = new StoreGroup\Group;
+            $groups[$key]->gName = $group->getByID($groups[$key]->gID)->getGroupName();
+        }
+        return $groups;
     }
     
     public static function addGroupsForProduct(array $data, \Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
