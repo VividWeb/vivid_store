@@ -43,7 +43,6 @@ if(is_object($p)){?>
         <?php } ?>
                    
             <?php if($showGroups){?>
-            <span class="product-group"><?=$p->getGroupName()?></span>
             <?php } ?>
             
             <?php if($showIsFeatured){
