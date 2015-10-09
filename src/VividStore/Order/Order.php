@@ -193,7 +193,11 @@ class Order extends Object
         foreach($orderItems as $orderItem){
             $product = $orderItem->getProductObject();
             if ($product && $product->hasUserGroups()) {
-                $groupstoadd = array_merge($groupstoadd, $product->getProductUserGroups());
+                $productusergroups = $product->getProductUserGroups();
+
+                foreach($productusergroups as $pug) {
+                    $groupstoadd[] = $pug->getUserGroupID();
+                }
             }
             if ($product && $product->createsLogin()) {
                 $createlogin = true;
@@ -305,7 +309,8 @@ class Order extends Object
                 }
             }
 
-            $user->refreshUserGroups();
+            $u = new \User();
+            $u->refreshUserGroups();
         }
         
         StoreCart::clearCode();
