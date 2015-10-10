@@ -1,4 +1,4 @@
-# Vivivd Store
+# Vivid Store
 A Free eCommerce Add-on For Concrete5 5.7
 
 ## A word on contributing
