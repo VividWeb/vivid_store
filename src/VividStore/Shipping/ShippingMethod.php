@@ -2,6 +2,9 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Shipping;
 
 use Database;
+use View;
+use Illuminate\Filesystem\Filesystem;
+
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as StoreShippingMethodType;
 
 /**
@@ -113,5 +116,14 @@ class ShippingMethod
             }
         }
         return $eligibleMethods;
+    }
+    
+    public function getShippingMethodSelector()
+    {
+        if(Filesystem::exists(DIR_BASE."/application/elements/checkout/shipping_methods.php")){
+            View::element("checkout/shipping_methods");
+        } else {
+            View::element("checkout/shipping_methods","vivid_store");
+        }
     }
 }

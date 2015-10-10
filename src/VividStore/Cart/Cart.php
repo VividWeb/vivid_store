@@ -85,7 +85,7 @@ class Cart
 
     public function add($data)
     {
-
+        
         $product = StoreProduct::getByID((int)$data['pID']);
 
         if (!$product) {
@@ -108,44 +108,7 @@ class Cart
         //since we removed the ID/qty, we're left with just the attributes
         $cartItem['productAttributes'] = $data;
 
-        /*
-         * We need to add the item to the cart, however, first we need to do some comparisons.
-         * If we're adding a product that already exists, but the attributes are different,
-         * we need to create a new instance of that item. 
-         * If the attibutes are the same, we just need to update the quantity.
-         * If it doesn't exist, we're free to just add it. 
-         * 
-         * phew.
-         * 
-         */
-
-        $added = 0;
-        $existingproductcount = 0;
-
-        $exists = false;
-        foreach(self::getCart() as $k=>$cart) {
-            if($cart['product']['pID'] == $cartItem['product']['pID']) {
-              if( count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
-                if(count($cartItem['productAttributes']) === 0) {
-                  $sameproduct = true;
-                  break;
-                }
-                foreach($cartItem['productAttributes'] as $key=>$value) {
-                  if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
-                      $sameproduct = true;
-                  } else {
-                    //different attributes means different "product".
-                    $sameproduct = false;
-                    break;
-                  }
-                }
-              }
-            }
-        }
-
-        if ($sameproduct) {
-            $exists = $k;
-        }
+        
 
         $removeexistingexclusive  = false;
 
@@ -205,6 +168,45 @@ class Cart
         return array('added' => $added, 'exclusive'=>$product->isExclusive(), 'removeexistingexclusive'=> $removeexistingexclusive);
     }
 
+    public function checkForExistingCartItem($cartItem)
+    {
+        /*
+         * We need to add the item to the cart, however, first we need to do some comparisons.
+         * If we're adding a product that already exists, but the attributes are different,
+         * we need to create a new instance of that item. 
+         * If the attibutes are the same, we just need to update the quantity.
+         * If it doesn't exist, we're free to just add it. 
+         * 
+         * phew.
+         * 
+         */
+
+        $added = 0;
+        $existingproductcount = 0;
+
+        $exists = false;
+        foreach(self::getCart() as $k=>$cart) {
+            if($cart['product']['pID'] == $cartItem['product']['pID']) {
+              if( count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
+                if(count($cartItem['productAttributes']) === 0) {
+                  $sameproduct = true;
+                  break;
+                }
+                foreach($cartItem['productAttributes'] as $key=>$value) {
+                  if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
+                      $sameproduct = true;
+                  } else {
+                    //different attributes means different "product".
+                    $sameproduct = false;
+                    break;
+                  }
+                }
+              }
+            }
+        }
+        return array('exists'=>$sameProduct,'cartItemKey'=>$k);
+    }
+
     public function update($data)
     {
         $instanceID = $data['instance'];
@@ -247,40 +249,7 @@ class Cart
         Session::set('vividstore.cart', null);
         self::$cart = null;
     }
-    public function getSubTotal()
-    {
-        $cart = self::getCart();
-        $subtotal = 0;
-        if($cart){
-            foreach ($cart as $cartItem){
-                $pID = $cartItem['product']['pID'];
-                $qty = $cartItem['product']['qty'];
-                $product = StoreProduct::getByID($pID);
-                if(is_object($product)){
-                    $productSubTotal = $product->getActivePrice() * $qty;
-                    $subtotal = $subtotal + $productSubTotal;
-                }
-            }
-        }
-
-        $discounts = self::getDiscounts();
-        /*
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'subtotal') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $subtotal -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $subtotal -= ($discount->drPercentage / 100 * $subtotal);
-                }
-            }
-        }
-        */
-        return max($subtotal,0);
-        
-    }
-
+    
     public function getTotalItemsInCart(){
         $total = 0;
         if(self::getCart()){
@@ -340,121 +309,6 @@ class Cart
         return $totalWeight;
     }
 
-    public function getShippingTotal($smID=null){
-        
-        if($smID){
-            $shippingMethod = StoreShippingMethod::getByID($smID);
-            Session::set('smID',$smID);
-        } else {
-            $sessionShippingMethodID = Session::get('smID');
-            if(!empty($sessionShippingMethodID)){
-                $shippingMethod = StoreShippingMethod::getByID($sessionShippingMethodID);
-            }
-        }
-        if(is_object($shippingMethod)){
-            $shippingTotal = $shippingMethod->getShippingMethodTypeMethod()->getRate();
-            
-            $discounts = self::getDiscounts();
-    
-            foreach($discounts as $discount) {
-                if ($discount->drDeductFrom == 'shipping') {
-                    if ($discount->drDeductType  == 'value' ) {
-                        $shippingTotal -= $discount->drValue;
-                    }
-    
-                    if ($discount->drDeductType  == 'percentage' ) {
-                        $shippingTotal -= ($discount->drPercentage / 100 * $shippingTotal);
-                    }
-                }
-            }
-        }
-        return $shippingTotal;
-    }
-
-    public function getTotal()
-    {
-        $subTotal = Cart::getSubTotal();
-        $taxTotal = 0;
-        $taxes = StoreTax::getTaxes();
-        $taxCalc = Config::get('vividstore.calculation');
-
-        if($taxes && $taxCalc != 'extract'){
-            foreach($taxes as $tax) {
-                $taxTotal += $tax['taxamount'];
-            }
-        }
-
-        
-        $shippingTotal = Cart::getShippingTotal();
-        $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
-        
-        $discounts = self::getDiscounts();
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'total') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $grandTotal -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $grandTotal -= ($discount->drPercentage / 100 * $grandTotal);
-                }
-            }
-        }
-        
-        return $grandTotal;
-    }
-
-    // returns an array of formatted cart totals
-    public function getTotals() {
-        $subTotal = Cart::getSubTotal();
-        $taxes = StoreTax::getTaxes();
-        $addedTaxTotal = 0;
-        $includedTaxTotal = 0;
-        $taxCalc = Config::get('vividstore.calculation');
-
-        if($taxes){
-            foreach($taxes as $tax) {
-                if ($taxCalc != 'extract') {
-                    $addedTaxTotal += $tax['taxamount'];
-                } else {
-                    $includedTaxTotal += $tax['taxamount'];
-                }
-            }
-        }
-
-        $shippingTotal = Cart::getShippingTotal();
-        $discountedSubtotal = $subTotal;
-        $discounts = self::getDiscounts();
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'subtotal') {
-                
-                if ($discount->drDeductType  == 'value' ) {
-                    $discountedSubtotal -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $discountedSubtotal -= ($discount->drPercentage / 100 * $discountedSubtotal);
-                }
-            }
-        }
-        
-        $total = ($discountedSubtotal + $addedTaxTotal + $shippingTotal);
-        
-        
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'total') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $total -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $total -= ($discount->drPercentage / 100 * $total);
-                }
-            }
-        }
-
-        return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
-    }
 
     // determines if a cart requires a customer to be logged in
     public function requiresLogin() {
@@ -488,6 +342,7 @@ class Cart
         return false;
     }
 
+    //TODO: Move to Discounts
     public static function storeCode($code) {
         $rule = StoreDiscountRule::findDiscountRuleByCode($code);
 
@@ -499,14 +354,17 @@ class Cart
         return false;
     }
 
+    //TODO: move to iscounts
     public static function hasCode() {
         return (bool)Session::get('vividstore.code');
     }
 
+    //TODO: Move to discounts
     public static function getCode() {
         return Session::get('vividstore.code');
     }
 
+    //TODO: Move to discouns
     public static function clearCode() {
         Session::set('vividstore.code', '');
     }

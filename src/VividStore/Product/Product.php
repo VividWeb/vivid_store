@@ -188,7 +188,7 @@ class Product
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\Product')->findOneBy(array('cID' => $cID));
     }
 
-    public function save($data)
+    public function saveOrUpdate($data)
     {
         if($data['pID']){
             //if we know the pID, we're updating.

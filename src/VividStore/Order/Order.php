@@ -27,22 +27,58 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHis
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode as StoreDiscountCode;
 
-class Order extends Object
+/**
+ * @Entity
+ * @Table(name="VividStoreOrders")
+ */
+class Order
 {
+        
+    /** 
+     * @Id @Column(type="integer") 
+     * @GeneratedValue 
+     */
+    protected $oID;
+    
+    /** @Column(type="integer") */
+    protected $cID;
+    
+    /** @Column(type="datetime") */
+    protected $oDate;
+    
+    /**  @Column(type="integer") */
+    protected $oStatus;
+    
+    /** @Column(type="text") */
+    protected $pmName;
+    
+    /** @Column(type="text") */
+    protected $smName;
+   
+    /** @Column(type="decimal", precision=10, scale=2) **/
+    protected $oShippingTotal;
+    
+    /** @Column(type="decimal", precision=10, scale=2) **/
+    protected $oTax;
+    
+    /** @Column(type="decimal", precision=10, scale=2) **/
+    protected $oTaxIncluded;
+    
+    /** @Column(type="decimal", precision=10, scale=2) **/
+    protected $oTotal;
+    
+    
     public static function getByID($oID) {
-        $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreOrders WHERE oID=?",$oID);
-        if(!empty($data)){
-            $order = new Order();
-            $order->setPropertiesFromArray($data);
-        }
-        return($order instanceof Order) ? $order : false;
+        $db = Database::connection();
+        $em = $db->getEntityManager();
+        return $em->find('Concrete\Package\VividStore\Src\VividStore\Order\Order', $oID);
     }
     public function getCustomersMostRecentOrderByCID($cID)
     {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreOrders WHERE cID=? ORDER BY oID DESC",$cID);
-        return Order::getByID($data['oID']);
+        $em = $db->getEntityManager();
+        return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Order\Order')->findOneBy(array('cID' => $cID));
+        
     }
     public function add($data,$pm,$status=null)
     {

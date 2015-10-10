@@ -191,7 +191,7 @@ class Products extends DashboardPageController
             if (!$errors->has()) {
                     
                 //save the product
-                $product = StoreProduct::save($data);
+                $product = StoreProduct::saveOrUpdate($data);
                 //save product attributes
                 $aks = StoreProductKey::getList();
                 foreach($aks as $uak) {
