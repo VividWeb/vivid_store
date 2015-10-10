@@ -124,7 +124,9 @@ class Checkout extends PageController
         $this->requireAsset('css', 'vivid-store');
         $this->addFooterItem("
             <script type=\"text/javascript\">
-                vividStore.loadViaHash();
+                $(function() {
+                    vividStore.loadViaHash();
+                });
             </script>
         ");
 
@@ -165,7 +167,7 @@ class Checkout extends PageController
             $pmsess = Session::get('paymentMethod');
             $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
             Session::set('paymentMethod',$pmsess);
-            $order = StoreOrder::add($data,$pm,'incomplete');
+            $order = StoreOrder::add($data,$pm,null,'incomplete');
             Session::set('orderID',$order->getOrderID());
             $this->redirect('/checkout/external');
         } else {
@@ -179,7 +181,8 @@ class Checkout extends PageController
                 Session::set('paymentErrors',$pesess);
                 $this->redirect("/checkout/failed#payment");
             } else {
-                StoreOrder::add($data,$pm);
+                $transactionReference = $payment['transactionReference'];
+                StoreOrder::add($data,$pm,$transactionReference);
                 $this->redirect('/checkout/complete');
             }
         }

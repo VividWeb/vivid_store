@@ -70,7 +70,10 @@ class Cart extends PageController
         $added = $result['added'];
 
         $product = StoreProduct::getByID($data['pID']);
-        $returndata = array('success'=>true,'quantity'=>(int)$data['quantity'],'added'=>$added,'product'=>$product, 'action'=>'add');
+        $productdata['pAutoCheckout'] = $product->autoCheckout();
+        $productdata['pName'] = $product->getProductName();
+
+        $returndata = array('success'=>true,'quantity'=>(int)$data['quantity'],'added'=>$added,'product'=>$productdata, 'action'=>'add');
         echo json_encode($returndata);
         exit();
 

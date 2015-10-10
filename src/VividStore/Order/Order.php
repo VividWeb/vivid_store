@@ -80,7 +80,7 @@ class Order
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Order\Order')->findOneBy(array('cID' => $cID));
         
     }
-    public function add($data,$pm,$status=null)
+    public function add($data,$pm,$transactionReference='',$status=null)
     {
         $db = Database::get();
         
@@ -210,13 +210,17 @@ class Order
 
         //if the payment method is not external, go ahead and complete the order.
         if(!$pm->external){
-            $order->completeOrder();
+            $order->completeOrder($transactionReference);
         }
                 
         return $order;
     }
-    public function completeOrder()
+    public function completeOrder($transactionReference = null)
     {
+        if ($transactionReference) {
+            $this->setTransactionReference($transactionReference);
+        }
+
         $smID = \Session::get('smID');
         $groupstoadd = array();
         $createlogin = false;
@@ -225,9 +229,13 @@ class Order
         foreach($orderItems as $orderItem){
             $product = $orderItem->getProductObject();
             if ($product && $product->hasUserGroups()) {
-                $groupstoadd = array_merge($groupstoadd, $product->getProductUserGroups());
+                $productusergroups = $product->getProductUserGroups();
+
+                foreach($productusergroups as $pug) {
+                    $groupstoadd[] = $pug->getUserGroupID();
+                }
             }
-            if ($product && $product->pCreateUserAccount) {
+            if ($product && $product->createsLogin()) {
                 $createlogin = true;
             }
         }
@@ -337,7 +345,8 @@ class Order
                 }
             }
 
-            $user->refreshUserGroups();
+            $u = new \User();
+            $u->refreshUserGroups();
         }
         
         StoreCart::clearCode();
@@ -538,5 +547,14 @@ class Order
         $db = Database::get();
         $rows = $db->Execute("Update VividStoreOrders set cID=? where oID = ?",array($uID, $this->oID));
         return $rows;
+    }
+
+    public function setTransactionReference($transactionReference){
+        $db = Database::get();
+        $db->Execute("Update VividStoreOrders set transactionReference=? where oID = ?",array($transactionReference, $this->oID));
+    }
+
+    public function getTransactionReference() {
+        return $this->transactionReference;
     }
 }

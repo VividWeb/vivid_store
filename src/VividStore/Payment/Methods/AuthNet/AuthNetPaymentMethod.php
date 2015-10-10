@@ -82,12 +82,12 @@ class AuthNetPaymentMethod extends StorePaymentMethod
         );
         $response = $transaction->authorizeAndCapture();
         if ($response->approved) {
-            return true;
+            return array('error'=>0, 'transactionReference'=>$response->transaction_id);
         } else {
             return array('error'=>1,'errorMessage'=>$response->error_message." Error Code: ".$response->response_code. ". Message: ".$response->response_reason_text);
         }
 
-        
+
     }
 
     

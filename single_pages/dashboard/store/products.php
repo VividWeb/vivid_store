@@ -127,9 +127,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             <?php echo $form->label("pQty", t("Stock Level"));?>
                             <?php $qty = $p->getProductQty(); ?>
                             <div class="input-group">
-                                <?php echo $form->text("pQty", $qty?$qty:'999', array(($p->pQtyUnlim ? 'disabled' : '')=>($p->pQtyUnlim ? 'disabled' : '')));?>
+                                <?php echo $form->text("pQty", $qty?$qty:'999', array(($p->isUnlimited() ? 'disabled' : '')=>($p->isUnlimited() ? 'disabled' : '')));?>
                                 <div class="input-group-addon">
-                                    <?php echo $form->checkbox('pQtyUnlim', '1', $p->pQtyUnlim)?>
+                                    <?php echo $form->checkbox('pQtyUnlim', '1', $p->isUnlimited())?>
                                     <?php echo $form->label('pQtyUnlim', t('Unlimited'))?>
                                 </div>
 
@@ -144,7 +144,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             </div>
 
                         </div>
-                        <div class="form-group" id="backorders" <?= ($p->pQtyUnlim ? 'style="display: none"' : '');?>>
+                        <div class="form-group" id="backorders" <?= ($p->isUnlimited() ? 'style="display: none"' : '');?>>
                             <?php echo $form->checkbox('pBackOrder', '1', $p->pBackOrder)?>
                             <?php echo $form->label('pBackOrder', t('Allow Back Orders'))?>
                         </div>
@@ -199,12 +199,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
                 <div class="form-group" id="page_pickers">
                     <div class="page_picker">
-                        <?php echo $ps->selectPage('cID[]', $locationPages[0]->getCollectionID() ?  $locationPages[0]->getCollectionID() : false); ?>
+                        <?php echo $ps->selectPage('cID[]',($locationPages[0] && $locationPages[0]->getCollectionID()) ?  $locationPages[0]->getCollectionID() : false); ?>
                     </div>
 
                     <?php for($i = 1; $i < 7; $i++) { ?>
                         <div class="page_picker <?= ($pages[$i -1]['cID']  ? '' : 'picker_hidden' ); ?>">
-                            <?php echo $ps->selectPage('cID[]',  $locationPages[$i]->getCollectionID() ?  $locationPages[$i]->getCollectionID() : false); ?>
+                            <?php echo $ps->selectPage('cID[]',  ($locationPages[i] && $locationPages[$i]->getCollectionID()) ?  $locationPages[$i]->getCollectionID() : false); ?>
                         </div>
 
                     <?php } ?>
@@ -667,7 +667,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <?php } ?>
 
                 <div class="form-group">
-                    <?php echo $form->checkbox('pCreateUserAccount', '1', $p->pCreateUserAccount)?>
+                    <?php echo $form->checkbox('pCreateUserAccount', '1', $p->createsLogin())?>
                     <?php echo $form->label('pCreateUserAccount', t('Create user account on purchase'))?>
                     <span class="help-block"><?= t('When checked, if customer is guest, will create a user account on purchase'); ?></span>
                 </div>
@@ -677,7 +677,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <div class="ccm-search-field-content ccm-search-field-content-select2">
                         <select multiple="multiple" name="pUserGroups[]" id="groupselect" class="select2-select" style="width: 100%;" placeholder="<?php echo t('Select user groups');?>">
                             <?php
-                            $selectedusergroups = $p->getProductUserGroups();
+                            $selectedusergroups = $p->getProductUserGroupIDs();
                             foreach ($usergroups as $ugkey=>$uglabel) { ?>
                                 <option value="<?php echo $ugkey;?>" <?php echo (in_array($ugkey, $selectedusergroups) ? 'selected="selected"' : ''); ?>>  <?php echo $uglabel; ?></option>
                             <?php } ?>
@@ -689,12 +689,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 
                 <div class="form-group">
-                    <?php echo $form->checkbox('pAutoCheckout', '1', $p->pAutoCheckout)?>
+                    <?php echo $form->checkbox('pAutoCheckout', '1', $p->autoCheckout())?>
                     <?php echo $form->label('pAutoCheckout', t('Send customer directly to checkout when added to cart'))?>
                 </div>
 
                 <div class="form-group">
-                    <?php echo $form->checkbox('pExclusive', '1', $p->pExclusive)?>
+                    <?php echo $form->checkbox('pExclusive', '1', $p->isExclusive())?>
                     <?php echo $form->label('pExclusive', t('Prevent this item from being in the cart with other items'))?>
                 </div>
 
@@ -835,7 +835,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <td>
                             <?php $productgroups = $p->getProductGroups();
                             foreach($productgroups as $pg) { ?>
-                                <span class="label label-primary"><?= $pg; ?></span>
+                                <span class="label label-primary"><?= $pg->gName; ?></span>
                              <?php } ?>
 
                             <?php if (empty($productgroups)) { ?>

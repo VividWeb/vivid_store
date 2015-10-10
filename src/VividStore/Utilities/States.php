@@ -34,7 +34,7 @@ class States extends Controller
             if($type=="tax"){
                 echo "<input name='taxState' id='taxState' class='form-control'>";
             } else {
-                echo "<input name='checkout-{$type}-state' id='checkout-{$type}-state' class='form-control'>";
+                echo "<input name='checkout-{$type}-state' id='checkout-{$type}-state' value='{$selectedState}' class='form-control'>";
             }
         }
     }

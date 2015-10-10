@@ -19,6 +19,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StorePro
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOption as StoreProductOption;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
@@ -191,7 +192,7 @@ class Products extends DashboardPageController
             if (!$errors->has()) {
                     
                 //save the product
-                $product = StoreProduct::saveOrUpdate($data);
+                $product = StoreProduct::saveProduct($data);
                 //save product attributes
                 $aks = StoreProductKey::getList();
                 foreach($aks as $uak) {
