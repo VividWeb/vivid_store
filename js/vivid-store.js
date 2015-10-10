@@ -233,9 +233,15 @@ exitModal: function(){
     },
     //loadViaHash();
 
-    updateBillingStates: function(){
+    updateBillingStates: function(load){
         var countryCode = $("#checkout-billing-country").val();
-        var selectedState = $("#checkout-saved-billing-state").val();
+
+        if (load){
+            var selectedState = $("#checkout-saved-billing-state").val();
+        } else {
+            var selectedState = '';
+        }
+       
         $.ajax({
            url: CHECKOUTURL+"/getstates",
            type: 'post',
@@ -248,9 +254,15 @@ exitModal: function(){
     
     
     
-    updateShippingStates: function(){
+    updateShippingStates: function(load){
         var countryCode = $("#checkout-shipping-country").val();
-        var selectedState = $("#checkout-saved-shipping-state").val();
+
+        if (load){
+            var selectedState = $("#checkout-saved-shipping-state").val();
+        } else {
+            var selectedState = '';
+        }
+
         $.ajax({
            url: CHECKOUTURL+"/getstates",
            type: 'post',
@@ -286,8 +298,8 @@ exitModal: function(){
     
 };
 
-vividStore.updateBillingStates();
-vividStore.updateShippingStates();
+vividStore.updateBillingStates(true);
+vividStore.updateShippingStates(true);
 vividStore.showShippingMethods();
 vividStore.showPaymentForm();
 

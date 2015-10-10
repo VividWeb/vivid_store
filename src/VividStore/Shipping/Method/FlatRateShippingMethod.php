@@ -74,7 +74,7 @@ class FlatRateShippingMethod extends StoreShippingMethodTypeMethod
     public static function getByID($smtmID)
     {
         $em = Database::get()->getEntityManager();
-        return $em->getRepository('\Concrete\Package\VividStore\Src\VividStore\Shipping\Methods\FlatRateShippingMethod')
+        return $em->getRepository('\Concrete\Package\VividStore\Src\VividStore\Shipping\Method\FlatRateShippingMethod')
             ->find($smtmID);
     }
     
