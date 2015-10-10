@@ -3,8 +3,6 @@ namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Group as StoreGroup;
-use DoctrineProxies\__CG__\Concrete\Package\VividStore\Src\VividStore\Product\Product;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 /**
