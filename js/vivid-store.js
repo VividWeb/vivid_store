@@ -277,6 +277,7 @@ exitModal: function(){
     nextPane: function(obj){
        if($(obj)[0].checkValidity()){
            $(obj).closest(".checkout-form-group").find('.checkout-form-group-body').hide().parent().next().find(".checkout-form-group-body").show();
+           $(obj).closest(".checkout-form-group").find('.checkout-form-group-summary').show();
        } else { alert("not valid"); }
     },
     
@@ -324,10 +325,14 @@ $("#checkout-form-group-billing").submit(function(e){
             //dataType: 'json',
             success: function(result){
                 //var test = null;
-                var $errors = JSON.parse(result);
-                if($errors.error == false){
+                var response = JSON.parse(result);
+                if(response.error == false){
                     $(".whiteout").remove();
-                    vividStore.nextPane(obj);   
+                    obj.find('.checkout-form-group-summary .summary-name').html(response.first_name + ' ' + response.last_name );
+                    obj.find('.checkout-form-group-summary .summary-phone').html(response.phone);
+                    obj.find('.checkout-form-group-summary .summary-email').html(response.email);
+                    obj.find('.checkout-form-group-summary .summary-address').html(response.address);
+                    vividStore.nextPane(obj);
                     //update tax
                     $.ajax({
                         url: CARTURL+"/getTaxTotal",
@@ -350,7 +355,7 @@ $("#checkout-form-group-billing").submit(function(e){
                     });
                 } else {
                     $("#checkout-form-group-billing .checkout-form-group-body").prepend('<div class="vivid-store-col-1"><div class="alert alert-danger"></div></div>');
-                    $("#checkout-form-group-billing .alert").html($errors.errors.join('<br>'));
+                    $("#checkout-form-group-billing .alert").html(response.errors.join('<br>'));
                     $('.whiteout').remove();
                 }
             },
@@ -380,9 +385,11 @@ $("#checkout-form-group-billing").submit(function(e){
            data: {adrType: 'shipping', fName: sfName, lName: slName, addr1: sAddress1, addr2: sAddress2, count: sCountry, city: sCity, state: sState, postal: sPostal},
            //dataType: 'json', 
            success: function(result){
-                var $errors = JSON.parse(result);
-                if($errors.error == false){
+                var response = JSON.parse(result);
+                if(response.error == false){
                     $(".whiteout").remove();
+                    obj.find('.checkout-form-group-summary .summary-name').html(response.first_name + ' ' + response.last_name );
+                    obj.find('.checkout-form-group-summary .summary-address').html(response.address);
                     vividStore.nextPane(obj);   
                     //update tax
                     $.ajax({
@@ -406,7 +413,7 @@ $("#checkout-form-group-billing").submit(function(e){
                     });
                 } else {
                     $("#checkout-form-group-shipping .checkout-form-group-body").prepend('<div class="vivid-store-col-1"><div class="alert alert-danger"></div></div>');
-                    $("#checkout-form-group-shipping .alert").html($errors.errors.join('<br>'));
+                    $("#checkout-form-group-shipping .alert").html(response.errors.join('<br>'));
                     $('.whiteout').remove();
                 }
             },
@@ -427,6 +434,9 @@ $("#checkout-form-group-billing").submit(function(e){
             alert("You must choose a shipping method");            
         } else {
             var smID = $("#checkout-shipping-method-options input[type='radio']:checked").val();
+            var methodText = $.trim($("#checkout-shipping-method-options input[type='radio']:checked").parent().text());
+            obj.find('.summary-shipping-method').html(methodText);
+
             $.ajax({
                 type: 'post',
                 data: {smID: smID },
@@ -460,6 +470,7 @@ $("#checkout-form-group-billing").submit(function(e){
     $(".btn-previous-pane").click(function(){
        //hide the body of the current pane, go to the next pane, show that body.
        $(this).closest(".checkout-form-group").find('.checkout-form-group-body').hide().parent().prev().find(".checkout-form-group-body").show();        
+       $(this).closest(".checkout-form-group").prev().find(".checkout-form-group-summary").hide();
     });
     $("#ckbx-copy-billing").change(function(){
        if($(this).is(":checked")){
