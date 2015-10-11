@@ -18,7 +18,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProd
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup as StoreProductOptionGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
-use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
@@ -471,12 +470,4 @@ class Product
         return $av;
     }
 
-
-    public function getProductOptionGroups() {
-        return array();
-    }
-
-    public function getProductOptionItems() {
-        return array();
-    }
 }
