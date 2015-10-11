@@ -60,12 +60,7 @@ class ProductFile
     
     public static function addFilesForProduct(array $files,StoreProduct $product)
     {
-        //clear out existing images
-        $existingFiles = self::getFilesForProduct($product);
-        foreach($existingFiles as $file){
-            $file->delete();
-        }
-        
+        self::removeFilesForProduct($product);
         //add new ones.
         if(!empty($files['ddfID'])){
             foreach($files['ddfID'] as $fileID){
@@ -84,6 +79,14 @@ class ProductFile
                     $pao->assignPermissionAccess($pa);
                 }
             }
+        }
+    }
+
+    public static function removeFilesForProduct(StoreProduct $product)
+    {
+        $existingFiles = self::getFilesForProduct($product);
+        foreach($existingFiles as $file){
+            $file->delete();
         }
     }
     

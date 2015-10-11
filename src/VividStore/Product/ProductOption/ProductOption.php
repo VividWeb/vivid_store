@@ -26,8 +26,4 @@ class ProductOption
             }
         }
     }
-    public static function getProductOptions($product)
-    {
-        //TODO
-    }
 }

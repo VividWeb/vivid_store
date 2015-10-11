@@ -8,7 +8,6 @@ use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
-use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart

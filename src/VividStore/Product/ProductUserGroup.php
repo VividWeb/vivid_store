@@ -59,10 +59,7 @@ class ProductUserGroup
     public static function addUserGroupsForProduct(array $data, StoreProduct $product)
     {
         //clear out existing groups
-        $existingUserGroups = self::getUserGroupsForProduct($product);
-        foreach($existingUserGroups as $group){
-            $group->delete();
-        }
+        self::removeUserGroupsForProduct($product);
 
         //add new ones.
         if (!empty($data['pUserGroups'])) {
@@ -71,7 +68,15 @@ class ProductUserGroup
             }
         }
     }
-    
+
+    public static function removeUserGroupsForProduct(StoreProduct $product)
+    {
+        $existingUserGroups = self::getUserGroupsForProduct($product);
+        foreach($existingUserGroups as $group){
+            $group->delete();
+        }
+    }
+
     public static function add($pID,$gID)
     {
         $productUserGroup = new self();

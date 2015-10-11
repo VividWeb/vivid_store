@@ -16,6 +16,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StorePro
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup as StoreProductOptionGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
@@ -148,7 +150,7 @@ class Product
      * @Column(type="integer")
      */
     protected $pExclusive;
-    
+
     public function setCollectionID($cID){ $this->cID = $cID; }
     public function setProductName($name){ $this->pName = $name; }
     public function setProductDescription($description){ $this->pDesc = $description; }
@@ -178,13 +180,13 @@ class Product
         $this->setProductQty($qty);
         $this->save();
     }
-    
+
     public static function getByID($pID) {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\Product', $pID);
     }
-    
+
     public static function getByCollectionID($cID)
     {
         $db = Database::get();
@@ -329,11 +331,11 @@ class Product
     }
     
     public function getProductImages() { return StoreProductImage::getImagesForProduct($this); }
-    public function getProductImagesObjects() { return StoreProductImage::getImageObjectsForProduct($this); }
+    public function getproductimagesobjects() { return StoreProductImage::getImageObjectsForProduct($this); }
     public function getProductLocationPages() { return StoreProductLocation::getLocationsForProduct($this); }
 
-    //TODO getProductOptions
-
+    public function getProductOptionGroups() { return StoreProductOptionGroup::getOptionGroupsForProduct($this); }
+    public function getProductOptionItems() { return StoreProductOptionItem::getOptionItemsForProduct($this); }
 
     public function getProductGroupIDs() { return StoreProductGroup::getGroupIDsForProduct($this); }
     public function getProductGroups() { return StoreProductGroup::getGroupsForProduct($this); }
@@ -347,10 +349,13 @@ class Product
     
     public function remove()
     {
-        //getStoreProductImages
-        //getStoreProductOptions
-        //getStoreProductFiles
-        //getAllThatJazz
+        StoreProductImage::removeImagesForProduct($this);
+        StoreProductOptionGroup::removeOptionGroupsForProduct($this);
+        StoreProductOptionItem::removeOptionItemsForProduct($this);
+        StoreProductFile::removeFilesForProduct($this);
+        StoreProductGroup::removeGroupsForProduct($this);
+        StoreProductLocation::removeLocationsForProduct($this);
+        StoreProductUserGroup::removeUserGroupsForProduct($this);
         $em = Database::get()->getEntityManager();
         $em->remove($this);
         $em->flush();

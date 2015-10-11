@@ -67,15 +67,19 @@ class ProductImage
     
     public static function addImagesForProduct(array $images, StoreProduct $product)
     {
-        //clear out existing images
-        $existingImages = self::getImagesForProduct($product);
-        foreach($existingImages as $img){
-            $img->delete();
-        }
+        self::removeImagesForProduct($product);
         
         //add new ones.
         for($i=0;$i<count($images['pifID']);$i++){
             self::add($product->getProductID(),$images['pifID'][$i],$images['piSort'][$i]);
+        }
+    }
+
+    public static function removeImagesForProduct(StoreProduct $product)
+    {
+        $existingImages = self::getImagesForProduct($product);
+        foreach($existingImages as $img){
+            $img->delete();
         }
     }
     

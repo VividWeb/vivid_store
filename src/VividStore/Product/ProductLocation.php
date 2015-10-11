@@ -3,6 +3,8 @@ namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+
 /**
  * @Entity
  * @Table(name="VividStoreProductLocations")
@@ -39,26 +41,30 @@ class ProductLocation
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation', $cID);
     }
     
-    public static function getLocationsForProduct(\Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function getLocationsForProduct(StoreProduct $product)
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation')->findBy(array('pID' => $product->getProductID()));
     }
     
-    public static function addLocationsForProduct(array $locations, \Concrete\Package\VividStore\Src\VividStore\Product\Product $product)
+    public static function addLocationsForProduct(array $locations, StoreProduct $product)
     {
         //clear out existing locations
-        $existingLocations = self::getLocationsForProduct($product);
-        foreach($existingLocations as $location){
-            $location->delete();
-        }
-        
+        self::removeLocationsForProduct($product);
         //add new ones.
         if (!empty($locations['cID'])) {
             foreach($locations['cID'] as $cID){
                 self::add($product->getProductID(),$cID);
             }
+        }
+    }
+
+    public static function removeLocationsForProduct(StoreProduct $product)
+    {
+        $existingLocations = self::getLocationsForProduct($product);
+        foreach($existingLocations as $location){
+            $location->delete();
         }
     }
     
