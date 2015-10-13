@@ -7,6 +7,7 @@ use View;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart extends PageController
@@ -48,7 +49,7 @@ class Cart extends PageController
 
         $this->set('cart',StoreCart::getCart());
         $this->set('discounts',StoreCart::getDiscounts());
-        $this->set('total',StoreCart::getSubTotal());
+        $this->set('total',StoreCalculator::getSubTotal());
         $this->addHeaderItem("
             <script type=\"text/javascript\">
                 var PRODUCTMODAL = '".View::url('/productmodal')."';

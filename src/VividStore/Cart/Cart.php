@@ -84,7 +84,6 @@ class Cart
 
     public function add($data)
     {
-        
         $product = StoreProduct::getByID((int)$data['pID']);
 
         if (!$product) {
@@ -107,8 +106,6 @@ class Cart
         //since we removed the ID/qty, we're left with just the attributes
         $cartItem['productAttributes'] = $data;
 
-        
-
         $removeexistingexclusive  = false;
 
         foreach(self::getCart() as $k=>$cart) {
@@ -122,12 +119,14 @@ class Cart
 
         $cart = self::getCart();
 
-        if ($exists !== false) {
-            $existingproductcount = $cart[$exists]['product']['qty'];
+        $exists = self::checkForExistingCartItem($cartItem);
+
+        if ($exists['exists'] === true) {
+            $existingproductcount = $cart[$exists['cartItemKey']]['product']['qty'];
 
             //we have a match, update the qty
             if ($product->allowQuantity()) {
-                $newquantity = $cart[$exists]['product']['qty'] + $cartItem['product']['qty'];
+                $newquantity = $cart[$exists['cartItemKey']]['product']['qty'] + $cartItem['product']['qty'];
 
                 if (!$product->isUnlimited() &&  !$product->allowBackOrders() && $product->getProductQty() < max($newquantity, $existingproductcount)) {
                     $newquantity = $product->getProductQty();
@@ -140,7 +139,7 @@ class Cart
                 $newquantity = 1;
             }
 
-            $cart[$exists]['product']['qty'] = $newquantity;
+            $cart[$exists['cartItemKey']]['product']['qty'] = $newquantity;
         } else {
             $newquantity = $cartItem['product']['qty'];
 
@@ -149,7 +148,7 @@ class Cart
                 $newquantity = $product->getProductQty();
             }
 
-            $cart[$exists]['product']['qty'] = $newquantity;
+           // $cart[$exists]['product']['qty'] = $newquantity;
 
             if ($product->isExclusive()) {
                 $cart = array($cartItem);
@@ -203,7 +202,7 @@ class Cart
               }
             }
         }
-        return array('exists'=>$sameProduct,'cartItemKey'=>$k);
+        return array('exists'=>$sameproduct,'cartItemKey'=>$k);
     }
 
     public function update($data)

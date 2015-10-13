@@ -12,6 +12,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 class PaypalStandardPaymentMethod extends StorePaymentMethod
 {
@@ -74,7 +75,7 @@ class PaypalStandardPaymentMethod extends StorePaymentMethod
     public function redirectForm()
     {
         $customer = new Customer();
-        $totals = StoreCart::getTotals();
+        $totals = StoreCalculator::getTotals();
         $paypalEmail = Config::get('vividstore.paypalEmail');
         $order = StoreOrder::getByID(Session::get('orderID'));
         $this->set('paypalEmail',$paypalEmail);

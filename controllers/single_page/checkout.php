@@ -15,6 +15,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 class Checkout extends PageController
 {
@@ -97,7 +98,7 @@ class Checkout extends PageController
 
         $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
 
-        $totals = StoreCart::getTotals();
+        $totals = StoreCalculator::getTotals();
 
         $this->set('subtotal',$totals['subTotal']);
         $this->set('taxes',$totals['taxes']);

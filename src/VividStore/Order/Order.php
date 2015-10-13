@@ -20,12 +20,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderItem as StoreOrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as StoreShippingMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode as StoreDiscountCode;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
+
 
 /**
  * @Entity
@@ -102,9 +104,9 @@ class Order
             $smName = t("None");
         }
         
-        $shipping = StoreCart::getShippingTotal();
+        $shipping = StoreCalculator::getShippingTotal();
         $taxes = StoreTax::getTaxes();
-        $totals = StoreCart::getTotals();
+        $totals = StoreCalculator::getTotals();
         $total = $totals['total'];
         $taxCalc = Config::get('vividstore.calculation');
 
@@ -420,6 +422,7 @@ class Order
     public function getOrderID(){ return $this->oID; }
     public function getPaymentMethodName() { return $this->pmName; }
     public function getStatus(){ return $this->oStatus; }
+    public function setStatus($status){  $this->oStatus = $status; }
     public function getCustomerID(){ return $this->cID; }
     public function getOrderDate(){ return $this->oDate; }
     public function getTotal() { return $this->oTotal; }
