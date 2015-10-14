@@ -6,6 +6,7 @@ use Core;
 use View;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 class Controller extends BlockController
 {
@@ -27,7 +28,7 @@ class Controller extends BlockController
     public function view()
     {
         $this->set("itemCount",StoreCart::getTotalItemsInCart());
-        $this->set("total",StorePrice::format(StoreCart::getSubTotal()));
+        $this->set("total",StorePrice::format(StoreCalculator::getSubTotal()));
 
     }
 

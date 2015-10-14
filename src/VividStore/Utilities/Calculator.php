@@ -2,7 +2,11 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
-use Concrete\Package\VividStore\Src\VividStore\Product\Produc as StoreProduct;
+use Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
+use Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
+use Config;
+use Session;
 
 class Calculator
 {
@@ -51,18 +55,18 @@ class Calculator
     }
     public function getGrandTotal()
     {
-        $subTotal = $this->getSubTotal();
+        $subTotal = self::getSubTotal();
         $taxTotal = 0;
-        $taxes = $this->getTaxTotals();
+        $taxes = self::getTaxTotals();
         $taxCalc = Config::get('vividstore.calculation');
         if($taxes && $taxCalc != 'extract'){
             foreach($taxes as $tax) {
                 $taxTotal += $tax['taxamount'];
             }
-        }        $shippingTotal = Cart::getShippingTotal();
+        }        $shippingTotal = self::getShippingTotal();
         $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
         
-        $discounts = self::getDiscounts(); //TODO: Get total somewhere else. 
+        $discounts = StoreCart::getDiscounts(); //TODO: Get total somewhere else.
         foreach($discounts as $discount) {
             if ($discount->drDeductFrom == 'total') {
                 if ($discount->drDeductType  == 'value' ) {
@@ -80,7 +84,7 @@ class Calculator
 
     // returns an array of formatted cart totals
     public function getTotals() {
-        $subTotal = Cart::getSubTotal();
+        $subTotal = self::getSubTotal();
         $taxes = StoreTax::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
@@ -96,9 +100,9 @@ class Calculator
             }
         }
 
-        $shippingTotal = Cart::getShippingTotal();
+        $shippingTotal = self::getShippingTotal();
         $discountedSubtotal = $subTotal;
-        $discounts = self::getDiscounts();
+        $discounts = StoreCart::getDiscounts();
         foreach($discounts as $discount) {
             if ($discount->drDeductFrom == 'subtotal') {
                 

@@ -9,6 +9,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodTypeMethod as StoreShippingMethodTypeMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 /**
  * @Entity
@@ -182,7 +183,7 @@ class FlatRateShippingMethod extends StoreShippingMethodTypeMethod
 
     public function isWithinRange()
     {
-        $subtotal = StoreCart::getSubTotal();
+        $subtotal = StoreCalculator::getSubTotal();
         $max = $this->getMaximumAmount();
         if($max!=0){
             if($subtotal >= $this->getMinimumAmount() && $subtotal <= $this->getMaximumAmount()){

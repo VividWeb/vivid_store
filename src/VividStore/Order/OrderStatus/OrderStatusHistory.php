@@ -91,7 +91,7 @@ class OrderStatusHistory extends Object
     {
         if ($order->getStatus()!=$statusHandle) {
             $updatedOrder = clone $order;
-            $updatedOrder->oStatus = self::recordStatusChange($order, $statusHandle);
+            $updatedOrder->setStatus(self::recordStatusChange($order, $statusHandle));
             $event = new StoreOrderEvent($updatedOrder, $order);
             Events::dispatch('on_vividstore_order_status_update', $event);
         }

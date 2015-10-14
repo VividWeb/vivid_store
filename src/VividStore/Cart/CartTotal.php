@@ -6,17 +6,18 @@ use \Concrete\Core\Controller\Controller as RouteController;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 class CartTotal extends RouteController
 {
         
     public function getSubTotal()
     {
-        echo StorePrice::format(StoreCart::getSubTotal());
+        echo StorePrice::format(StoreCalculator::getSubTotal());
     }
     public function getTotal()
     {
-        echo StorePrice::format(StoreCart::getTotal());
+        echo StorePrice::format(StoreCalculator::getGrandTotal());
     }
     public function getTaxTotal()
     {
@@ -25,7 +26,7 @@ class CartTotal extends RouteController
     public function getShippingTotal()
     {
         $smID = $_POST['smID'];
-        echo StorePrice::format(StoreCart::getShippingTotal($smID));
+        echo StorePrice::format(StoreCalculator::getShippingTotal($smID));
     }
     public function getTotalItems()
     {

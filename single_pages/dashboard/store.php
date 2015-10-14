@@ -2,6 +2,7 @@
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 
 $taxCalc = Config::get('vividstore.calculation');
+$dh = Core::make('helper/date');
 
 if ($taxCalc == 'extract') {
     $taxValue = 'includedTaxTotal';
@@ -148,7 +149,7 @@ if ($taxCalc == 'extract') {
                 <?php foreach($orders as $o){?>
                 <tr>
                     <td><a href="<?=URL::to('/dashboard/store/orders/order',$o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
-                    <td><?=$o->getOrderDate()?></td>
+                    <td><?=$dh->formatDateTime($o->getOrderDate())?></td>
                     <td><?=Price::format($o->getSubTotal())?></td>
                     <td><?=Price::format($o->getShippingTotal())?></td>
                     <td>
