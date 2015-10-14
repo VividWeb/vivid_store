@@ -124,7 +124,7 @@ if(is_object($p)){?>
             <div class="product-button-shell">
                 <input type="hidden" name="pID" value="<?=$p->getProductID()?>">
                 <?php if($p->isSellable()){?>
-                <a href="javascript:vividStore.addToCart(<?=$p->getProductID()?>,false)" class="btn btn-primary"><?=t("Add to Cart")?></a>
+                <a href="javascript:vividStore.addToCart(<?=$p->getProductID()?>,false)" class="btn btn-primary"><?= ($btnText ? h($btnText) : t("Add to Cart"))?></a>
                 <?php } else { ?>
                     <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
                 <?php } ?>
