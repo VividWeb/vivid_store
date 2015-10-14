@@ -110,9 +110,10 @@
     .checkout-form-group { margin: 0 0 5px; }
         .checkout-form-group h2 { padding: 8px 15px; background: #f8f8f8; font-size: 16px !important; margin: 0 !important; }
         .checkout-form-group-body { padding: 20px 0; display: none; }
+        .checkout-form-group-summary { padding: 20px 0; display: none; }
         #checkout-form-group-billing .checkout-form-group-body,
         #checkout-form-group-signin .checkout-form-group-body { display: block; }
-        
+        .checkout-form-group-summary .vivid-store-col-2 { padding-top: 0; padding-bottom: 0;}
         .checkout-form-group-buttons { text-align: right; padding: 0 15px;}
     
 @media (min-width: 768px) {

@@ -122,6 +122,24 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 </div>
                 
             </div>
+
+            <div class="checkout-form-group-summary col-container clearfix ">
+                <div class="vivid-store-col-2">
+                    <label><?= t('Name');?></label>
+                    <p class="summary-name"></p>
+
+                    <label><?= t('Email');?></label>
+                    <p class="summary-email"></p>
+
+                    <label><?= t('Phone');?></label>
+                    <p class="summary-phone"></p>
+                </div>
+
+                <div class="vivid-store-col-2">
+                    <label><?= t('Address');?></label>
+                    <p class="summary-address"></p>
+                </div>
+            </div>
             
         </form>
         <?php if ($shippingEnabled) { ?>
@@ -197,7 +215,18 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 </div>
                 
             </div>
-            
+            <div class="checkout-form-group-summary col-container clearfix">
+                <div class="vivid-store-col-2">
+                    <label><?= t('Name');?></label>
+                    <p class="summary-name"></p>
+
+                </div>
+
+                <div class="vivid-store-col-2">
+                    <label><?= t('Address');?></label>
+                    <p class="summary-address"></p>
+                </div>
+            </div>
         </form>
         
         <form class="checkout-form-group" id="checkout-form-group-shipping-method">
@@ -222,6 +251,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     <input type="submit" class="btn btn-default btn-next-pane" value="<?=t("Next")?>">
                 </div>
                 
+            </div>
+
+            <div class="checkout-form-group-summary col-container clearfix">
+                <div class="vivid-store-col-2">
+                    <p class="summary-shipping-method"></p>
+                </div>
             </div>
             
         </form>

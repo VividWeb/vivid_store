@@ -9,6 +9,7 @@ use Illuminate\Filesystem\Filesystem;
 use View;
 use User;
 use UserInfo;
+use Concrete\Attribute\Address\Value as AttributeValue;
 
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
@@ -43,16 +44,45 @@ class Checkout extends Controller
             if($e->has()){
                 echo $e->outputJSON();
             } else {
+                $customer = new StoreCustomer();
+                $address = new AttributeValue();
+
+
+
                 if ($data['adrType']=='billing'){
                     $this->updateBilling($data);
+                    $addressraw = $customer->getValue('billing_address');
+                    $phone = $customer->getValue('billing_phone');
+                    $first_name = $customer->getValue('billing_first_name');
+                    $last_name = $customer->getValue('billing_last_name');
+                    $email = $customer->getEmail();
                 }
+
                 if ($data['adrType']=='shipping'){
                     $this->updateShipping($data);
+                    $addressraw = $customer->getValue('shipping_address');
+                    $phone = '';
+                    $email = '';
+                    $first_name = $customer->getValue('shipping_first_name');
+                    $last_name = $customer->getValue('shipping_last_name');
+
                 }
-                echo json_encode(array("error"=>false));
+
+                // use concrete5's built in address class for formatting
+                $address->address1 = $addressraw->address1;
+                $address->address2 = $addressraw->address2;
+                $address->city = $addressraw->city;
+                $address->state_province = $addressraw->state_province;
+                $address->postal_code = $addressraw->postal_code;
+                $address->city  = $addressraw->city;
+                $address->country = $addressraw->country;
+
+                $address = nl2br($address . '');  // force to string
+
+                echo json_encode(array('first_name'=>$first_name,'last_name'=>$last_name,'phone'=>$phone,'email'=>$email,'address'=>$address, "error"=>false));
             }
         } else {
-            echo "Im not sure youre supposed to be here.";
+            echo "An error occured";
         }
     }
 
