@@ -3,7 +3,7 @@ namespace Concrete\Package\VividStore;
 use Package;
 
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\MethodType as ShippingMethodType;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 use Route;
 use Asset;
