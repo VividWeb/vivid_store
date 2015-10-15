@@ -6,7 +6,7 @@ use Core;
 use Package;
 use View;
 
-use \Concrete\Package\VividStore\Src\VividStore\Shipping\Method as StoreShippingMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 
 
 /**
