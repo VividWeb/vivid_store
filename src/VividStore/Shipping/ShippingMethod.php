@@ -5,6 +5,7 @@ use Database;
 use View;
 use Illuminate\Filesystem\Filesystem;
 
+use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodTypeMethod as StoreShippingMethodTypeMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as StoreShippingMethodType;
 
 /**
@@ -67,12 +68,13 @@ class ShippingMethod
         }
         return $methods;
     }
-    
-    /*
-     * @smtm Shipping Method Type Method Object
-     * @smt Shipping Method Type Object
+
+    /**
+     * @param StoreShippingMethodTypeMethod $smtm
+     * @param StoreShippingMethodType $smt
      * @param string $smName
      * @param bool $smEnabled
+     * @return ShippingMethod
      */
     public static function add($smtm,$smt,$smName,$smEnabled)
     {
@@ -91,7 +93,7 @@ class ShippingMethod
         $this->setName($smName);
         $this->setEnabled($smEnabled);
         $this->save();
-        return $sm;
+        return $this;
     }
     public function save()
     {
@@ -124,6 +126,27 @@ class ShippingMethod
             View::element("checkout/shipping_methods");
         } else {
             View::element("checkout/shipping_methods","vivid_store");
+        }
+    }
+
+    public static function getActiveShippingMethod()
+    {
+        $smID = \Session::get('smID');
+        if($smID){
+            $sm = StoreShippingMethod::getByID($smID);
+            return $sm;
+        }
+    }
+
+    public static function getActiveShippingMethodName()
+    {
+        $sm = self::getActiveShippingMethod();
+        if($sm instanceof ShippingMethod){
+            $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
+            $shippingMethodName = $sm->getName();
+            $smName = $shippingMethodTypeName.": ".$shippingMethodName;
+        } else {
+            $smName = t("None");
         }
     }
 }

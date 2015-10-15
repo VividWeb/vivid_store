@@ -14,18 +14,17 @@ use Loader;
 use Page;
 use UserInfo;
 
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderItem as StoreOrderItem;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode as StoreDiscountCode;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 
@@ -42,15 +41,12 @@ class Order
      */
     protected $oID;
     
-    /** @Column(type="integer") */
+    /** @Column(type="integer",nullable=true) */
     protected $cID;
     
     /** @Column(type="datetime") */
     protected $oDate;
-    
-    /**  @Column(type="integer") */
-    protected $oStatus;
-    
+
     /** @Column(type="text") */
     protected $pmName;
     
@@ -63,18 +59,93 @@ class Order
     /** @Column(type="decimal", precision=10, scale=2) **/
     protected $oTax;
     
-    /** @Column(type="decimal", precision=10, scale=2) **/
+    /** @Column(type="decimal", precision=10, scale=2, nullable=true) **/
     protected $oTaxIncluded;
     
     /** @Column(type="decimal", precision=10, scale=2) **/
     protected $oTotal;
-    
+
+    /** @Column(type="text", nullable=true) */
+    protected $transactionReference;
+
+    public function setCustomerID($cID){ $this->cID = $cID; }
+    public function setOrderDate($oDate){ $this->oDate = $oDate; }
+    public function setPaymentMethodName($pmName){ $this->pmName = $pmName; }
+    public function setShippingMethodName($smName){ $this->smName = $smName; }
+    public function setShippingTotal($shippingTotal){ $this->oShippingTotal = $shippingTotal; }
+    public function setTaxTotals($taxTotal){ $this->oTax = $taxTotal; }
+    public function setTaxIncluded($taxIncluded){ $this->oTaxIncluded = $taxIncluded; }
+    public function setOrderTotal($total){ $this->oTotal = $total; }
+    public function setTransactionReference($transactionReference){ $this->transactionReference = $transactionReference; }
+    public function saveTransactionReference($transactionReference)
+    {
+        $this->setTransactionReference($transactionReference);
+        $this->save();
+    }
+
+    public function getOrderID(){ return $this->oID; }
+    public function getCustomerID(){ return $this->cID; }
+    public function getOrderDate(){ return $this->oDate; }
+    public function getPaymentMethodName() { return $this->pmName; }
+    public function getShippingMethodName(){ return $this->smName; }
+    public function getShippingTotal() { return $this->oShippingTotal; }
+    public function getTaxes()
+    {
+        $taxes = array();
+        if ($this->oTax || $this->oTaxIncluded) {
+            $taxAmounts = explode(",", $this->oTax);
+            $taxAmountsIncluded = explode(",", $this->oTaxIncluded);
+            $taxLabels = explode(",", $this->oTaxName);
+            $taxes = array();
+            for ($i = 0; $i < count($taxLabels); $i++) {
+                $taxes[] = array(
+                    'label' => $taxLabels[$i],
+                    'amount' => $taxAmounts[$i],
+                    'amountIncluded' => $taxAmountsIncluded[$i],
+                );
+            }
+        }
+        return $taxes;
+    }
+    public function getTaxTotal(){
+        $taxes = $this->getTaxes();
+        $taxTotal = 0;
+        foreach($taxes as $tax){
+            $taxTotal = $taxTotal + $tax['amount'];
+        }
+        return $taxTotal;
+    }
+
+    public function getIncludedTaxTotal(){
+        $taxes = $this->getTaxes();
+        $taxTotal = 0;
+        foreach($taxes as $tax){
+            $taxTotal = $taxTotal + $tax['amountIncluded'];
+        }
+        return $taxTotal;
+    }
+
+    public function getTotal() { return $this->oTotal; }
+
+    public function getSubTotal()
+    {
+        $items = $this->getOrderItems();
+        $subtotal = 0;
+        if($items){
+            foreach($items as $item){
+                $subtotal = $subtotal + ($item->oiPricePaid * $item->oiQty);
+            }
+        }
+        return $subtotal;
+    }
+    public function getTransactionReference(){ return $this->transactionReference; }
     
     public static function getByID($oID) {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Order\Order', $oID);
     }
+
     public function getCustomersMostRecentOrderByCID($cID)
     {
         $db = Database::get();
@@ -82,65 +153,54 @@ class Order
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Order\Order')->findOneBy(array('cID' => $cID));
         
     }
+
+    /**
+     * @param array $data
+     * @param StorePaymentMethod $pm
+     * @param string $transactionReference
+     * @param boolean $status
+     */
     public function add($data,$pm,$transactionReference='',$status=null)
     {
-        $db = Database::get();
-        
-        //get who ordered it
         $customer = new StoreCustomer();
-        
-        //what time is it?
-        $dt = Core::make('helper/date');
-        $now = $dt->getLocalDateTime();
-        
-        //get the price details
-        $smID = \Session::get('smID');
-        if($smID){
-            $sm = StoreShippingMethod::getByID($smID);
-            $shippingMethodTypeName = $sm->getShippingMethodType()->getShippingMethodTypeName();
-            $shippingMethodName = $sm->getName();
-            $smName = $shippingMethodTypeName.": ".$shippingMethodName;
-        } else {
-            $smName = t("None");
-        }
-        
-        $shipping = StoreCalculator::getShippingTotal();
-        $taxes = StoreTax::getTaxes();
+        $now = new \DateTime;
+        $smName = StoreShippingMethod::getActiveShippingMethodName();
+        $shippingTotal = StoreCalculator::getShippingTotal();
+        $taxes = StoreTax::getConcatenatedTaxStrings();
         $totals = StoreCalculator::getTotals();
         $total = $totals['total'];
-        $taxCalc = Config::get('vividstore.calculation');
-
-        $taxTotal = array();
-        $taxIncludedTotal = array();
-        $taxLabels = array();
-
-        foreach($taxes as $tax){
-            if ($taxCalc == 'extract') {
-                $taxIncludedTotal[] = $tax['taxamount'];
-            }  else {
-                $taxTotal[] = $tax['taxamount'];
-            }
-            $taxLabels[] = $tax['name'];
-        }
-        
-        $taxTotal = implode(',',$taxTotal);
-        $taxIncludedTotal = implode(',',$taxIncludedTotal);
-        $taxLabels = implode(',',$taxLabels);
-        
-        //get payment method
         $pmName = $pm->getPaymentMethodName();
 
-        //add the order
-        $vals = array($customer->getUserID(),$now,$pmName,$smName,$shipping,$taxTotal,$taxIncludedTotal,$taxLabels,$total);
-        $db->Execute("INSERT INTO VividStoreOrders(cID,oDate,pmName,smName,oShippingTotal,oTax,oTaxIncluded,oTaxName,oTotal) VALUES (?,?,?,?,?,?,?,?,?)", $vals);
-        $oID = $db->lastInsertId();
-        $order = Order::getByID($oID);
-        if($status){
-            $order->updateStatus($status);
-        } else {
-            $order->updateStatus(StoreOrderStatus::getStartingStatus()->getHandle());
-        }
+        $order = new Order();
+        $order->setCustomerID($customer->getUserID());
+        $order->setOrderDate($now);
+        $order->setPaymentMethodName($pmName);
+        $order->setShippingMethodName($smName);
+        $order->setShippingTotal($shippingTotal);
+        $order->setTaxTotals($taxes);
+        $order->setOrderTotal($total);
+        $order->save();
 
+        $customer->setLastOrderID($order->getOrderID());
+        $order->updateStatus($status);
+        $order->addCustomerAddress($customer,$order->isShippable());
+        $order->addOrderItems(StoreCart::getCart());
+        if(!$pm->external){
+            $order->completeOrder($transactionReference);
+        }
+        return $order;
+    }
+
+
+    /**
+     * @param StoreCustomer $customer
+     * @param bool $includeShipping
+     */
+    public function addCustomerAddress($customer=null,$includeShipping=true)
+    {
+        if(!$customer instanceof StoreCustomer){
+            $customer = new StoreCustomer();
+        }
         $email = $customer->getEmail();
         $billing_first_name = $customer->getValue("billing_first_name");
         $billing_last_name = $customer->getValue("billing_last_name");
@@ -150,27 +210,23 @@ class Order
         $shipping_last_name = $customer->getValue("shipping_last_name");
         $shipping_address = $customer->getValueArray("shipping_address");
 
-        $order->setAttribute("email",$email);
-        $order->setAttribute("billing_first_name",$billing_first_name);
-        $order->setAttribute("billing_last_name",$billing_last_name);
-        $order->setAttribute("billing_address",$billing_address);
-        $order->setAttribute("billing_phone",$billing_phone);
-
-        if ($smID) {
-            $order->setAttribute("shipping_first_name",$shipping_first_name);
-            $order->setAttribute("shipping_last_name",$shipping_last_name);
-            $order->setAttribute("shipping_address",$shipping_address);
+        $this->setAttribute("email",$email);
+        $this->setAttribute("billing_first_name",$billing_first_name);
+        $this->setAttribute("billing_last_name",$billing_last_name);
+        $this->setAttribute("billing_address",$billing_address);
+        $this->setAttribute("billing_phone",$billing_phone);
+        if ($includeShipping) {
+            $this->setAttribute("shipping_first_name",$shipping_first_name);
+            $this->setAttribute("shipping_last_name",$shipping_last_name);
+            $this->setAttribute("shipping_address",$shipping_address);
         }
+    }
 
-
-        $customer->setLastOrderID($oID);
-
-        //add the order items
-        $cart = StoreCart::getCart();
-        
+    public function addOrderItems($cart)
+    {
+        $taxCalc = Config::get('vividstore.calculation');
         foreach ($cart as $cartItem) {
             $taxes = StoreTax::getTaxForProduct($cartItem);
-            
             $taxProductTotal = array();
             $taxProductIncludedTotal = array();
             $taxProductLabels = array();
@@ -187,35 +243,23 @@ class Order
             $taxProductIncludedTotal = implode(',',$taxProductIncludedTotal);
             $taxProductLabels = implode(',',$taxProductLabels);
 
-            StoreOrderItem::add($cartItem,$oID,$taxProductTotal,$taxProductIncludedTotal,$taxProductLabels);
-            
+            StoreOrderItem::add($cartItem,$this->getOrderID(),$taxProductTotal,$taxProductIncludedTotal,$taxProductLabels);
+
         }
+    }
 
-        $discounts = StoreCart::getDiscounts();
-
-        if ($discounts) {
-            foreach($discounts as $discount) {
-
-                if ($discount->requiresCode()) {
-                    $order->addDiscount($discount, StoreCart::getCode());
-                    if ($discount->isSingleUse()) {
-                        $code = StoreDiscountCode::getByCode(StoreCart::getCode());
-                        if ($code) {
-                            $code->markUsed($oID);
-                        }
-                    }
-                } else {
-                    $order->addDiscount($discount);
-                }
-            }
-        }
-
-        //if the payment method is not external, go ahead and complete the order.
-        if(!$pm->external){
-            $order->completeOrder($transactionReference);
-        }
-                
-        return $order;
+    public function save()
+    {
+        $em = Database::get()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
+    }
+    public function delete()
+    {
+        $this->getShippingMethodTypeMethod()->delete();
+        $em = Database::get()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
     }
     public function completeOrder($transactionReference = null)
     {
@@ -419,68 +463,19 @@ class Order
 
         return $items;
     }
-    public function getOrderID(){ return $this->oID; }
-    public function getPaymentMethodName() { return $this->pmName; }
-    public function getStatus(){ return $this->oStatus; }
-    public function setStatus($status){  $this->oStatus = $status; }
-    public function getCustomerID(){ return $this->cID; }
-    public function getOrderDate(){ return $this->oDate; }
-    public function getTotal() { return $this->oTotal; }
-    public function getSubTotal()
-    {
-        $items = $this->getOrderItems();
-        $subtotal = 0;
-        if($items){
-            foreach($items as $item){
-                $subtotal = $subtotal + ($item->oiPricePaid * $item->oiQty);
-            }
-        }
-        return $subtotal;
-    }
-    public function getTaxes()
-    {
-        $taxes = array();
-        if ($this->oTax || $this->oTaxIncluded) {
-            $taxAmounts = explode(",", $this->oTax);
-            $taxAmountsIncluded = explode(",", $this->oTaxIncluded);
-            $taxLabels = explode(",", $this->oTaxName);
-            $taxes = array();
-            for ($i = 0; $i < count($taxLabels); $i++) {
-                $taxes[] = array(
-                    'label' => $taxLabels[$i],
-                    'amount' => $taxAmounts[$i],
-                    'amountIncluded' => $taxAmountsIncluded[$i],
-                );
-            }
-        }
-        return $taxes;
-    }
-    public function getTaxTotal(){
-        $taxes = $this->getTaxes();
-        $taxTotal = 0;
-        foreach($taxes as $tax){
-            $taxTotal = $taxTotal + $tax['amount'];
-        }
-        return $taxTotal;
-    }
-    public function getIncludedTaxTotal(){
-        $taxes = $this->getTaxes();
-        $taxTotal = 0;
-        foreach($taxes as $tax){
-            $taxTotal = $taxTotal + $tax['amountIncluded'];
-        }
-        return $taxTotal;
-    }
 
-    public function getShippingTotal() { return $this->oShippingTotal; }
-    public function getShippingMethodName(){ return $this->smName; }
+
     public function isShippable(){
         return ($this->smName != "");
     }
-    
-    public function updateStatus($status)
+
+    public function updateStatus($status=null)
     {
-        StoreOrderStatusHistory::updateOrderStatusHistory($this, $status);
+        if($status) {
+            StoreOrderStatusHistory::updateOrderStatusHistory($this, $status);
+        } else {
+            StoreOrderStatusHistory::updateOrderStatusHistory($this, StoreOrderStatus::getStartingStatus()->getHandle());
+        }
     }
     public function getStatusHistory() {
         return StoreOrderStatusHistory::getForOrder($this);
@@ -552,12 +547,4 @@ class Order
         return $rows;
     }
 
-    public function setTransactionReference($transactionReference){
-        $db = Database::get();
-        $db->Execute("Update VividStoreOrders set transactionReference=? where oID = ?",array($transactionReference, $this->oID));
-    }
-
-    public function getTransactionReference() {
-        return $this->transactionReference;
-    }
 }
