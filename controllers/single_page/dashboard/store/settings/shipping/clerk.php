@@ -39,19 +39,19 @@ class Clerk extends DashboardPageController
     public function save()
     {
         $errors = $this->validate($this->post());
-        $addOrUpdate = $this->post('id') > 0 ? 'update' : 'add';
         $this->error = null; //clear errors
         $this->error = $errors;
         if(!$errors->has())
         {
-            StoreClerkPackage::addOrUpdate($this->post(),$addOrUpdate);
-            if($addOrUpdate=='add'){
+            if($this->post('id') > 0){
+                StoreClerkPackage::add($this->post());
                 $this->redirect('/dashboard/store/settings/shipping/clerk/success');
             } else {
+                StoreClerkPackage::getByID($this->post('id'))->update($this->post());
                 $this->redirect('/dashboard/store/settings/shipping/clerk/updated');
             }
         }
-        if($addOrUpdate=='add'){
+        if($this->post('id') > 0){
             $this->add();
         } else {
             $this->edit($this->post('id'));

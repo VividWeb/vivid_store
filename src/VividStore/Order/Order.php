@@ -1,7 +1,6 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Order;
 
-use Concrete\Core\Foundation\Object as Object;
 use Database;
 use User;
 use Core;
@@ -23,7 +22,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as Store
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountCode as StoreDiscountCode;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
@@ -55,12 +53,15 @@ class Order
    
     /** @Column(type="decimal", precision=10, scale=2) **/
     protected $oShippingTotal;
-    
-    /** @Column(type="decimal", precision=10, scale=2) **/
+
+    /** @Column(type="text", nullable=true) **/
     protected $oTax;
     
-    /** @Column(type="decimal", precision=10, scale=2, nullable=true) **/
+    /** @Column(type="text", nullable=true) **/
     protected $oTaxIncluded;
+
+    /** @Column(type="text", nullable=true) **/
+    protected $oTaxName;
     
     /** @Column(type="decimal", precision=10, scale=2) **/
     protected $oTotal;
@@ -75,6 +76,7 @@ class Order
     public function setShippingTotal($shippingTotal){ $this->oShippingTotal = $shippingTotal; }
     public function setTaxTotals($taxTotal){ $this->oTax = $taxTotal; }
     public function setTaxIncluded($taxIncluded){ $this->oTaxIncluded = $taxIncluded; }
+    public function setTaxLabels($taxLabels){ $this->oTaxName = $taxLabels; }
     public function setOrderTotal($total){ $this->oTotal = $total; }
     public function setTransactionReference($transactionReference){ $this->transactionReference = $transactionReference; }
     public function saveTransactionReference($transactionReference)
@@ -159,6 +161,7 @@ class Order
      * @param StorePaymentMethod $pm
      * @param string $transactionReference
      * @param boolean $status
+     * @return Order
      */
     public function add($data,$pm,$transactionReference='',$status=null)
     {
@@ -177,7 +180,9 @@ class Order
         $order->setPaymentMethodName($pmName);
         $order->setShippingMethodName($smName);
         $order->setShippingTotal($shippingTotal);
-        $order->setTaxTotals($taxes);
+        $order->setTaxTotals($taxes['taxTotals']);
+        $order->setTaxIncluded($taxes['taxIncludedTotal']);
+        $order->setTaxLabels($taxes['taxLabels']);
         $order->setOrderTotal($total);
         $order->save();
 

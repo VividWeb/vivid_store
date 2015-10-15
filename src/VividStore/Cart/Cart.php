@@ -205,7 +205,7 @@ class Cart
         return array('exists'=>$sameproduct,'cartItemKey'=>$k);
     }
 
-    public function update($data)
+    public static function update($data)
     {
         $instanceID = $data['instance'];
         $qty = $data['pQty'];
@@ -232,7 +232,7 @@ class Cart
         return array('added' => $added);
     }
 
-    public function remove($instanceID)
+    public static function remove($instanceID)
     {
         $cart = self::getCart();
         unset($cart[$instanceID]);
@@ -248,7 +248,7 @@ class Cart
         self::$cart = null;
     }
     
-    public function getTotalItemsInCart(){
+    public static function getTotalItemsInCart(){
         $total = 0;
         if(self::getCart()){
             foreach(self::getCart() as $item){
@@ -309,7 +309,7 @@ class Cart
 
 
     // determines if a cart requires a customer to be logged in
-    public function requiresLogin() {
+    public static function requiresLogin() {
         if(self::getCart()){
             foreach(self::getCart() as $item) {
                 $product = StoreProduct::getByID($item['product']['pID']);

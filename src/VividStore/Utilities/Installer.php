@@ -79,7 +79,7 @@ class Installer
         }
         $productParentPage->setAttribute('exclude_nav', 1);
     }
-    public function installStoreProductPageType(Package $pkg){
+    public static function installStoreProductPageType(Package $pkg){
         //install product detail page type
         $pageType = PageType::getByHandle('store_product');
         if(!is_object($pageType)){
@@ -259,7 +259,7 @@ class Installer
         }
     }
     
-    public static function installUserAttributes(Package $package)
+    public static function installUserAttributes(Package $pkg)
     {
         //user attributes for customers
         $uakc = AttributeKeyCategory::getByHandle('user');

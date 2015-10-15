@@ -42,8 +42,6 @@ class Controller extends BlockController
     public function registerViewAssets()
     {
         
-        $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
         $this->addHeaderItem("
             <script type=\"text/javascript\">
                 var PRODUCTMODAL = '".View::url('/productmodal')."';

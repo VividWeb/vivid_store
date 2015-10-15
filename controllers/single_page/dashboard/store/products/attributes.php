@@ -83,15 +83,7 @@ class Attributes extends DashboardPageController
             $this->set('error', $e);
         } else {
             $type = AttributeType::getByID($this->post('atID'));
-            $args = array(
-                'akHandle' => $this->post('akHandle'),
-                'akName' => $this->post('akName'),
-                'akIsSearchable' => $this->post('akIsSearchable'),
-                'akIsSearchableIndexed' => $this->post('akIsSearchableIndexed'),
-                'akIsAutoCreated' => 0,
-                'akIsEditable' => 1
-            );
-            $ak = StoreProductKey::add($type, $this->post());
+            StoreProductKey::add($type, $this->post());
             $this->redirect('/dashboard/store/products/attributes/', 'success');
         }
     }
@@ -113,15 +105,6 @@ class Attributes extends DashboardPageController
             if ($e->has()) {
                 $this->set('error', $e);
             } else {
-                $type = AttributeType::getByID($this->post('atID'));
-                $args = array(
-                    'akHandle' => $this->post('akHandle'),
-                    'akName' => $this->post('akName'),
-                    'akIsSearchable' => $this->post('akIsSearchable'),
-                    'akIsSearchableIndexed' => $this->post('akIsSearchableIndexed'),
-                    'akIsAutoCreated' => 0,
-                    'akIsEditable' => 1
-                );
                 $key->update($this->post());
                 $this->redirect('/dashboard/store/products/attributes', 'updated');
             }

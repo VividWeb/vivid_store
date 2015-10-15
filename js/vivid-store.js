@@ -63,10 +63,11 @@ exitModal: function(){
 
     //Add Item to Cart
     addToCart: function(pID, modal){
+        var form;
         if(modal==true){
-            var form = $('#form-add-to-cart-modal-'+pID);
+            form = $('#form-add-to-cart-modal-'+pID);
         } else {
-            var form = $('#form-add-to-cart-'+pID);
+            form = $('#form-add-to-cart-'+pID);
         }
         var qty = $(form).find('.product-qty').val();
         if(qty > 0){
@@ -235,11 +236,11 @@ exitModal: function(){
 
     updateBillingStates: function(load){
         var countryCode = $("#checkout-billing-country").val();
-
+        var selectedState;
         if (load){
-            var selectedState = $("#checkout-saved-billing-state").val();
+            selectedState = $("#checkout-saved-billing-state").val();
         } else {
-            var selectedState = '';
+            selectedState = '';
         }
        
         $.ajax({
@@ -256,11 +257,11 @@ exitModal: function(){
     
     updateShippingStates: function(load){
         var countryCode = $("#checkout-shipping-country").val();
-
+        var selectedState;
         if (load){
-            var selectedState = $("#checkout-saved-shipping-state").val();
+            selectedState = $("#checkout-saved-shipping-state").val();
         } else {
-            var selectedState = '';
+            selectedState = '';
         }
 
         $.ajax({

@@ -16,7 +16,6 @@ class Sales extends DashboardPageController
         $sr = new StoreSalesReport();
         $this->set('sr',$sr);
         $pkg = Package::getByHandle('vivid_store');
-        $packagePath = $pkg->getRelativePath();
         $this->requireAsset('chartist');
         $today = date('Y-m-d');
         $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
@@ -47,6 +46,7 @@ class Sales extends DashboardPageController
         $this->requireAsset('css', 'vividStoreDashboard');
      
     }
+    //TODO
     public function export()
     {
         $from = $this->get('fromDate');

@@ -135,14 +135,20 @@ class ClerkPackage implements \DVDoug\BoxPacker\Box
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk\ClerkPackage', $id);
     }
-    
-    public function addOrUpdate($data,$addOrUpdate)
+
+    public static function add($data)
     {
-        if($addOrUpdate=='update'){
-            $package = self::getByID($data['id']);
-        } elseif($addOrUpdate=='add') {
-            $package = new self();
-        }
+        $package = new ClerkPackage();
+        return self::addOrUpdate($data,$package);
+    }
+
+    public function update($data)
+    {
+        return $this->addOrUpdate($data,$this);
+    }
+    
+    public function addOrUpdate($data,$package)
+    {
         $package->setReference($data['reference']);
         $package->setOuterWidth($data['outerWidth']);
         $package->setOuterLength($data['outerLength']);
