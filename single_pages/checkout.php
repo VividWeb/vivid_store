@@ -12,7 +12,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         <?php
             if ($customer->isGuest() && ($requiresLogin || $guestCheckout == 'off' || ($guestCheckout == 'option' && $_GET['guest'] != '1'))){
         ?>
-        <div class="checkout-form-group" id="checkout-form-group-signin">
+        <div class="checkout-form-group active-form-group" id="checkout-form-group-signin">
 
             <?php 
                 if ($guestCheckout == 'option' && !$requiresLogin) {
@@ -43,7 +43,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             
         </div>
         <?php } else {   ?>
-        <form class="checkout-form-group" id="checkout-form-group-billing" action="">
+        <form class="checkout-form-group active-form-group" id="checkout-form-group-billing" action="">
             
             <h2><?=t("Billing Address")?></h2>
             <div class="checkout-form-group-body col-container clearfix">
