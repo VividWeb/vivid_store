@@ -103,9 +103,6 @@ class Checkout extends PageController
         $this->set('subtotal',$totals['subTotal']);
         $this->set('taxes',$totals['taxes']);
 
-        $taxBased = Config::get('vividstore.taxBased');
-        $taxlabel = Config::get('vividstore.taxName');
-        
         $this->set('taxtotal',$totals['taxTotal']);
 
         $this->set('shippingtotal',$totals['shippingTotal']);
@@ -120,7 +117,6 @@ class Checkout extends PageController
             </script>
         ");
 
-        $packagePath = $pkg->getRelativePath();
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
         $this->addFooterItem("
@@ -177,9 +173,8 @@ class Checkout extends PageController
                 $pmsess = Session::get('paymentMethod');
                 $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
                 Session::set('paymentMethod',$pmsess);
-                $pesess = Session::get('paymentErrors');
-                $pesess = $payment['errorMessage'];
-                Session::set('paymentErrors',$pesess);
+                $errors = $payment['errorMessage'];
+                Session::set('paymentErrors',$errors);
                 $this->redirect("/checkout/failed#payment");
             } else {
                 $transactionReference = $payment['transactionReference'];

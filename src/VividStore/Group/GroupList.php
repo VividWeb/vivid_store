@@ -6,7 +6,7 @@ use Database;
 class GroupList
 {
     
-    public function getGroupList()
+    public static function getGroupList()
     {
         $queryBuilder = Database::get()->getEntityManager()->createQueryBuilder();
         return $queryBuilder->select('g')

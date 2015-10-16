@@ -61,4 +61,33 @@ class Tax
         return $taxes;
         
     }
+    public static function getConcatenatedTaxStrings()
+    {
+        $taxes = self::getTaxes();
+        $taxCalc = Config::get('vividstore.calculation');
+
+        $taxTotal = array();
+        $taxIncludedTotal = array();
+        $taxLabels = array();
+
+        foreach($taxes as $tax){
+            if ($taxCalc == 'extract') {
+                $taxIncludedTotal[] = $tax['taxamount'];
+            }  else {
+                $taxTotal[] = $tax['taxamount'];
+            }
+            $taxLabels[] = $tax['name'];
+        }
+
+        $taxTotal = implode(',',$taxTotal);
+        $taxIncludedTotal = implode(',',$taxIncludedTotal);
+        $taxLabels = implode(',',$taxLabels);
+
+        $taxStrings = array(
+            'taxTotal' => $taxTotal,
+            'taxIncludedTotal' => $taxIncludedTotal,
+            'taxLabels' => $taxLabels
+        );
+        return $taxStrings;
+    }
 }

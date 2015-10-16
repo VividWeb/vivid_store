@@ -10,7 +10,7 @@ use Session;
 
 class Calculator
 {
-    public function getSubTotal()
+    public static function getSubTotal()
     {
         $cart = StoreCart::getCart();
         $subtotal = 0;
@@ -27,7 +27,7 @@ class Calculator
         }
         return max($subtotal,0);
     }
-    public function getShippingTotal($smID = null)
+    public static function getShippingTotal($smID = null)
     {
         $sessionShippingMethodID = Session::get('smID');
         if($smID){
@@ -45,15 +45,15 @@ class Calculator
         }
         return $shippingTotal;
     }
-    public function getTaxTotals()
+    public static function getTaxTotals()
     {
         return StoreTax::getTaxes();
     }
-    public function getDiscountTotals()
+    public static function getDiscountTotals()
     {
         //should return 3 totals: subtotal, shipping, grand total
     }
-    public function getGrandTotal()
+    public static function getGrandTotal()
     {
         $subTotal = self::getSubTotal();
         $taxTotal = 0;
@@ -83,7 +83,7 @@ class Calculator
     }
 
     // returns an array of formatted cart totals
-    public function getTotals() {
+    public static function getTotals() {
         $subTotal = self::getSubTotal();
         $taxes = StoreTax::getTaxes();
         $addedTaxTotal = 0;

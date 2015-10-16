@@ -7,7 +7,6 @@ use Concrete\Core\Search\ItemList\Database\AttributedItemList;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 
 use Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
-use Concrete\Package\VividStore\Src\VividStore\Order\OrderItem as StoreOrderItem;
 
 class OrderList  extends AttributedItemList
 {

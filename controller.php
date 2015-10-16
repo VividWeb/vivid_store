@@ -61,7 +61,7 @@ class Controller extends Package
 
     public function install()
     {
-        $pkg = parent::install();
+        parent::install();
         $this->installStore();
     }
 

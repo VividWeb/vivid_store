@@ -63,10 +63,11 @@ exitModal: function(){
 
     //Add Item to Cart
     addToCart: function(pID, modal){
+        var form;
         if(modal==true){
-            var form = $('#form-add-to-cart-modal-'+pID);
+            form = $('#form-add-to-cart-modal-'+pID);
         } else {
-            var form = $('#form-add-to-cart-'+pID);
+            form = $('#form-add-to-cart-'+pID);
         }
         var qty = $(form).find('.product-qty').val();
         if(qty > 0){
@@ -227,19 +228,25 @@ exitModal: function(){
         var hash = window.location.hash;
         hash = hash.replace('#','');
         if(hash != ""){
-            $(".checkout-form-group .checkout-form-group-body").hide();
-            $("#checkout-form-group-"+hash+" .checkout-form-group-body").show();
+            //$(".checkout-form-group .checkout-form-group-body").hide();
+            $(".active-form-group").removeClass('active-form-group');
+            var pane = $("#checkout-form-group-"+hash);
+            pane.addClass('active-form-group');
+
+            $('html, body').animate({
+                scrollTop: pane.offset().top
+            });
         }
     },
     //loadViaHash();
 
     updateBillingStates: function(load){
         var countryCode = $("#checkout-billing-country").val();
-
+        var selectedState;
         if (load){
-            var selectedState = $("#checkout-saved-billing-state").val();
+            selectedState = $("#checkout-saved-billing-state").val();
         } else {
-            var selectedState = '';
+            selectedState = '';
         }
        
         $.ajax({
@@ -256,11 +263,11 @@ exitModal: function(){
     
     updateShippingStates: function(load){
         var countryCode = $("#checkout-shipping-country").val();
-
+        var selectedState;
         if (load){
-            var selectedState = $("#checkout-saved-shipping-state").val();
+            selectedState = $("#checkout-saved-shipping-state").val();
         } else {
-            var selectedState = '';
+            selectedState = '';
         }
 
         $.ajax({
@@ -272,13 +279,21 @@ exitModal: function(){
            } 
         });
     },
-    
-    
+
+
     nextPane: function(obj){
-       if($(obj)[0].checkValidity()){
-           $(obj).closest(".checkout-form-group").find('.checkout-form-group-body').hide().parent().next().find(".checkout-form-group-body").show();
-           $(obj).closest(".checkout-form-group").find('.checkout-form-group-summary').show();
-       } else { alert("not valid"); }
+        if($(obj)[0].checkValidity()){
+            var pane = $(obj).closest(".checkout-form-group").find('.checkout-form-group-body').parent().next();
+            $('.active-form-group').removeClass('active-form-group');
+            pane.addClass('active-form-group');
+            $(obj).closest(".checkout-form-group").addClass('checkout-form-group-complete');
+
+            $('html, body').animate({
+                scrollTop: pane.offset().top
+            });
+
+            pane.find('input:first-child').focus();
+        }
     },
     
     showShippingMethods: function(){
@@ -468,9 +483,16 @@ $("#checkout-form-group-billing").submit(function(e){
         }
     });
     $(".btn-previous-pane").click(function(){
-       //hide the body of the current pane, go to the next pane, show that body.
-       $(this).closest(".checkout-form-group").find('.checkout-form-group-body').hide().parent().prev().find(".checkout-form-group-body").show();        
-       $(this).closest(".checkout-form-group").prev().find(".checkout-form-group-summary").hide();
+        //hide the body of the current pane, go to the next pane, show that body.
+        var pane = $(this).closest(".checkout-form-group").find('.checkout-form-group-body').parent().prev();
+        $('.active-form-group').removeClass('active-form-group');
+        pane.addClass('active-form-group');
+
+        $('html, body').animate({
+            scrollTop: pane.parent().offset().top
+        });
+
+        $(this).closest(".checkout-form-group").prev().removeClass("checkout-form-group-complete");
     });
     $("#ckbx-copy-billing").change(function(){
        if($(this).is(":checked")){

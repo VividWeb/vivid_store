@@ -94,9 +94,15 @@ $currencySymbol = Config::get('vividstore.symbol');
 
 
                             </td>
-                            <td><span class="label label-<?= ($d->drEnabled ? 'success">' . t('Enabled') : 'danger">' . t('Disabled')); ?></span></td>
                             <td>
-                                <p><a class="btn btn-default" href="<?php echo View::url('/dashboard/store/discounts/edit/', $d->drID)?>"><i  class="fa fa-pencil"></i></a></p>
+                                <?php if($d->drEnabled){ ?>
+                                    <span class="label label-danger"><?=t('Disabled')?></span>
+                                <?php } else { ?>
+                                    <span class="label label-success"><?=t('Enabled')?></span>
+                                <?php } ?>
+                            </td>
+                            <td>
+                                <p><a class="btn btn-default" href="<?php echo View::url('/dashboard/store/discounts/edit/', $d->drID)?>"><i class="fa fa-pencil"></i></a></p>
                                 <?php
                                 if ($d->drTrigger == 'code') {
                                     echo '<p>' . '<a class="btn btn-default btn-sm" href="'.View::url('/dashboard/store/discounts/codes/', $d->drID).'">'.t('Manage Codes').'</a></p>';
@@ -358,10 +364,10 @@ $currencySymbol = Config::get('vividstore.symbol');
 
 <p class="alert alert-info">
     <?php if ($d->drSingleUseCodes) { ?>
-    <?= t('Single Use Codes'); ?></p>
-<?php } else { ?>
-    <?= t('Codes can be repeatedly used'); ?>
-<?php } ?>
+        <?= t('Single Use Codes'); ?></p>
+    <?php } else { ?>
+        <?= t('Codes can be repeatedly used'); ?>
+    <?php } ?>
 </p>
 
 

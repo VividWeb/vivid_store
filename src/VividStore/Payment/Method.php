@@ -117,8 +117,8 @@ class Method extends Controller
         $db = Database::get();
         $db->Execute("DELETE FROM VividStorePaymentMethods WHERE pmID=?",$this->pmID);
     }
-      
-    public function getMethods($enabled=false)
+
+    public static function getMethods($enabled=false)
     {
         $db = Database::get();
         if($enabled==true){

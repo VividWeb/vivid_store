@@ -54,14 +54,14 @@ class SalesReport extends StoreOrderList
         $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
         return self::getTotalsByRange($thirtyDaysAgo,$today,0);
     }
-    public function getYearToDate()
+    public static function getYearToDate()
     {
         $today = date('Y-m-d');
         $jan1 = new \DateTime(date("Y")."-01-01");
         $jan1 = $jan1->format("Y-m-d");
         return self::getTotalsByRange($jan1,$today,0);
     }
-    public function getByMonth($date)
+    public static function getByMonth($date)
     {
         $from = date('Y-m-01', strtotime($date));
         $to = date('Y-m-t', strtotime($date));

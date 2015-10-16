@@ -32,7 +32,7 @@
         .product-modal-thumb { float: left; width: 40%; }
             .product-modal-thumb img { max-width: 100%; height: auto; }
         .product-modal-info-shell { float: left; width: 50%; margin-left: 10%; position: relative;}
-            .product-modal-exit { position: absolute; font-size: 18px; right: 0px; top: 0px; color: #ccc; cursor: pointer; }
+            .product-modal-exit { position: absolute; font-size: 18px; right: 0; top: 0; color: #ccc; cursor: pointer; }
             .cart-modal .product-modal-exit { right: 15px; top: 5px; }
             .product-modal-exit:hover { color: #888; text-decoration: none; }
             .product-modal-title { display: block; font-size: 22px; padding: 10px 0 0; }
@@ -78,7 +78,7 @@
         .cart-page-cart-links .btn-cart-page-checkout {  }
 
 @media (min-width: 768px) {
-    .cart-page-cart-list li.cart-page-cart-list-item { padding: 15px 0; border: none; border-bottom: 2px solid rgba(0,0,0,0.1); background: none; border-radius: none; margin-bottom: 0; }
+    .cart-page-cart-list li.cart-page-cart-list-item { padding: 15px 0; border: none; border-bottom: 2px solid rgba(0,0,0,0.1); background: none; border-radius: 0; margin-bottom: 0; }
     .cart-page-cart-list li.cart-page-cart-list-item.striped { background: rgba(0,0,0,0.01); }
      .cart-page-cart-list li.cart-page-cart-list-item .cart-list-item-links a { padding: 5px 15px; }
 }
@@ -111,10 +111,12 @@
         .checkout-form-group h2 { padding: 8px 15px; background: #f8f8f8; font-size: 16px !important; margin: 0 !important; }
         .checkout-form-group-body { padding: 20px 0; display: none; }
         .checkout-form-group-summary { padding: 20px 0; display: none; }
-        #checkout-form-group-billing .checkout-form-group-body,
+        .checkout-form-group-complete .checkout-form-group-summary  { display: block; }
         #checkout-form-group-signin .checkout-form-group-body { display: block; }
         .checkout-form-group-summary .vivid-store-col-2 { padding-top: 0; padding-bottom: 0;}
         .checkout-form-group-buttons { text-align: right; padding: 0 15px;}
+
+.active-form-group .checkout-form-group-body { display: block; }
     
 @media (min-width: 768px) {
     .checkout-form-shell { float: left; width: 70%; }   
