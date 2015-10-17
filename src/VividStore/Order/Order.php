@@ -24,6 +24,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHis
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
 
 /**
@@ -484,6 +485,16 @@ class Order
     }
     public function getStatusHistory() {
         return StoreOrderStatusHistory::getForOrder($this);
+    }
+    public function getStatus() {
+        $history = StoreOrderStatusHistory::getForOrder($this);
+
+        if (!empty($history)) {
+            $laststatus = $history[0];
+            return $laststatus->getOrderStatusName();
+        } else {
+            return '';
+        }
     }
     public function setAttribute($ak, $value)
     {
