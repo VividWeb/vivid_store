@@ -273,6 +273,11 @@ class Order
             $this->setTransactionReference($transactionReference);
         }
 
+        $fromEmail = Config::get('vividstore.emailalerts');
+        if(!$fromEmail){
+            $fromEmail = "store@".$_SERVER['SERVER_NAME'];
+        }
+
         $smID = \Session::get('smID');
         $groupstoadd = array();
         $createlogin = false;
@@ -345,14 +350,16 @@ class Order
                 // login the newly created user
                 User::loginByUserID($user->getUserID());
 
+                // new user password email
+                $mh->from($fromEmail);
+                $mh->to($email);
+                $mh->sendMail();
             } else {
                 // we're attempting to create a new user with an email that has already been used
                 // earlier validation must have failed at this point, don't fetch the user
                 $user = null;
             }
 
-            $mh->to($email);
-            $mh->sendMail();
         } elseif ($createlogin) {  // or if we found a user (because they are logged in) and need to use it to create logins
             $user = $customer->getUserInfo();
         }
@@ -409,12 +416,7 @@ class Order
         
         //send out the alerts
         $mh = new MailService();
-        $pkg = Package::getByHandle('vivid_store');
 
-        $fromEmail = Config::get('vividstore.emailalerts');
-        if(!$fromEmail){
-            $fromEmail = "store@".$_SERVER['SERVER_NAME'];
-        }
         $alertEmails = explode(",", Config::get('vividstore.notificationemails'));
         $alertEmails = array_map('trim',$alertEmails);
         
