@@ -26,7 +26,7 @@ ob_start();
                         <strong><?=t('Billing Information')?></strong>
                         <p>
                             <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
-                            <?=$order->getAttribute("shipping_address")->address1?><br>
+                            <?=$order->getAttribute("billing_address")->address1?><br>
                             <?php if($order->getAttribute("billing_address")->address2){
                                 echo $order->getAttribute("billing_address")->address2 . "<br>";
                             } ?>

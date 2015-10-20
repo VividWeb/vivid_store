@@ -37,20 +37,28 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             <h4><?=t("Billing Information")?></h4>
             <p>
                 <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
-                <?=$order->getAttributeValueObject(StoreOrderKey::getByHandle('billing_address'))->getValue('displaySanitized', 'display'); ?>
+                <?php $billingaddress = $order->getAttributeValueObject(StoreOrderKey::getByHandle('billing_address'));
+                if ($billingaddress) {
+                    echo $billingaddress->getValue('displaySanitized', 'display');
+                }
+                ?>
                 <br /> <br /><?php echo t('Phone'); ?>: <?=$order->getAttribute("billing_phone")?>
             </p>
         </div>
         <?php if ($order->isShippable()) { ?>
-        <div class="col-sm-6">
-            <?php if ($order->getAttribute("shipping_address")->address1) { ?>
-            <h4><?=t("Shipping Information")?></h4>
-            <p>
-                <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?><br>
-                <?=$order->getAttributeValueObject(StoreOrderKey::getByHandle('shipping_address'))->getValue('displaySanitized', 'display'); ?>
-            </p>
-            <?php } ?>
-        </div>
+            <div class="col-sm-6">
+                <?php if ($order->getAttribute("shipping_address")->address1) { ?>
+                    <h4><?=t("Shipping Information")?></h4>
+                    <p>
+                        <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?><br>
+                        <?php $shippingaddres = $order->getAttributeValueObject(StoreOrderKey::getByHandle('shipping_address'));
+                        if ($shippingaddres) {
+                            echo $shippingaddres->getValue('displaySanitized', 'display');
+                        }
+                        ?>
+                    </p>
+                <?php } ?>
+            </div>
         <?php } ?>
     </div>
     <h3><?=t("Order Info")?></h3>
