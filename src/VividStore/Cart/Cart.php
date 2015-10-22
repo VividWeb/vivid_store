@@ -208,7 +208,7 @@ class Cart
     public static function update($data)
     {
         $instanceID = $data['instance'];
-        $qty = $data['pQty'];
+        $qty = (int)$data['pQty'];
         $cart = self::getCart();
 
         $product = StoreProduct::getByID((int)$cart[$instanceID]['product']['pID']);

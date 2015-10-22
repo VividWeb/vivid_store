@@ -67,7 +67,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     <form method="post">
                         <input type="hidden" name="instance" value="<?=$k?>" />
                         <span class="cart-item-label"><?=t("Quantity:")?></span>
-                        <input type="number" name="pQty" min="1" <?=($product->allowBackOrders() ? '' :'max="' . $product->getProductQty() . '"' );?> value="<?=$qty?>" style="width: 50px;">
+                        <input type="number" name="pQty" min="1" <?=($product->allowBackOrders() || $product->isUnlimited()  ? '' :'max="' . $product->getProductQty() . '"' );?> value="<?=$qty?>" style="width: 50px;">
                         <button name="action" value="update" class="btn-cart-list-update" type="submit"><?=t("Update")?></button>
                     </form>
                 <?php } ?>
