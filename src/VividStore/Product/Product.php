@@ -19,6 +19,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as Store
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup as StoreProductOptionGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
+use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 
@@ -156,17 +157,17 @@ class Product
     public function setProductDetail($detail){ $this->pDetail = $detail; }
     public function setProductPrice($price){ $this->pPrice = $price; }
     public function setProductSalePrice($price){ $this->pSalePrice = ($price != '' ? $price : null); }
-    public function setIsFeatured($bool){ $this->pFeatured = $bool; }
+    public function setIsFeatured($bool){ $this->pFeatured = (!is_null($bool) ? $bool : false); }
     public function setProductQty($qty){ $this->pQty = ($qty ? $qty : 0);  }
-    public function setIsUnlimited($bool){ $this->pQtyUnlim = $bool; }
-    public function setAllowBackOrder($bool){ $this->pBackOrder = $bool; }
+    public function setIsUnlimited($bool){ $this->pQtyUnlim = (!is_null($bool) ? $bool : false); }
+    public function setAllowBackOrder($bool){ $this->pBackOrder = (!is_null($bool) ? $bool : false); }
     public function setNoQty($bool){ $this->pNoQty = $bool; }
     public function setProductTaxClass($taxClass){ $this->pTaxClass = $taxClass; }
-    public function setIsTaxable($bool){ $this->pTaxable = $bool; }
+    public function setIsTaxable($bool){ $this->pTaxable = (!is_null($bool) ? $bool : false); }
     public function setProductImageID($fID){ $this->pfID = $fID; }
     public function setIsActive($bool){ $this->pActive = $bool; }
     public function setProductDateAdded($date){ $this->pDateAdded = $date; }
-    public function setIsShippable($bool){ $this->pShippable = $bool; }
+    public function setIsShippable($bool){ $this->pShippable = (!is_null($bool) ? $bool : false); }
     public function setProductWidth($width){ $this->pWidth = $width; }
     public function setProductHeight($height){ $this->pHeight = $height; }
     public function setProductLength($length){ $this->pLength = $length; }

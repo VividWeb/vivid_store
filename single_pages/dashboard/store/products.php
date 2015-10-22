@@ -57,53 +57,51 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <div class="col-sm-7 store-pane active" id="product-overview">
 
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-12">
                         <div class="form-group">
                             <?php echo $form->label("pName", t("Product Name"));?>
                             <?php echo $form->text("pName", $p->getProductName());?>
                         </div>
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="col-xs-6">
                         <div class="form-group">
                             <?php echo $form->label("pActive", t("Active"));?>
                             <?php echo $form->select("pActive", array('1'=>t('Active'),'0'=>t('Inactive')), $p->isActive());?>
                         </div>
                     </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <?php echo $form->label("pFeatured", t("Featured Product"));?>
+                            <?php echo $form->select("pFeatured",array('0'=>t('No'),'1'=>t('Yes')), $p->isFeatured());?>
+                        </div>
+                    </div>
                 </div>
-                
                 <div class="row">
                     <div class="col-xs-6">
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <?php echo $form->label("pPrice", t("Price"));?>
-                                    <div class="input-group">
-                                        <div class="input-group-addon">
-                                            <?= Config::get('vividstore.symbol');?>
-                                        </div>
-                                        <?php $price = $p->getProductPrice(); ?>
-                                        <?php echo $form->text("pPrice", $price?$price:'0');?>
-                                    </div>
+                        <div class="form-group">
+                            <?php echo $form->label("pPrice", t("Price"));?>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <?= Config::get('vividstore.symbol');?>
                                 </div>
-                            </div>
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <?php echo $form->label("pSalePrice", t("Sale Price"));?>
-                                    <div class="input-group">
-                                        <div class="input-group-addon">
-                                            <?= Config::get('vividstore.symbol');?>
-                                        </div>
-                                        <?php $salePrice = $p->getProductSalePrice(); ?>
-                                        <?php echo $form->text("pSalePrice", $salePrice);?>
-                                    </div>
-                                </div>
+                                <?php $price = $p->getProductPrice(); ?>
+                                <?php echo $form->text("pPrice", $price?$price:'0');?>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="form-group">
-                            <?php echo $form->label("pFeatured", t("Featured Product"));?>
-                            <?php echo $form->select("pFeatured",array('0'=>t('No'),'1'=>t('Yes')), $p->isFeatured());?>
+                            <?php echo $form->label("pSalePrice", t("Sale Price"));?>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <?= Config::get('vividstore.symbol');?>
+                                </div>
+                                <?php $salePrice = $p->getProductSalePrice(); ?>
+                                <?php echo $form->text("pSalePrice", $salePrice);?>
+                            </div>
                         </div>
                     </div>
                 </div>
