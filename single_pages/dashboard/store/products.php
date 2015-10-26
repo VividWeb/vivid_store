@@ -426,7 +426,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             </div><!-- #product-images -->
 
 
-
             <div class="col-sm-7 store-pane" id="product-options">
 
                 <h4><?=t('Options')?></h4>
@@ -455,7 +454,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         <div class="panel-body">
                             <div data-group="<%=sort%>" class="option-group-item-container"></div>
                         </div>
-                        <input type="hidden" name="pogID" value="<%=pogID%>">
+                        <input type="hidden" name="pogID[]" value="<%=pogID%>">
                         <input type="hidden" name="pogSort[]" value="<%=sort%>" class="option-group-sort">
                     </div><!-- .option-group -->
                 </script>
@@ -484,15 +483,15 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         var optionsContainer = $('#product-options-container');
                         var optionsTemplate = _.template($('#option-group-template').html());
 
-                        //load up images
+                        //load up existing option groups
                         <?php
                         if($groups) {
                             foreach ($groups as $group) {
                         ?>
                         optionsContainer.append(optionsTemplate({
-                            pogName: '<?php echo $group['pogName'] ?>',
-                            pogID: '<?php echo $group['pogID']?>',
-                            sort: '<?=$group['pogSort'] ?>'
+                            pogName: '<?php echo $group->getName() ?>',
+                            pogID: '<?php echo $group->getID()?>',
+                            sort: '<?=$group->getSort() ?>'
                         }));
                         <?php
                             }
@@ -527,6 +526,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             </div>
                             <div class="col-sm-5">
                                 <input type="text" name="poiName[]" class="form-control" value="<%=poiName%>">
+                                <input type="hidden" name="poiID[]" class="form-control" value="<%=poiID%>">
                             </div>
                             <div class="col-sm-2">
                                 <a href="javascript:deleteOptionItem(<%=optGroup%>,<%=sort%>);" class="btn btn-danger"><i class="fa fa-trash"></i></a>
@@ -560,6 +560,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                         optItemsContainer.append(optItemsTemplate({
                             //vars to pass to the template
                             poiName: '',
+                            poiID: '',
                             optGroup: group,
                             sort: temp
                         }));
@@ -588,12 +589,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             for($i=0;$i<$count;$i++){
                                 foreach($optItems as $option){
                                     //go through all options, see if it belongs in the group we're on in the for loop
-                                    if($option['pogID'] == $groups[$i]['pogID']){?>
+                                    if($option->getProductOptionGroupID() == $groups[$i]->getID()){?>
                         var optItemsContainer = $(".option-group-item-container[data-group='<?=$i?>']");
                         optItemsContainer.append(optItemsTemplate({
-                            poiName: '<?=$option['poiName']?>',
+                            poiName: '<?=$option->getName()?>',
+                            poiID: '<?=$option->getID()?>',
                             optGroup: <?=$i?>,
-                            sort: <?=$option['poiSort']?>
+                            sort: <?=$option->getSort()?>
 
                         }));
                         <?php
