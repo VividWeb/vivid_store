@@ -258,7 +258,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
                 <div class="form-group">
                     <?php echo $form->label("pShippable", t("Product is Shippable"));?>
-                    <?php echo $form->select("pShippable",array('1'=>t('Yes'),'0'=>t('No')), $p->isShippable());?>
+                    <?php echo $form->select("pShippable",array('1'=>t('Yes'),'0'=>t('No')), ($p->isShippable() ? '1' : '0'));?>
                 </div>
                 
                 <div class="alert alert-info">
