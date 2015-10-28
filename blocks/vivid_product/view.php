@@ -106,12 +106,12 @@ if(is_object($p)){?>
                 foreach($optionGroups as $optionGroup){
                 ?>
                 <div class="product-option-group vivid-store-col-2">
-                    <label class="option-group-label"><?=$optionGroup['pogName']?></label>
-                    <select name="pog<?=$optionGroup['pogID']?>">
+                    <label class="option-group-label"><?=$optionGroup->getName()?></label>
+                    <select name="pog<?=$optionGroup->getID()?>">
                         <?php
                         foreach($optionItems as $option){
-                            if($option['pogID']==$optionGroup['pogID']){?>
-                                <option value="<?=$option['poiID']?>"><?=$option['poiName']?></option>   
+                            if($option->getProductOptionGroupID()==$optionGroup->getID()){?>
+                                <option value="<?=$option->getID()?>"><?=$option->getName()?></option>
                             <?php }
                         }//foreach    
                         ?>

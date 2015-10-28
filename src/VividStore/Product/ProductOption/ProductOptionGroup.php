@@ -24,20 +24,21 @@ class ProductOptionGroup
     protected $pID; 
     
     /**
-     * @Column(type="integer")
+     * @Column(type="string")
      */
     protected $pogName;
     
     /**
      * @Column(type="integer")
      */
-    protected $pogSort; 
-    
+    protected $pogSort;
+
+    private function setID($pogID){ $this->pogID = $pogID; }
     private function setProductID($pID){ $this->pID = $pID; }
     private function setName($name){ $this->pogName = $name; }
     private function setSort($sort){ $this->pogSort = $sort; }
     
-    public function getID(){ return $this->piID; }
+    public function getID(){ return $this->pogID; }
     public function getProductID() { return $this->pID; }
     public function getName() { return $this->pogName; }
     public function getSort() { return $this->pogSort; }
@@ -55,12 +56,18 @@ class ProductOptionGroup
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup')->findBy(array('pID' => $product->getProductID()));
     }
     
-    public static function removeOptionGroupsForProduct(StoreProduct $product)
+    public static function removeOptionGroupsForProduct(StoreProduct $product, $excluding = array())
     {
+        if (!is_array($excluding)) {
+            $excluding = array();
+        }
+
         //clear out existing product option groups
         $existingOptionGroups = self::getOptionGroupsForProduct($product);
         foreach($existingOptionGroups as $optionGroup){
-            $optionGroup->delete();
+            if (!in_array($optionGroup->getID(), $excluding)) {
+                $optionGroup->delete();
+            }
         }
     }
     
@@ -76,7 +83,7 @@ class ProductOptionGroup
         $pID = $product->getProductID();
         return self::addOrUpdate($pID,$name,$sort,$productOptionGroup);
     }
-    public static function addOrUpdate($pID,$fID,$sort,$obj)
+    public static function addOrUpdate($pID,$name,$sort,$obj)
     {
         $obj->setProductID($pID);
         $obj->setName($name);

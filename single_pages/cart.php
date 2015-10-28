@@ -1,7 +1,9 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied."));
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup as StoreProductOptionGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
 ?>
 <div class="cart-page-cart">
 
@@ -34,7 +36,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         foreach ($cart as $k=>$cartItem){
             $pID = $cartItem['product']['pID'];
             $qty = $cartItem['product']['qty'];
-            $product = VividProduct::getByID($pID);
+            $product = StoreProduct::getByID($pID);
             if($i%2==0){$classes=" striped"; }else{ $classes=""; }
             if(is_object($product)){
     ?>
@@ -55,10 +57,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 <?php 
                     $salePrice = $product->getProductSalePrice();
                     if(isset($salePrice) && $salePrice != ""){
-                        echo '<span class="original-price">'.Price::format($product->getProductPrice()).'</span>';
-                        echo '<span class="sale-price">'.Price::format($salePrice).'</span>';
+                        echo '<span class="original-price">'.StorePrice::format($product->getProductPrice()).'</span>';
+                        echo '<span class="sale-price">'.StorePrice::format($salePrice).'</span>';
                     } else {
-                        echo Price::format($product->getProductPrice());
+                        echo StorePrice::format($product->getProductPrice());
                     }
                 ?>
             </div>
@@ -83,10 +85,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <div class="cart-list-item-attributes">
                 <?php foreach($cartItem['productAttributes'] as $groupID => $valID){
                     $groupID = str_replace("pog","",$groupID);
+                    $optiongroup = StoreProductOptionGroup::getByID($groupID);
+                    $optionvalue = StoreProductOptionItem::getByID($valID);
+
                     ?>
                     <div class="cart-list-item-attribute">
-                        <span class="cart-list-item-attribute-label"><?=VividProduct::getProductOptionGroupNameByID($groupID)?>:</span>
-                        <span class="cart-list-item-attribute-value"><?=VividProduct::getProductOptionValueByID($valID)?></span>
+                        <span class="cart-list-item-attribute-label"><?= ($optiongroup ? $optiongroup->getName() : '')?>:</span>
+                        <span class="cart-list-item-attribute-value"><?= ($optionvalue ? $optionvalue->getName(): '')?></span>
                     </div>
                 <?php }  ?>
             </div>    
@@ -133,7 +138,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     <?php if ($cart  && !empty($cart)) { ?>
     <div class="cart-page-cart-total">        
         <span class="cart-grand-total-label"><?=t("Sub Total")?>:</span>
-        <span class="cart-grand-total-value"><?=Price::format($total)?></span>
+        <span class="cart-grand-total-value"><?=StorePrice::format($total)?></span>
     </div>
         
     <div class="cart-page-cart-links">
