@@ -133,7 +133,7 @@ class ShippingMethod
     {
         $smID = \Session::get('smID');
         if($smID){
-            $sm = StoreShippingMethod::getByID($smID);
+            $sm = self::getByID($smID);
             return $sm;
         }
     }
@@ -148,5 +148,6 @@ class ShippingMethod
         } else {
             $smName = t("None");
         }
+        return $smName;
     }
 }
