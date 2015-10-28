@@ -8,6 +8,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -159,7 +160,7 @@ class TaxRate
                                         break;
                                     case "grandtotal":
                                         $productSubTotal = $product->getActivePrice() * $qty;
-                                        $shippingTotal = StorePrice::getFloat(StoreCart::getShippingTotal());
+                                        $shippingTotal = StorePrice::getFloat(StoreCalculator::getShippingTotal());
                                         $taxableTotal = $productSubTotal + $shippingTotal;
                                         $tax = $taxrate * $taxableTotal;
                                         $taxtotal = $taxtotal + $tax;
@@ -196,7 +197,7 @@ class TaxRate
                             break;
                         case "grandtotal":
                             $productSubTotal = $productObj->getActivePrice() * $qty;
-                            $shippingTotal = StorePrice::getFloat(StoreCart::getShippingTotal());
+                            $shippingTotal = StorePrice::getFloat(StoreCalculator::getShippingTotal());
                             $taxableTotal = $productSubTotal + $shippingTotal;
                             $tax = $taxrate * $taxableTotal;
                             $taxtotal = $taxtotal + $tax;
