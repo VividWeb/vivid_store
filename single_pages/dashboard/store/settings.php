@@ -31,7 +31,7 @@
                     
                     <div class="form-group">
                         <?php echo $form->label('symbol',t('Currency Symbol')); ?>
-                        <?php echo $form->text('symbol',Config::get('vividstore.symbol'),array("style"=>"width:60px;"));?>
+                        <?php echo $form->text('symbol',Config::get('vividstore.symbol'),array("style"=>"width:80px;"));?>
                     </div>
                     <div class="form-group">
                         <?php echo $form->label('thousand',t('Thousands Separator %se.g. , or a space%s', "<small>", "</small>")); ?>
