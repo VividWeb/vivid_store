@@ -197,7 +197,7 @@ class TaxRate
                             break;
                         case "grandtotal":
                             $productSubTotal = $productObj->getActivePrice() * $qty;
-                            $shippingTotal = StorePrice::getFloat(StoreCart::getShippingTotal());
+                            $shippingTotal = StorePrice::getFloat(StoreCalculator::getShippingTotal());
                             $taxableTotal = $productSubTotal + $shippingTotal;
                             $tax = $taxrate * $taxableTotal;
                             $taxtotal = $taxtotal + $tax;
