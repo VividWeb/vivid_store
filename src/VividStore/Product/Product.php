@@ -76,7 +76,7 @@ class Product
     protected $pQty; 
     
     /**
-     * @Column(type="boolean")
+     * @Column(type="boolean",nullable=true)
      */
     protected $pQtyUnlim;
     
