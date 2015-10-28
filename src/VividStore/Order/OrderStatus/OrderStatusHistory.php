@@ -112,14 +112,6 @@ class OrderStatusHistory extends Object
             $user->uID
         );
         $db->Execute($statusHistorySql, $statusHistoryValues);
-
-        $updateOrderSql = "UPDATE VividStoreOrders SET oStatus = ? WHERE oID = ?";
-        $updateOrderValues = array(
-            $newOrderStatus->getHandle(),
-            $order->getOrderID()
-        );
-        $db->Execute($updateOrderSql, $updateOrderValues);
-
         return $newOrderStatus->getHandle();
     }
 
