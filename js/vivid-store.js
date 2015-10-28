@@ -331,6 +331,8 @@ $("#checkout-form-group-billing").submit(function(e){
         var bCity = $("#checkout-billing-city").val();
         var bState = $("#checkout-billing-state").val();
         var bPostal = $("#checkout-billing-zip").val();
+        $("#checkout-form-group-billing .checkout-form-group-body .checkout-errors").remove();
+
         vividStore.waiting();
         var obj = $(this);
         $.ajax({
@@ -369,7 +371,7 @@ $("#checkout-form-group-billing").submit(function(e){
                         }
                     });
                 } else {
-                    $("#checkout-form-group-billing .checkout-form-group-body").prepend('<div class="vivid-store-col-1"><div class="alert alert-danger"></div></div>');
+                    $("#checkout-form-group-billing .checkout-form-group-body").prepend('<div class="vivid-store-col-1 checkout-errors"><div class="alert alert-danger"></div></div>');
                     $("#checkout-form-group-billing .alert").html(response.errors.join('<br>'));
                     $('.whiteout').remove();
                 }
@@ -392,6 +394,8 @@ $("#checkout-form-group-billing").submit(function(e){
        var sCity = $("#checkout-shipping-city").val();
        var sState = $("#checkout-shipping-state").val();
        var sPostal = $("#checkout-shipping-zip").val();
+       $("#checkout-form-group-shipping .checkout-form-group-body .checkout-errors").remove();
+
        vividStore.waiting();
        var obj = $(this);
        $.ajax({
@@ -427,7 +431,7 @@ $("#checkout-form-group-billing").submit(function(e){
                         }
                     });
                 } else {
-                    $("#checkout-form-group-shipping .checkout-form-group-body").prepend('<div class="vivid-store-col-1"><div class="alert alert-danger"></div></div>');
+                    $("#checkout-form-group-shipping .checkout-form-group-body").prepend('<div class="vivid-store-col-1 checkout-errors"><div class="alert alert-danger"></div></div>');
                     $("#checkout-form-group-shipping .alert").html(response.errors.join('<br>'));
                     $('.whiteout').remove();
                 }
