@@ -95,7 +95,7 @@ if(is_object($p)){?>
                 <?php if ($p->allowQuantity()) { ?>
                 <div class="product-modal-option-group vivid-store-col-2">
                     <label class="option-group-label"><?=t('Quantity')?></label>
-                    <input type="number" name="quantity" class="product-qty" value="1" min="1" <?=($p->allowBackOrders() ? '' :'max="' . $p->getProductQty() . '"' );?>>
+                    <input type="number" name="quantity" class="product-qty" value="1" min="1" step="1" <?=($p->allowBackOrders() ? '' :'max="' . $p->getProductQty() . '"' );?>>
                 </div>
                     <?php } else { ?>
                     <input type="hidden" name="quantity" class="product-qty" value="1">
