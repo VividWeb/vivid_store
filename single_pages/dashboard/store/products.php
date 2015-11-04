@@ -854,7 +854,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
         </table>
 
         <?php if ($paginator->getTotalPages() > 1) { ?>
-            <?= $pagination ?>
+            <div class="ccm-search-results-pagination">
+                <?= $pagination ?>
+            </div>
         <?php } ?>
 
     </div>
