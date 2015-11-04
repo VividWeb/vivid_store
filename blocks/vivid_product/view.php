@@ -43,6 +43,13 @@ if(is_object($p)){?>
         <?php } ?>
                    
             <?php if($showGroups){?>
+                <ul>
+                <?php
+                $productgroups = $p->getProductGroups();
+                foreach($productgroups as $pg) { ?>
+                    <li class="product-group"><?= $pg->gName;?> </li>
+                <?php } ?>
+                </ul>
             <?php } ?>
             
             <?php if($showIsFeatured){
