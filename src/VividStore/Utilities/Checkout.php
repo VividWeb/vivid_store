@@ -3,7 +3,6 @@ namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Controller;
 use Core;
-use Loader;
 use Session;
 use Illuminate\Filesystem\Filesystem;
 use View;
@@ -12,6 +11,7 @@ use UserInfo;
 use Concrete\Attribute\Address\Value as AttributeValue;
 
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 
 class Checkout extends Controller
 {
@@ -31,7 +31,13 @@ class Checkout extends Controller
                 $requiresLoginOrDifferentEmail = false;
 
                 if ($guest) {
-                    $requiresLoginOrDifferentEmail = $this->validateAccountEmail($data['email']);
+                    $emailexists = $this->validateAccountEmail($data['email']);
+                }
+
+                $orderRequiresLogin = StoreCart::requiresLogin();
+
+                if ($orderRequiresLogin && $emailexists) {
+                    $requiresLoginOrDifferentEmail = true;
                 }
             }
 
@@ -148,7 +154,7 @@ class Checkout extends Controller
     public function validateAddress($data,$billing=null)
     {
         $e = Core::make('helper/validation/error');
-        $vals = Loader::helper('validation/strings');
+        $vals = Core::make('helper/validation/strings');
         $customer = new StoreCustomer();
 
         if($billing){
