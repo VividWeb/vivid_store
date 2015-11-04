@@ -201,8 +201,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     </div>
 
                     <?php for($i = 1; $i < 7; $i++) { ?>
-                        <div class="page_picker <?= ($pages[$i -1]['cID']  ? '' : 'picker_hidden' ); ?>">
-                            <?php echo $ps->selectPage('cID[]',  ($locationPages[i] && $locationPages[$i]->getCollectionID()) ?  $locationPages[$i]->getCollectionID() : false); ?>
+                        <div class="page_picker <?= ($locationPages[$i - 1] && $locationPages[$i - 1]->getCollectionID() ? '' : 'picker_hidden' ); ?>">
+                            <?php echo $ps->selectPage('cID[]',  ($locationPages[$i] && $locationPages[$i]->getCollectionID()) ?  $locationPages[$i]->getCollectionID() : false); ?>
                         </div>
 
                     <?php } ?>
