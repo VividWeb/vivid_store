@@ -67,7 +67,7 @@ if($products){
                         <select name="pog<?=$optionGroup->getID()?>">
                             <?php
                             foreach($optionItems as $option){
-                                if($option->getID()==$optionGroup->getID()){?>
+                                if($option->getProductOptionGroupID()==$optionGroup->getID()){?>
                                     <option value="<?=$option->getID()?>"><?=$option->getName()?></option>
                                 <?php }
                             }//foreach
