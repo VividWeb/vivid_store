@@ -31,23 +31,12 @@ class Controller extends BlockController
         $this->set("total",StorePrice::format(StoreCalculator::getSubTotal()));
 
     }
-
     public function registerViewAssets()
     {
         $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
-
-        $this->addHeaderItem("
-            <script type=\"text/javascript\">
-                var PRODUCTMODAL = '".View::url('/productmodal')."';
-                var CARTURL = '".View::url('/cart')."';
-                var CHECKOUTURL = '".View::url('/checkout')."';
-                var QTYMESSAGE = '".t('Quantity must be greater than zero')."';
-            </script>
-        ");
     }
-
     public function save($args)
     {
         $args['showCartItems'] = isset($args['showCartItems']) ? 1 : 0;
