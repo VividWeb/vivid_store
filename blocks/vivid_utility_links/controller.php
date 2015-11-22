@@ -34,6 +34,7 @@ class Controller extends BlockController
 
     public function registerViewAssets()
     {
+        $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
 

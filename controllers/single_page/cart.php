@@ -57,6 +57,7 @@ class Cart extends PageController
                 var CHECKOUTURL = '".View::url('/checkout')."';
             </script>
         ");
+        $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
 

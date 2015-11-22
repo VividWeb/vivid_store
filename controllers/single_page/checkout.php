@@ -21,8 +21,6 @@ class Checkout extends PageController
 {
     public function view()
     {
-        $pkg = Package::getByHandle('vivid_store');
-
         $customer = new StoreCustomer();
         $this->set('customer', $customer);
         $guestCheckout = Config::get('vividstore.guestCheckout');
@@ -117,6 +115,7 @@ class Checkout extends PageController
             </script>
         ");
 
+        $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
         $this->addFooterItem("

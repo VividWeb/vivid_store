@@ -21,6 +21,7 @@ class Complete extends PageController
         } else {
             $this->redirect("/cart");
         }
+        $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
     }
