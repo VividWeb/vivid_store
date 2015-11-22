@@ -107,14 +107,6 @@ class Checkout extends PageController
         $this->set('total',$totals['total']);
         $this->set('shippingEnabled', StoreCart::isShippable());
 
-        $this->addHeaderItem("
-            <script type=\"text/javascript\">
-                var PRODUCTMODAL = '".View::url('/productmodal')."';
-                var CARTURL = '".View::url('/cart')."';
-                var CHECKOUTURL = '".View::url('/checkout')."';
-            </script>
-        ");
-
         $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');

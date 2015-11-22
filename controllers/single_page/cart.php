@@ -50,13 +50,7 @@ class Cart extends PageController
         $this->set('cart',StoreCart::getCart());
         $this->set('discounts',StoreCart::getDiscounts());
         $this->set('total',StoreCalculator::getSubTotal());
-        $this->addHeaderItem("
-            <script type=\"text/javascript\">
-                var PRODUCTMODAL = '".View::url('/productmodal')."';
-                var CARTURL = '".View::url('/cart')."';
-                var CHECKOUTURL = '".View::url('/checkout')."';
-            </script>
-        ");
+        
         $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
