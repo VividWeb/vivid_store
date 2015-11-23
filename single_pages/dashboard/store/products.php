@@ -752,9 +752,18 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
         <div class="ccm-dashboard-form-actions-wrapper">
             <div class="ccm-dashboard-form-actions">
                 <a href="<?php echo URL::to('/dashboard/store/products/')?>" class="btn btn-default pull-left"><?php echo t("Cancel")?></a>
-                <button class="pull-right btn btn-success" type="submit" ><?=t('%s Product',$actionType)?></button>
+                <button class="pull-right btn btn-success" disabled="disabled" type="submit" ><?=t('%s Product',$actionType)?></button>
             </div>
         </div>
+
+        <script>
+            $(window).load(function(){
+                setTimeout(
+                    function() {
+                       $('.ccm-dashboard-form-actions .btn-success').removeAttr('disabled');
+                    }, 2000);
+            });
+        </script>
 
     </form>
 
