@@ -25,7 +25,6 @@ ob_start();
                     <td width="50%" valign="top">
                         <strong><?=t('Billing Information')?></strong>
                         <p>
-
                             <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
                             <?=$order->getAttribute("billing_address")->address1?><br>
                             <?php if($order->getAttribute("billing_address")->address2){
