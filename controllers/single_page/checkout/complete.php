@@ -22,6 +22,8 @@ class Complete extends PageController
             $this->redirect("/cart");
         }
         $this->requireAsset('javascript', 'jquery');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
     }

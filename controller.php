@@ -110,15 +110,6 @@ class Controller extends Package
                 array('css', 'chartist'),
             )
         );
-
-        View::getInstance()->addHeaderItem("
-            <script type=\"text/javascript\">
-                var PRODUCTMODAL = '" . View::url('/productmodal') . "';
-                var CARTURL = '" . View::url('/cart') . "';
-                var CHECKOUTURL = '" . View::url('/checkout') . "';
-                var QTYMESSAGE = '" . t('Quantity must be greater than zero') . "';
-            </script>
-            ");
     }
     public function uninstall()
     {
@@ -144,6 +135,18 @@ class Controller extends Package
             $shippingMethodType->delete();
         }
         parent::uninstall();
+    }
+
+    public static function returnHeaderJS()
+    {
+        return "
+        <script type=\"text/javascript\">
+            var PRODUCTMODAL = '" . View::url('/productmodal') . "';
+            var CARTURL = '" . View::url('/cart') . "';
+            var CHECKOUTURL = '" . View::url('/checkout') . "';
+            var QTYMESSAGE = '" . t('Quantity must be greater than zero') . "';
+        </script>
+        ";
     }
 
 

@@ -108,6 +108,8 @@ class Checkout extends PageController
         $this->set('shippingEnabled', StoreCart::isShippable());
 
         $this->requireAsset('javascript', 'jquery');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
         $this->addFooterItem("
