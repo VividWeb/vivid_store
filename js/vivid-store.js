@@ -444,48 +444,49 @@ $("#checkout-form-group-billing").submit(function(e){
        });
        
     });
-    $("#checkout-form-group-shipping-method").submit(function(e){
-        e.preventDefault();
-        vividStore.waiting();
-        var obj = $(this);
-        if($("#checkout-shipping-method-options input[type='radio']:checked").length < 1){
-            $('.whiteout').remove();
-            alert("You must choose a shipping method");            
-        } else {
-            var smID = $("#checkout-shipping-method-options input[type='radio']:checked").val();
-            var methodText = $.trim($("#checkout-shipping-method-options input[type='radio']:checked").parent().text());
-            obj.find('.summary-shipping-method').html(methodText);
+$("#checkout-form-group-shipping-method").submit(function(e){
+    e.preventDefault();
+    vividStore.waiting();
+    var obj = $(this);
+    if($("#checkout-shipping-method-options input[type='radio']:checked").length < 1){
+        $('.whiteout').remove();
+        alert("You must choose a shipping method");
+    } else {
+        var smID = $("#checkout-shipping-method-options input[type='radio']:checked").val();
+        var methodText = $.trim($("#checkout-shipping-method-options input[type='radio']:checked").parent().text());
+        obj.find('.summary-shipping-method').html(methodText);
 
-            $.ajax({
-                type: 'post',
-                data: {smID: smID },
-                url: CARTURL+"/getShippingTotal",
-                success: function(total){
-                    $("#shipping-total").text(total);
-                    vividStore.nextPane(obj);  
-                    $('.whiteout').remove();                    
-                }
-            });
-            $.ajax({
-                url: CARTURL+"/getTaxTotal",
-                success: function(results){
-                    var taxes = JSON.parse(results);
-                    $("#taxes").html("");  
-                    for(var i=0;i<taxes.length;i++){
-                        if(taxes[i].taxed===true){
-                            $("#taxes").append("<strong>"+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><br>");
+        $.ajax({
+            type: 'post',
+            data: {smID: smID },
+            url: CARTURL+"/getShippingTotal",
+            success: function(total){
+                $("#shipping-total").text(total);
+                $.ajax({
+                    url: CARTURL+"/getTaxTotal",
+                    success: function(results){
+                        var taxes = JSON.parse(results);
+                        $("#taxes").html("");
+                        for(var i=0;i<taxes.length;i++){
+                            if(taxes[i].taxed===true){
+                                $("#taxes").append('<li class="line-item tax-item"><strong>'+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span></li>");
+                            }
                         }
                     }
-                } 
-            });
-            $.ajax({
-                url: CARTURL+"/getTotal",
-                success: function(total){
-                    $(".total-amount").text(total);
-                }
-            });
-        }
-    });
+                });
+                $.ajax({
+                    url: CARTURL+"/getTotal",
+                    success: function(total){
+                        $(".total-amount").text(total);
+                        vividStore.nextPane(obj);
+                        $('.whiteout').remove();
+                    }
+                });
+            }
+        });
+
+    }
+});
     $(".btn-previous-pane").click(function(){
         //hide the body of the current pane, go to the next pane, show that body.
         var pane = $(this).closest(".checkout-form-group").find('.checkout-form-group-body').parent().prev();
