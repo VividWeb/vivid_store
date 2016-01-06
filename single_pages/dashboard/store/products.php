@@ -125,7 +125,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             <?php echo $form->label("pQty", t("Stock Level"));?>
                             <?php $qty = $p->getProductQty(); ?>
                             <div class="input-group">
-                                <?php echo $form->text("pQty", $qty?$qty:'999', array(($p->isUnlimited() ? 'disabled' : '')=>($p->isUnlimited() ? 'disabled' : '')));?>
+                                <?php echo $form->text("pQty", $qty!==''?$qty:'999', array(($p->isUnlimited() ? 'disabled' : '')=>($p->isUnlimited() ? 'disabled' : '')));?>
                                 <div class="input-group-addon">
                                     <?php echo $form->checkbox('pQtyUnlim', '1', $p->isUnlimited())?>
                                     <?php echo $form->label('pQtyUnlim', t('Unlimited'))?>
