@@ -41,16 +41,10 @@ class Controller extends BlockController
     }
     public function registerViewAssets()
     {
-        
-        $this->addHeaderItem("
-            <script type=\"text/javascript\">
-                var PRODUCTMODAL = '".View::url('/productmodal')."';
-                var CARTURL = '".View::url('/cart')."';
-                var CHECKOUTURL = '".View::url('/checkout')."';
-                var QTYMESSAGE = '".t('Quantity must be greater than zero')."';
-            </script>
-        ");
+        $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
         $this->requireAsset('css', 'vivid-store');
         $this->requireAsset('core/lightbox');
     }

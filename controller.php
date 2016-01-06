@@ -8,6 +8,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
 use Route;
 use Asset;
 use AssetList;
+use View;
 
 class Controller extends Package
 {
@@ -134,6 +135,18 @@ class Controller extends Package
             $shippingMethodType->delete();
         }
         parent::uninstall();
+    }
+
+    public static function returnHeaderJS()
+    {
+        return "
+        <script type=\"text/javascript\">
+            var PRODUCTMODAL = '" . View::url('/productmodal') . "';
+            var CARTURL = '" . View::url('/cart') . "';
+            var CHECKOUTURL = '" . View::url('/checkout') . "';
+            var QTYMESSAGE = '" . t('Quantity must be greater than zero') . "';
+        </script>
+        ";
     }
 
 
