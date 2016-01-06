@@ -2,6 +2,7 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
+use File;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
