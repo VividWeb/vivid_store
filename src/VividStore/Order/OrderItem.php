@@ -39,8 +39,8 @@ class OrderItem extends Object
         
         foreach($data['productAttributes'] as $optionGroup=>$selectedOption){
             $optionGroupID = str_replace("pog","",$optionGroup);
-            $optionGroupName = StoreProduct::getProductOptionGroupNameByID($optionGroupID);
-            $optionValue = StoreProduct::getProductOptionValueByID($selectedOption);
+            $optionGroupName = OrderItem::getProductOptionGroupNameByID($optionGroupID);
+            $optionValue = OrderItem::getProductOptionValueByID($selectedOption);
             
             
             $values = array($oiID,$optionGroupName,$optionValue);
