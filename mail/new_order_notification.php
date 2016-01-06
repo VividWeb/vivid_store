@@ -16,13 +16,13 @@ ob_start();
 <body bgcolor='#ddd'>
     
     <div style="font-family: Arial; background: #fff; box-shadow: 0 3px 3px #ccc; width: 600px; max-width: 100%;color: #444;">
-        <div style="background: #444; padding: 20px; color: #fff; font-size: 24px;"><?=t('An order has been placed!')?></div>
+        <div style="background: #444; padding: 20px; color: #fff; font-size: 24px;"><?=t('An order has been placed')?></div>
         <div style="padding: 20px;">
             <p><strong><?=t("Order")?>#:</strong> <?=$order->getOrderID()?></p>
             <p><?=t('An order has been placed on your website.')?></p>
             <table border="0" width="100%">
                 <tr>
-                    <td width="50%">
+                    <td width="50%" valign="top">
                         <strong><?=t('Billing Information')?></strong>
                         <p>
                             <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
@@ -30,10 +30,12 @@ ob_start();
                             <?php if($order->getAttribute("billing_address")->address2){
                                 echo $order->getAttribute("billing_address")->address2 . "<br>";
                             } ?>
-                            <?=$order->getAttribute("billing_address")->city?>, <?=$order->getAttribute("billing_address")->state_province?> <?=$order->getAttribute("billing_address")->postal_code?><br>
-                            <?=$order->getAttribute("billing_phone")?>
+                            <?=$order->getAttribute("billing_address")->city?>, <?=$order->getAttribute("billing_address")->state_province?> <?=$order->getAttribute("billing_address")->postal_code?><br><br>
+                            <strong><?=t('Email')?></strong>: <a href="mailto:<?=$order->getAttribute("email"); ?>"><?=$order->getAttribute("email"); ?></a><br>
+                            <strong><?=t('Phone')?></strong>: <?=$order->getAttribute("billing_phone")?><br>
                         </p>
                     </td>
+                    <td valign="top">
                     <td>
                         <?php if ($order->isShippable()) { ?>
                         <strong><?=t('Shipping Information')?></strong>
