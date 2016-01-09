@@ -21,7 +21,7 @@ openModal: function(content) {
 }
 ,
 waiting: function(){
-    vividStore.openModal("<div class='vivid-store-spinner'><i class='fa fa-spinner fa-spin'></i></div>");
+    vividStore.openModal("<div class='vivid-store-spinner-container'><div class='vivid-store-spinner'></div></div>");
 },
 
 exitModal: function(){
