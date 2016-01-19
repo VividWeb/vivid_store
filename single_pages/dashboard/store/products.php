@@ -57,10 +57,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <div class="col-sm-7 store-pane active" id="product-overview">
 
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-xs-8">
                         <div class="form-group">
                             <?php echo $form->label("pName", t("Product Name"));?>
                             <?php echo $form->text("pName", $p->getProductName());?>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="form-group">
+                            <?php echo $form->label("pSKU", t("Code / SKU"));?>
+                            <?php echo $form->text("pSKU", $p->getProductSKU());?>
                         </div>
                     </div>
                 </div>
@@ -584,15 +590,18 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
                         //load up items
                         <?php
+
                         if($optItems) {
                             $count = count($groups);
                             for($i=0;$i<$count;$i++){
                                 foreach($optItems as $option){
                                     //go through all options, see if it belongs in the group we're on in the for loop
-                                    if($option->getProductOptionGroupID() == $groups[$i]->getID()){?>
+                                    if($option->getProductOptionGroupID() == $groups[$i]->getID()){
+
+                                    ?>
                         var optItemsContainer = $(".option-group-item-container[data-group='<?=$i?>']");
                         optItemsContainer.append(optItemsTemplate({
-                            poiName: '<?=$option->getName()?>',
+                            poiName: '<?=h($option->getName())?>',
                             poiID: '<?=$option->getID()?>',
                             optGroup: <?=$i?>,
                             sort: <?=$option->getSort()?>
@@ -611,6 +620,74 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     });
 
                 </script>
+
+            <br />
+            <h4><?php echo t('Variations');?></h4>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th><?php echo t('Options');?></th>
+                    <th><?php echo t('Variation');?></th>
+                    <th><?php echo t('Stock Level');?></th>
+                </tr>
+
+                 <?php
+                  foreach($comboOptions as $combinedOptions) {
+                       ?>
+                        <tr>
+                            <td>
+                                <?php
+                                $comboIDs = array();
+
+                                foreach($combinedOptions as $optionItemID) {
+                                    $comboIDs[] =  $optionItemID;
+                                    sort($comboIDs);
+
+                                    echo '<span class="label label-primary">' .  $groupLookup[$optionItemLookup[$optionItemID]->getProductOptionGroupID()]->getName() . ': '.  $optionItemLookup[$optionItemID]->getName() . '</span><br />';
+                                }?>
+
+                                <input type="hidden" name="option_combo[]" value="<?php echo implode('_', $comboIDs);?>" />
+
+                                <?php if (isset($variationLookup[implode('_', $comboIDs)])) {
+                                    $variation = $variationLookup[implode('_', $comboIDs)];
+                                } else {
+                                    $variation = null;
+                                } ?>
+
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <?php echo $form->label("pvSKU[]", t("SKU"));?>
+                                <?php echo $form->text("pvSKU[]", $variation?$variation->getVariationSKU():'');?>
+                                 </div>
+
+                                <?php echo $form->label("pvPrice[]", t("Price"));?>
+                                <div class="input-group">
+
+                                <div class="input-group-addon">
+                                    <?= Config::get('vividstore.symbol');?>
+                                </div>
+
+                                <?php echo $form->text("pvPrice[]", $variation?$variation->getVariationPrice():'', array('placeholder'=>t('Base price')));?>
+                                    </div>
+                            </td>
+
+                            <td>
+                                <div class="input-group">
+                                    <?php echo $form->text("pvQty[]", $variation ? $variation->getVariationQty() : '');?>
+                                        <br /><label><?php echo $form->checkbox('pvQtyUnlim[]', '1', $variation ? $variation->isUnlimited() : true)?> <?php echo t('Unlimited');?></label>
+
+                                </div>
+                            </td>
+                        </tr>
+                    <?php
+
+
+                   } ?>
+
+            </table>
+
+
 
             </div><!-- #product-options -->
 
@@ -820,7 +897,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     ?>
                     <tr>
                         <td><?php echo $p->getProductImageThumb();?></td>
-                        <td><strong><a href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><?= $p->getProductName() ?></a></strong></td>
+                        <td><strong><a href="<?php echo View::url('/dashboard/store/products/edit/', $p->getProductID())?>"><?= $p->getProductName();
+                                $sku = $p->getProductSKU();
+                                if ($sku) {
+                                    echo ' (' .$sku . ')';
+                                }
+                                ?>
+                                </a></strong></td>
                         <td>
                             <?php
                             if ($p->isActive()) {

@@ -19,6 +19,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StorePro
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOption as StoreProductOption;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
@@ -107,12 +108,61 @@ class Products extends DashboardPageController
             $this->redirect('/dashboard/store/products/');
         }
 
+        $optItems = $product->getProductOptionItems();
+        $groups = $product->getProductOptionGroups();
+
         $this->set('p',$product);
         $this->set("images",$product->getProductImages());
-        $this->set("groups",$product->getProductOptionGroups());
-        $this->set('optItems',$product->getProductOptionItems());
+        $this->set("groups",$groups);
+        $this->set('optItems',$optItems);
         $this->set('locationPages', $product->getProductLocationPages());
         $this->set('pgroups', $product->getProductGroupIDs());
+
+        $variations = $product->getProductVariations();
+        $variationLookup = array();
+
+        $optionArrays = array();
+        $optionItemLookup = array();
+
+        foreach($optItems as $optItem) {
+            $optionArrays[$optItem->getProductOptionGroupID()][] = $optItem->getID();
+            $optionItemLookup[ $optItem->getID()] = $optItem;
+        }
+
+
+
+        $groupLookup = array();
+
+        foreach($groups as $group) {
+            $groupLookup[$group->getID()] = $group;
+        }
+
+        $this->set('groupLookup', $groupLookup);
+
+        $optionArrays = array_values($optionArrays);
+        $comboOptions = $this->combinations($optionArrays);
+
+        $this->set('comboOptions', $comboOptions);
+        $this->set('optionItemLookup', $optionItemLookup);
+
+        foreach($variations as $variation) {
+            $options = $variation->getOptions();
+            $optionids = array();
+
+            foreach($options as $varoption) {
+                $option = $varoption->getOption();
+
+                if ($option) {
+                    $optionids[] = $option->getID();
+                }
+            }
+
+            sort($optionids);
+            $variationLookup[implode('_',$optionids)] = $variation;
+        }
+
+        $this->set('variations', $variations);
+        $this->set('variationLookup', $variationLookup);
 
         //populate "Groups" select box options
         $grouplist = StoreGroupList::getGroupList();
@@ -136,8 +186,35 @@ class Products extends DashboardPageController
 
         $this->set('pageTitle', t('Edit Product'));
         $this->set('usergroups', $usergrouparray);
-        
     }
+
+    private function combinations($arrays, $i = 0) {
+        if (!isset($arrays[$i])) {
+            return array();
+        }
+        if ($i == count($arrays) - 1) {
+            return $arrays[$i];
+        }
+
+        // get combinations from subsequent arrays
+        $tmp = $this->combinations($arrays, $i + 1);
+
+        $result = array();
+
+        // concat each array from tmp with each element from $arrays[$i]
+        foreach ($arrays[$i] as $v) {
+            foreach ($tmp as $t) {
+                $result[] = is_array($t) ?
+                    array_merge(array($v), $t) :
+                    array($v, $t);
+            }
+        }
+
+        return $result;
+    }
+
+
+
     public function generate($pID,$templateID=null)
     {
         StoreProduct::getByID($pID)->generatePage($templateID);
@@ -217,7 +294,11 @@ class Products extends DashboardPageController
                 
                 //save category locations
                 StoreProductLocation::addLocationsForProduct($data,$product);
-                
+
+                // save variations
+                StoreProductVariation::addVariations($data, $product);
+
+
                 if($data['pID']){
                     $this->redirect('/dashboard/store/products/', 'updated');
                 } else {
