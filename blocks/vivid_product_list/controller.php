@@ -9,6 +9,7 @@ use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
 
+
 class Controller extends BlockController
 {
     protected $btTable = 'btVividStoreProductList';

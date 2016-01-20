@@ -1,10 +1,29 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied."));
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 if($products){
     echo "<div class='product-list clearfix'>";
 
     $i=1;
     foreach($products as $product){
+
+        if ($product->hasVariations()) {
+            $variations = StoreProductVariation::getVariationsForProduct($product);
+
+            $variationLookup = array();
+
+            if (!empty($variations)) {
+                foreach ($variations as $variation) {
+                    // returned pre-sorted
+                    $ids = $variation->getOptionItemIDs();
+                    $variationLookup[implode('_', $ids)] = $variation;
+                }
+
+                $product->setVariation($variations[0]);
+            }
+        }
+
+
         //this is done so we can get a type of active class if there's a product list on the product page
         $class = "product-list-item vivid-store-col-".$productsPerRow;
         if(Page::getCurrentPage()->getCollectionID()==$product->getProductPageID()){
@@ -84,10 +103,37 @@ if($products){
                     <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
                 <?php } ?>
                 <?php } ?>
+
+
             
             </form><!-- .product-list-item-inner -->
             
         </div><!-- .product-list-item -->
+
+
+        <?php if ($product->hasVariations()) {?>
+            <script>
+                $(function() {
+                    <?php
+                    $varationData = array();
+                    foreach($variationLookup as $key=>$variation) {
+                        $varationData[$key] = array('price'=>$variation->getFormattedVariationPrice());
+                    } ?>
+
+                    $('.product-list #form-add-to-cart-<?=$product->getProductID()?> select').change(function(){
+                    var variationdata = <?php echo json_encode($varationData); ?>;
+                    var ar = [];
+
+                    $('.product-list #form-add-to-cart-<?=$product->getProductID()?> select').each(function(){
+                        ar.push($(this).val());
+                    })
+
+                    ar.sort();
+                    $(this).closest('.product-list-item-inner').find('.product-list-price').html(variationdata[ar.join('_')]['price']);
+                    });
+                });
+            </script>
+        <?php } ?>
         
         <?php 
             if($i%$productsPerRow==0){
