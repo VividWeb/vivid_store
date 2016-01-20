@@ -622,6 +622,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 </script>
 
             <br />
+
+            <div class="form-group" id="pVariations">
+                <?php echo $form->checkbox('pVariations', '1', $p->hasVariations())?>
+                <?php echo $form->label('pVariations', t('Options have different prices, SKUs or stock levels'))?>
+            </div>
+
             <h4><?php echo t('Variations');?></h4>
 
             <table class="table table-bordered">
@@ -643,8 +649,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                     $comboIDs[] =  $optionItemID;
                                     sort($comboIDs);
 
-                                    echo '<span class="label label-primary">' .  $groupLookup[$optionItemLookup[$optionItemID]->getProductOptionGroupID()]->getName() . ': '.  $optionItemLookup[$optionItemID]->getName() . '</span><br />';
-                                }?>
+                                    $group = $groupLookup[$optionItemLookup[$optionItemID]->getProductOptionGroupID()];
+
+                                    echo '<span class="label label-primary">' . ($group ? $group->getName() : '') . ': '.  $optionItemLookup[$optionItemID]->getName() . '</span><br />';
+                                }
+
+                                ?>
 
                                 <input type="hidden" name="option_combo[]" value="<?php echo implode('_', $comboIDs);?>" />
 

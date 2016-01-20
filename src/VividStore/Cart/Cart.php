@@ -8,6 +8,7 @@ use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
@@ -17,7 +18,7 @@ class Cart
 
     public static function getCart() {
 
-        // this acts as a singleton, in that it wil only fetch the cart form the session and check it for validity once per request
+        // this acts as a singleton, in that it wil only fetch the cart from the session and check it for validity once per request
         if (!isset(self::$cart)) {
             $cart = Session::get('vividstore.cart');
             if(!is_array($cart)) {
@@ -117,6 +118,28 @@ class Cart
             }
         }
 
+        $optionItemIds = array();
+
+        // search for product options, if found, collect the id
+        foreach ($cartItem['productAttributes'] as $name=>$value) {
+            if (substr( $name, 0, 3) == 'pog') {
+                $optionItemIds[] = $value;
+            }
+        }
+
+        if (!empty($optionItemIds)) {
+            // find the variation via the ids of the options
+            $variation = StoreProductVariation::getByOptionItemIDs($optionItemIds);
+
+            // association the variation with the product
+            if ($variation) {
+                $product->setVariation($variation);
+            }
+
+            $cartItem['product']['variation'] = $variation->getID();
+        }
+
+
         $cart = self::getCart();
 
         $exists = self::checkForExistingCartItem($cartItem);
@@ -160,9 +183,7 @@ class Cart
 
         }
 
-
         Session::set('vividstore.cart', $cart);
-
         return array('added' => $added, 'exclusive'=>$product->isExclusive(), 'removeexistingexclusive'=> $removeexistingexclusive);
     }
 

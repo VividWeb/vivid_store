@@ -37,6 +37,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOpt
             $pID = $cartItem['product']['pID'];
             $qty = $cartItem['product']['qty'];
             $product = StoreProduct::getByID($pID);
+
+            if ($cartItem['product']['variation']) {
+                $product->setVariation($cartItem['product']['variation']);
+            }
+
             if($i%2==0){$classes=" striped"; }else{ $classes=""; }
             if(is_object($product)){
     ?>

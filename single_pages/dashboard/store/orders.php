@@ -81,7 +81,11 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                     foreach($items as $item){
               ?>
                 <tr>
-                    <td><?=$item->getProductName()?></td>
+                    <td><?=$item->getProductName()?>
+                    <?php if ($sku = $item->getSKU()) {
+                    echo '(' .  $sku . ')';
+                     } ?>
+                    </td>
                     <td>
                         <?php
                             $options = $item->getProductOptions();

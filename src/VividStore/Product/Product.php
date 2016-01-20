@@ -163,14 +163,22 @@ class Product
     protected $pVariations;
 
     // not stored, used for price/sku/etc lookup purposes
-    protected $variationID;
+    protected $variation;
 
-    public function setVariationID($variationID) {
-        $this->variationID = $variationID;
+    public function setVariation($variation) {
+        if (is_object($variation)) {
+            $this->variation = $variation;
+        } elseif(is_integer($variation)) {
+            $variation = StoreProductVariation::getByID($variation);
+
+            if ($variation) {
+                $this->variation = $variation;
+            }
+        }
     }
 
-    public function getVariationID() {
-        return $this->variationID;
+    public function getVariation() {
+        return $this->variation;
     }
 
     public function setCollectionID($cID){ $this->cID = $cID; }
@@ -238,7 +246,7 @@ class Product
         $product->setProductSalePrice($data['pSalePrice']);
         $product->setIsFeatured($data['pFeatured']);
         $product->setProductQty($data['pQty']);
-        $product->setIsUnlimited($data['pQtyUnlim']);
+        $product->setIsUnlimited($data['$productpQtyUnlim']);
         $product->setAllowBackOrder($data['pBackOrder']);
         $product->setNoQty($data['pNoQty']);
         $product->setProductTaxClass($data['pTaxClass']);
@@ -263,14 +271,20 @@ class Product
 
     public function getProductID(){ return $this->pID; }
     public function getProductName(){ return $this->pName; }
-    public function getProductSKU(){ return $this->pSKU; }
+    public function getProductSKU(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            if ($variation) {
+                return $variation->getVariationSKU();
+            }
+        } else {
+            return $this->pSKU;
+        }
+    }
     public function getProductPageID() { return $this->cID; }
     public function getProductDesc(){ return $this->pDesc; }
     public function getProductDetail() { return $this->pDetail; }
     public function getProductPrice(){
-        if ($this->getVariationID()) {
-            $variation = StoreProductVariation::getByID($this->getVariationID());
-
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
             if ($variation) {
                 return $variation->getVariationPrice();
             }
@@ -278,7 +292,7 @@ class Product
             return $this->pPrice;
         }
     }
-    public function getFormattedPrice(){ return StorePrice::format($this->pPrice); }
+    public function getFormattedPrice(){ return StorePrice::format($this->getActivePrice()); }
     public function getProductSalePrice() { return $this->pSalePrice; }
     public function getFormattedSalePrice(){ return StorePrice::format($this->pSalePrice); }
     public function getActivePrice(){

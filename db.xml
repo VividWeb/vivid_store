@@ -30,6 +30,7 @@
         <field name="pID" type="I"></field>
         <field name="oID" type="I"></field>
         <field name="oiProductName" type="C" size="255"></field>
+        <field name="oiSKU" type="C" size="255"></field>
         <field name="oiPricePaid" type="N" size="10.4"></field>
         <field name="oiTax" type="C" size="255"></field>
         <field name="oiTaxIncluded" type="C" size="255"></field>

@@ -4,6 +4,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariationOptionItem as StoreProductVariationOptionItem;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use Doctrine\Common\Collections\ArrayCollection;
 use Database;
 
@@ -89,6 +90,19 @@ class ProductVariation
         return $this->options;
     }
 
+    public function getOptionItemIDs() {
+        $options = $this->getOptions();
+
+        $optionids = array();
+
+        foreach($options as $opt) {
+            $optionids[] = $opt->getOption()->getID();
+        }
+
+        sort($optionids);
+        return $optionids;
+    }
+
 
     /**
      * @return mixed
@@ -137,6 +151,11 @@ class ProductVariation
     public function getVariationPrice()
     {
         return $this->pvPrice;
+    }
+
+    public function getFormattedVariationPrice()
+    {
+        return StorePrice::format($this->pvPrice);
     }
 
     /**
@@ -349,7 +368,7 @@ class ProductVariation
 
     public function save()
     {
-        $em = Database::get()->getEntityManager();
+        $em = Database::connection()->getEntityManager();
         $em->persist($this);
         $em->flush();
     }

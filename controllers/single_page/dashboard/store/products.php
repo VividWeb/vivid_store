@@ -129,8 +129,6 @@ class Products extends DashboardPageController
             $optionItemLookup[ $optItem->getID()] = $optItem;
         }
 
-
-
         $groupLookup = array();
 
         foreach($groups as $group) {
@@ -141,6 +139,18 @@ class Products extends DashboardPageController
 
         $optionArrays = array_values($optionArrays);
         $comboOptions = $this->combinations($optionArrays);
+
+        $checkedOptions = array();
+
+        foreach($comboOptions as $option) {
+            if (!is_array($option)) {
+                $checkedOptions[] = array($option);
+            } else {
+                $checkedOptions[] =$option;
+            }
+        }
+
+        $comboOptions = $checkedOptions;
 
         $this->set('comboOptions', $comboOptions);
         $this->set('optionItemLookup', $optionItemLookup);

@@ -28,6 +28,11 @@ class ProductVariationOptionItem
      */
     protected $option;
 
+
+    public function getID() {
+        return $this->pvoiID;
+    }
+
     public function setVariation($variation)
     {
         $this->variation = $variation;

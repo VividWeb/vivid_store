@@ -98,7 +98,7 @@ if(is_object($p)){?>
             </div>
             <?php } ?>
             
-            <div class="clearfix col-container product-options">
+            <div class="clearfix col-container product-options" id="product-options-<?php echo $bID; ?>">
                 <?php if ($p->allowQuantity()) { ?>
                 <div class="product-modal-option-group vivid-store-col-2">
                     <label class="option-group-label"><?=t('Quantity')?></label>
@@ -148,12 +148,35 @@ if(is_object($p)){?>
     </div>
     
 </form>
-<script type="text/javascript">
-$(function() {
+
+    <script type="text/javascript">
+    $(function() {
     $('.product-thumb').magnificPopup({
         type:'image',
         gallery:{enabled:true}
     });
+
+    <?php if ($p->hasVariations()) {?>
+
+    <?php
+    $varationData = array();
+    foreach($variationLookup as $key=>$variation) {
+        $varationData[$key] = array('price'=>$variation->getFormattedVariationPrice());
+    } ?>
+
+    $('#product-options-<?php echo $bID; ?> select').change(function(){
+        var variationdata = <?php echo json_encode($varationData); ?>;
+        var ar = [];
+
+        $('#product-options-<?php echo $bID; ?> select').each(function(){
+            ar.push($(this).val());
+        })
+
+        ar.sort();
+        $(this).closest('.product-detail-block').find('.product-price').html(variationdata[ar.join('_')]['price']);
+    });
+    <?php } ?>
+
 });
 </script>
    

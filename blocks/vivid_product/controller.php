@@ -9,6 +9,7 @@ use Page;
 use URL;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
@@ -37,6 +38,25 @@ class Controller extends BlockController
         } else {
             $p = StoreProduct::getByID($this->pID);
         }
+
+        if ($p->hasVariations()) {
+            $variations = StoreProductVariation::getVariationsForProduct($p);
+
+            $variationLookup = array();
+
+            if (!empty($variations)) {
+                foreach ($variations as $variation) {
+                    // returned pre-sorted
+                    $ids = $variation->getOptionItemIDs();
+                    $variationLookup[implode('_', $ids)] = $variation;
+                }
+
+                $p->setVariation($variations[0]);
+            }
+
+            $this->set('variationLookup', $variationLookup);
+        }
+
         $this->set('p',$p);
     }
     public function registerViewAssets()
