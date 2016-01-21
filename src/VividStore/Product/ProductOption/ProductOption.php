@@ -28,23 +28,30 @@ class ProductOption
                 }
 
                 if (!$optionGroup) {
-                    $optionGroup = StoreProductOptionGroup::add($product,$data['pogName'][$i],$data['pogSort'][$i]);
+                    if ($data['pogName'][$i]) {
+                        $optionGroup = StoreProductOptionGroup::add($product,$data['pogName'][$i],$data['pogSort'][$i]);
+                    }
                 }
 
-                $pogID = $optionGroup->getID();
-                //add option items
-                $itemsInGroup = count($data['optGroup'.$i]);
-                if($itemsInGroup>0){
-                    for($gi=0;$gi<$itemsInGroup;$gi++,$ii++){
+                if ($optionGroup) {
+                    $pogID = $optionGroup->getID();
+                    //add option items
+                    $itemsInGroup = count($data['optGroup'.$i]);
+                    if($itemsInGroup>0){
+                        for($gi=0;$gi<$itemsInGroup;$gi++,$ii++){
 
-                        if ($data['poiID'][$ii] > 0) {
-                            $option = StoreProductOptionItem::getByID($data['poiID'][$ii]);
-                            $option->update($product,$data['poiName'][$ii],$data['poiSort'][$ii]);
-                        } else {
-                            StoreProductOptionItem::add($product,$pogID,$data['poiName'][$ii],$data['poiSort'][$ii]);
+                            if ($data['poiID'][$ii] > 0) {
+                                $option = StoreProductOptionItem::getByID($data['poiID'][$ii]);
+                                $option->update($product,$data['poiName'][$ii],$data['poiSort'][$ii]);
+                            } else {
+                                if ($data['poiName'][$ii]) {
+                                    StoreProductOptionItem::add($product,$pogID,$data['poiName'][$ii],$data['poiSort'][$ii]);
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }
     }

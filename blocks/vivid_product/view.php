@@ -130,11 +130,8 @@ if(is_object($p)){?>
             <?php if($showCartButton) {?>
             <div class="product-button-shell">
                 <input type="hidden" name="pID" value="<?=$p->getProductID()?>">
-                <?php if($p->isSellable()){?>
-                <a href="javascript:vividStore.addToCart(<?=$p->getProductID()?>,false)" class="btn btn-primary"><?= ($btnText ? h($btnText) : t("Add to Cart"))?></a>
-                <?php } else { ?>
-                    <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
-                <?php } ?>
+                    <a href="javascript:vividStore.addToCart(<?=$p->getProductID()?>,false)" class="btn btn-primary add-to-cart-button <?php echo ($p->isSellable() ? '' : 'hidden');?> "><?= ($btnText ? h($btnText) : t("Add to Cart"))?></a>
+                    <span class="out-of-stock-label <?php echo ($p->isSellable() ? 'hidden' : '');?>"><?=t("Out of Stock")?></span>
             </div>
             <?php } ?>
             
@@ -161,7 +158,7 @@ if(is_object($p)){?>
     <?php
     $varationData = array();
     foreach($variationLookup as $key=>$variation) {
-        $varationData[$key] = array('price'=>$variation->getFormattedVariationPrice());
+        $varationData[$key] = array('price'=>$variation->getFormattedVariationPrice(), 'available'=>($variation->isSellable()));
     } ?>
 
     $('#product-options-<?php echo $bID; ?> select').change(function(){
@@ -173,7 +170,18 @@ if(is_object($p)){?>
         })
 
         ar.sort();
-        $(this).closest('.product-detail-block').find('.product-price').html(variationdata[ar.join('_')]['price']);
+        var pdb = $(this).closest('.product-detail-block');
+
+        pdb.find('.product-price').html(variationdata[ar.join('_')]['price']);
+
+        if (variationdata[ar.join('_')]['available']) {
+            pdb.find('.out-of-stock-label').addClass('hidden');
+            pdb.find('.add-to-cart-button').removeClass('hidden');
+        } else {
+            pdb.find('.out-of-stock-label').removeClass('hidden');
+            pdb.find('.add-to-cart-button').addClass('hidden');
+        }
+
     });
     <?php } ?>
 

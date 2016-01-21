@@ -17,8 +17,8 @@ class ProductVariationOptionItem
     protected $pvoiID;
 
     /**
-     * @ManyToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation", inversedBy="options")*
-     * @JoinColumn(name="pvID", referencedColumnName="pvID")
+     * @ManyToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation", inversedBy="options", cascade={"persist"})*
+     * @JoinColumn(name="pvID", referencedColumnName="pvID", onDelete="CASCADE")
      */
     protected $variation;
 

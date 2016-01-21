@@ -163,7 +163,11 @@ class ProductVariation
      */
     public function setVariationPrice($pvPrice)
     {
-        $this->pvPrice = $pvPrice;
+        if ($pvPrice != ''){
+            $this->pvPrice = $pvPrice;
+        } else {
+            $this->pvPrice = null;
+        }
     }
 
     /**
@@ -179,7 +183,11 @@ class ProductVariation
      */
     public function setVariationSalePrice($pvSalePrice)
     {
-        $this->pvSalePrice = $pvSalePrice;
+        if ($pvSalePrice != ''){
+            $this->pvSalePrice = $pvSalePrice;
+        } else {
+            $this->pvSalePrice = null;
+        }
     }
 
     /**
@@ -298,40 +306,75 @@ class ProductVariation
         return $this->getVariationQtyUnlim();
     }
 
+    public function isSellable()
+    {
+        if($this->isUnlimited() || $this->getVariationQty()> 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function addVariations(array $data, StoreProduct $product) {
-        foreach($data['option_combo'] as $key=>$optioncombo) {
-            $optionvalues = explode('_', $optioncombo);
+        $variationIDs = array();
 
-            $variation = self::getByOptionItemIDs($optionvalues);
 
-            if (!$variation) {
-                $variation = self::add(
-                    $product->getProductID(),
-                    $data['pvSKU'][$key],
-                    $data['pvPrice'][$key],
-                    $data['pvQty'][$key],
-                    $data['pvQtyUnlim'][$key]
-                );
+        if (!empty($data['option_combo'])) {
+            foreach($data['option_combo'] as $key=>$optioncombo) {
+                $optionvalues = explode('_', $optioncombo);
+                $variation = self::getByOptionItemIDs($optionvalues);
 
-                foreach($optionvalues as $optionvalue) {
-                    $option = StoreProductOptionItem::getByID($optionvalue);
+                if (!$variation) {
+                    $variation = self::add(
+                        $product->getProductID(),
+                        $data['pvSKU'][$key],
+                        $data['pvPrice'][$key],
+                        $data['pvSalePrice'][$key],
+                        $data['pvQty'][$key],
+                        $data['pvQtyUnlim'][$key]
+                    );
 
-                    if ($option) {
-                        $variationoption = new StoreProductVariationOptionItem();
-                        $variationoption->setOption($option);
-                        $variationoption->setVariation($variation);
-                        $variationoption->save();
+                    foreach($optionvalues as $optionvalue) {
+                        $option = StoreProductOptionItem::getByID($optionvalue);
+
+                        if ($option) {
+                            $variationoption = new StoreProductVariationOptionItem();
+                            $variationoption->setOption($option);
+                            $variationoption->setVariation($variation);
+                            $variationoption->save();
+                        }
                     }
-                }
-            } else {
-                $variation->setVariationSKU($data['pvSKU'][$key]);
-                $variation->setVariationPrice($data['pvPrice'][$key]);
-                $variation->setVariationQty($data['pvQty'][$key]);
-                $variation->setVariationQtyUnlim($data['pvQtyUnlim'][$key]);
-                $variation->save();
+                } else {
+                    $variation->setVariationSKU($data['pvSKU'][$key]);
+                    $variation->setVariationPrice($data['pvPrice'][$key]);
+                    $variation->setVariationSalePrice($data['pvSalePrice'][$key]);
+                    $variation->setVariationQty($data['pvQty'][$key]);
+                    $variation->setVariationQtyUnlim($data['pvQtyUnlim'][$key]);
+                    $variation->save();
 
+                }
+
+                $variationIDs[] = $variation->getID();
             }
         }
+
+        $db = Database::connection();
+
+        if (!empty($variationIDs)) {
+            $options = implode(',', $variationIDs);
+            $pvIDstoDelete = $db->getAll("SELECT pvID FROM VividStoreProductVariations WHERE pID = ? and pvID not in ($options)", array($product->getProductID()));
+
+
+            if (!empty($pvIDstoDelete)) {
+                foreach($pvIDstoDelete as $pvID) {
+                    $variation = self::getByID($pvID);
+                    if ($variation) {
+                        $variation->remove();
+                    }
+                }
+            }
+        }
+
     }
 
     public static function getByID($pvID) {
@@ -340,12 +383,13 @@ class ProductVariation
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation', $pvID);
     }
 
-    public static function add($productID, $sku, $price, $qty, $qtyUnlim)
+    public static function add($productID, $sku, $price, $salePrice, $qty, $qtyUnlim)
     {
         $variation = new self();
         $variation->setProductID($productID);
         $variation->setVariationSKU($sku);
         $variation->setVariationPrice($price);
+        $variation->setVariationSalePrice($salePrice);
         $variation->setVariationQty($qty);
         $variation->setVariationQtyUnlim($qtyUnlim);
         $variation->save();
@@ -378,6 +422,13 @@ class ProductVariation
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation')->findBy(array('pID' => $product->getProductID()));
+    }
+
+    public function remove()
+    {
+        $em = Database::connection()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
     }
 
 

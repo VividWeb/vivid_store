@@ -246,7 +246,7 @@ class Product
         $product->setProductSalePrice($data['pSalePrice']);
         $product->setIsFeatured($data['pFeatured']);
         $product->setProductQty($data['pQty']);
-        $product->setIsUnlimited($data['$productpQtyUnlim']);
+        $product->setIsUnlimited($data['pQtyUnlim']);
         $product->setAllowBackOrder($data['pBackOrder']);
         $product->setNoQty($data['pNoQty']);
         $product->setProductTaxClass($data['pTaxClass']);
@@ -274,7 +274,13 @@ class Product
     public function getProductSKU(){
         if ($this->hasVariations() && $variation = $this->getVariation()) {
             if ($variation) {
-                return $variation->getVariationSKU();
+                $varsku = $variation->getVariationSKU();
+
+                if ($varsku) {
+                    return $varsku;
+                } else {
+                    return $this->pSKU;
+                }
             }
         } else {
             return $this->pSKU;
@@ -286,7 +292,13 @@ class Product
     public function getProductPrice(){
         if ($this->hasVariations() && $variation = $this->getVariation()) {
             if ($variation) {
-                return $variation->getVariationPrice();
+                $varprice = $variation->getVariationPrice();
+
+                if ($varprice) {
+                    return $varprice;
+                } else {
+                    return $this->pPrice;
+                }
             }
         } else {
             return $this->pPrice;
@@ -371,13 +383,17 @@ class Product
     
     public function isSellable()
     {
-        if($this->getProductQty() > 0 || $this->isUnlimited()){
-            return true;
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+           return $variation->isSellable();
         } else {
-            if($this->allowBackOrders()){
+            if($this->getProductQty() > 0 || $this->isUnlimited()){
                 return true;
             } else {
-                return false;
+                if($this->allowBackOrders()){
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
     }

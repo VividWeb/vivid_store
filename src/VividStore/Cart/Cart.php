@@ -41,7 +41,17 @@ class Cart
                         $update = true;
                     }
 
-                    $checkeditems[] = $cartitem;
+                    $include = true;
+
+                    if ( $cartitem['product']['variation']) {
+                        if (!StoreProductVariation::getByID($cartitem['product']['variation'])) {
+                            $include = false;
+                        }
+                    }
+
+                    if ($include) {
+                        $checkeditems[] = $cartitem;
+                    }
                 } else {
                     $update = true;
                 }
