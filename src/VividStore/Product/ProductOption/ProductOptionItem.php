@@ -39,6 +39,12 @@ class ProductOptionItem
      */
     protected $poiSort;
 
+    /** @OneToMany(targetEntity="Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariationOptionItem", mappedBy="option", cascade={"persist", "remove"})
+    * @JoinColumn(name="poiID", referencedColumnName="poiID", onDelete="CASCADE")
+    */
+    private $variationoptionitems;
+
+
     private function setProductID($pID){ $this->pID = $pID; }
     private function setProductOptionGroupID($id){ $this->pogID = $id; }
     private function setProductOptionItemName($name){ $this->poiName = $name; }

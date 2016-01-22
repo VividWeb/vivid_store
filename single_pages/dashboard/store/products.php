@@ -545,7 +545,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     <div class="option-item clearfix form-horizontal" data-order="<%=sort%>" data-option-group="<%=optGroup%>">
                         <div class="form-group">
                             <div class="col-sm-3 text-right">
-                                <label class="grabme"><?=t('Option')?>:</label>
+                                <label class="grabme"><i class="fa fa-arrows drag-handle pull-left"></i><?=t('Option')?>:</label>
                             </div>
                             <div class="col-sm-5">
                                 <input type="text" name="poiName[]" class="form-control" value="<%=poiName%>">
@@ -645,9 +645,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <?php echo t('Options have different prices, SKUs or stock levels');?></label>
             </div>
 
+            <?php if (!empty($comboOptions)) { ?>
             <div id="variations" class="<?php echo ($p->hasVariations() ? '' : 'hidden');?>">
             <h4><?php echo t('Variations');?></h4>
-
             <table class="table table-bordered">
                 <tr>
                     <th><?php echo t('Options');?></th>
@@ -655,7 +655,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 </tr>
 
                  <?php
-                 if (!empty($comboOptions)) {
                      foreach ($comboOptions as $combinedOptions) {
                          ?>
                          <tr>
@@ -739,10 +738,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                          </tr>
                          <?php
                      }
-                 }?>
+                 ?>
 
             </table>
             </div>
+            <?php } ?>
 
             </div><!-- #product-options -->
 

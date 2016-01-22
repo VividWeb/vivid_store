@@ -10,7 +10,6 @@ class ProductOption
 {
     public static function addProductOptions($data,$product)
     {
-
         StoreProductOptionGroup::removeOptionGroupsForProduct($product, $data['pogID']);
         StoreProductOptionItem::removeOptionItemsForProduct($product, $data['poiID']);
 
