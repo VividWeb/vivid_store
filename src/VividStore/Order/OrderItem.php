@@ -32,11 +32,20 @@ class OrderItem extends Object
         $productPrice = $product->getActivePrice();
         $sku = $product->getProductSKU();
         $qty = $data['product']['qty'];
-        if (!$product->isUnlimited()) {
-            $inStock = $product->getProductQty();
-            $newStock = $inStock - $qty;
+
+        $inStock = $product->getProductQty();
+        $newStock = $inStock - $qty;
+
+        $variation = $product->getVariation();
+
+        if ($variation) {
+            if (!$variation->isUnlimited()) {
+                $product->updateProductQty($newStock);
+            }
+        } elseif (!$product->isUnlimited()) {
             $product->updateProductQty($newStock);
         }
+
         $pID = $product->getProductID();
         $values = array($oID,$pID,$productName,$sku,$productPrice,$tax,$taxIncluded,$taxName,$qty);
         $db->Execute("INSERT INTO VividStoreOrderItems (oID,pID,oiProductName,oiSKU,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) VALUES (?,?,?,?,?,?,?,?,?)",$values);

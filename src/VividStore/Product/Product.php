@@ -177,6 +177,25 @@ class Product
         }
     }
 
+    public function setInitialVariation() {
+        if ($this->hasVariations()) {
+            $optionGroups = $this->getProductOptionGroups();
+            $optionItems = $this->getProductOptionItems();
+            $optionkeys = array();
+
+            foreach($optionGroups as $optionGroup){
+                foreach($optionItems as $option){
+                    if($option->getProductOptionGroupID()==$optionGroup->getID()){
+                        $optionkeys[] = $option->getID();
+                        break;
+                    }
+                }
+            }
+
+            $this->setVariation(StoreProductVariation::getByOptionItemIDs($optionkeys));
+        }
+    }
+
     public function getVariation() {
         return $this->variation;
     }
@@ -207,10 +226,19 @@ class Product
     public function setAutoCheckout($bool){ $this->pAutoCheckout = (!is_null($bool) ? $bool : false) ; }
     public function setIsExclusive($bool){ $this->pExclusive = (!is_null($bool) ? $bool : false); }
     public function setHasVariations($bool){ $this->pVariations = (!is_null($bool) ? $bool : false); }
+
+
     public function updateProductQty($qty)
     {
-        $this->setProductQty($qty);
-        $this->save();
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            if ($variation) {
+                $variation->setVariationQty($qty);
+                $variation->save();
+            }
+        } else {
+            $this->setProductQty($qty);
+            $this->save();
+        }
     }
 
     public static function getByID($pID) {
@@ -304,9 +332,25 @@ class Product
             return $this->pPrice;
         }
     }
+    public function getFormattedOriginalPrice(){ return StorePrice::format($this->getProductPrice()); }
     public function getFormattedPrice(){ return StorePrice::format($this->getActivePrice()); }
-    public function getProductSalePrice() { return $this->pSalePrice; }
-    public function getFormattedSalePrice(){ return StorePrice::format($this->pSalePrice); }
+
+    public function getProductSalePrice() {
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            if ($variation) {
+                $varprice = $variation->getVariationSalePrice();
+                if ($varprice) {
+                    return $varprice;
+                } else {
+                    return $this->pSalePrice;
+                }
+            }
+        } else {
+            return $this->pSalePrice;
+        }
+    }
+    public function getFormattedSalePrice(){ return StorePrice::format($this->getProductSalePrice()); }
+
     public function getActivePrice(){
         $salePrice = $this->getProductSalePrice();
         if($salePrice != ""){
@@ -361,7 +405,14 @@ class Product
     public function allowQuantity() { return !(bool)$this->pNoQty; }
     public function isExclusive() { return (bool)$this->pExclusive; }
     public function hasVariations() { return (bool)$this->pVariations; }
-    public function isUnlimited() { return (bool)$this->pQtyUnlim; }
+    public function isUnlimited()
+    {
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->isUnlimited();
+        } else {
+            return (bool)$this->pQtyUnlim;
+        }
+    }
     public function autoCheckout() { return (bool)$this->pAutoCheckout; }
     public function allowBackOrders() { return (bool)$this->pBackOrder; }
     public function hasUserGroups(){ return count($this->getProductUserGroups()) > 0 ? true : false; }
@@ -379,7 +430,13 @@ class Product
             return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>";
         }
     }
-    public function getProductQty(){ return $this->pQty; }
+    public function getProductQty(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationQty();
+        } else {
+            return $this->pQty;
+        }
+    }
     
     public function isSellable()
     {
@@ -426,6 +483,7 @@ class Product
         StoreProductGroup::removeGroupsForProduct($this);
         StoreProductLocation::removeLocationsForProduct($this);
         StoreProductUserGroup::removeUserGroupsForProduct($this);
+        StoreProductVariation::removeVariationsForProduct($this);
         $em = Database::get()->getEntityManager();
         $em->remove($this);
         $em->flush();
@@ -540,11 +598,5 @@ class Product
 
         return $av;
     }
-
-    public function getVariations() {
-
-    }
-
-
 
 }

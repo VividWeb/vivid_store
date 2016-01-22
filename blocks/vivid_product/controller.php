@@ -34,13 +34,13 @@ class Controller extends BlockController
             
         if($this->productLocation == 'page'){
             $cID = Page::getCurrentPage()->getCollectionID();
-            $p = StoreProduct::getByCollectionID($cID);
+            $product = StoreProduct::getByCollectionID($cID);
         } else {
-            $p = StoreProduct::getByID($this->pID);
+            $product = StoreProduct::getByID($this->pID);
         }
 
-        if ($p->hasVariations()) {
-            $variations = StoreProductVariation::getVariationsForProduct($p);
+        if ($product->hasVariations()) {
+            $variations = StoreProductVariation::getVariationsForProduct($product);
 
             $variationLookup = array();
 
@@ -50,14 +50,13 @@ class Controller extends BlockController
                     $ids = $variation->getOptionItemIDs();
                     $variationLookup[implode('_', $ids)] = $variation;
                 }
-
-                $p->setVariation($variations[0]);
             }
 
+            $product->setInitialVariation();
             $this->set('variationLookup', $variationLookup);
         }
 
-        $this->set('p',$p);
+        $this->set('product',$product);
     }
     public function registerViewAssets()
     {

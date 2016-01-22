@@ -8,6 +8,7 @@ use Page;
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 
 
 class Controller extends BlockController
@@ -101,7 +102,13 @@ class Controller extends BlockController
         $products->setGroupMatchAny($this->groupMatchAny);
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
-        $this->set('products',$paginator->getCurrentPageResults());
+        $products = $paginator->getCurrentPageResults();
+
+        foreach($products as $product) {
+            $product->setInitialVariation();
+        }
+
+        $this->set('products', $products);
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
 

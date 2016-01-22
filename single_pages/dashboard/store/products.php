@@ -475,9 +475,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             <a href="javascript:addOptionItem(<%=sort%>)" data-group="<%=sort%>" class="btn btn-default"><?=t('Add Option')?></a>
 
                                 </div>
+                            <input type="hidden" name="pogID[]" value="<%=pogID%>">
+                            <input type="hidden" name="pogSort[]" value="<%=sort%>" class="option-group-sort">
                         </div>
-                        <input type="hidden" name="pogID[]" value="<%=pogID%>">
-                        <input type="hidden" name="pogSort[]" value="<%=sort%>" class="option-group-sort">
+
                     </div><!-- .option-group -->
                 </script>
                 <script type="text/javascript">

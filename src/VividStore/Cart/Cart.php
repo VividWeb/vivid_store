@@ -210,30 +210,43 @@ class Cart
          * 
          */
 
-        $added = 0;
-        $existingproductcount = 0;
 
-        $exists = false;
         foreach(self::getCart() as $k=>$cart) {
+            //  check if product is the same id first.
             if($cart['product']['pID'] == $cartItem['product']['pID']) {
-              if( count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
-                if(count($cartItem['productAttributes']) === 0) {
-                  $sameproduct = true;
-                  break;
+
+                // check if the number of attributes is the same
+                if(count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
+
+                    if(empty($cartItem['productAttributes'])) {
+                      // if we have no attributes, it's a direct match
+                      return array('exists'=>true,'cartItemKey'=>$k);
+
+                    } else {
+                        // otherwise loop through attributes
+                        $attsmatch = true;
+
+                        foreach($cartItem['productAttributes'] as $key=>$value) {
+                            if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
+                                // attributes match, keep checking
+                            } else {
+                                //different attributes means different "product".
+                                $attsmatch = false;
+                                break;
+                            }
+                        }
+
+                        if ($attsmatch) {
+                            return array('exists'=>true,'cartItemKey'=>$k);
+                        }
+                    }
                 }
-                foreach($cartItem['productAttributes'] as $key=>$value) {
-                  if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
-                      $sameproduct = true;
-                  } else {
-                    //different attributes means different "product".
-                    $sameproduct = false;
-                    break;
-                  }
-                }
-              }
             }
         }
-        return array('exists'=>$sameproduct,'cartItemKey'=>$k);
+
+        return array('exists'=>false,'cartItemKey'=>null);
+
+
     }
 
     public static function update($data)
@@ -246,6 +259,10 @@ class Cart
 
         if ($qty > 0 && $product) {
             $newquantity = $qty;
+
+            if ($cart[$instanceID]['product']['variation']) {
+                $product->setVariation($cart[$instanceID]['product']['variation']);
+            }
 
             if (!$product->isUnlimited() && !$product->allowBackOrders() && $product->getProductQty() < $newquantity) {
                 $newquantity = $product->getProductQty();

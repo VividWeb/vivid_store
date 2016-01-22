@@ -369,7 +369,7 @@ class ProductVariation
                 foreach($pvIDstoDelete as $pvID) {
                     $variation = self::getByID($pvID);
                     if ($variation) {
-                        $variation->remove();
+                        $variation->delete();
                     }
                 }
             }
@@ -424,11 +424,26 @@ class ProductVariation
         return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation')->findBy(array('pID' => $product->getProductID()));
     }
 
-    public function remove()
+    public function delete()
     {
         $em = Database::connection()->getEntityManager();
         $em->remove($this);
         $em->flush();
+    }
+
+    public static function removeVariationsForProduct(StoreProduct $product, $excluding = array())
+    {
+        if (!is_array($excluding)) {
+            $excluding = array();
+        }
+
+        //clear out existing product option groups
+        $existingVariations = self::getVariationsForProduct($product);
+        foreach($existingVariations as $variation){
+            if (!in_array($variation->getID(), $excluding)) {
+                $variation->delete();
+            }
+        }
     }
 
 
