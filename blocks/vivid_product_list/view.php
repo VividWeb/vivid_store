@@ -8,7 +8,7 @@ if($products){
     foreach($products as $product){
 
         $optionGroups = $product->getProductOptionGroups();
-        $optionItems = $product->getProductOptionItems();
+        $optionItems = $product->getProductOptionItems(true);
 
         if ($product->hasVariations()) {
             $variations = StoreProductVariation::getVariationsForProduct($product);
@@ -69,30 +69,30 @@ if($products){
                 <a href="<?php echo URL::page(Page::getByID($product->getProductPageID()))?>" class="btn btn-default btn-sm btn-more-details"><?php echo t("More Details")?></a>
                 <?php } ?>
                 <?php if($showAddToCart){
-                    /*
-                     * If we have an add to cart button, 
-                     * we at least need to have the Product ID
-                     * and a default quantity (1)
-                     */
-                ?>
 
-                <?php
-
-                foreach($optionGroups as $optionGroup){
+                foreach($optionGroups as $optionGroup) {
+                    $groupoptions = array();
+                    foreach ($optionItems as $option) {
+                        if ($option->getProductOptionGroupID() == $optionGroup->getID()) {
+                            $groupoptions[] = $option;
+                        }
+                    }
                     ?>
-                    <div class="product-option-group">
-                        <label class="option-group-label"><?php echo $optionGroup->getName()?></label>
-                        <select name="pog<?php echo $optionGroup->getID()?>">
-                            <?php
-                            foreach($optionItems as $option){
-                                if($option->getProductOptionGroupID()==$optionGroup->getID()){?>
-                                    <option value="<?php echo $option->getID()?>"><?php echo $option->getName()?></option>
-                                <?php }
-                            }//foreach
-                            ?>
-                        </select>
-                    </div>
-                <?php } ?>
+                    <?php if (!empty($groupoptions)) { ?>
+                        <div class="product-option-group">
+                            <label class="option-group-label"><?php echo $optionGroup->getName() ?></label>
+                            <select name="pog<?php echo $optionGroup->getID() ?>">
+                                <?php
+                                foreach ($groupoptions as $option) { ?>
+                                    <option value="<?php echo $option->getID() ?>"><?php echo $option->getName() ?></option>
+                                    <?php
+                                    // below is an example of a radio button, comment out the <select> and <option> tags to use instead
+                                    //echo '<input type="radio" name="pog'.$optionGroup->getID().'" value="'. $option->getID(). '" />' . $option->getName() . '<br />'; ?>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    <?php }
+                }?>
 
                 <input type="hidden" name="pID" value="<?php echo $product->getProductID()?>">
                 <input type="hidden" name="quantity" class="product-qty" value="1">
@@ -106,7 +106,7 @@ if($products){
         </div><!-- .product-list-item -->
 
 
-        <?php if ($product->hasVariations()) {?>
+        <?php if ($product->hasVariations() && !empty($variationLookup)) {?>
             <script>
                 $(function() {
                     <?php
@@ -115,6 +115,7 @@ if($products){
                         $product->setVariation($variation);
                         $varationData[$key] = array('price'=>$product->getFormattedOriginalPrice(), 'saleprice'=>$product->getFormattedSalePrice(), 'available'=>($variation->isSellable()));
                     } ?>
+
 
                     $('.product-list #form-add-to-cart-list-<?php echo $product->getProductID()?> select').change(function(){
                         var variationdata = <?php echo json_encode($varationData); ?>;
@@ -127,7 +128,6 @@ if($products){
                         ar.sort();
 
                         var pli = $(this).closest('.product-list-item-inner');
-
 
                         if (variationdata[ar.join('_')]['saleprice']) {
                             var pricing =  '<span class="sale-price">'+ variationdata[ar.join('_')]['saleprice']+'</span>' +

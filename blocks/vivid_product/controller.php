@@ -39,24 +39,30 @@ class Controller extends BlockController
             $product = StoreProduct::getByID($this->pID);
         }
 
-        if ($product->hasVariations()) {
-            $variations = StoreProductVariation::getVariationsForProduct($product);
+        if ($product) {
 
-            $variationLookup = array();
 
-            if (!empty($variations)) {
-                foreach ($variations as $variation) {
-                    // returned pre-sorted
-                    $ids = $variation->getOptionItemIDs();
-                    $variationLookup[implode('_', $ids)] = $variation;
+            if ($product->hasVariations()) {
+                $variations = StoreProductVariation::getVariationsForProduct($product);
+
+                $variationLookup = array();
+
+                if (!empty($variations)) {
+                    foreach ($variations as $variation) {
+                        // returned pre-sorted
+                        $ids = $variation->getOptionItemIDs();
+                        $variationLookup[implode('_', $ids)] = $variation;
+                    }
                 }
+
+                $product->setInitialVariation();
+                $this->set('variationLookup', $variationLookup);
             }
 
-            $product->setInitialVariation();
-            $this->set('variationLookup', $variationLookup);
+            $this->set('product',$product);
+            $this->set('optionGroups', $product->getProductOptionGroups());
+            $this->set('optionItems',$product->getProductOptionItems(true));
         }
-
-        $this->set('product',$product);
     }
     public function registerViewAssets()
     {

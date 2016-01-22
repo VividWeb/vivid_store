@@ -108,26 +108,32 @@ if(is_object($product)){?>
                     <input type="hidden" name="quantity" class="product-qty" value="1">
                 <?php } ?>
                 <?php
-                $optionGroups = $product->getProductOptionGroups();
-                $optionItems = $product->getProductOptionItems();
-                foreach($optionGroups as $optionGroup){
-                ?>
-                <div class="product-option-group vivid-store-col-2">
-                    <label class="option-group-label"><?php echo $optionGroup->getName()?></label>
-                    <select name="pog<?php echo $optionGroup->getID()?>">
-                        <?php
-                        foreach($optionItems as $option){
-                            if($option->getProductOptionGroupID()==$optionGroup->getID()){?>
-                                <option value="<?php echo $option->getID()?>"><?php echo $option->getName()?></option>
-                              <?php //echo '<input type="radio" name="pog'.$optionGroup->getID().'" value="'. $option->getID(). '" />' . $option->getName() . '<br />'; ?>
-                            <?php }
-                        }//foreach    
-                        ?>
-                    </select>
-                </div>
-                <?php } ?>
+
+                foreach($optionGroups as $optionGroup) {
+                    $groupoptions = array();
+                    foreach ($optionItems as $option) {
+                        if ($option->getProductOptionGroupID() == $optionGroup->getID()) {
+                            $groupoptions[] = $option;
+                        }
+                    }
+                    ?>
+                    <?php if (!empty($groupoptions)) { ?>
+                        <div class="product-option-group vivid-store-col-2">
+                            <label class="option-group-label"><?php echo $optionGroup->getName() ?></label>
+                            <select name="pog<?php echo $optionGroup->getID() ?>">
+                                <?php
+                                foreach ($groupoptions as $option) { ?>
+                                    <option value="<?php echo $option->getID() ?>"><?php echo $option->getName() ?></option>
+                                    <?php
+                                    // below is an example of a radio button, comment out the <select> and <option> tags to use instead
+                                    //echo '<input type="radio" name="pog'.$optionGroup->getID().'" value="'. $option->getID(). '" />' . $option->getName() . '<br />'; ?>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    <?php }
+                }?>
             </div>
-            
+
             <?php if($showCartButton) {?>
             <div class="product-button-shell">
                 <input type="hidden" name="pID" value="<?php echo $product->getProductID()?>">
@@ -154,48 +160,47 @@ if(is_object($product)){?>
         gallery:{enabled:true}
     });
 
-    <?php if ($product->hasVariations()) {?>
+    <?php if ($product->hasVariations() && !empty($varationLookup)) {?>
 
-    <?php
-    $varationData = array();
-    foreach($variationLookup as $key=>$variation) {
-        $product->setVariation($variation);
+        <?php
+        $varationData = array();
+        foreach($variationLookup as $key=>$variation) {
+            $product->setVariation($variation);
 
-        $varationData[$key] = array('price'=>$product->getFormattedOriginalPrice(),'saleprice'=>$product->getFormattedSalePrice(), 'available'=>($variation->isSellable()));
-    } ?>
+            $varationData[$key] = array('price'=>$product->getFormattedOriginalPrice(),'saleprice'=>$product->getFormattedSalePrice(), 'available'=>($variation->isSellable()));
+        } ?>
 
-    $('#product-options-<?php echo $bID; ?> select, #product-options-<?php echo $bID; ?> input').change(function(){
-        var variationdata = <?php echo json_encode($varationData); ?>;
-        var ar = [];
+        $('#product-options-<?php echo $bID; ?> select, #product-options-<?php echo $bID; ?> input').change(function(){
+            var variationdata = <?php echo json_encode($varationData); ?>;
+            var ar = [];
 
-        $('#product-options-<?php echo $bID; ?> select, #product-options-<?php echo $bID; ?> input:checked').each(function(){
-            ar.push($(this).val());
-        })
+            $('#product-options-<?php echo $bID; ?> select, #product-options-<?php echo $bID; ?> input:checked').each(function(){
+                ar.push($(this).val());
+            })
 
-        ar.sort();
-        var pdb = $(this).closest('.product-detail-block');
+            ar.sort();
+            var pdb = $(this).closest('.product-detail-block');
 
 
+            if (variationdata[ar.join('_')]['saleprice']) {
+                var pricing =  '<span class="sale-price"><?php echo t("On Sale: "); ?>'+ variationdata[ar.join('_')]['saleprice']+'</span>' +
+                    '<span class="original-price">' + variationdata[ar.join('_')]['price'] +'</span>';
 
-        if (variationdata[ar.join('_')]['saleprice']) {
-            var pricing =  '<span class="sale-price"><?php echo t("On Sale: "); ?>'+ variationdata[ar.join('_')]['saleprice']+'</span>' +
-                '<span class="original-price">' + variationdata[ar.join('_')]['price'] +'</span>';
+                pdb.find('.product-price').html(pricing);
 
-            pdb.find('.product-price').html(pricing);
+            } else {
+                pdb.find('.product-price').html(variationdata[ar.join('_')]['price']);
+            }
 
-        } else {
-            pdb.find('.product-price').html(variationdata[ar.join('_')]['price']);
-        }
+            if (variationdata[ar.join('_')]['available']) {
+                pdb.find('.out-of-stock-label').addClass('hidden');
+                pdb.find('.btn-add-to-cart').removeClass('hidden');
+            } else {
+                pdb.find('.out-of-stock-label').removeClass('hidden');
+                pdb.find('.btn-add-to-cart').addClass('hidden');
+            }
 
-        if (variationdata[ar.join('_')]['available']) {
-            pdb.find('.out-of-stock-label').addClass('hidden');
-            pdb.find('.btn-add-to-cart').removeClass('hidden');
-        } else {
-            pdb.find('.out-of-stock-label').removeClass('hidden');
-            pdb.find('.btn-add-to-cart').addClass('hidden');
-        }
-
-    });
+        });
     <?php } ?>
 
 });

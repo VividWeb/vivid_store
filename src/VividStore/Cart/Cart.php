@@ -144,9 +144,8 @@ class Cart
             // association the variation with the product
             if ($variation) {
                 $product->setVariation($variation);
+                $cartItem['product']['variation'] = $variation->getID();
             }
-
-            $cartItem['product']['variation'] = $variation->getID();
         }
 
 

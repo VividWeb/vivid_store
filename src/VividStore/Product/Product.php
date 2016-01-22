@@ -460,7 +460,7 @@ class Product
     public function getProductLocationPages() { return StoreProductLocation::getLocationsForProduct($this); }
 
     public function getProductOptionGroups() { return StoreProductOptionGroup::getOptionGroupsForProduct($this); }
-    public function getProductOptionItems() { return StoreProductOptionItem::getOptionItemsForProduct($this); }
+    public function getProductOptionItems($onlyvisible = false) { return StoreProductOptionItem::getOptionItemsForProduct($this, $onlyvisible); }
 
     public function getProductGroupIDs() { return StoreProductGroup::getGroupIDsForProduct($this); }
     public function getProductGroups() { return StoreProductGroup::getGroupsForProduct($this); }
