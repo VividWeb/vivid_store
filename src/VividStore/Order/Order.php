@@ -278,6 +278,8 @@ class Order
             $fromEmail = "store@".$_SERVER['SERVER_NAME'];
         }
 
+        $fromName = Config::get('vividstore.emailalertsname');
+
         $smID = \Session::get('smID');
         $groupstoadd = array();
         $createlogin = false;
@@ -351,7 +353,12 @@ class Order
                 User::loginByUserID($user->getUserID());
 
                 // new user password email
-                $mh->from($fromEmail);
+                if ($fromName) {
+                    $mh->from($fromEmail, $fromName);
+                } else {
+                    $mh->from($fromEmail);
+                }
+
                 $mh->to($email);
                 $mh->sendMail();
             } else {
@@ -421,7 +428,12 @@ class Order
         $alertEmails = array_map('trim',$alertEmails);
         
         //receipt
-        $mh->from($fromEmail);
+        if ($fromName) {
+            $mh->from($fromEmail, $fromName);
+        } else {
+            $mh->from($fromEmail);
+        }
+
         $mh->to($customer->getEmail());
 
         $mh->addParameter("order", $this);
@@ -431,7 +443,12 @@ class Order
         $validNotification = false;
 
         //order notification
-        $mh->from($fromEmail);
+        if ($fromName) {
+            $mh->from($fromEmail, $fromName);
+        } else {
+            $mh->from($fromEmail);
+        }
+
         foreach ($alertEmails as $alertEmail) {
             if ($alertEmail) {
                 $mh->to($alertEmail);
