@@ -456,8 +456,13 @@ class Order
     public function remove()
     {
         $db = Database::get();
-        $db->Execute("DELETE FROM VividStoreOrders WHERE oID=?",$this->oID);
+        $rows = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$this->oID);
+        foreach($rows as $row){
+            $db->Execute("DELETE FROM VividStoreOrderItemOptions WHERE oiID=?",$row['oiID']);
+        }
+
         $db->Execute("DELETE FROM VividStoreOrderItems WHERE oID=?",$this->oID);
+        $db->Execute("DELETE FROM VividStoreOrders WHERE oID=?",$this->oID);
     }
     public function getOrderItems()
     {
