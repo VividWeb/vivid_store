@@ -143,9 +143,18 @@ class Cart
 
             // association the variation with the product
             if ($variation) {
-                $product->setVariation($variation);
-                $cartItem['product']['variation'] = $variation->getID();
+                $options = $variation->getOptions();
+                if (count($options) == count($optionItemIds)) {  // check if we've matched to a variation with the correct number of options
+                    $product->setVariation($variation);
+                    $cartItem['product']['variation'] = $variation->getID();
+                } else {
+                    return false;
+                }
+            } else {
+                return false; // variation not matched
             }
+        } elseif ($product->hasVariations()) {
+            return false;  // if we have a product with variations, but no variation data was submitted, it's a broken add-to-cart form
         }
 
 

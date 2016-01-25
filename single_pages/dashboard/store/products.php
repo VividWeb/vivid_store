@@ -7,13 +7,13 @@ $groupViews = array('groups','groupadded','addgroup');
 $attributeViews = array('attributes','attributeadded','attributeremoved');
 $ps = Core::make('helper/form/page_selector');
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 ?>
 
 <?php if (in_array($controller->getTask(),$addViews)){ //if adding or editing a product
     if(!is_object($p)) {
-        $p = new VividProduct(); //does nothing other than shutup errors.}
+        $p = new StoreProduct(); //does nothing other than shutup errors.}
     }
 
     $pID = $p->getProductID()
@@ -146,9 +146,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
                                         $('#pVariations').change(function(){
                                             if ($(this).prop('checked')) {
-                                                $('#variations').removeClass('hidden');
+                                                $('#variations,#variationnotice').removeClass('hidden');
                                             } else {
-                                                $('#variations').addClass('hidden');
+                                                $('#variations,#variationnotice').addClass('hidden');
                                             }
                                         });
 
@@ -293,6 +293,11 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                 <?php echo $form->text('pWeight',$weight?$weight:'0')?>
                                 <div class="input-group-addon"><?php echo Config::get('vividstore.weightUnit')?></div>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <?php echo $form->label("pNumberItems", t("Number Of Items"));?>
+                                <?php echo $form->number('pNumberItems',$p->getProductNumberItems(), array('min'=>0, 'step'=>1))?>
                         </div>
                     </div>
                     <div class="col-xs-6">
@@ -461,10 +466,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                                 <div class="col-xs-3 label-shell">
                                     <label for="pogName<%=sort%>" class="text-right"><i class="fa fa-arrows drag-handle pull-left"></i> <span class="hidden-xs"><?php echo t('Group Name:')?></span></label>
                                 </div>
-                                <div class="col-xs-5">
+                                <div class="col-xs-6">
                                     <input type="text" class="form-control" name="pogName[]" value="<%=pogName%>">
                                 </div>
-                                <div class="col-xs-4 text-right">
+                                <div class="col-xs-3 text-right">
                                      <a href="javascript:deleteOptionGroup(<%=sort%>)" class="btn btn-delete-item btn-danger"><i data-toggle="tooltip" data-placement="top" title="<?php echo t('Delete the Option Group')?>" class="fa fa-trash"></i></a>
                                 </div>
                             </div>
@@ -484,6 +489,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <script type="text/javascript">
                     function deleteOptionGroup(id){
                         $(".option-group[data-order='"+id+"']").remove();
+                        $('#variationshider').addClass('hidden');
                     }
                     $(function(){
                         function indexOptionGroups(){
@@ -536,6 +542,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
                             //Init Index
                             indexOptionGroups();
+
+                            $('#variationshider').addClass('hidden');
                         });
                     });
 
@@ -567,6 +575,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 <script type="text/javascript">
                     function deleteOptionItem(group,id){
                         $(".option-group[data-order='"+group+"']").find(".option-item[data-order='"+id+"']").remove();
+
+                        $('#variationshider').addClass('hidden');
+                        $('#changenotice').removeClass('hidden');
                     }
 
                     function indexOptionItems(){
@@ -590,11 +601,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                             poiName: '',
                             poiID: '',
                             optGroup: group,
-                            sort: temp
+                            sort: temp,
+                            poiHidden: ''
                         }));
 
                         //Init Index
                         indexOptionItems();
+                        $('#variationshider').addClass('hidden');
+                        $('#changenotice').removeClass('hidden');
                     }
                     $(function(){
                         
@@ -648,105 +662,185 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
             <div class="form-group">
                 <label><?php echo $form->checkbox('pVariations', '1', $p->hasVariations())?>
                 <?php echo t('Options have different prices, SKUs or stock levels');?></label>
+
+                <?php if (!$pID) { ?>
+                    <p class="alert alert-info hidden" id="variationnotice"><?php echo t('After creating options add the product to configure product variations.') ?></p>
+                <?php } ?>
+
+
             </div>
 
             <?php if (!empty($comboOptions)) { ?>
             <div id="variations" class="<?php echo ($p->hasVariations() ? '' : 'hidden');?>">
-            <h4><?php echo t('Variations');?></h4>
-            <table class="table table-bordered">
-                <tr>
-                    <th><?php echo t('Options');?></th>
-                    <th><?php echo t('Configuration');?></th>
-                </tr>
+
+
+                <h4><?php echo t('Variations');?></h4>
+
+                <?php if ($pID) { ?>
+                    <p class="alert alert-info hidden" id="changenotice"><?php echo t('Product options have changed, update the product to edited updated variations') ?></p>
+                <?php } ?>
+
+
+                <div id="variationshider">
 
                  <?php
-                     foreach ($comboOptions as $combinedOptions) {
-                         ?>
-                         <tr>
-                             <td>
-                                 <?php
-                                 $comboIDs = array();
+                $count = 0;
 
-                                 foreach ($combinedOptions as $optionItemID) {
-                                     $comboIDs[] = $optionItemID;
-                                     sort($comboIDs);
-
-                                     $group = $groupLookup[$optionItemLookup[$optionItemID]->getProductOptionGroupID()];
-
-                                     echo '<span class="label label-primary">' . ($group ? $group->getName() : '') . ': ' . $optionItemLookup[$optionItemID]->getName() . '</span><br />';
-                                 }
-
-                                 ?>
-
-                                 <input type="hidden" name="option_combo[]"
-                                        value="<?php echo implode('_', $comboIDs); ?>"/>
-
-                                 <?php if (isset($variationLookup[implode('_', $comboIDs)])) {
-                                     $variation = $variationLookup[implode('_', $comboIDs)];
-                                 } else {
-                                     $variation = null;
-                                 } ?>
-
-
-                                 <?php if (!$variation) { ?>
-                                     <span class="label label-success"><?php echo t('New'); ?></span>
-                                 <?php } ?>
-                             </td>
-                             <td class="form-horizontal">
-                                 <table class="table table-condensed ">
-                                     <tr>
-                                         <td style="width: 25%"><?php echo $form->label("", t("SKU")); ?></td>
-                                         <td> <?php echo $form->text("pvSKU[]", $variation ? $variation->getVariationSKU() : '', array('placeholder' => t('Base SKU'))); ?></td>
-                                     </tr>
-                                     <tr>
-                                         <td><?php echo $form->label("", t("Price")); ?></td>
-                                         <td>
-                                             <div class="input-group">
-                                                 <div class="input-group-addon">
-                                                     <?php echo  Config::get('vividstore.symbol'); ?>
-                                                 </div>
-                                                 <?php echo $form->text("pvPrice[]", $variation ? $variation->getVariationPrice() : '', array('placeholder' => t('Base price'))); ?>
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td><?php echo $form->label("pvSalePrice[]", t("Sale Price")); ?></td>
-                                         <td>
-                                             <div class="input-group">
-                                                 <div class="input-group-addon">
-                                                     <?php echo  Config::get('vividstore.symbol'); ?>
-                                                 </div>
-                                                 <?php echo $form->text("pvSalePrice[]", $variation ? $variation->getVariationSalePrice() : '', array('placeholder' => t('Base sale price'))); ?>
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td><?php echo $form->label("", t("Quantity")); ?></td>
-                                         <td>
-                                             <div class="input-group">
-                                                     <?php
-                                                     if ($variation) {
-                                                         echo $form->text("pvQty[]", $variation->getVariationQty(), array(($variation->isUnlimited() ? 'readonly' : '')=>($variation->isUnlimited() ? 'readonly' : '')));
-                                                     } else {
-                                                         echo $form->text("pvQty[]", '', array('readonly'=>'readonly'));
-                                                     }
-                                                     ?>
-
-                                                     <div class="input-group-addon">
-                                                     <label><?php echo $form->checkbox('pvQtyUnlim[]', '1', $variation ? $variation->isUnlimited() : true) ?> <?php echo t('Unlimited'); ?></label>
-                                                 </div>
-                                             </div>
-                                         </td>
-                                     </tr>
-                                 </table>
-                             </td>
-                         </tr>
-                         <?php
-                     }
+                foreach ($comboOptions as $combinedOptions) {
                  ?>
+                 <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo t('Options') . ':'; ?>
+                        <?php
+                         $comboIDs = array();
 
-            </table>
-            </div>
+                         foreach ($combinedOptions as $optionItemID) {
+                             $comboIDs[] = $optionItemID;
+                             sort($comboIDs);
+                             $group = $groupLookup[$optionItemLookup[$optionItemID]->getProductOptionGroupID()];
+                             echo '<span class="label label-primary">' . ($group ? $group->getName() : '') . ': ' . $optionItemLookup[$optionItemID]->getName() . '</span> ';
+                         }
+
+                         ?>
+                        <button class="btn btn-xs btn-default pull-right variationdisplaybutton" type="button" data-toggle="collapse">
+                            <?php echo t('Configure');?>
+                        </button>
+                    </div>
+
+                     <div class="panel-body hidden">
+                         <input type="hidden" name="option_combo[]" value="<?php echo implode('_', $comboIDs); ?>"/>
+
+                         <?php if (isset($variationLookup[implode('_', $comboIDs)])) {
+                             $variation = $variationLookup[implode('_', $comboIDs)];
+                         } else {
+                             $variation = null;
+                         } ?>
+
+                        <div class="row form-group">
+                         <div class="col-md-4">
+                             <?php echo $form->label("", t("SKU")); ?>
+                         </div>
+                         <div class="col-md-8">
+                            <?php echo $form->text("pvSKU[]", $variation ? $variation->getVariationSKU() : '', array('placeholder' => t('Base SKU'))); ?>
+                         </div>
+                        </div>
+                        <div class="row form-group">
+                         <div class="col-md-4">
+                            <?php echo $form->label("", t("Price")); ?>
+                         </div>
+                         <div class="col-md-8">
+                            <div class="input-group">
+                                 <div class="input-group-addon">
+                                     <?php echo  Config::get('vividstore.symbol'); ?>
+                                 </div>
+                                 <?php echo $form->text("pvPrice[]", $variation ? $variation->getVariationPrice() : '', array('placeholder' => t('Base Price'))); ?>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="row form-group">
+                         <div class="col-md-4">
+                                <?php echo $form->label("pvSalePrice[]", t("Sale Price")); ?>
+                         </div>
+                         <div class="col-md-8">
+                             <div class="input-group">
+                                 <div class="input-group-addon">
+                                     <?php echo  Config::get('vividstore.symbol'); ?>
+                                 </div>
+                                 <?php echo $form->text("pvSalePrice[]", $variation ? $variation->getVariationSalePrice() : '', array('placeholder' => t('Base Sale Price'))); ?>
+                             </div>
+                         </div>
+                        </div>
+                        <div class="row form-group">
+                         <div class="col-md-4">
+                            <?php echo $form->label("", t("Stock Level")); ?>
+                         </div>
+                         <div class="col-md-8">
+                             <div class="input-group">
+                                     <?php
+                                     if ($variation) {
+                                         echo $form->text("pvQty[]", $variation->getVariationQty(), array(($variation->isUnlimited() ? 'readonly' : '')=>($variation->isUnlimited() ? 'readonly' : '')));
+                                     } else {
+                                         echo $form->text("pvQty[]", '', array('readonly'=>'readonly'));
+                                     }
+                                     ?>
+
+                                     <div class="input-group-addon">
+                                     <label><?php echo $form->checkbox('pvQtyUnlim[]', '1', $variation ? $variation->isUnlimited() : true) ?> <?php echo t('Unlimited'); ?></label>
+                                 </div>
+                             </div>
+                         </div>
+                        </div>
+                         <div class="row form-group">
+                             <div class="col-md-12">
+                                 <?php echo $form->label('pfID[]',t("Primary Image")); ?>
+                                 <?php
+                                 $pvfID = null;
+                                 if ($variation) {
+                                     $pvfID = $variation->getVariationImageID();
+                                 }
+                                  ?>
+                                 <?php echo $al->image('ccm-image'.$count++, 'pvfID[]', t('Choose Image'), $pvfID?File::getByID($pvfID):null); ?>
+                             </div>
+                         </div>
+                        <div class="row form-group">
+                        <div class="col-md-4">
+                            <?php echo $form->label("", t("Weight")); ?>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group" >
+                                <?php echo $form->text('pvWeight[]',$variation ? $variation->getVariationWeight() : '', array('placeholder'=>t('Base Weight')))?>
+                                <div class="input-group-addon"><?php echo Config::get('vividstore.weightUnit')?></div>
+                            </div>
+                         </div>
+                        </div>
+                        <div class="row form-group">
+                        <div class="col-md-4">
+                            <?php echo $form->label("", t("Number of Items")); ?>
+                        </div>
+                        <div class="col-md-8">
+                             <?php echo $form->text('pvNumberItems[]',$variation ? $variation->getVariationNumberItems() : '', array('min'=>0, 'step'=>1, 'placeholder'=>t('Base Number Of Items')))?>
+                         </div>
+                        </div>
+                        <div class="row form-group">
+                        <div class="col-md-4">
+                            <?php echo $form->label("", t("Length")); ?>
+                        </div>
+                        <div class="col-md-8">
+                             <div class="input-group" >
+                                 <?php echo $form->text('pvLength[]',$variation ? $variation->getVariationLength() : '', array('placeholder'=>t('Base Length')))?>
+                                 <div class="input-group-addon"><?php echo Config::get('vividstore.sizeUnit')?></div>
+                             </div>
+                        </div>
+                        </div>
+                        <div class="row form-group">
+                         <div class="col-md-4">
+                             <?php echo $form->label("", t("Width")); ?>
+                         </div>
+
+                         <div class="col-md-8">
+                             <div class="input-group" >
+                                     <?php echo $form->text('pvWidth[]',$variation ? $variation->getVariationWidth() : '', array('placeholder'=>t('Base Width')))?>
+                                     <div class="input-group-addon"><?php echo Config::get('vividstore.sizeUnit')?></div>
+                             </div>
+                          </div>
+                        </div>
+                        <div class="row form-group">
+                         <div class="col-md-4">
+                             <?php echo $form->label("", t("Height")); ?>
+                        </div>
+                         <div class="col-md-8">
+                             <div class="input-group" >
+                                     <?php echo $form->text('pvHeight[]',$variation ? $variation->getVariationHeight() : '', array('placeholder'=>t('Base Height')))?>
+                                     <div class="input-group-addon"><?php echo Config::get('vividstore.sizeUnit')?></div>
+                             </div>
+                         </div>
+                        </div>
+                    </div>
+
+                 </div>
+                 <?php } ?>
+                </div>
+                </div>
             <?php } ?>
 
             </div><!-- #product-options -->
@@ -823,8 +917,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                 </div>
 
 
-
-
                 <div class="form-group">
                     <?php echo $form->checkbox('pAutoCheckout', '1', $p->autoCheckout())?>
                     <?php echo $form->label('pAutoCheckout', t('Send customer directly to checkout when added to cart'))?>
@@ -837,9 +929,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
 
                 <script type="text/javascript">
-                    $(function() {
-                        $('#groupselect').select2();
-                    });
+
                 </script>
 
 
@@ -888,7 +978,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
 
         <div class="ccm-dashboard-form-actions-wrapper">
             <div class="ccm-dashboard-form-actions">
-                <a href="<?php echo URL::to('/dashboard/store/products/')?>" class="btn btn-default pull-left"><?php echo t("Cancel")?></a>
+                <a href="<?php echo URL::to('/dashboard/store/products/')?>" class="btn btn-default pull-left"><?php echo t("Cancel / View All Products")?></a>
                 <button class="pull-right btn btn-success" disabled="disabled" type="submit" ><?php echo t('%s Product',$actionType)?></button>
             </div>
         </div>
@@ -899,6 +989,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
                     function() {
                        $('.ccm-dashboard-form-actions .btn-success').removeAttr('disabled');
                     }, 2000);
+            });
+
+            $(function(){
+                $('.variationdisplaybutton').click(function(el) {
+                   $(this).closest('.panel').find('.panel-body').toggleClass('hidden');
+                    el.preventDefault();
+                });
             });
         </script>
 

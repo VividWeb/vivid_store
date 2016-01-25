@@ -41,7 +41,9 @@ class ProductOption
 
                             if ($data['poiID'][$ii] > 0) {
                                 $option = StoreProductOptionItem::getByID($data['poiID'][$ii]);
-                                $option->update($product,$data['poiName'][$ii],$data['poiSort'][$ii],$data['poiHidden'][$ii] );
+                                if ($option) {
+                                    $option->update($product,$data['poiName'][$ii],$data['poiSort'][$ii],$data['poiHidden'][$ii] );
+                                }
                             } else {
                                 if ($data['poiName'][$ii]) {
                                     StoreProductOptionItem::add($product,$pogID,$data['poiName'][$ii],$data['poiSort'][$ii], $data['poiHidden'][$ii]);

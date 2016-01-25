@@ -96,8 +96,16 @@ class Products extends DashboardPageController
         $this->set('pageTitle', t('Add Product'));
         $this->set('usergroups', $usergrouparray);
     }
-    public function edit($pID)
+    public function edit($pID, $status = '')
     {
+        if ($status == 'updated') {
+            $this->set("success",t("Product Updated"));
+        }
+
+        if ($status == 'added') {
+            $this->set("success",t("Product Added"));
+        }
+
         $this->loadFormAssets();
         $this->set("actionType",t("Update"));
         
@@ -138,7 +146,7 @@ class Products extends DashboardPageController
         $this->set('groupLookup', $groupLookup);
 
         $optionArrays = array_values($optionArrays);
-        $comboOptions = $this->combinations($optionArrays);
+        $comboOptions = StoreProductVariation::combinations($optionArrays);
 
         $checkedOptions = array();
 
@@ -197,32 +205,6 @@ class Products extends DashboardPageController
         $this->set('pageTitle', t('Edit Product'));
         $this->set('usergroups', $usergrouparray);
     }
-
-    private function combinations($arrays, $i = 0) {
-        if (!isset($arrays[$i])) {
-            return array();
-        }
-        if ($i == count($arrays) - 1) {
-            return $arrays[$i];
-        }
-
-        // get combinations from subsequent arrays
-        $tmp = $this->combinations($arrays, $i + 1);
-
-        $result = array();
-
-        // concat each array from tmp with each element from $arrays[$i]
-        foreach ($arrays[$i] as $v) {
-            foreach ($tmp as $t) {
-                $result[] = is_array($t) ?
-                    array_merge(array($v), $t) :
-                    array($v, $t);
-            }
-        }
-
-        return $result;
-    }
-
 
 
     public function generate($pID,$templateID=null)
@@ -310,9 +292,9 @@ class Products extends DashboardPageController
 
 
                 if($data['pID']){
-                    $this->redirect('/dashboard/store/products/', 'updated');
+                    $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'updated');
                 } else {
-                    $this->redirect('/dashboard/store/products/', 'success');
+                    $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'success');
                 }
             }//if no errors
         }//if post

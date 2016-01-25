@@ -160,7 +160,7 @@ if(is_object($product)){?>
         gallery:{enabled:true}
     });
 
-    <?php if ($product->hasVariations() && !empty($varationLookup)) {?>
+    <?php if ($product->hasVariations() && !empty($variationLookup)) {?>
 
         <?php
         $varationData = array();
@@ -181,13 +181,11 @@ if(is_object($product)){?>
             ar.sort();
             var pdb = $(this).closest('.product-detail-block');
 
-
             if (variationdata[ar.join('_')]['saleprice']) {
                 var pricing =  '<span class="sale-price"><?php echo t("On Sale: "); ?>'+ variationdata[ar.join('_')]['saleprice']+'</span>' +
                     '<span class="original-price">' + variationdata[ar.join('_')]['price'] +'</span>';
 
                 pdb.find('.product-price').html(pricing);
-
             } else {
                 pdb.find('.product-price').html(variationdata[ar.join('_')]['price']);
             }

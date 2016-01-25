@@ -141,6 +141,11 @@ class Product
      * @Column(type="integer")
      */
     protected $pWeight;
+
+    /**
+     * @Column(type="integer",nullable=true)
+     */
+    protected $pNumberItems;
     
     /**
      * @Column(type="boolean")
@@ -222,6 +227,7 @@ class Product
     public function setProductHeight($height){ $this->pHeight = $height; }
     public function setProductLength($length){ $this->pLength = $length; }
     public function setProductWeight($weight){ $this->pWeight = $weight; }
+    public function setNumberItems($number){ $this->pNumberItems = $number; }
     public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = (!is_null($bool) ? $bool : false); }
     public function setAutoCheckout($bool){ $this->pAutoCheckout = (!is_null($bool) ? $bool : false) ; }
     public function setIsExclusive($bool){ $this->pExclusive = (!is_null($bool) ? $bool : false); }
@@ -287,6 +293,7 @@ class Product
         $product->setProductHeight($data['pHeight']);
         $product->setProductLength($data['pLength']);
         $product->setProductWeight($data['pWeight']);
+        $product->setNumberItems($data['pNumberItems']);
         $product->setAutoCheckout($data['pAutoCheckout']);
         $product->setIsExclusive($data['pExclusive']);
         $product->setHasVariations($data['pVariations']);
@@ -349,7 +356,13 @@ class Product
             return $this->pSalePrice;
         }
     }
-    public function getFormattedSalePrice(){ return StorePrice::format($this->getProductSalePrice()); }
+    public function getFormattedSalePrice(){ return
+        $saleprice = $this->getProductSalePrice();
+
+        if ($saleprice != '') {
+            return StorePrice::format($saleprice);
+        }
+    }
 
     public function getActivePrice(){
         $salePrice = $this->getProductSalePrice();
@@ -374,26 +387,53 @@ class Product
     public function isFeatured(){ return $this->pFeatured; }
     public function isActive(){ return $this->pActive; }
     public function isShippable() { return $this->pShippable; }
+
+
     public function getDimensions($whl=null){
+        $source = $this;
+
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            $source = $variation;
+        }
+
         switch($whl){
             case "w":
-                return $this->pWidth;
+                return $source->pWidth;
                 break;
             case "h":
-                return $this->pHeight;
+                return $source->pHeight;
                 break;
             case "l":
-                return $this->pLength;
+                return $source->pLength;
                 break;
             default:
-                return $this->pLength."x".$this->pWidth."x".$this->pHeight;
+                return $source->pLength."x".$source->pWidth."x".$source->pHeight;
                 break;
         }
     }
-    public function getProductWeight(){ return $this->pWeight; }
-    public function getProductImageID() { return $this->pfID; }
+    public function getProductWeight(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationWeight();
+        } else {
+            return $this->pWeight;
+        }
+    }
+    public function getProductNumberItems(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationNumberItems();
+        } else {
+            return $this->pNumberItems;
+        }
+    }
+    public function getProductImageID() {
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationImageID();
+        } else {
+            return $this->pfID;
+        }
+    }
     public function getProductImageObj(){
-        if($this->pfID){
+        if($this->getProductImageID()){
             $fileObj = File::getByID($this->pfID);
             return $fileObj;
         }
@@ -418,6 +458,7 @@ class Product
     public function hasUserGroups(){ return count($this->getProductUserGroups()) > 0 ? true : false; }
     public function getProductUserGroups(){ return StoreProductUserGroup::getUserGroupsForProduct($this); }
     public function getProductUserGroupIDs(){ return StoreProductUserGroup::getUserGroupIDsForProduct($this); }
+
     public function getProductImage(){
         $fileObj = $this->getProductImageObj();
         if(is_object($fileObj)){
@@ -430,6 +471,7 @@ class Product
             return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>";
         }
     }
+
     public function getProductQty(){
         if ($this->hasVariations() && $variation = $this->getVariation()) {
             return $variation->getVariationQty();
@@ -458,13 +500,10 @@ class Product
     public function getProductImages() { return StoreProductImage::getImagesForProduct($this); }
     public function getproductimagesobjects() { return StoreProductImage::getImageObjectsForProduct($this); }
     public function getProductLocationPages() { return StoreProductLocation::getLocationsForProduct($this); }
-
     public function getProductOptionGroups() { return StoreProductOptionGroup::getOptionGroupsForProduct($this); }
     public function getProductOptionItems($onlyvisible = false) { return StoreProductOptionItem::getOptionItemsForProduct($this, $onlyvisible); }
-
     public function getProductGroupIDs() { return StoreProductGroup::getGroupIDsForProduct($this); }
     public function getProductGroups() { return StoreProductGroup::getGroupsForProduct($this); }
-
     public function getProductVariations() { return StoreProductVariation::getVariationsForProduct($this); }
 
     public function save()
