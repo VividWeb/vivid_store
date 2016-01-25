@@ -167,7 +167,20 @@ if(is_object($product)){?>
         foreach($variationLookup as $key=>$variation) {
             $product->setVariation($variation);
 
-            $varationData[$key] = array('price'=>$product->getFormattedOriginalPrice(),'saleprice'=>$product->getFormattedSalePrice(), 'available'=>($variation->isSellable()));
+            $imgObj = $variation->getVariationImageObj();
+
+            if ($imgObj) {
+                $thumb = Core::make('helper/image')->getThumbnail($imgObj,600,800,true);
+            }
+
+            $varationData[$key] = array(
+            'price'=>$product->getFormattedOriginalPrice(),
+            'saleprice'=>$product->getFormattedSalePrice(),
+            'available'=>($variation->isSellable()),
+            'imageThumb'=>$thumb ? $thumb->src : '',
+            'image'=>$imgObj ? $imgObj->getRelativePath() : ''
+
+            );
         } ?>
 
         $('#product-options-<?php echo $bID; ?> select, #product-options-<?php echo $bID; ?> input').change(function(){
@@ -196,6 +209,19 @@ if(is_object($product)){?>
             } else {
                 pdb.find('.out-of-stock-label').removeClass('hidden');
                 pdb.find('.btn-add-to-cart').addClass('hidden');
+            }
+
+            if (variationdata[ar.join('_')]['imageThumb']) {
+                var image = pdb.find('.product-primary-image img');
+
+                if (image) {
+                    image.attr('src', variationdata[ar.join('_')]['imageThumb']);
+                    var link = image.parent();
+
+                    if (link) {
+                        link.attr('href', variationdata[ar.join('_')]['image'])
+                    }
+                }
             }
 
         });

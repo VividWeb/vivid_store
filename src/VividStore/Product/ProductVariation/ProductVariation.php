@@ -7,6 +7,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOpt
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use Doctrine\Common\Collections\ArrayCollection;
 use Database;
+use File;
 
 /**
  * @Entity
@@ -394,17 +395,17 @@ class ProductVariation
                     $variation = self::add(
                         $product->getProductID(),
                         array(
-                        'pvSKU' => $data['pvSKU'][$key],
-                        'pvPrice' => $data['pvPrice'][$key],
-                        'pvSalePrice'=>$data['pvSalePrice'][$key],
-                        'pvQty'=>$data['pvQty'][$key],
-                        'pvQtyUnlim'=>$data['pvQtyUnlim'][$key],
-                        'pvfID'=>$data['pvfID'][$key],
-                        'pvWeight'=>$data['pvWidth'][$key],
-                        'pvNumberItems'=>$data['pvNumberItems'][$key],
-                        'pvWidth'=>$data['pvWidth'][$key],
-                        'pvHeight'=>$data['pvHeight'][$key],
-                        'pvLength'=>$data['pvLength'][$key])
+                        'pvSKU' => '',
+                        'pvPrice' => '',
+                        'pvSalePrice'=>'',
+                        'pvQty'=>'',
+                        'pvQtyUnlim'=>'',
+                        'pvfID'=>'',
+                        'pvWeight'=>'',
+                        'pvNumberItems'=>'',
+                        'pvWidth'=>'',
+                        'pvHeight'=>'',
+                        'pvLength'=>'')
                     );
 
                     foreach($optioncombo as $optionvalue) {
@@ -418,6 +419,8 @@ class ProductVariation
                         }
                     }
                 } else {
+                    $key = $variation->getID();
+
                     $variation->setVariationSKU($data['pvSKU'][$key]);
                     $variation->setVariationPrice($data['pvPrice'][$key]);
                     $variation->setVariationSalePrice($data['pvSalePrice'][$key]);

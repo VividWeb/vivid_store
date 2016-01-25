@@ -113,7 +113,20 @@ if($products){
                     $varationData = array();
                     foreach($variationLookup as $key=>$variation) {
                         $product->setVariation($variation);
-                        $varationData[$key] = array('price'=>$product->getFormattedOriginalPrice(), 'saleprice'=>$product->getFormattedSalePrice(), 'available'=>($variation->isSellable()));
+
+                        $imgObj = $variation->getVariationImageObj();
+
+                        if ($imgObj) {
+                            $thumb = Core::make('helper/image')->getThumbnail($imgObj,400,280,true);
+                        }
+
+                        $varationData[$key] = array(
+                        'price'=>$product->getFormattedOriginalPrice(),
+                        'saleprice'=>$product->getFormattedSalePrice(),
+                        'available'=>($variation->isSellable()),
+                        'imageThumb'=>$thumb ? $thumb->src : '',
+                        'image'=>$imgObj ? $imgObj->getRelativePath() : '');
+
                     } ?>
 
 
@@ -145,6 +158,14 @@ if($products){
                         } else {
                             pli.find('.out-of-stock-label').removeClass('hidden');
                             pli.find('.btn-add-to-cart').addClass('hidden');
+                        }
+
+                        if (variationdata[ar.join('_')]['imageThumb']) {
+                            var image = pli.find('.product-list-thumbnail img');
+
+                            if (image) {
+                                image.attr('src', variationdata[ar.join('_')]['imageThumb']);
+                            }
                         }
 
                     });

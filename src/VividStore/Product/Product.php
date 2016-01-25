@@ -296,7 +296,14 @@ class Product
         $product->setNumberItems($data['pNumberItems']);
         $product->setAutoCheckout($data['pAutoCheckout']);
         $product->setIsExclusive($data['pExclusive']);
-        $product->setHasVariations($data['pVariations']);
+
+        // if we have no product groups, we don't have variations to offer
+        if (empty($data['pogName'])) {
+            $product->setHasVariations(0);
+        } else {
+            $product->setHasVariations($data['pVariations']);
+        }
+
         $product->save();
         if(!$data['pID']){
             $product->generatePage($data['selectPageTemplate']);
@@ -425,6 +432,7 @@ class Product
             return $this->pNumberItems;
         }
     }
+
     public function getProductImageID() {
         if ($this->hasVariations() && $variation = $this->getVariation()) {
             return $variation->getVariationImageID();
@@ -434,10 +442,22 @@ class Product
     }
     public function getProductImageObj(){
         if($this->getProductImageID()){
-            $fileObj = File::getByID($this->pfID);
+            $fileObj = File::getByID($this->getProductImageID());
             return $fileObj;
         }
     }
+
+    public function getBaseProductImageID() {
+       return $this->pfID;;
+    }
+
+    public function getBaseProductImageObj(){
+        if($this->getBaseProductImageID()){
+            $fileObj = File::getByID($this->getBaseProductImageID());
+            return $fileObj;
+        }
+    }
+
     public function hasDigitalDownload() { return count($this->getProductDownloadFiles()) > 0 ? true : false; }
     public function getProductDownloadFiles(){ return StoreProductFile::getFilesForProduct($this); }
     public function getProductDownloadFileObjects(){ return StoreProductFile::getFileObjectsForProduct($this); }
