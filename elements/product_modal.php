@@ -16,7 +16,7 @@
             <?=$product->getProductDesc()?>
         </div>
         <div class="product-modal-options clearfix">
-            <div class="product-modal-option-group vivid-store-col-2">
+            <div class="product-modal-option-group">
                 <span class="option-group-label"><?=t('Quantity')?></span>
                 <input type="number" name="quantity" class="product-qty" value="1" max="<?=$product->getProductQty()?>">
             </div>
@@ -24,19 +24,19 @@
             $optionGroups = $product->getProductOptionGroups();
             $optionItems = $product->getProductOptionItems();
             foreach($optionGroups as $optionGroup){
-            ?>
-            <div class="product-modal-option-group vivid-store-col-2">
-                <span class="option-group-label"><?=$optionGroup['pogName']?></span>
-                <select name="pog<?=$optionGroup['pogID']?>">
-                    <?php
-                    foreach($optionItems as $option){
-                        if($option['pogID']==$optionGroup['pogID']){?>
-                            <option value="<?=$option['poiID']?>"><?=$option['poiName']?></option>   
-                        <?php }
-                    }//foreach    
-                    ?>
-                </select>
-            </div>
+                ?>
+                <div class="product-option-group clearfix">
+                    <label class="option-group-label"><?=$optionGroup->getName()?></label>
+                    <select name="pog<?=$optionGroup->getID()?>">
+                        <?php
+                        foreach($optionItems as $option){
+                            if($option->getProductOptionGroupID()==$optionGroup->getID()){?>
+                                <option value="<?=$option->getID()?>"><?=$option->getName()?></option>
+                            <?php }
+                        }//foreach
+                        ?>
+                    </select>
+                </div>
             <?php } ?>
         </div>
         <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
