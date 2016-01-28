@@ -1082,8 +1082,20 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
                             }
                             ?>
                         </td>
-                        <td><?php echo  ($p->isUnlimited() ? '<span class="label label-default">' . t('Unlimited') .'</span>' : $p->getProductQty()) ?></td>
-                        <td><?php echo  $p->getFormattedPrice() ?></td>
+                        <td><?php
+                            if ($p->hasVariations()) {
+                                echo '<span class="label label-info">' . t('Multiple') . '</span>';
+                            } else {
+                                echo($p->isUnlimited() ? '<span class="label label-default">' . t('Unlimited') . '</span>' : $p->getProductQty());
+                            }?></td>
+                        <td>
+                            <?php
+                            if ($p->hasVariations()) {
+                                echo '<span class="label label-info">' . t('Multiple') . '</span><br />';
+                                echo t('Base price') . ': ' . $p->getFormattedPrice();
+                            } else {
+                                echo $p->getFormattedPrice();
+                            } ?></td>
                         <td>
                             <?php
                             if ($p->isFeatured()) {
