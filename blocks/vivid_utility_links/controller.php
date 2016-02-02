@@ -31,7 +31,7 @@ class Controller extends BlockController
         $this->set("total",StorePrice::format(StoreCalculator::getSubTotal()));
 
     }
-    public function registerViewAssets()
+    public function registerViewAssets($outputContent = '')
     {
         $this->requireAsset('javascript', 'jquery');
         $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();

@@ -111,7 +111,7 @@ class Controller extends BlockController
         $this->requireAsset("css","font-awesome");
                 
     }
-    public function registerViewAssets()
+    public function registerViewAssets($outputContent = '')
     {
         $this->requireAsset('javascript', 'jquery');
         $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
