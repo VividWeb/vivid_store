@@ -22,7 +22,7 @@ class StoreProductKey extends Key {
         return $avl;
     }
     
-    public function load($akID) {
+    public function load($akID, $loadBy = 'akID') {
         parent::load($akID);
         $db = Database::get();
         $row = $db->GetRow("select * from VividStoreProductAttributeKeys where akID = ?", array($akID));
