@@ -189,7 +189,7 @@ class Cart
                 $newquantity = $product->getProductQty();
             }
 
-           // $cart[$exists]['product']['qty'] = $newquantity;
+            $cartItem['product']['qty'] = $newquantity;
 
             if ($product->isExclusive()) {
                 $cart = array($cartItem);
