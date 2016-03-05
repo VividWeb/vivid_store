@@ -5,6 +5,7 @@ use Package;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
+use Whoops\Exception\ErrorException;
 use Route;
 use Asset;
 use AssetList;
@@ -62,8 +63,12 @@ class Controller extends Package
 
     public function install()
     {
-        parent::install();
-        $this->installStore();
+        if(!class_exists("SOAPClient")) {
+            throw new ErrorException(t('This package requires that the SOAP client for PHP is installed'));
+        } else {
+            parent::install();
+            $this->installStore();
+        }
     }
 
     public function upgrade()
