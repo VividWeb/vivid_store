@@ -33,10 +33,26 @@ class OrderList  extends AttributedItemList
         }
 
         if(isset($this->status)){
-            if ($paramcount > 0) {
-                $this->query->andWhere('oStatus = ?')->setParameter($paramcount++,$this->status);
+            $db = Database::connection();
+            $matchingOrders = $db->query("SELECT oID FROM VividStoreOrderStatusHistories t1
+                                            WHERE oshStatus = ? and
+                                                t1.oshDate = (SELECT MAX(t2.oshDate)
+                                                             FROM VividStoreOrderStatusHistories t2
+                                                             WHERE t2.oID = t1.oID)",array($this->status));
+            $orderIDs = array();
+
+            while($value = $matchingOrders->fetchRow()) {
+                $orderIDs[] = $value['oID'];
+            }
+
+            if (!empty($orderIDs)) {
+                if ($paramcount > 0) {
+                    $this->query->addWhere('o.oID in ('.implode(',',$orderIDs).')');
+                } else {
+                    $this->query->where('o.oID in ('.implode(',',$orderIDs).')');
+                }
             } else {
-                $this->query->where('oStatus = ?')->setParameter($paramcount++,$this->status);
+                $this->query->where('1 = 0');
             }
         }
         
@@ -51,7 +67,6 @@ class OrderList  extends AttributedItemList
         }
         
         $this->query->orderBy('oID', 'DESC');
-
         return $this->query;
     }
 

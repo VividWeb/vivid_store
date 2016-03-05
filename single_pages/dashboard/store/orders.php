@@ -245,7 +245,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                 <ul id="group-filters" class="nav nav-pills">
                     <li><a href="<?php echo View::url('/dashboard/store/orders/')?>"><?=t('All Statuses')?></a></li>
                     <?php foreach($statuses as $status){ ?>
-                        <li><a href="<?php echo View::url('/dashboard/store/orders/', $status->getHandle())?>"><?=$status->getReadableHandle();?></a></li>
+                        <li><a href="<?php echo View::url('/dashboard/store/orders/', $status->getHandle())?>"><?=$status->getName();?></a></li>
                     <?php } ?>
                 </ul>
             <?php } ?>
