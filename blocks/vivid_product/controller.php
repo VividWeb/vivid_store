@@ -64,7 +64,7 @@ class Controller extends BlockController
             $this->set('optionItems',$product->getProductOptionItems(true));
         }
     }
-    public function registerViewAssets()
+    public function registerViewAssets($outputContent = '')
     {
         $this->requireAsset('javascript', 'jquery');
         $this->requireAsset('javascript', 'vivid-store');
