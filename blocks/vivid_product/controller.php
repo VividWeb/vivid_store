@@ -9,6 +9,7 @@ use Page;
 use URL;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 class Controller extends BlockController
@@ -33,11 +34,35 @@ class Controller extends BlockController
             
         if($this->productLocation == 'page'){
             $cID = Page::getCurrentPage()->getCollectionID();
-            $p = StoreProduct::getByCollectionID($cID);
+            $product = StoreProduct::getByCollectionID($cID);
         } else {
-            $p = StoreProduct::getByID($this->pID);
+            $product = StoreProduct::getByID($this->pID);
         }
-        $this->set('p',$p);
+
+        if ($product) {
+
+
+            if ($product->hasVariations()) {
+                $variations = StoreProductVariation::getVariationsForProduct($product);
+
+                $variationLookup = array();
+
+                if (!empty($variations)) {
+                    foreach ($variations as $variation) {
+                        // returned pre-sorted
+                        $ids = $variation->getOptionItemIDs();
+                        $variationLookup[implode('_', $ids)] = $variation;
+                    }
+                }
+
+                $product->setInitialVariation();
+                $this->set('variationLookup', $variationLookup);
+            }
+
+            $this->set('product',$product);
+            $this->set('optionGroups', $product->getProductOptionGroups());
+            $this->set('optionItems',$product->getProductOptionItems(true));
+        }
     }
     public function registerViewAssets()
     {

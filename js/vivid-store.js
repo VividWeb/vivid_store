@@ -61,11 +61,14 @@ exitModal: function(){
     },
 
 
+
     //Add Item to Cart
-    addToCart: function(pID, modal){
+    addToCart: function(pID, type){
         var form;
-        if(modal==true){
+        if(type =='modal'){
             form = $('#form-add-to-cart-modal-'+pID);
+        } else if (type == 'list') {
+            form = $('#form-add-to-cart-list-'+pID);
         } else {
             form = $('#form-add-to-cart-'+pID);
         }

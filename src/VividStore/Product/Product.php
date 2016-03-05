@@ -18,6 +18,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProd
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup as StoreProductOptionGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
@@ -44,8 +45,13 @@ class Product
     /**
      * @Column(type="string")
      */
-    protected $pName; 
-    
+    protected $pName;
+
+    /**
+     * @Column(type="string",nullable=true)
+     */
+    protected $pSKU;
+
     /**
      * @Column(type="text",nullable=true)
      */
@@ -135,6 +141,11 @@ class Product
      * @Column(type="integer")
      */
     protected $pWeight;
+
+    /**
+     * @Column(type="integer",nullable=true)
+     */
+    protected $pNumberItems;
     
     /**
      * @Column(type="boolean")
@@ -151,8 +162,52 @@ class Product
      */
     protected $pExclusive;
 
+    /**
+     * @Column(type="boolean")
+     */
+    protected $pVariations;
+
+    // not stored, used for price/sku/etc lookup purposes
+    protected $variation;
+
+    public function setVariation($variation) {
+        if (is_object($variation)) {
+            $this->variation = $variation;
+        } elseif(is_integer($variation)) {
+            $variation = StoreProductVariation::getByID($variation);
+
+            if ($variation) {
+                $this->variation = $variation;
+            }
+        }
+    }
+
+    public function setInitialVariation() {
+        if ($this->hasVariations()) {
+            $optionGroups = $this->getProductOptionGroups();
+            $optionItems = $this->getProductOptionItems();
+            $optionkeys = array();
+
+            foreach($optionGroups as $optionGroup){
+                foreach($optionItems as $option){
+                    if($option->getProductOptionGroupID()==$optionGroup->getID()){
+                        $optionkeys[] = $option->getID();
+                        break;
+                    }
+                }
+            }
+
+            $this->setVariation(StoreProductVariation::getByOptionItemIDs($optionkeys));
+        }
+    }
+
+    public function getVariation() {
+        return $this->variation;
+    }
+
     public function setCollectionID($cID){ $this->cID = $cID; }
     public function setProductName($name){ $this->pName = $name; }
+    public function setProductSKU($sku){ $this->pSKU = $sku; }
     public function setProductDescription($description){ $this->pDesc = $description; }
     public function setProductDetail($detail){ $this->pDetail = $detail; }
     public function setProductPrice($price){ $this->pPrice = $price; }
@@ -172,13 +227,24 @@ class Product
     public function setProductHeight($height){ $this->pHeight = $height; }
     public function setProductLength($length){ $this->pLength = $length; }
     public function setProductWeight($weight){ $this->pWeight = $weight; }
+    public function setNumberItems($number){ $this->pNumberItems = $number; }
     public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = (!is_null($bool) ? $bool : false); }
     public function setAutoCheckout($bool){ $this->pAutoCheckout = (!is_null($bool) ? $bool : false) ; }
     public function setIsExclusive($bool){ $this->pExclusive = (!is_null($bool) ? $bool : false); }
+    public function setHasVariations($bool){ $this->pVariations = (!is_null($bool) ? $bool : false); }
+
+
     public function updateProductQty($qty)
     {
-        $this->setProductQty($qty);
-        $this->save();
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            if ($variation) {
+                $variation->setVariationQty($qty);
+                $variation->save();
+            }
+        } else {
+            $this->setProductQty($qty);
+            $this->save();
+        }
     }
 
     public static function getByID($pID) {
@@ -207,6 +273,7 @@ class Product
             $product->setProductDateAdded(new \Datetime());
         }
         $product->setProductName($data['pName']);
+        $product->setProductSKU($data['pSKU']);
         $product->setProductDescription($data['pDesc']);
         $product->setProductDetail($data['pDetail']);
         $product->setProductPrice($data['pPrice']);
@@ -226,8 +293,17 @@ class Product
         $product->setProductHeight($data['pHeight']);
         $product->setProductLength($data['pLength']);
         $product->setProductWeight($data['pWeight']);
+        $product->setNumberItems($data['pNumberItems']);
         $product->setAutoCheckout($data['pAutoCheckout']);
         $product->setIsExclusive($data['pExclusive']);
+
+        // if we have no product groups, we don't have variations to offer
+        if (empty($data['pogName'])) {
+            $product->setHasVariations(0);
+        } else {
+            $product->setHasVariations($data['pVariations']);
+        }
+
         $product->save();
         if(!$data['pID']){
             $product->generatePage($data['selectPageTemplate']);
@@ -237,13 +313,64 @@ class Product
 
     public function getProductID(){ return $this->pID; }
     public function getProductName(){ return $this->pName; }
+    public function getProductSKU(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            if ($variation) {
+                $varsku = $variation->getVariationSKU();
+
+                if ($varsku) {
+                    return $varsku;
+                } else {
+                    return $this->pSKU;
+                }
+            }
+        } else {
+            return $this->pSKU;
+        }
+    }
     public function getProductPageID() { return $this->cID; }
     public function getProductDesc(){ return $this->pDesc; }
     public function getProductDetail() { return $this->pDetail; }
-    public function getProductPrice(){ return $this->pPrice; }
-    public function getFormattedPrice(){ return StorePrice::format($this->pPrice); }
-    public function getProductSalePrice() { return $this->pSalePrice; }
-    public function getFormattedSalePrice(){ return StorePrice::format($this->pSalePrice); }
+    public function getProductPrice(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            if ($variation) {
+                $varprice = $variation->getVariationPrice();
+
+                if ($varprice) {
+                    return $varprice;
+                } else {
+                    return $this->pPrice;
+                }
+            }
+        } else {
+            return $this->pPrice;
+        }
+    }
+    public function getFormattedOriginalPrice(){ return StorePrice::format($this->getProductPrice()); }
+    public function getFormattedPrice(){ return StorePrice::format($this->getActivePrice()); }
+
+    public function getProductSalePrice() {
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            if ($variation) {
+                $varprice = $variation->getVariationSalePrice();
+                if ($varprice) {
+                    return $varprice;
+                } else {
+                    return $this->pSalePrice;
+                }
+            }
+        } else {
+            return $this->pSalePrice;
+        }
+    }
+    public function getFormattedSalePrice(){ return
+        $saleprice = $this->getProductSalePrice();
+
+        if ($saleprice != '') {
+            return StorePrice::format($saleprice);
+        }
+    }
+
     public function getActivePrice(){
         $salePrice = $this->getProductSalePrice();
         if($salePrice != ""){
@@ -267,42 +394,91 @@ class Product
     public function isFeatured(){ return $this->pFeatured; }
     public function isActive(){ return $this->pActive; }
     public function isShippable() { return $this->pShippable; }
+
+
     public function getDimensions($whl=null){
+        $source = $this;
+
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            $source = $variation;
+        }
+
         switch($whl){
             case "w":
-                return $this->pWidth;
+                return $source->pWidth;
                 break;
             case "h":
-                return $this->pHeight;
+                return $source->pHeight;
                 break;
             case "l":
-                return $this->pLength;
+                return $source->pLength;
                 break;
             default:
-                return $this->pLength."x".$this->pWidth."x".$this->pHeight;
+                return $source->pLength."x".$source->pWidth."x".$source->pHeight;
                 break;
         }
     }
-    public function getProductWeight(){ return $this->pWeight; }
-    public function getProductImageID() { return $this->pfID; }
+    public function getProductWeight(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationWeight();
+        } else {
+            return $this->pWeight;
+        }
+    }
+    public function getProductNumberItems(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationNumberItems();
+        } else {
+            return $this->pNumberItems;
+        }
+    }
+
+    public function getProductImageID() {
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationImageID();
+        } else {
+            return $this->pfID;
+        }
+    }
     public function getProductImageObj(){
-        if($this->pfID){
-            $fileObj = File::getByID($this->pfID);
+        if($this->getProductImageID()){
+            $fileObj = File::getByID($this->getProductImageID());
             return $fileObj;
         }
     }
+
+    public function getBaseProductImageID() {
+       return $this->pfID;;
+    }
+
+    public function getBaseProductImageObj(){
+        if($this->getBaseProductImageID()){
+            $fileObj = File::getByID($this->getBaseProductImageID());
+            return $fileObj;
+        }
+    }
+
     public function hasDigitalDownload() { return count($this->getProductDownloadFiles()) > 0 ? true : false; }
     public function getProductDownloadFiles(){ return StoreProductFile::getFilesForProduct($this); }
     public function getProductDownloadFileObjects(){ return StoreProductFile::getFileObjectsForProduct($this); }
     public function createsLogin(){ return (bool)$this->pCreateUserAccount; }
     public function allowQuantity() { return !(bool)$this->pNoQty; }
     public function isExclusive() { return (bool)$this->pExclusive; }
-    public function isUnlimited() { return (bool)$this->pQtyUnlim; }
+    public function hasVariations() { return (bool)$this->pVariations; }
+    public function isUnlimited()
+    {
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->isUnlimited();
+        } else {
+            return (bool)$this->pQtyUnlim;
+        }
+    }
     public function autoCheckout() { return (bool)$this->pAutoCheckout; }
     public function allowBackOrders() { return (bool)$this->pBackOrder; }
     public function hasUserGroups(){ return count($this->getProductUserGroups()) > 0 ? true : false; }
     public function getProductUserGroups(){ return StoreProductUserGroup::getUserGroupsForProduct($this); }
     public function getProductUserGroupIDs(){ return StoreProductUserGroup::getUserGroupIDsForProduct($this); }
+
     public function getProductImage(){
         $fileObj = $this->getProductImageObj();
         if(is_object($fileObj)){
@@ -315,17 +491,28 @@ class Product
             return "<img src='".$fileObj->getThumbnailURL('file_manager_listing')."'>";
         }
     }
-    public function getProductQty(){ return $this->pQty; }
+
+    public function getProductQty(){
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+            return $variation->getVariationQty();
+        } else {
+            return $this->pQty;
+        }
+    }
     
     public function isSellable()
     {
-        if($this->getProductQty() > 0 || $this->isUnlimited()){
-            return true;
+        if ($this->hasVariations() && $variation = $this->getVariation()) {
+           return $variation->isSellable();
         } else {
-            if($this->allowBackOrders()){
+            if($this->getProductQty() > 0 || $this->isUnlimited()){
                 return true;
             } else {
-                return false;
+                if($this->allowBackOrders()){
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
     }
@@ -333,12 +520,11 @@ class Product
     public function getProductImages() { return StoreProductImage::getImagesForProduct($this); }
     public function getproductimagesobjects() { return StoreProductImage::getImageObjectsForProduct($this); }
     public function getProductLocationPages() { return StoreProductLocation::getLocationsForProduct($this); }
-
     public function getProductOptionGroups() { return StoreProductOptionGroup::getOptionGroupsForProduct($this); }
-    public function getProductOptionItems() { return StoreProductOptionItem::getOptionItemsForProduct($this); }
-
+    public function getProductOptionItems($onlyvisible = false) { return StoreProductOptionItem::getOptionItemsForProduct($this, $onlyvisible); }
     public function getProductGroupIDs() { return StoreProductGroup::getGroupIDsForProduct($this); }
     public function getProductGroups() { return StoreProductGroup::getGroupsForProduct($this); }
+    public function getProductVariations() { return StoreProductVariation::getVariationsForProduct($this); }
 
     public function save()
     {
@@ -356,6 +542,7 @@ class Product
         StoreProductGroup::removeGroupsForProduct($this);
         StoreProductLocation::removeLocationsForProduct($this);
         StoreProductUserGroup::removeUserGroupsForProduct($this);
+        StoreProductVariation::removeVariationsForProduct($this);
         $em = Database::get()->getEntityManager();
         $em->remove($this);
         $em->flush();

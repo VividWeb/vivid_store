@@ -28,7 +28,6 @@ class ProductList extends AttributedItemList
         $this->gIDs = array_merge($this->gIDs, $groupIDs);
     }
 
-
     public function setSortBy($sort)
     {
         $this->sortBy = $sort;
