@@ -80,6 +80,7 @@ class Settings extends DashboardPageController
                 Config::save('vividstore.sizeUnit',$args['sizeUnit']);
                 Config::save('vividstore.notificationemails',$args['notificationEmails']);
                 Config::save('vividstore.emailalerts',$args['emailAlert']);
+                Config::save('vividstore.emailalertsname',$args['emailAlertName']);
                 Config::save('vividstore.productPublishTarget',$args['productPublishTarget']);
                 Config::save('vividstore.guestCheckout',$args['guestCheckout']);
 
