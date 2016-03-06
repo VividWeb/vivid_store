@@ -1,0 +1,35 @@
+TL:DR; The product is FREE as in Beer, not in speech. You can do whatever you want with the code, you can make extensions and you can sell it as part of a website for a client. You cannot resell it as stock, or as-is. You cannot build a SaaS, that you charge for, utilizing this. Bottom line: Do what you want, and if you redistribute it in any way, it must be a component of something larger.
+
+
+
+Vivid Store, herein referred to as Item, is licensed under the following terms:
+
+1. You are a granted a non-exclusive, worldwide license to make use of the Item.
+
+2. You are licensed to use the Item to create one single End Product.
+
+3. An End Product is a work that incorporates the Item as well as other things, so that it is larger in scope and different in nature than the Item.
+
+4. You can create one End Product for a client, and you can transfer that single End Product to your client for any fee. This license is then transferred to your client.
+
+5. You can make any number of copies of the single End Product, as long as the End Product is distributed for Free. In other words, you cannot resell it, other than to a client as part of an End Product.
+
+6. You also cannot build a Software as a Service utilizing this item
+
+7. You can modify or manipulate the Item. You can combine the Item with other works and make a derivative work from it. The resulting works are subject to the terms of this license. You can do these things as long as the End Product you then create is one that’s permitted under clause 3.
+
+8. You can’t redistribute the Item as stock, in a tool or template, or with source files. You can’t do this with an Item either on its own or bundled with other items, and even if you modify the Item. You can’t redistribute or make available the Item as-is or with superficial modifications. These things are not allowed even if the re-distribution is for Free.
+
+9. You can’t use the Item in any application allowing an end user to customize a digital or physical product to their specific needs, such as an “on demand”, “made to order” or “build it yourself” application. You can use the Item in this way only if you purchase a separate license for each final product incorporating the Item that is created using the application.
+
+10. VIVIVD, the author of the Item, retains ownership of the Item but grants you the license on these terms. This license is between the author of the Item and you.
+
+11. NO WARRANTY.  Although VIVID attempts to deliver accurate, complete content and error-free software applications, occasional errors or omissions may occur in the System.  EXCEPT AS SPECIFICALLY PROVIDED IN THIS AGREEMENT, THE SYSTEM IS PROVIDED "AS IS."  VIVID MAKES NO OTHER REPRESENTATION OR WARRANTY, EITHER EXPRESS OR IMPLIED.  VIVID DOES NOT WARRANT THE ACCURACY, COMPLETENESS, PERFORMANCE, CURRENCY, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE OF THE SYSTEM.  DEVELOPMENT PARTNER DISCLAIMS ALL RESPONSIBILITY FOR ANY LOSS OR CLAIM OF ANY KIND RESULTING FROM, ARISING OUT OF, OR ANY WAY RELATED TO USE OF THE SYSTEM.  VIVID’S ENTIRE LIABILITY AND OBLIGATION SHALL BE LIMITED TO DEVELOPMENT PARTNER USING COMMERCIALLY REASONABLE EFFORTS TO CORRECT ERRORS OR OMISSIONS AND SHALL CONSTITUTE CUSTOMER’S SOLE RIGHT AND EXCLUSIVE REMEDY HEREUNDER WITH REPECT TO THE SYSTEM.
+
+IMPORTANT LIMITATION OF LIABILITY.  IN NO EVENT SHALL VIVID OR ITS OFFICERS, EMPLOYEES, VENDORS OR LICENSORS BE LIABLE FOR LOSS OF DATA, LOSS OF PROFIT, OR FOR ANY OTHER SPECIAL, CONSEQUENTIAL, OR INCIDENTAL DAMAGES, HOWEVER CAUSED, WHETHER BASED UPON CONTRACT, NEGLIGENCE, STRICT LIABILITY IN TORT, WARRANTY, OR ANY OTHER LEGAL THEORY.  IN NO EVENT SHALL DEVELOPMENT PARTNER’S CUMULATIVE AGGREGATE LIABILITY UNDER THIS AGREEMENT EXCEED THE TOTAL FEES PAID BY CUSTOMER TO VIVID WITH RESPECT TO THE THEN-CURRENT TERM OF THE AGREEMENT.
+
+12. Forum Selection and Choice of Law.  This Agreement shall be governed by the laws of Florida, without regard to its choice of law rules.  By entering into this Agreement Customer agrees to be subject to personal jurisdiction in Florida courts.  Any litigation arising from or related to this Agreement shall be brought only in the federal or state courts in Duval County, Florida.
+
+13. Attorneys Fees; Costs.  In addition to any other relief, the prevailing party in any dispute arising under this Agreement will be entitled to all reasonable legal fees and costs.
+
+All code, documentation & license materials are Copyright 2015, VIVID
