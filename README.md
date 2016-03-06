@@ -1,5 +1,7 @@
 # Vivid Store
 A Free eCommerce Add-on For Concrete5 5.7
+[See the Roadmap here](https://github.com/VividWeb/vivid_store/wiki/Roadmap)
+[Read the license here](https://github.com/VividWeb/vivid_store/blob/development/LICENSE.txt)
 
 ## A word on contributing
 Vivid Store welcome contributions in all forms: Discussions, issue reporting, bug fixes, pull requests, feature requests. 
