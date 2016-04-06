@@ -267,6 +267,7 @@ class Order
         $em->remove($this);
         $em->flush();
     }
+
     public function completeOrder($transactionReference = null)
     {
         if ($transactionReference) {

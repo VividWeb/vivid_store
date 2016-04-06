@@ -18,7 +18,8 @@ class Controller extends Package
     protected $pkgVersion = '3.0.1.4';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
-        'src/Omnipay' => '\Omnipay'
+        'src/Omnipay' => '\Omnipay',
+        'src/BoxPacker' => '\DVDoug\BoxPacker'
     );
     public function getPackageDescription()
     {
@@ -118,7 +119,7 @@ class Controller extends Package
     }
     public function uninstall()
     {
-        $authnetpm = PaymentMethod::getByHandle('auth_net');
+        /*$authnetpm = PaymentMethod::getByHandle('auth_net');
         if(is_object($authnetpm)){
             $authnetpm->delete();
         }
@@ -129,7 +130,7 @@ class Controller extends Package
         $paypalpm = PaymentMethod::getByHandle('paypal_standard');
         if(is_object($paypalpm)){
             $paypalpm->delete();
-        }
+        }*/
 
         $shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
         if(is_object($shippingMethodType)) {
