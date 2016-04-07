@@ -30,6 +30,7 @@
         <field name="pID" type="I"></field>
         <field name="oID" type="I"></field>
         <field name="oiProductName" type="C" size="255"></field>
+        <field name="oiSKU" type="C" size="255"></field>
         <field name="oiPricePaid" type="N" size="10.4"></field>
         <field name="oiTax" type="C" size="255"></field>
         <field name="oiTaxIncluded" type="C" size="255"></field>
@@ -66,15 +67,6 @@
         <field name="akID" type="I"><key/><unsigned/></field>
         <field name="avID" type="I"><key/><unsigned/></field>
     </table>
-    <table name="VividStorePaymentMethods">
-        <field name="pmID" type="I"><key /><unsigned /><autoincrement/></field>
-        <field name="pmHandle" type="C" size="255"></field>
-        <field name="pmName" type="C" size="255"></field>
-        <field name="pmDisplayName" type="C" size="255"></field>
-        <field name="pmEnabled" type="I"></field>
-        <field name="pkgID" type="I"></field>
-    </table>
-
     <table name="VividStoreDiscountRules">
         <field name="drID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="drName" type="C" size="255"></field>

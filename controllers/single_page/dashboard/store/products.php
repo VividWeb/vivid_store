@@ -19,6 +19,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductImage as StorePro
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation as StoreProductLocation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductUserGroup as StoreProductUserGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOption as StoreProductOption;
 use \Concrete\Package\VividStore\Src\VividStore\Group\Group as StoreGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
@@ -34,6 +35,8 @@ class Products extends DashboardPageController
         $products->setGroupID($gID);
         $products->activeOnly(false);
         $products->setShowOutOfStock(true);
+        $products->setSortBy('date');
+
 
         if ($this->get('keywords')) {
             $products->setSearch($this->get('keywords'));
@@ -93,8 +96,16 @@ class Products extends DashboardPageController
         $this->set('pageTitle', t('Add Product'));
         $this->set('usergroups', $usergrouparray);
     }
-    public function edit($pID)
+    public function edit($pID, $status = '')
     {
+        if ($status == 'updated') {
+            $this->set("success",t("Product Updated"));
+        }
+
+        if ($status == 'added') {
+            $this->set("success",t("Product Added"));
+        }
+
         $this->loadFormAssets();
         $this->set("actionType",t("Update"));
         
@@ -105,12 +116,71 @@ class Products extends DashboardPageController
             $this->redirect('/dashboard/store/products/');
         }
 
+        $optItems = $product->getProductOptionItems();
+        $groups = $product->getProductOptionGroups();
+
         $this->set('p',$product);
         $this->set("images",$product->getProductImages());
-        $this->set("groups",$product->getProductOptionGroups());
-        $this->set('optItems',$product->getProductOptionItems());
+        $this->set("groups",$groups);
+        $this->set('optItems',$optItems);
         $this->set('locationPages', $product->getProductLocationPages());
         $this->set('pgroups', $product->getProductGroupIDs());
+
+        $variations = $product->getProductVariations();
+        $variationLookup = array();
+
+        $optionArrays = array();
+        $optionItemLookup = array();
+
+        foreach($optItems as $optItem) {
+            $optionArrays[$optItem->getProductOptionGroupID()][] = $optItem->getID();
+            $optionItemLookup[ $optItem->getID()] = $optItem;
+        }
+
+        $groupLookup = array();
+
+        foreach($groups as $group) {
+            $groupLookup[$group->getID()] = $group;
+        }
+
+        $this->set('groupLookup', $groupLookup);
+
+        $optionArrays = array_values($optionArrays);
+        $comboOptions = StoreProductVariation::combinations($optionArrays);
+
+        $checkedOptions = array();
+
+        foreach($comboOptions as $option) {
+            if (!is_array($option)) {
+                $checkedOptions[] = array($option);
+            } else {
+                $checkedOptions[] =$option;
+            }
+        }
+
+        $comboOptions = $checkedOptions;
+
+        $this->set('comboOptions', $comboOptions);
+        $this->set('optionItemLookup', $optionItemLookup);
+
+        foreach($variations as $variation) {
+            $options = $variation->getOptions();
+            $optionids = array();
+
+            foreach($options as $varoption) {
+                $option = $varoption->getOption();
+
+                if ($option) {
+                    $optionids[] = $option->getID();
+                }
+            }
+
+            sort($optionids);
+            $variationLookup[implode('_',$optionids)] = $variation;
+        }
+
+        $this->set('variations', $variations);
+        $this->set('variationLookup', $variationLookup);
 
         //populate "Groups" select box options
         $grouplist = StoreGroupList::getGroupList();
@@ -134,8 +204,9 @@ class Products extends DashboardPageController
 
         $this->set('pageTitle', t('Edit Product'));
         $this->set('usergroups', $usergrouparray);
-        
     }
+
+
     public function generate($pID,$templateID=null)
     {
         StoreProduct::getByID($pID)->generatePage($templateID);
@@ -215,11 +286,15 @@ class Products extends DashboardPageController
                 
                 //save category locations
                 StoreProductLocation::addLocationsForProduct($data,$product);
-                
+
+                // save variations
+                StoreProductVariation::addVariations($data, $product);
+
+
                 if($data['pID']){
-                    $this->redirect('/dashboard/store/products/', 'updated');
+                    $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'updated');
                 } else {
-                    $this->redirect('/dashboard/store/products/', 'success');
+                    $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'success');
                 }
             }//if no errors
         }//if post

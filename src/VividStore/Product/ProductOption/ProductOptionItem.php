@@ -12,98 +12,136 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product\ProductOption\Pr
  */
 class ProductOptionItem
 {
-    
-    /** 
-     * @Id @Column(type="integer") 
-     * @GeneratedValue 
+
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
      */
     protected $poiID;
-    
+
     /**
      * @Column(type="integer")
      */
-    protected $pID; 
-    
+    protected $pID;
+
     /**
      * @Column(type="integer")
      */
     protected $pogID;
-    
+
     /**
      * @Column(type="string")
      */
-    protected $poiName; 
-    
+    protected $poiName;
+
     /**
      * @Column(type="integer")
      */
-    protected $poiSort; 
-    
+    protected $poiSort;
+
+    /**
+     * @Column(type="boolean")
+     */
+    protected $poiHidden = 0;
+
+
+    /** @OneToMany(targetEntity="Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariationOptionItem", mappedBy="option", cascade={"persist", "remove"})
+    * @JoinColumn(name="poiID", referencedColumnName="poiID", onDelete="CASCADE")
+    */
+    private $variationoptionitems;
+
+
     private function setProductID($pID){ $this->pID = $pID; }
     private function setProductOptionGroupID($id){ $this->pogID = $id; }
     private function setProductOptionItemName($name){ $this->poiName = $name; }
     private function setSort($sort){ $this->poiSort = $sort; }
-    
-    public function getID(){ return $this->piID; }
+    private function setName($name){ $this->poiName = $name; }
+    private function setHidden($hidden){ $this->poiHidden = (bool)$hidden; }
+
+    public function getID(){ return $this->poiID; }
     public function getProductID() { return $this->pID; }
     public function getProductOptionGroupID() { return $this->pogID; }
     public function getName(){ return $this->poiName; }
     public function getSort() { return $this->poiSort; }
-    
+    public function getHidden() { return $this->poiHidden; }
+    public function isHidden() { return (bool)$this->poiHidden;}
+
     public static function getByID($id) {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem', $id);
     }
-    
-    public static function getOptionItemsForProduct(StoreProduct $product)
+
+    public static function getOptionItemsForProduct(StoreProduct $product, $onlyvisible = false)
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
-        return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem')->findBy(array('pID' => $product->getProductID()));
+        if ($onlyvisible) {
+            return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem')->findBy(array('pID' => $product->getProductID(), 'poiHidden' =>'0' ), array('poiSort'=>'asc'));
+        } else{
+            return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem')->findBy(array('pID' => $product->getProductID()), array('poiSort'=>'asc'));
+        }
     }
-    
+
     public static function getOptionItemsForProductOptionGroup(ProductOptionGroup $pog)
     {
         $db = Database::connection();
         $em = $db->getEntityManager();
-        return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem')->findBy(array('pogID' => $pog->getID()));
+        return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem')->findBy(array('pogID' => $pog->getID()), array('poiSort'=>'asc'));
     }
-    
-    public static function removeOptionItemsForProduct(StoreProduct $product)
+
+    public static function removeOptionItemsForProduct(StoreProduct $product, $excluding = array())
     {
+        if (!is_array($excluding)) {
+            $excluding = array();
+        }
+
         //clear out existing product option items
         $existingOptionItems = self::getOptionItemsForProduct($product);
         foreach($existingOptionItems as $optionItem){
-            $optionItem->delete();
+            if (!in_array($optionItem->getID(), $excluding)) {
+                $optionItem->delete();
+            }
         }
     }
-    
-    public static function add(StoreProduct $product,$pogID,$name,$sort)
+
+    public static function add(StoreProduct $product,$pogID,$name,$sort, $hidden = false)
     {
         $productOptionItem = new self();
         $pID = $product->getProductID();
         $productOptionItem->setProductID($pID);
         $productOptionItem->setProductOptionGroupID($pogID);
-        $productOptionItem->setName($name);
+        $productOptionItem->setProductOptionItemName($name);
         $productOptionItem->setSort($sort);
-        $obj->save();
+        $productOptionItem->setHidden($hidden);
+        $productOptionItem->save();
         return $productOptionItem;
     }
-    
-    
+
+
+    public function update(StoreProduct $product,$name,$sort, $hidden = false)
+    {
+        $pID = $product->getProductID();
+        $this->setProductID($pID);
+        $this->setName($name);
+        $this->setSort($sort);
+        $this->setHidden($hidden);
+        $this->save();
+        return $this;
+    }
+
     public function save()
     {
         $em = Database::connection()->getEntityManager();
         $em->persist($this);
         $em->flush();
     }
-    
+
     public function delete()
     {
         $em = Database::connection()->getEntityManager();
         $em->remove($this);
         $em->flush();
     }
-    
+
 }

@@ -4,6 +4,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use Database;
+use Config;
 
 class Tax
 {

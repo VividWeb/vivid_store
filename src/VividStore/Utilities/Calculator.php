@@ -19,6 +19,10 @@ class Calculator
                 $pID = $cartItem['product']['pID'];
                 $qty = $cartItem['product']['qty'];
                 $product = StoreProduct::getByID($pID);
+
+                if ($cartItem['product']['variation']) {
+                    $product->setVariation($cartItem['product']['variation']);
+                }
                 if(is_object($product)){
                     $productSubTotal = $product->getActivePrice() * $qty;
                     $subtotal = $subtotal + $productSubTotal;

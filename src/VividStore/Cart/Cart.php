@@ -8,6 +8,7 @@ use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
@@ -17,7 +18,7 @@ class Cart
 
     public static function getCart() {
 
-        // this acts as a singleton, in that it wil only fetch the cart form the session and check it for validity once per request
+        // this acts as a singleton, in that it wil only fetch the cart from the session and check it for validity once per request
         if (!isset(self::$cart)) {
             $cart = Session::get('vividstore.cart');
             if(!is_array($cart)) {
@@ -40,7 +41,17 @@ class Cart
                         $update = true;
                     }
 
-                    $checkeditems[] = $cartitem;
+                    $include = true;
+
+                    if ( $cartitem['product']['variation']) {
+                        if (!StoreProductVariation::getByID($cartitem['product']['variation'])) {
+                            $include = false;
+                        }
+                    }
+
+                    if ($include) {
+                        $checkeditems[] = $cartitem;
+                    }
                 } else {
                     $update = true;
                 }
@@ -117,6 +128,36 @@ class Cart
             }
         }
 
+        $optionItemIds = array();
+
+        // search for product options, if found, collect the id
+        foreach ($cartItem['productAttributes'] as $name=>$value) {
+            if (substr( $name, 0, 3) == 'pog') {
+                $optionItemIds[] = $value;
+            }
+        }
+
+        if (!empty($optionItemIds)) {
+            // find the variation via the ids of the options
+            $variation = StoreProductVariation::getByOptionItemIDs($optionItemIds);
+
+            // association the variation with the product
+            if ($variation) {
+                $options = $variation->getOptions();
+                if (count($options) == count($optionItemIds)) {  // check if we've matched to a variation with the correct number of options
+                    $product->setVariation($variation);
+                    $cartItem['product']['variation'] = $variation->getID();
+                } else {
+                    return false;
+                }
+            } else {
+                return false; // variation not matched
+            }
+        } elseif ($product->hasVariations()) {
+            return false;  // if we have a product with variations, but no variation data was submitted, it's a broken add-to-cart form
+        }
+
+
         $cart = self::getCart();
 
         $exists = self::checkForExistingCartItem($cartItem);
@@ -148,7 +189,7 @@ class Cart
                 $newquantity = $product->getProductQty();
             }
 
-           // $cart[$exists]['product']['qty'] = $newquantity;
+            $cartItem['product']['qty'] = $newquantity;
 
             if ($product->isExclusive()) {
                 $cart = array($cartItem);
@@ -160,9 +201,7 @@ class Cart
 
         }
 
-
         Session::set('vividstore.cart', $cart);
-
         return array('added' => $added, 'exclusive'=>$product->isExclusive(), 'removeexistingexclusive'=> $removeexistingexclusive);
     }
 
@@ -179,42 +218,59 @@ class Cart
          * 
          */
 
-        $added = 0;
-        $existingproductcount = 0;
 
-        $exists = false;
         foreach(self::getCart() as $k=>$cart) {
+            //  check if product is the same id first.
             if($cart['product']['pID'] == $cartItem['product']['pID']) {
-              if( count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
-                if(count($cartItem['productAttributes']) === 0) {
-                  $sameproduct = true;
-                  break;
+
+                // check if the number of attributes is the same
+                if(count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
+
+                    if(empty($cartItem['productAttributes'])) {
+                      // if we have no attributes, it's a direct match
+                      return array('exists'=>true,'cartItemKey'=>$k);
+
+                    } else {
+                        // otherwise loop through attributes
+                        $attsmatch = true;
+
+                        foreach($cartItem['productAttributes'] as $key=>$value) {
+                            if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
+                                // attributes match, keep checking
+                            } else {
+                                //different attributes means different "product".
+                                $attsmatch = false;
+                                break;
+                            }
+                        }
+
+                        if ($attsmatch) {
+                            return array('exists'=>true,'cartItemKey'=>$k);
+                        }
+                    }
                 }
-                foreach($cartItem['productAttributes'] as $key=>$value) {
-                  if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
-                      $sameproduct = true;
-                  } else {
-                    //different attributes means different "product".
-                    $sameproduct = false;
-                    break;
-                  }
-                }
-              }
             }
         }
-        return array('exists'=>$sameproduct,'cartItemKey'=>$k);
+
+        return array('exists'=>false,'cartItemKey'=>null);
+
+
     }
 
     public static function update($data)
     {
         $instanceID = $data['instance'];
-        $qty = $data['pQty'];
+        $qty = (int)$data['pQty'];
         $cart = self::getCart();
 
         $product = StoreProduct::getByID((int)$cart[$instanceID]['product']['pID']);
 
         if ($qty > 0 && $product) {
             $newquantity = $qty;
+
+            if ($cart[$instanceID]['product']['variation']) {
+                $product->setVariation($cart[$instanceID]['product']['variation']);
+            }
 
             if (!$product->isUnlimited() && !$product->allowBackOrders() && $product->getProductQty() < $newquantity) {
                 $newquantity = $product->getProductQty();

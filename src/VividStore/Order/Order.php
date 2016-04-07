@@ -24,6 +24,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHis
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
 
 /**
@@ -266,11 +267,19 @@ class Order
         $em->remove($this);
         $em->flush();
     }
+
     public function completeOrder($transactionReference = null)
     {
         if ($transactionReference) {
             $this->setTransactionReference($transactionReference);
         }
+
+        $fromEmail = Config::get('vividstore.emailalerts');
+        if(!$fromEmail){
+            $fromEmail = "store@".$_SERVER['SERVER_NAME'];
+        }
+
+        $fromName = Config::get('vividstore.emailalertsname');
 
         $smID = \Session::get('smID');
         $groupstoadd = array();
@@ -344,14 +353,21 @@ class Order
                 // login the newly created user
                 User::loginByUserID($user->getUserID());
 
+                // new user password email
+                if ($fromName) {
+                    $mh->from($fromEmail, $fromName);
+                } else {
+                    $mh->from($fromEmail);
+                }
+
+                $mh->to($email);
+                $mh->sendMail();
             } else {
                 // we're attempting to create a new user with an email that has already been used
                 // earlier validation must have failed at this point, don't fetch the user
                 $user = null;
             }
 
-            $mh->to($email);
-            $mh->sendMail();
         } elseif ($createlogin) {  // or if we found a user (because they are logged in) and need to use it to create logins
             $user = $customer->getUserInfo();
         }
@@ -408,17 +424,17 @@ class Order
         
         //send out the alerts
         $mh = new MailService();
-        $pkg = Package::getByHandle('vivid_store');
 
-        $fromEmail = Config::get('vividstore.emailalerts');
-        if(!$fromEmail){
-            $fromEmail = "store@".$_SERVER['SERVER_NAME'];
-        }
         $alertEmails = explode(",", Config::get('vividstore.notificationemails'));
         $alertEmails = array_map('trim',$alertEmails);
         
         //receipt
-        $mh->from($fromEmail);
+        if ($fromName) {
+            $mh->from($fromEmail, $fromName);
+        } else {
+            $mh->from($fromEmail);
+        }
+
         $mh->to($customer->getEmail());
 
         $mh->addParameter("order", $this);
@@ -428,7 +444,12 @@ class Order
         $validNotification = false;
 
         //order notification
-        $mh->from($fromEmail);
+        if ($fromName) {
+            $mh->from($fromEmail, $fromName);
+        } else {
+            $mh->from($fromEmail);
+        }
+
         foreach ($alertEmails as $alertEmail) {
             if ($alertEmail) {
                 $mh->to($alertEmail);
@@ -453,8 +474,13 @@ class Order
     public function remove()
     {
         $db = Database::get();
-        $db->Execute("DELETE FROM VividStoreOrders WHERE oID=?",$this->oID);
+        $rows = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$this->oID);
+        foreach($rows as $row){
+            $db->Execute("DELETE FROM VividStoreOrderItemOptions WHERE oiID=?",$row['oiID']);
+        }
+
         $db->Execute("DELETE FROM VividStoreOrderItems WHERE oID=?",$this->oID);
+        $db->Execute("DELETE FROM VividStoreOrders WHERE oID=?",$this->oID);
     }
     public function getOrderItems()
     {
@@ -484,6 +510,16 @@ class Order
     }
     public function getStatusHistory() {
         return StoreOrderStatusHistory::getForOrder($this);
+    }
+    public function getStatus() {
+        $history = StoreOrderStatusHistory::getForOrder($this);
+
+        if (!empty($history)) {
+            $laststatus = $history[0];
+            return $laststatus->getOrderStatusName();
+        } else {
+            return '';
+        }
     }
     public function setAttribute($ak, $value)
     {

@@ -5,18 +5,21 @@ use Package;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
+use Whoops\Exception\ErrorException;
 use Route;
 use Asset;
 use AssetList;
+use View;
 
 class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '3.0.1';
+    protected $pkgVersion = '3.0.1.4';
     protected $pkgAutoloaderRegistries = array(
         'src/AuthorizeNet' => '\AuthorizeNet',
-        'src/Omnipay' => '\Omnipay'
+        'src/Omnipay' => '\Omnipay',
+        'src/BoxPacker' => '\DVDoug\BoxPacker'
     );
     public function getPackageDescription()
     {
@@ -61,8 +64,12 @@ class Controller extends Package
 
     public function install()
     {
-        parent::install();
-        $this->installStore();
+        if(!class_exists("SOAPClient")) {
+            throw new ErrorException(t('This package requires that the SOAP client for PHP is installed'));
+        } else {
+            parent::install();
+            $this->installStore();
+        }
     }
 
     public function upgrade()
@@ -112,7 +119,7 @@ class Controller extends Package
     }
     public function uninstall()
     {
-        $authnetpm = PaymentMethod::getByHandle('auth_net');
+        /*$authnetpm = PaymentMethod::getByHandle('auth_net');
         if(is_object($authnetpm)){
             $authnetpm->delete();
         }
@@ -123,7 +130,7 @@ class Controller extends Package
         $paypalpm = PaymentMethod::getByHandle('paypal_standard');
         if(is_object($paypalpm)){
             $paypalpm->delete();
-        }
+        }*/
 
         $shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
         if(is_object($shippingMethodType)) {
@@ -134,6 +141,18 @@ class Controller extends Package
             $shippingMethodType->delete();
         }
         parent::uninstall();
+    }
+
+    public static function returnHeaderJS()
+    {
+        return "
+        <script type=\"text/javascript\">
+            var PRODUCTMODAL = '" . View::url('/productmodal') . "';
+            var CARTURL = '" . View::url('/cart') . "';
+            var CHECKOUTURL = '" . View::url('/checkout') . "';
+            var QTYMESSAGE = '" . t('Quantity must be greater than zero') . "';
+        </script>
+        ";
     }
 
 

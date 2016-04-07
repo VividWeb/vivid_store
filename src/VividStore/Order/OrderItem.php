@@ -21,27 +21,41 @@ class OrderItem extends Object
     }
     public function add($data,$oID,$tax=0,$taxIncluded=0,$taxName='')
     {
-        $db = Database::get();
+        $db = Database::connection();
         $product = StoreProduct::getByID($data['product']['pID']);
+
+        if ($data['product']['variation']) {
+            $product->setVariation($data['product']['variation']);
+        }
+
         $productName = $product->getProductName();
         $productPrice = $product->getActivePrice();
+        $sku = $product->getProductSKU();
         $qty = $data['product']['qty'];
-        if (!$product->isUnlimited()) {
-            $inStock = $product->getProductQty();
-            $newStock = $inStock - $qty;
+
+        $inStock = $product->getProductQty();
+        $newStock = $inStock - $qty;
+
+        $variation = $product->getVariation();
+
+        if ($variation) {
+            if (!$variation->isUnlimited()) {
+                $product->updateProductQty($newStock);
+            }
+        } elseif (!$product->isUnlimited()) {
             $product->updateProductQty($newStock);
         }
+
         $pID = $product->getProductID();
-        $values = array($oID,$pID,$productName,$productPrice,$tax,$taxIncluded,$taxName,$qty);
-        $db->Execute("INSERT INTO VividStoreOrderItems (oID,pID,oiProductName,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) VALUES (?,?,?,?,?,?,?,?)",$values);
+        $values = array($oID,$pID,$productName,$sku,$productPrice,$tax,$taxIncluded,$taxName,$qty);
+        $db->Execute("INSERT INTO VividStoreOrderItems (oID,pID,oiProductName,oiSKU,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) VALUES (?,?,?,?,?,?,?,?,?)",$values);
         
         $oiID = $db->lastInsertId();
         
         foreach($data['productAttributes'] as $optionGroup=>$selectedOption){
             $optionGroupID = str_replace("pog","",$optionGroup);
-            $optionGroupName = StoreProduct::getProductOptionGroupNameByID($optionGroupID);
-            $optionValue = StoreProduct::getProductOptionValueByID($selectedOption);
-            
+            $optionGroupName = OrderItem::getProductOptionGroupNameByID($optionGroupID);
+            $optionValue = OrderItem::getProductOptionValueByID($selectedOption);
             
             $values = array($oiID,$optionGroupName,$optionValue);
             $db->Execute("INSERT INTO VividStoreOrderItemOptions (oiID,oioKey,oioValue) VALUES (?,?,?)",$values);
@@ -69,6 +83,7 @@ class OrderItem extends Object
     public function getOrderItemID(){ return $this->oiID; }
     public function getProductID(){ return $this->pID; }
     public function getProductName(){ return $this->oiProductName; }
+    public function getSKU(){return $this->oiSKU; }
     public function getPricePaid() { return $this->oiPricePaid; }
     public function getQty() { return $this->oiQty; }
     public function getSubTotal()
@@ -80,17 +95,17 @@ class OrderItem extends Object
     }
     public function getProductOptions()
     {
-        return Database::get()->GetAll("SELECT * FROM VividStoreOrderItemOptions WHERE oiID=?",$this->oiID);
+        return Database::connection()->GetAll("SELECT * FROM VividStoreOrderItemOptions WHERE oiID=?",$this->oiID);
     }
     public function getProductOptionGroupNameByID($id)
     {
-        $db = Database::get();
+        $db = Database::connection();
         $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroups WHERE pogID=?",$id);
         return $optionGroup['pogName'];
     }
      public function getProductOptionValueByID($id)
     {
-        $db = Database::get();
+        $db = Database::connection();
         $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
         return $optionItem['poiName'];
     }

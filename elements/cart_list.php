@@ -1,7 +1,9 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied."));
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as VividProduct;
-use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup as StoreProductOptionGroup;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
 ?>
 <ul class="checkout-cart-list">
     <?php
@@ -10,7 +12,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         foreach ($cart as $k=>$cartItem){
             $pID = $cartItem['product']['pID'];
             $qty = $cartItem['product']['qty'];
-            $product = VividProduct::getByID($pID);
+            $product = StoreProduct::getByID($pID);
+
+            if ($cartItem['product']['variation']) {
+                $product->setVariation($cartItem['product']['variation']);
+            }
+
             if($i%2==0){$classes=" striped"; }else{ $classes=""; }
             if(is_object($product)){
                 ?>
@@ -28,7 +35,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     </div>
 
                     <div class="checkout-cart-item-price">
-                        <?=Price::format($product->getActivePrice())?>
+                        <?=StorePrice::format($product->getActivePrice())?>
                     </div>
 
                     <?php if ($product->allowQuantity()) { ?>
@@ -42,10 +49,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                         <div class="checkout-cart-item-attributes">
                             <?php foreach($cartItem['productAttributes'] as $groupID => $valID){
                                 $groupID = str_replace("pog","",$groupID);
+                                $optiongroup = StoreProductOptionGroup::getByID($groupID);
+                                $optionvalue = StoreProductOptionItem::getByID($valID);
+
                                 ?>
                                 <div class="cart-list-item-attribute">
-                                    <span class="checkout-cart-item-attribute-label"><?=VividProduct::getProductOptionGroupNameByID($groupID)?>:</span>
-                                    <span class="checkout-cart-item-attribute-value"><?=VividProduct::getProductOptionValueByID($valID)?></span>
+                                    <span class="cart-list-item-attribute-label"><?= ($optiongroup ? $optiongroup->getName() : '')?>:</span>
+                                    <span class="cart-list-item-attribute-value"><?= ($optionvalue ? $optionvalue->getName(): '')?></span>
                                 </div>
                             <?php }  ?>
                         </div>

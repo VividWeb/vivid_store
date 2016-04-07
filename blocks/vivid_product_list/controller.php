@@ -8,6 +8,8 @@ use Page;
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductList as StoreProductList;
 use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupList;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
+
 
 class Controller extends BlockController
 {
@@ -100,7 +102,13 @@ class Controller extends BlockController
         $products->setGroupMatchAny($this->groupMatchAny);
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
-        $this->set('products',$paginator->getCurrentPageResults());
+        $products = $paginator->getCurrentPageResults();
+
+        foreach($products as $product) {
+            $product->setInitialVariation();
+        }
+
+        $this->set('products', $products);
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
 
@@ -111,16 +119,11 @@ class Controller extends BlockController
         $this->requireAsset("css","font-awesome");
                 
     }
-    public function registerViewAssets()
+    public function registerViewAssets($outputContent = '')
     {
-        $this->addHeaderItem("
-            <script type=\"text/javascript\">
-                var PRODUCTMODAL = '".View::url('/productmodal')."';
-                var CARTURL = '".View::url('/cart')."';
-                var CHECKOUTURL = '".View::url('/checkout')."';
-                var QTYMESSAGE = '".t('Quantity must be greater than zero')."';
-            </script>
-        ");
+        $this->requireAsset('javascript', 'jquery');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
     }
