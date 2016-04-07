@@ -1,32 +1,223 @@
 <?php 
 namespace Concrete\Package\VividStore\Src\VividStore\Order;
 
-use Concrete\Core\Foundation\Object as Object;
 use Database;
-use User;
-use UserInfo;
+use Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
+use Concrete\Package\VividStore\Src\VividStore\Order\OrderItemOption as StoreOrderItemOption;
+use Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
-use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
-
-class OrderItem extends Object
+/**
+ * @Entity
+ * @Table(name="VividStoreOrderItems")
+ */
+class OrderItem
 {
-    public static function getByID($oiID) {
-        $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStoreOrderItems WHERE oiID=?",$oiID);
-        if(!empty($data)){
-            $item = new OrderItem();
-            $item->setPropertiesFromArray($data);
-        }
-        return($item instanceof OrderItem) ? $item : false;
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
+     */
+    protected $oiID;
+
+    /**
+     * @Column(type="integer")
+     */
+    protected $pID;
+
+
+    /**
+     * @ManyToOne(targetEntity="Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order")
+     * @JoinColumn(name="oID", referencedColumnName="oID", onDelete="CASCADE")
+     */
+    protected $order;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $oiProductName;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $oiSKU;
+
+    /**
+     * @Column(type="decimal", precision=10, scale=4)
+     */
+    protected $oiPricePaid;
+
+    /**
+     * @Column(type="decimal", precision=10, scale=4)
+     */
+    protected $oiTax;
+
+    /**
+     * @Column(type="decimal", precision=10, scale=4)
+     */
+    protected $oiTaxIncluded;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $oiTaxName;
+
+    /**
+     * @Column(type="integer")
+     */
+    protected $oiQty;
+
+    /**
+     * @return mixed
+     */
+    public function getID()
+    {
+        return $this->oiID;
     }
-    public function add($data,$oID,$tax=0,$taxIncluded=0,$taxName='')
+
+    /**
+     * @return mixed
+     */
+    public function getProductName()
+    {
+        return $this->oiProductName;
+    }
+
+    /**
+     * @param mixed $oiProductName
+     */
+    public function setProductName($oiProductName)
+    {
+        $this->oiProductName = $oiProductName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSKU()
+    {
+        return $this->oiSKU;
+    }
+
+    /**
+     * @param mixed $oiSKU
+     */
+    public function setSKU($oiSKU)
+    {
+        $this->oiSKU = $oiSKU;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPricePaid()
+    {
+        return $this->oiPricePaid;
+    }
+
+    /**
+     * @param mixed $oiPricePaid
+     */
+    public function setPricePaid($oiPricePaid)
+    {
+        $this->oiPricePaid = $oiPricePaid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTax()
+    {
+        return $this->oiTax;
+    }
+
+    /**
+     * @param mixed $oiTax
+     */
+    public function setTax($oitax)
+    {
+        $this->oiTax = $oitax;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxIncluded()
+    {
+        return $this->oiTaxIncluded;
+    }
+
+    /**
+     * @param mixed $oitaxIncluded
+     */
+    public function setTaxIncluded($oiTaxIncluded)
+    {
+        $this->oiTaxIncluded = $oiTaxIncluded;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxName()
+    {
+        return $this->oiTaxName;
+    }
+
+    /**
+     * @param mixed $oiTaxName
+     */
+    public function setTaxName($oiTaxName)
+    {
+        $this->oiTaxName = $oiTaxName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQty()
+    {
+        return $this->oiQty;
+    }
+
+    /**
+     * @param mixed $oiQty
+     */
+    public function setQty($oiQty)
+    {
+        $this->oiQty = $oiQty;
+    }
+
+
+    public function setProductID($productid) {
+        $this->pID = $productid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param mixed $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+
+    public static function getByID($oiID)
+    {
+        $db = \Database::connection();
+        $em = $db->getEntityManager();
+
+        return $em->find(get_class(), $oiID);
+    }
+
+    public function add($data, $oID, $tax = 0, $taxIncluded = 0, $taxName = '')
     {
         $db = Database::connection();
         $product = StoreProduct::getByID($data['product']['pID']);
-
-        if ($data['product']['variation']) {
-            $product->setVariation($data['product']['variation']);
-        }
 
         $productName = $product->getProductName();
         $productPrice = $product->getActivePrice();
@@ -46,46 +237,44 @@ class OrderItem extends Object
             $product->updateProductQty($newStock);
         }
 
-        $pID = $product->getProductID();
-        $values = array($oID,$pID,$productName,$sku,$productPrice,$tax,$taxIncluded,$taxName,$qty);
-        $db->Execute("INSERT INTO VividStoreOrderItems (oID,pID,oiProductName,oiSKU,oiPricePaid,oiTax,oiTaxIncluded,oiTaxName,oiQty) VALUES (?,?,?,?,?,?,?,?,?)",$values);
-        
-        $oiID = $db->lastInsertId();
-        
-        foreach($data['productAttributes'] as $optionGroup=>$selectedOption){
-            $optionGroupID = str_replace("pog","",$optionGroup);
-            $optionGroupName = OrderItem::getProductOptionGroupNameByID($optionGroupID);
-            $optionValue = OrderItem::getProductOptionValueByID($selectedOption);
-            
-            $values = array($oiID,$optionGroupName,$optionValue);
-            $db->Execute("INSERT INTO VividStoreOrderItemOptions (oiID,oioKey,oioValue) VALUES (?,?,?)",$values);
-        }
-        if($product->hasDigitalDownload()){
-            $fileObjs = $product->getProductDownloadFileObjects();
-            $fileObj = $fileObjs[0];
-            $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
-            $pk->setPermissionObject($fileObj);
-            $pao = $pk->getPermissionAssignmentObject();
-            $u = new User();
-            $uID = $u->getUserID();
-            $ui = UserInfo::getByID($uID);
-            $user = \Concrete\Core\Permission\Access\Entity\UserEntity::getOrCreate($ui);
-            $pa = $pk->getPermissionAccessObject();
-            if ($pa) {
-                $pa->addListItem($user);
-                $pao->assignPermissionAccess($pa);
-            }
+        $order = StoreOrder::getByID($oID);
 
+        $orderItem = new self();
+        $orderItem->setProductName($productName);
+        $orderItem->setSKU($sku);
+        $orderItem->setPricePaid($productPrice);
+        $orderItem->setTax($tax);
+        $orderItem->setTaxIncluded($taxIncluded);
+        $orderItem->setTaxName($taxName);
+        $orderItem->setQty($qty);
+        $orderItem->setOrder($order);
+
+        if ($product) {
+            $orderItem->setProductID($product->getID());
         }
-        
+
+        $orderItem->save();
+
+        foreach ($data['productAttributes'] as $optionGroup => $selectedOption) {
+            $optionGroupID = str_replace("po", "", $optionGroup);
+            $optionGroupName = self::getProductOptionNameByID($optionGroupID);
+            $optionValue = self::getProductOptionValueByID($selectedOption);
+
+            $orderItemOption = new StoreOrderItemOption();
+            $orderItemOption->setOrderItemOptionKey($optionGroupName);
+            $orderItemOption->setOrderItemOptionValue($optionValue);
+            $orderItemOption->setOrderItem($orderItem);
+            $orderItemOption->save();
+        }
+
+        return $orderItem;
     }
-    
-    public function getOrderItemID(){ return $this->oiID; }
-    public function getProductID(){ return $this->pID; }
-    public function getProductName(){ return $this->oiProductName; }
-    public function getSKU(){return $this->oiSKU; }
-    public function getPricePaid() { return $this->oiPricePaid; }
-    public function getQty() { return $this->oiQty; }
+
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+
     public function getSubTotal()
     {
         $price = $this->getPricePaid();
@@ -95,7 +284,7 @@ class OrderItem extends Object
     }
     public function getProductOptions()
     {
-        return Database::connection()->GetAll("SELECT * FROM VividStoreOrderItemOptions WHERE oiID=?",$this->oiID);
+        return \Database::connection()->GetAll("SELECT * FROM CommunityStoreOrderItemOptions WHERE oiID=?", $this->oiID);
     }
     public function getProductOptionGroupNameByID($id)
     {
@@ -112,5 +301,19 @@ class OrderItem extends Object
     public function getProductObject($pID = null)
     {
         return StoreProduct::getByID($this->pID);
+    }
+
+    public function save()
+    {
+        $em = \Database::connection()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
+    }
+
+    public function delete()
+    {
+        $em = \Database::connection()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
     }
 }

@@ -20,6 +20,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\OrderItem as StoreOrderIte
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
+use \Concrete\Package\VividStore\Src\VividStore\Order\OrderDiscount as StoreOrderDiscount;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
@@ -70,6 +71,11 @@ class Order
     /** @Column(type="text", nullable=true) */
     protected $transactionReference;
 
+    /**
+     * @OneToMany(targetEntity="Concrete\Package\CommunityStore\Src\CommunityStore\Order\OrderItem", mappedBy="order",cascade={"persist"}))
+     */
+    protected $orderItems;
+
     public function setCustomerID($cID){ $this->cID = $cID; }
     public function setOrderDate($oDate){ $this->oDate = $oDate; }
     public function setPaymentMethodName($pmName){ $this->pmName = $pmName; }
@@ -86,7 +92,9 @@ class Order
         $this->save();
     }
 
+    public function __construct(){ $this->orderItems = new ArrayCollection(); }
     public function getOrderID(){ return $this->oID; }
+    public function getOrderItems(){ return $this->orderItems; }
     public function getCustomerID(){ return $this->cID; }
     public function getOrderDate(){ return $this->oDate; }
     public function getPaymentMethodName() { return $this->pmName; }
@@ -110,7 +118,9 @@ class Order
         }
         return $taxes;
     }
-    public function getTaxTotal(){
+
+    public function getTaxTotal()
+    {
         $taxes = $this->getTaxes();
         $taxTotal = 0;
         foreach($taxes as $tax){
@@ -119,7 +129,8 @@ class Order
         return $taxTotal;
     }
 
-    public function getIncludedTaxTotal(){
+    public function getIncludedTaxTotal()
+    {
         $taxes = $this->getTaxes();
         $taxTotal = 0;
         foreach($taxes as $tax){
@@ -134,11 +145,12 @@ class Order
     {
         $items = $this->getOrderItems();
         $subtotal = 0;
-        if($items){
-            foreach($items as $item){
-                $subtotal = $subtotal + ($item->oiPricePaid * $item->oiQty);
+        if ($items) {
+            foreach ($items as $item) {
+                $subtotal = $subtotal + ($item->getPricePaid() * $item->getQty());
             }
         }
+
         return $subtotal;
     }
     public function getTransactionReference(){ return $this->transactionReference; }
@@ -146,15 +158,16 @@ class Order
     public static function getByID($oID) {
         $db = Database::connection();
         $em = $db->getEntityManager();
-        return $em->find('Concrete\Package\VividStore\Src\VividStore\Order\Order', $oID);
+
+        return $em->find(get_class(), $oID);
     }
 
     public function getCustomersMostRecentOrderByCID($cID)
     {
-        $db = Database::get();
+        $db = \Database::connection();
         $em = $db->getEntityManager();
-        return $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Order\Order')->findOneBy(array('cID' => $cID));
-        
+
+        return $em->getRepository(get_class())->findOneBy(array('cID' => $cID));
     }
 
     /**
@@ -186,6 +199,21 @@ class Order
         $order->setTaxLabels($taxes['taxLabels']);
         $order->setOrderTotal($total);
         $order->save();
+
+        $discounts = StoreCart::getDiscounts();
+        foreach ($discounts as $discount) {
+            $orderDiscount = new StoreOrderDiscount();
+            $orderDiscount->setOrder($order);
+            if ($discount->getTrigger() == 'code') {
+                $orderDiscount->setCode(Session::get('communitystore.code'));
+            }
+            $orderDiscount->setDisplay($discount->getDisplay());
+            $orderDiscount->setName($discount->getName());
+            $orderDiscount->setDeductFrom($discount->getDeductFrom());
+            $orderDiscount->setPercentage($discount->getPercentage());
+            $orderDiscount->setValue($discount->getValue());
+            $orderDiscount->save();
+        }
 
         $customer->setLastOrderID($order->getOrderID());
         $order->updateStatus($status);
@@ -249,21 +277,21 @@ class Order
             $taxProductIncludedTotal = implode(',',$taxProductIncludedTotal);
             $taxProductLabels = implode(',',$taxProductLabels);
 
-            StoreOrderItem::add($cartItem,$this->getOrderID(),$taxProductTotal,$taxProductIncludedTotal,$taxProductLabels);
-
+            $orderItem = StoreOrderItem::add($cartItem, $this->getOrderID(), $taxProductTotal, $taxProductIncludedTotal, $taxProductLabels);
+            $this->orderItems->add($orderItem);
         }
     }
 
     public function save()
     {
-        $em = Database::get()->getEntityManager();
+        $em = \Database::connection()->getEntityManager();
         $em->persist($this);
         $em->flush();
     }
     public function delete()
     {
         $this->getShippingMethodTypeMethod()->delete();
-        $em = Database::get()->getEntityManager();
+        $em = \Database::connection()->getEntityManager();
         $em->remove($this);
         $em->flush();
     }
@@ -274,9 +302,11 @@ class Order
             $this->setTransactionReference($transactionReference);
         }
 
+        $this->save();
+
         $fromEmail = Config::get('vividstore.emailalerts');
-        if(!$fromEmail){
-            $fromEmail = "store@".$_SERVER['SERVER_NAME'];
+        if (!$fromEmail) {
+            $fromEmail = "store@" . $_SERVER['SERVER_NAME'];
         }
 
         $fromName = Config::get('vividstore.emailalertsname');
@@ -307,7 +337,8 @@ class Order
             if (!$user) {
                 $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
 
-                $mh = Loader::helper('mail');
+                $mh = Core::make('helper/mail');
+
                 $mh->addParameter('siteName', Config::get('concrete.site'));
 
                 $navhelper = Core::make('helper/navigation');
@@ -323,7 +354,7 @@ class Order
                     $mh->addParameter('link', '');
                 }
 
-                $valc = Loader::helper('concrete/validation');
+                $valc = Core::make('helper/concrete/validation');
 
                 $min = Config::get('concrete.user.username.minimum');
                 $max = Config::get('concrete.user.username.maximum');
@@ -415,9 +446,9 @@ class Order
             $u = new \User();
             $u->refreshUserGroups();
         }
-        
-        StoreCart::clearCode();
-        
+
+        StoreDiscountCode::clearCartCode();
+
         // create order event and dispatch
         $event = new StoreOrderEvent($this);
         Events::dispatch('on_vividstore_order', $event);
@@ -482,22 +513,10 @@ class Order
         $db->Execute("DELETE FROM VividStoreOrderItems WHERE oID=?",$this->oID);
         $db->Execute("DELETE FROM VividStoreOrders WHERE oID=?",$this->oID);
     }
-    public function getOrderItems()
+
+    public function isShippable()
     {
-        $db = Database::get();
-        $rows = $db->GetAll("SELECT * FROM VividStoreOrderItems WHERE oID=?",$this->oID);
-        $items = array();
-
-        foreach($rows as $row){
-            $items[] = StoreOrderItem::getByID($row['oiID']);
-        }
-
-        return $items;
-    }
-
-
-    public function isShippable(){
-        return ($this->smName != "");
+        return $this->getShippingMethodName() != "";
     }
 
     public function updateStatus($status=null)
@@ -508,10 +527,14 @@ class Order
             StoreOrderStatusHistory::updateOrderStatusHistory($this, StoreOrderStatus::getStartingStatus()->getHandle());
         }
     }
-    public function getStatusHistory() {
+
+    public function getStatusHistory()
+    {
         return StoreOrderStatusHistory::getForOrder($this);
     }
-    public function getStatus() {
+
+    public function getStatus()
+    {
         $history = StoreOrderStatusHistory::getForOrder($this);
 
         if (!empty($history)) {
@@ -521,6 +544,20 @@ class Order
             return '';
         }
     }
+
+    public function getStatusHandle()
+    {
+        $history = StoreOrderStatusHistory::getForOrder($this);
+
+        if (!empty($history)) {
+            $laststatus = $history[0];
+
+            return $laststatus->getOrderStatusHandle();
+        } else {
+            return '';
+        }
+    }
+
     public function setAttribute($ak, $value)
     {
         if (!is_object($ak)) {
@@ -528,7 +565,9 @@ class Order
         }
         $ak->setAttribute($this, $value);
     }
-    public function getAttribute($ak, $displayMode = false) {
+
+    public function getAttribute($ak, $displayMode = false)
+    {
         if (!is_object($ak)) {
             $ak = StoreOrderKey::getByHandle($ak);
         }
@@ -539,8 +578,10 @@ class Order
             }
         }
     }
-    public function getAttributeValueObject($ak, $createIfNotFound = false) {
-        $db = Database::get();
+
+    public function getAttributeValueObject($ak, $createIfNotFound = false)
+    {
+        $db = \Database::connection();
         $av = false;
         $v = array($this->getOrderID(), $ak->getAttributeKeyID());
         $avID = $db->GetOne("SELECT avID FROM VividStoreOrderAttributeValues WHERE oID = ? AND akID = ?", $v);
@@ -568,23 +609,26 @@ class Order
         return $av;
     }
 
-    public function addDiscount($discount, $code = '') {
-        $db = Database::get();
+    public function addDiscount($discount, $code = '')
+    {
+        $db = \Database::connection();
 
         //add the discount
         $vals = array($this->oID,$discount->drName, $discount->getDisplay(), $discount->drValue,$discount->drPercentage, $discount->drDeductFrom, $code);
         $db->Execute("INSERT INTO VividStoreOrderDiscounts(oID,odName,odDisplay,odValue,odPercentage,odDeductFrom,odCode) VALUES (?,?,?,?,?,?,?)", $vals);
     }
 
-    public function getAppliedDiscounts() {
-        $db = Database::get();
+    public function getAppliedDiscounts()
+    {
+        $db = \Database::connection();
         $rows = $db->GetAll("SELECT * FROM VividStoreOrderDiscounts WHERE oID=?",$this->oID);
         return $rows;
     }
 
-    public function associateUser($uID) {
-        $db = Database::get();
-        $rows = $db->Execute("Update VividStoreOrders set cID=? where oID = ?",array($uID, $this->oID));
+    public function associateUser($uID)
+    {
+        $db = Database::connection();
+        $rows = $db->query("Update VividStoreOrders set cID=? where oID = ?",array($uID, $this->oID));
         return $rows;
     }
 

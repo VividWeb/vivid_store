@@ -1,15 +1,6 @@
 <?xml version="1.0"?>
 <schema version="0.3">
-	<table name="VividStoreOrderDiscounts">
-        <field name="oID" type="I"><unsigned /></field>
-        <field name="odName" type="C" size="255"></field>
-        <field name="odDisplay" type="C" size="255"></field>
-        <field name="odValue" type="N" size="10.2"></field>
-        <field name="odPercentage" type="N" size="5.2"></field>
-        <field name="odDeductFrom" type="C" size="20"></field>
-        <field name="odCode" type="C" size="255"></field>
-    </table>
-    <table name="VividStoreOrderStatuses">
+	<table name="VividStoreOrderStatuses">
         <field name="osID" type="I"><key /><unsigned /><autoincrement/></field>
         <field name="osHandle" type="C" size="255"></field>
         <field name="osName" type="C" size="255"></field>
