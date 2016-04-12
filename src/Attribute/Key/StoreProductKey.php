@@ -6,7 +6,17 @@ use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreProductValue as StoreProductValue;
 use \Concrete\Core\Attribute\Key\Key as Key;
 
+/**
+ * @Entity
+ * @Table(name="VividStoreProductAttributeKeys")
+ */
 class StoreProductKey extends Key {
+
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
+     */
+    protected $akID;
 
     public function getAttributes($pID, $method = 'getValue') {
         $db = Database::get();

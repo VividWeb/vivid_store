@@ -113,20 +113,20 @@ class Settings extends DashboardPageController
         if (isset($data['osID'])) {
             foreach ($data['osID'] as $key => $id) {
                 $orderStatus = StoreOrderStatus::getByID($id);
-                $orderStatusSettings = array(
-                    'osName' => ((isset($data['osName'][$key]) && $data['osName'][$key]!='') ?
-                        $data['osName'][$key] : $orderStatus->getReadableHandle()),
-                    'osInformSite' => isset($data['osInformSite'][$key]) ? 1 : 0,
-                    'osInformCustomer' => isset($data['osInformCustomer'][$key]) ? 1 : 0,
-                    'osSortOrder' => $key
-                );
-                $orderStatus->update($orderStatusSettings);
-            }
-            if (isset($data['osIsStartingStatus'])) {
-                StoreOrderStatus::setNewStartingStatus(StoreOrderStatus::getByID($data['osIsStartingStatus'])->getHandle());
-            } else {
-                $orderStatuses = StoreOrderStatus::getAll();
-                StoreOrderStatus::setNewStartingStatus($orderStatuses[0]->getHandle());
+                if(isset($data['osName'][$key]) && $data['osName'][$key]!=''){
+                    $orderStatus->setName($data['osName'][$key]);
+                } else {
+                    $orderStatus->setName($orderStatus->getReadableHandle());
+                }
+                $orderStatus->setInformSite(isset($data['osInformSite'][$key]) ? 1 : 0);
+                $orderStatus->setInformCustomer(isset($data['osInformCustomer'][$key]) ? 1 : 0);
+                $orderStatus->setSortOrder($key);
+                $orderStatus->setIsStartingStatus($data['osIsStartingStatus']);
+                if ($data['osIsStartingStatus') {
+                    $existingStartingStatus = StoreOrderStatus::getStartingStatus();
+                    $existingStartingStatus->setIsStartingStatus(false);
+                    $existingStartingStatus->save();
+                }    
             }
         }
     }
