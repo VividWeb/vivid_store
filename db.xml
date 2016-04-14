@@ -1,31 +1,4 @@
 <?xml version="1.0"?>
 <schema version="0.3">
 
-    <table name="VividStoreDiscountRules">
-        <field name="drID" type="I"><key /><unsigned /><autoincrement/></field>
-        <field name="drName" type="C" size="255"></field>
-        <field name="drEnabled" type="L"></field>
-        <field name="drDisplay" type="C" size="255"></field>
-        <field name="drDescription" type="X"></field>
-        <field name="drDeductType" type="C" size="20"></field>
-        <field name="drValue" type="N" size="10.2"></field>
-        <field name="drPercentage" type="N" size="5.2"></field>
-        <field name="drDeductFrom" type="C" size="20"></field>
-        <field name="drTrigger" type="C" size="20"></field>
-        <field name="drSingleUseCodes" type="L"></field>
-        <field name="drExclusive" type="L"></field>
-        <field name="drCurrency" type="C" size="20"></field>
-        <field name="drValidFrom" type="T"></field>
-        <field name="drValidTo" type="T"></field>
-        <field name="drDateAdded" type="T"></field>
-        <field name="drDeleted" type="T"></field>
-    </table>
-
-    <table name="VividStoreDiscountCodes">
-        <field name="dcID" type="I"><key /><unsigned /><autoincrement/></field>
-        <field name="drID" type="I"><key/><unsigned/></field>
-        <field name="dcCode" type="C" size="255"></field>
-        <field name="oID" type="I"><unsigned /></field>
-        <field name="dcDateAdded" type="T"></field>
-    </table>
 </schema>
