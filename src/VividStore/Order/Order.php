@@ -72,7 +72,7 @@ class Order
     protected $transactionReference;
 
     /**
-     * @OneToMany(targetEntity="Concrete\Package\CommunityStore\Src\CommunityStore\Order\OrderItem", mappedBy="order",cascade={"persist"}))
+     * @OneToMany(targetEntity="Concrete\Package\VividStore\Src\VividStore\Order\OrderItem", mappedBy="order",cascade={"persist"}))
      */
     protected $orderItems;
 
@@ -205,7 +205,7 @@ class Order
             $orderDiscount = new StoreOrderDiscount();
             $orderDiscount->setOrder($order);
             if ($discount->getTrigger() == 'code') {
-                $orderDiscount->setCode(Session::get('communitystore.code'));
+                $orderDiscount->setCode(Session::get('vividstore.code'));
             }
             $orderDiscount->setDisplay($discount->getDisplay());
             $orderDiscount->setName($discount->getName());

@@ -10,17 +10,10 @@ use View;
 
 /**
  * @Entity
- * @Table(name="CommunityStorePaymentMethods")
+ * @Table(name="VividStorePaymentMethods")
  */
 class Method extends Controller
 {
-    private $pmID;
-    private $pmHandle;
-    private $pmName;
-    private $pkgID = 0;
-    private $pmDisplayName;
-    private $methodController;
-
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue

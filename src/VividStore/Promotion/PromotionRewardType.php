@@ -7,9 +7,9 @@ use Database;
 
 /**
  * @Entity
- * @Table(name="VividStorePromotionRules")
+ * @Table(name="VividStorePromotionRewardTypes")
  */
-class PromotionRule
+class PromotionRewardType
 {
     /**
      * @Id @Column(type="integer")

@@ -13,7 +13,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHis
 
 /**
  * @Entity
- * @Table(name="CommunityStoreOrderStatusHistories")
+ * @Table(name="VividStoreOrderStatusHistories")
  */
 class OrderStatusHistory
 {
@@ -24,7 +24,7 @@ class OrderStatusHistory
     protected $oshID;
 
     /**
-     * @ManyToOne(targetEntity="Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order",  cascade={"persist"})
+     * @ManyToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Order\Order",  cascade={"persist"})
      * @JoinColumn(name="oID", referencedColumnName="oID", onDelete="CASCADE")
      */
     protected $order;
@@ -38,7 +38,7 @@ class OrderStatusHistory
     /** @Column(type="integer", nullable=true) */
     protected $uID;
 
-    public static $table = 'CommunityStoreOrderStatusHistories';
+    public static $table = 'VividStoreOrderStatusHistories';
 
     public function setOrder($order)
     {

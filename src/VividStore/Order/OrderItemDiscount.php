@@ -17,7 +17,7 @@ class OrderItemDiscount
 
     /**
      * @ManyToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Order\OrderItem")
-     * @JoinColumn(name="oiID", referencedColumnName="oiID", onDelete="CASCADE")
+     * @JoinColumn(name="oiID", referencedColumnName="oiID")
      */
     protected $orderItem;
 

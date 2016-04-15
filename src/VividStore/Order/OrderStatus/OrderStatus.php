@@ -7,7 +7,7 @@ use Database;
 
 /**
  * @Entity
- * @Table(name="CommunityStoreOrderStatuses")
+ * @Table(name="VividStoreOrderStatuses")
  */
 class OrderStatus
 {

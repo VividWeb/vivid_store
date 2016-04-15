@@ -25,7 +25,7 @@ class OrderItem
 
 
     /**
-     * @ManyToOne(targetEntity="Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order")
+     * @ManyToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Order\Order")
      * @JoinColumn(name="oID", referencedColumnName="oID", onDelete="CASCADE")
      */
     protected $order;
@@ -284,7 +284,7 @@ class OrderItem
     }
     public function getProductOptions()
     {
-        return \Database::connection()->GetAll("SELECT * FROM CommunityStoreOrderItemOptions WHERE oiID=?", $this->oiID);
+        return \Database::connection()->GetAll("SELECT * FROM VividStoreOrderItemOptions WHERE oiID=?", $this->oiID);
     }
     public function getProductOptionGroupNameByID($id)
     {

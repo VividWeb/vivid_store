@@ -11,17 +11,17 @@ use \Concrete\Core\Attribute\Value\Value as Value;
 class StoreProductValue extends Value {
 
     /**
-     * @Column(type="integer")
+     * @Id @Column(type="integer")
      */
     protected $oID;
 
     /**
-     * @Column(type="integer")
+     * @Id @Column(type="integer")
      */
     protected $akID;
 
     /**
-     * @Column(type="integer")
+     * @Id @Column(type="integer")
      */
     protected $avID;
 
