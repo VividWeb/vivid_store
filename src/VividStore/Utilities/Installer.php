@@ -41,6 +41,7 @@ class Installer
         Installer::installSinglePage('/dashboard/store/orders/', $pkg);
         Installer::installSinglePage('/dashboard/store/products/', $pkg);
         Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
+        Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
@@ -135,7 +136,7 @@ class Installer
         Installer::installPaymentMethod('invoice','Invoice',$pkg,null,true);
         Installer::installPaymentMethod('paypal_standard','PayPal',$pkg);
     }
-    public static function installPaymentMethod($handle,$name,$pkg=null,$displayName=null,$enabled=false)
+    public static function installPaymentMethod($handle,$name,$pkg,$displayName=null,$enabled=false)
     {
         $pm = StorePaymentMethod::getByHandle($handle);
         if (!is_object($pm)) {
@@ -405,8 +406,6 @@ class Installer
 
     public static function installOrderStatuses(Package $package)
     {
-        $table = StoreOrderStatus::getTableName();
-        $db = Database::get();
         $statuses = array(
             array('osHandle' => 'incomplete', 'osName' => t('Incomplete'), 'osInformSite' => 1, 'osInformCustomer' => 0, 'osIsStartingStatus' => 0),
             array('osHandle' => 'pending', 'osName' => t('Pending'), 'osInformSite' => 1, 'osInformCustomer' => 1, 'osIsStartingStatus' => 1),
@@ -415,12 +414,9 @@ class Installer
             array('osHandle' => 'complete', 'osName' => t('Complete'), 'osInformSite' => 1, 'osInformCustomer' => 1, 'osIsStartingStatus' => 0),
         );
         foreach ($statuses as $status) {
-            $row = $db->GetRow("SELECT * FROM " . $table . " WHERE osHandle=?", array($status['osHandle']));
-            if (!isset($row['osHandle'])) {
+            $orderStatus = StoreOrderStatus::getByHandle($status['osHandle']);
+            if(!is_object($orderStatus)){
                 StoreOrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer'], $status['osIsStartingStatus']);
-            } else {
-                $orderStatus = StoreOrderStatus::getByID($row['osID']);
-                $orderStatus->update($status, true);
             }
         }
     }

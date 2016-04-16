@@ -72,3 +72,12 @@
 .ct-chart-line .ct-series.ct-series-b .ct-point { stroke: #414d59; }
 .ct-chart-line .ct-series.ct-series-c .ct-line { stroke: #414d59; stroke-width: 2px; stroke-linecap: round; stroke-dasharray: 30px 10px; }
 .ct-chart-line .ct-series.ct-series-c .ct-point { stroke: #303b48; }
+
+/* Promotion Rewards/Rules */
+.ccm-ui .panel-footer.add-to-panel-list { padding: 5px 15px; background: #333c46; color: #97aabc; }
+    .ccm-ui .panel-footer.add-to-panel-list .panel { background: none; margin: 0; }
+        .ccm-ui .panel-footer.add-to-panel-list .panel .panel-heading { background: none; cursor: pointer; padding: 0; border: none; }
+        .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body { padding: 0; color: #fff; opacity: 0; overflow: hidden; height: 0; transition: .5s ease all; transform: translateX(100px); }
+        .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body.open { height: auto; opacity: 1; padding: 10px 0; transform: translateX(0); }
+            .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body ul { margin: 0; padding: 0 15px; list-style: none; }
+            .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body a { color: #fff; }

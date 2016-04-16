@@ -119,7 +119,7 @@ class Controller extends Package
     }
     public function uninstall()
     {
-        /*$authnetpm = PaymentMethod::getByHandle('auth_net');
+        $authnetpm = PaymentMethod::getByHandle('auth_net');
         if(is_object($authnetpm)){
             $authnetpm->delete();
         }
@@ -130,7 +130,7 @@ class Controller extends Package
         $paypalpm = PaymentMethod::getByHandle('paypal_standard');
         if(is_object($paypalpm)){
             $paypalpm->delete();
-        }*/
+        }
 
         $shippingMethodType = ShippingMethodType::getByHandle('flat_rate');
         if(is_object($shippingMethodType)) {

@@ -96,7 +96,7 @@ class Method extends Controller
         $db = \Database::connection();
         $em = $db->getEntityManager();
         $method = $em->getRepository(get_class())->findOneBy(array('pmHandle' => $pmHandle));
-        if ($method) {
+        if (is_object($method)) {
             $method->setMethodController();
         }
         return ($method instanceof self) ? $method : false;

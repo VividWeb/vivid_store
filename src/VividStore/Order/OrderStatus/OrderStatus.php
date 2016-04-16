@@ -67,7 +67,6 @@ class OrderStatus
         $db = \Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository(get_class())->findOneBy(array('osHandle' => $osHandle));
-
     }
 
     static public function getAll() {

@@ -66,7 +66,7 @@ class OrderItem
     protected $oiQty;
 
     /**
-     * @return mixed
+     * @return integer
      */
     public function getID()
     {
@@ -74,7 +74,7 @@ class OrderItem
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getProductName()
     {
@@ -82,7 +82,7 @@ class OrderItem
     }
 
     /**
-     * @param mixed $oiProductName
+     * @param string $oiProductName
      */
     public function setProductName($oiProductName)
     {

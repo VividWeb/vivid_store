@@ -77,6 +77,10 @@ $(function(){
         }
     });
 
+    $(".add-to-panel-list .panel-heading").click(function(){
+       $(this).next().toggleClass('open');
+    });
+
 });
 
 
