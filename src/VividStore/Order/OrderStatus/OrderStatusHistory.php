@@ -83,7 +83,7 @@ class OrderStatusHistory
         if (!$order->getOrderID()) {
             return false;
         }
-        $history = $em->getRepository(get_class())->findBy(array('order'=>$order->getOrderID()));
+        $history = $em->getRepository(get_class())->findBy(array('order'=>$order->getOrderID()),array('oshDate'=>'DESC'));
         return $history;
     }
 
@@ -92,16 +92,14 @@ class OrderStatusHistory
         $history = self::getForOrder($order);
 
         if (empty($history) || $history[0]->getOrderStatusHandle() !=$statusHandle) {
-            $updatedOrder = clone $order;
-            $updatedOrder->updateStatus(self::recordStatusChange($order, $statusHandle));
-            $event = new StoreOrderEvent($updatedOrder, $order);
+            self::recordStatusChange($order, $statusHandle);
+            $event = new StoreOrderEvent($order, $order);
             Events::dispatch('on_vividstore_order_status_update', $event);
         }
     }
 
     private static function recordStatusChange(StoreOrder $order, $statusHandle)
     {
-        $db = Database::get();
         $user = new user();
         $now = new \DateTime;
         $newHistoryItem = new self();
