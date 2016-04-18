@@ -74,6 +74,8 @@
 .ct-chart-line .ct-series.ct-series-c .ct-point { stroke: #303b48; }
 
 /* Promotion Rewards/Rules */
+.ccm-ui .well.promotion-item { margin: 0 0 10px; box-shadow: none; font-size: .8em; padding: 5px 10px; }
+.ccm-ui .well.promotion-item i { margin-top: 2px; cursor: pointer; }
 .ccm-ui .panel-footer.add-to-panel-list { padding: 5px 15px; background: #333c46; color: #97aabc; }
     .ccm-ui .panel-footer.add-to-panel-list .panel { background: none; margin: 0; }
         .ccm-ui .panel-footer.add-to-panel-list .panel .panel-heading { background: none; cursor: pointer; padding: 0; border: none; }
@@ -81,3 +83,9 @@
         .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body.open { height: auto; opacity: 1; padding: 10px 0; transform: translateX(0); }
             .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body ul { margin: 0; padding: 0 15px; list-style: none; }
             .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body a { color: #fff; }
+
+#promotion-reward-forms { display: none; }
+
+.vivid-store-dialog {  }
+    .vivid-store-dialog .ui-dialog-titlebar {  }
+    .vivid-store-dialog .ui-dialog-content {  }

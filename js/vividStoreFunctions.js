@@ -80,6 +80,78 @@ $(function(){
     $(".add-to-panel-list .panel-heading").click(function(){
        $(this).next().toggleClass('open');
     });
+    $("*[data-promotion='reward-type']").click(function(e){
+        e.preventDefault();
+        var handle = $(this).attr('data-handle');
+        $('#'+handle+'-reward-type-form').dialog({
+            title: VividStoreStrings.addRewardType,
+            width: 500,
+            height: 400,
+            modal: true,
+            open: function(){
+                $('#'+handle+'-reward-type-form').closest('.ui-dialog').addClass('vivid-store-dialog ccm-ui');
+            },
+            buttons: [
+                {
+                    text: VividStoreStrings.add,
+                    click: function () {
+                        var listItemTemplate = _.template($('#promotion-reward-list-item').html());
+                        var completeFunction = $('#'+handle+'-reward-type-form').find('.reward-type-form').attr('data-complete-function')
+                        var content = window[completeFunction]();
+                        var params = {
+                            handle: handle,
+                            content: content
+                        }
+                        $("#promotion-reward-list").append(listItemTemplate(params));
+                        $(this).dialog('close');
+                        $(".add-to-panel-list .panel-body").removeClass('open');
+                    }
+                },
+                {
+                    text: VividStoreStrings.cancel,
+                    click: function () {
+                        $(this).dialog('close');
+                    }
+                }
+            ]
+        });
+    });
+    $("*[data-promotion='rule-type']").click(function(e){
+        e.preventDefault();
+        var handle = $(this).attr('data-handle');
+        $('#'+handle+'-rule-type-form').dialog({
+            title: VividStoreStrings.addRuleType,
+            width: 500,
+            height: 400,
+            modal: true,
+            open: function(){
+                $('#'+handle+'-rule-type-form').closest('.ui-dialog').addClass('vivid-store-dialog ccm-ui');
+            },
+            buttons: [
+                {
+                    text: VividStoreStrings.add,
+                    click: function () {
+                        var listItemTemplate = _.template($('#promotion-reward-list-item').html());
+                        var completeFunction = $('#'+handle+'-rule-type-form').find('.rule-type-form').attr('data-complete-function')
+                        var content = window[completeFunction]();
+                        var params = {
+                            handle: handle,
+                            content: content
+                        }
+                        $("#promotion-rule-list").append(listItemTemplate(params));
+                        $(this).dialog('close');
+                        $(".add-to-panel-list .panel-body").removeClass('open');
+                    }
+                },
+                {
+                    text: VividStoreStrings.cancel,
+                    click: function () {
+                        $(this).dialog('close');
+                    }
+                }
+            ]
+        });
+    });
 
 });
 

@@ -24,6 +24,8 @@ use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as Pag
 
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardType as StorePromotionRewardType;
+use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleType as StorePromotionRuleType;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as StoreShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
@@ -141,6 +143,33 @@ class Installer
         $pm = StorePaymentMethod::getByHandle($handle);
         if (!is_object($pm)) {
             StorePaymentMethod::add($handle,$name,$pkg,$displayName,$enabled);
+        }
+    }
+    public static function installPromotionRewardTypes(Package $pkg)
+    {
+        Installer::installPromotionRewardType('discount','Discount',$pkg);
+        Installer::installPromotionRewardType('free_product','Free Product',$pkg);
+    }
+    public static function installPromotionRewardType($handle,$name,$pkg)
+    {
+        $promotionRewardType = StorePromotionRewardType::getByHandle($handle);
+        if (!is_object($promotionRewardType)) {
+            StorePromotionRewardType::add($handle,$name,$pkg);
+        }
+    }
+    public static function installPromotionRuleTypes(Package $pkg)
+    {
+        Installer::installPromotionRuleType('subtotal_minimum','Subtotal Minimum',$pkg);
+        Installer::installPromotionRuleType('product_exists','Product X is in Cart',$pkg);
+        Installer::installPromotionRuleType('date_restriction','Date Limit',$pkg);
+        Installer::installPromotionRuleType('qty_in_cart','Number of Items in Cart',$pkg);
+        Installer::installPromotionRuleType('user_group','Specific User Group',$pkg);
+    }
+    public static function installPromotionRuleType($handle,$name,$pkg)
+    {
+        $promotionRuleType = StorePromotionRuleType::getByHandle($handle);
+        if (!is_object($promotionRuleType)) {
+            StorePromotionRuleType::add($handle,$name,$pkg);
         }
     }
     public static function installShippingMethods(Package $pkg)

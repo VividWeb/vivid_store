@@ -33,18 +33,12 @@ class Promotion
     protected $enabled;
 
     /**
-     * Bidirectional - Many Promotions have Many Rewards (OWNING SIDE)
-     *
-     * @ManyToMany(targetEntity="Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardType")
-     * @JoinTable(name="VividStorePromotionRewards")
+     * @OneToMany(targetEntity="Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionReward", mappedBy="promotion")
      */
     protected $promotionRewards;
 
     /**
-     * Bidirectional - Many Promotions have Many Rules (OWNING SIDE)
-     *
-     * @ManyToMany(targetEntity="Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleType")
-     * @JoinTable(name="VividStorePromotionRules")
+     * @OneToMany(targetEntity="Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRule", mappedBy="promotion")
      */
     protected $promotionRules;
 

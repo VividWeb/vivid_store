@@ -29,18 +29,23 @@
                 <div class="panel-heading">
                     <?=t('Promotion Rewards')?> <small class="text-muted"><?=t('required')?></small>
                 </div>
-                <div class="panel-body">
-                    <div class="well well-sm">10% discount on Subtotal</div>
-                    <div class="well well-sm">Free <strong>Product Name</strong></div>
+                <div class="panel-body" id="promotion-reward-list">
+
                 </div>
+                <script type="text/x-template" id="promotion-reward-list-item">
+                    <div class="well well-sm promotion-item" data-handle="<%=handle%>">
+                        <i class="fa fa-close pull-right"></i>
+                        <%=content%>
+                    </div>
+                </script>
                 <div class="panel-footer add-to-panel-list">
                     <div class="panel panel-promotion">
                         <div class="panel-heading"><i class="fa fa-plus"></i> Add Promotion Reward</div>
                         <div class="panel-body">
                             <ul>
-                                <li><a href="">Discount</a></li>
-                                <li><a href="">Free Product</a></li>
-                                <li><a href="">Free Shipping</a></li>
+                                <?php foreach($rewardTypes as $rewardType){ ?>
+                                    <li><a href="#" data-promotion="reward-type" data-handle="<?=$rewardType->getHandle()?>"><?=$rewardType->getName()?></a></li>
+                                <?php } ?>
                             </ul>
                         </div>
                     </div>
@@ -52,17 +57,17 @@
                 <div class="panel-heading">
                     <?=t('Promotion Rules')?>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" id="promotion-rule-list">
 
                 </div>
                 <div class="panel-footer add-to-panel-list">
                     <div class="panel panel-promotion">
-                        <div class="panel-heading"><i class="fa fa-plus"></i> Add Promotion Reward</div>
+                        <div class="panel-heading"><i class="fa fa-plus"></i> Add Promotion Rule</div>
                         <div class="panel-body">
                             <ul>
-                                <li><a href="">Discount</a></li>
-                                <li><a href="">Free Product</a></li>
-                                <li><a href="">Free Shipping</a></li>
+                                <?php foreach($ruleTypes as $ruleType){ ?>
+                                    <li><a href="#" data-promotion="rule-type" data-handle="<?=$ruleType->getHandle()?>"><?=$ruleType->getName()?></a></li>
+                                <?php } ?>
                             </ul>
                         </div>
                     </div>
@@ -70,3 +75,51 @@
             </div>
         </div>
     </div>
+    <h3><?=t("Promotion Application")?></h3>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <?=$form->label('promotionApplication',t("Apply the  promotion automatically? or by a Code?"))?>
+                <?=$form->select('promotionApplication',
+                    array(
+                        'automatic'=>t("Automatically applied at checkout"),
+                        'promoCode'=>t("Requires a Promo Code")
+                    )
+                ); ?>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <?=$form->label('promoCode',t("Promo Code")); ?>
+                <?=$form->text('promoCode')?>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <?=$form->label('exclusive',t("Can this be combined with other promotions?"))?>
+                <?=$form->select('exclusive',array(1=>t("No"),0=>t("Yes"))); ?>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <?=$form->label('marketPromotion',t("Show discounted price in Product/Product List %sif exists%s",'<small class="text-muted">','</small>')); ?>
+                <?=$form->select('marketPromotion',array(1=>t("Yes"),0=>t("No"))); ?>
+            </div>
+        </div>
+    </div>
+<div id="promotion-reward-forms">
+    <?php foreach($rewardTypes as $rewardType){ ?>
+        <div class="promotion-reward-form" id="<?=$rewardType->getHandle()?>-reward-type-form">
+            <?=$rewardType->renderDashboardForm()?>
+        </div>
+    <?php } ?>
+</div>
+<script type="text/javascript">
+    $(function() {
+
+    });
+
+
+</script>

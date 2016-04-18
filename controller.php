@@ -17,6 +17,7 @@ class Controller extends Package
     protected $appVersionRequired = '5.7.3';
     protected $pkgVersion = '3.0.1.4';
     protected $pkgAutoloaderRegistries = array(
+        'src/VividStore' => '\VividStore',
         'src/AuthorizeNet' => '\AuthorizeNet',
         'src/Omnipay' => '\Omnipay',
         'src/BoxPacker' => '\DVDoug\BoxPacker'
@@ -46,6 +47,8 @@ class Controller extends Package
         Installer::updateConfigStorage($pkg);
         Installer::setDefaultConfigValues($pkg);
         Installer::installPaymentMethods($pkg);
+        Installer::installPromotionRewardTypes($pkg);
+        Installer::installPromotionRuleTypes($pkg);
         Installer::installShippingMethods($pkg);
         Installer::installBlocks($pkg);
         Installer::setPageTypeDefaults($pkg);
@@ -150,7 +153,13 @@ class Controller extends Package
             var PRODUCTMODAL = '" . View::url('/productmodal') . "';
             var CARTURL = '" . View::url('/cart') . "';
             var CHECKOUTURL = '" . View::url('/checkout') . "';
-            var QTYMESSAGE = '" . t('Quantity must be greater than zero') . "';
+            var VividStoreStrings = {
+                qtyMessage: '" . t('Quantity must be greater than zero') . "',
+                addRewardType: '" . t('Add Reward Type') . "',
+                addRuleType: '" . t("Add Rule Type") . "',
+                add: '" . t('Add') . "',
+                cancel: '" . t('Cancel') . "'
+            }
         </script>
         ";
     }
