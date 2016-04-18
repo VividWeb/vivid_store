@@ -65,146 +65,26 @@ class OrderItem
      */
     protected $oiQty;
 
-    /**
-     * @return integer
-     */
-    public function getID()
-    {
-        return $this->oiID;
-    }
+    public function getID(){ return $this->oiID; }
+    public function getProductID(){ return $this->pID; }
+    public function getOrder(){ return $this->order; }
+    public function getProductName(){ return $this->oiProductName; }
+    public function getSKU(){ return $this->oiSKU; }
+    public function getPricePaid(){ return $this->oiPricePaid; }
+    public function getTax(){ return $this->oiTax; }
+    public function getTaxIncluded(){ return $this->oiTaxIncluded; }
+    public function getTaxName(){ return $this->oiTaxName; }
+    public function getQty(){ return $this->oiQty; }
 
-    /**
-     * @return string
-     */
-    public function getProductName()
-    {
-        return $this->oiProductName;
-    }
-
-    /**
-     * @param string $oiProductName
-     */
-    public function setProductName($oiProductName)
-    {
-        $this->oiProductName = $oiProductName;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSKU()
-    {
-        return $this->oiSKU;
-    }
-
-    /**
-     * @param mixed $oiSKU
-     */
-    public function setSKU($oiSKU)
-    {
-        $this->oiSKU = $oiSKU;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPricePaid()
-    {
-        return $this->oiPricePaid;
-    }
-
-    /**
-     * @param mixed $oiPricePaid
-     */
-    public function setPricePaid($oiPricePaid)
-    {
-        $this->oiPricePaid = $oiPricePaid;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTax()
-    {
-        return $this->oiTax;
-    }
-
-    /**
-     * @param mixed $oiTax
-     */
-    public function setTax($oitax)
-    {
-        $this->oiTax = $oitax;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTaxIncluded()
-    {
-        return $this->oiTaxIncluded;
-    }
-
-    /**
-     * @param mixed $oitaxIncluded
-     */
-    public function setTaxIncluded($oiTaxIncluded)
-    {
-        $this->oiTaxIncluded = $oiTaxIncluded;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTaxName()
-    {
-        return $this->oiTaxName;
-    }
-
-    /**
-     * @param mixed $oiTaxName
-     */
-    public function setTaxName($oiTaxName)
-    {
-        $this->oiTaxName = $oiTaxName;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getQty()
-    {
-        return $this->oiQty;
-    }
-
-    /**
-     * @param mixed $oiQty
-     */
-    public function setQty($oiQty)
-    {
-        $this->oiQty = $oiQty;
-    }
-
-
-    public function setProductID($productid) {
-        $this->pID = $productid;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
-     * @param mixed $order
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-    }
+    public function setProductID($productid) { $this->pID = $productid; }
+    public function setOrder($order){ $this->order = $order; }
+    public function setProductName($oiProductName){ $this->oiProductName = $oiProductName; }
+    public function setSKU($oiSKU){ $this->oiSKU = $oiSKU; }
+    public function setPricePaid($oiPricePaid){ $this->oiPricePaid = $oiPricePaid; }
+    public function setTax($oitax){ $this->oiTax = $oitax; }
+    public function setTaxIncluded($oiTaxIncluded){ $this->oiTaxIncluded = $oiTaxIncluded; }
+    public function setTaxName($oiTaxName){ $this->oiTaxName = $oiTaxName; }
+    public function setQty($oiQty){ $this->oiQty = $oiQty; }
 
     public static function getByID($oiID)
     {
@@ -270,10 +150,6 @@ class OrderItem
         return $orderItem;
     }
 
-    public function getProductID()
-    {
-        return $this->pID;
-    }
 
     public function getSubTotal()
     {

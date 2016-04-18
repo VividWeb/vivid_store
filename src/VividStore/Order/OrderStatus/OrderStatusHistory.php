@@ -57,7 +57,8 @@ class OrderStatusHistory
             return null;
         }
     }
-    public function getDate($format = 'm/d/Y H:i:s'){ return date($format, strtotime($this->oshDate)); }
+    public function getDateTimeObject(){ return $this->oshDate; }
+    public function getDate($format = 'm/d/Y H:i:s'){ return $this->getDateTimeObject()->format($format); }
     public function getUserID(){ return $this->uID; }
     public function getUser(){ return User::getByUserID($this->getUserID()); }
     public function getUserName()
