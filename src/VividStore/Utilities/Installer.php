@@ -322,7 +322,7 @@ class Installer
         Installer::installUserAttribute('billing_phone',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_first_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_last_name',$text,$pkg,$custSet);
-        Installer::installUserAttribute('shopping_company_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('shipping_company_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_address',$address,$pkg,$custSet);
         
     }

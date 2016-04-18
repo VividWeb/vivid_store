@@ -134,7 +134,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <div class="checkout-form-group-summary col-container clearfix ">
                 <div class="vivid-store-col-2">
                     <label><?= t('Name');?></label>
-                    <p class="summary-name">
+                    <p>
                         <span class="summary-name"></span><br>
                         <span class="summary-company"></span>
                     </p>
@@ -235,7 +235,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <div class="checkout-form-group-summary col-container clearfix">
                 <div class="vivid-store-col-2">
                     <label><?= t('Name');?></label>
-                    <p class="summary-name"></p>
+                    <p>
+                        <span class="summary-name"></span><br>
+                        <span class="summary-company"></span>
+                    </p>
 
                 </div>
 

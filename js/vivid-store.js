@@ -390,29 +390,31 @@ $("#checkout-form-group-billing").submit(function(e){
        
     });
     $("#checkout-form-group-shipping").submit(function(e){
-       e.preventDefault();
-       var sfName = $("#checkout-shipping-first-name").val();
-       var slName = $("#checkout-shipping-last-name").val();
-       var sAddress1 = $("#checkout-shipping-address-1").val();
-       var sAddress2 = $("#checkout-shipping-address-2").val();
-       var sCountry = $("#checkout-shipping-country").val();
-       var sCity = $("#checkout-shipping-city").val();
-       var sState = $("#checkout-shipping-state").val();
-       var sPostal = $("#checkout-shipping-zip").val();
-       $("#checkout-form-group-shipping .checkout-form-group-body .checkout-errors").remove();
+        e.preventDefault();
+        var sfName = $("#checkout-shipping-first-name").val();
+        var slName = $("#checkout-shipping-last-name").val();
+        var bcName = $("#checkout-shipping-company-name").val();
+        var sAddress1 = $("#checkout-shipping-address-1").val();
+        var sAddress2 = $("#checkout-shipping-address-2").val();
+        var sCountry = $("#checkout-shipping-country").val();
+        var sCity = $("#checkout-shipping-city").val();
+        var sState = $("#checkout-shipping-state").val();
+        var sPostal = $("#checkout-shipping-zip").val();
+        $("#checkout-form-group-shipping .checkout-form-group-body .checkout-errors").remove();
 
-       vividStore.waiting();
-       var obj = $(this);
-       $.ajax({
-           url: CHECKOUTURL+"/updater",
-           type: 'post',
-           data: {adrType: 'shipping', fName: sfName, lName: slName, addr1: sAddress1, addr2: sAddress2, count: sCountry, city: sCity, state: sState, postal: sPostal},
-           //dataType: 'json', 
-           success: function(result){
+        vividStore.waiting();
+        var obj = $(this);
+        $.ajax({
+            url: CHECKOUTURL+"/updater",
+            type: 'post',
+            data: {adrType: 'shipping', fName: sfName, lName: slName, cName: bcName, addr1: sAddress1, addr2: sAddress2, count: sCountry, city: sCity, state: sState, postal: sPostal},
+            //dataType: 'json',
+            success: function(result){
                 var response = JSON.parse(result);
                 if(response.error == false){
                     $(".whiteout").remove();
                     obj.find('.checkout-form-group-summary .summary-name').html(response.first_name + ' ' + response.last_name );
+                    obj.find('.checkout-form-group-summary .summary-company').html(bcName);
                     obj.find('.checkout-form-group-summary .summary-address').html(response.address);
                     vividStore.nextPane(obj);   
                     //update tax

@@ -29,7 +29,7 @@ class Customer
         if ($this->isGuest()) {
             Session::set('vivid_' . $handle, $value);
         } else {
-            $this->ui->setAttribute($handle, $value);
+            $this->getUserInfo()->setAttribute($handle, $value);
         }
     }
 
