@@ -53,10 +53,7 @@ class Calculator
     {
         return StoreTax::getTaxes();
     }
-    public static function getDiscountTotals()
-    {
-        //should return 3 totals: subtotal, shipping, grand total
-    }
+
     public static function getGrandTotal()
     {
         $subTotal = self::getSubTotal();
@@ -69,20 +66,7 @@ class Calculator
             }
         }        $shippingTotal = self::getShippingTotal();
         $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
-        
-        $discounts = StoreCart::getDiscounts(); //TODO: Get total somewhere else.
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'total') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $grandTotal -= $discount->drValue;
-                }
 
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $grandTotal -= ($discount->drPercentage / 100 * $grandTotal);
-                }
-            }
-        }
-        
         return $grandTotal;
     }
 
@@ -105,36 +89,9 @@ class Calculator
         }
 
         $shippingTotal = self::getShippingTotal();
-        $discountedSubtotal = $subTotal;
-        $discounts = StoreCart::getDiscounts();
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'subtotal') {
-                
-                if ($discount->drDeductType  == 'value' ) {
-                    $discountedSubtotal -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $discountedSubtotal -= ($discount->drPercentage / 100 * $discountedSubtotal);
-                }
-            }
-        }
         
-        $total = ($discountedSubtotal + $addedTaxTotal + $shippingTotal);
+        $total = ($subTotal + $addedTaxTotal + $shippingTotal);
         
-        
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'total') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $total -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $total -= ($discount->drPercentage / 100 * $total);
-                }
-            }
-        }
-
         return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
     }
 }

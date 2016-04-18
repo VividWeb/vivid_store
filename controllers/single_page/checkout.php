@@ -14,7 +14,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 class Checkout extends PageController
@@ -80,13 +79,8 @@ class Checkout extends PageController
             $shippingCountries = $allcountries;
         }
 
-        $discountsWithCodesExist = StoreDiscountRule::discountsWithCodesExist();
-
-        $this->set("discountsWithCodesExist",$discountsWithCodesExist);
 
         $this->set('cart', StoreCart::getCart());
-        $this->set('discounts', StoreCart::getDiscounts());
-        $this->set('hasCode', StoreCart::hasCode());
 
         $this->set("billingCountries",$billingCountries);
         $this->set("shippingCountries",$shippingCountries);

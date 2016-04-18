@@ -357,42 +357,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <?php if ($shippingEnabled) { ?>
             <li class="line-item shipping"><strong><?=t("Shipping")?>:</strong> <span id="shipping-total"><?=Price::format($shippingtotal);?></span></li>
             <?php } ?>
-            <?php if(!empty($discounts)) { ?>
-            <li class="line-item discounts">
-                <strong><?= (count($discounts) == 1 ? t('Discount Applied') : t('Discounts Applied'));?>:</strong>
-                <?php
-                    $discountstrings = array();
-                    $discountAmount = 0;
-                    foreach($discounts as $discount) {
-                        $discountstrings[] = h($discount->getDisplay());
-                        if ($discount->drDeductType  == 'value' ) {
-                            $discountAmount += $discount->drValue;
-                        }
-
-                        if ($discount->drDeductType  == 'percentage' ) {
-                            if ($discount->drDeductFrom == 'subtotal') {
-                                $discountAmount += ($discount->drPercentage / 100 * $subtotal);
-                            }
-
-                            if ($discount->drDeductFrom == 'total') {
-                                $discountAmount += ($discount->drPercentage / 100 * ($subtotal + $shippingtotal));
-                            }
-
-                            if ($discount->drDeductFrom == 'shipping') {
-                                $discountAmount += ($discount->drPercentage / 100 * $shippingtotal);
-                            }
-
-                        }
-
-                    }
-                    echo implode(', ', $discountstrings);
-                ?>
-                <div class="discount-amount">- <?=Price::format($discountAmount)?></div>
-            </li>
-            <?php }?>
-            <?php if ($discountsWithCodesExist && !$hasCode) { ?>
-                <p><a href="<?= View::url('/cart');?>"><?= t('Enter discount code'); ?></a></p>
-            <?php } ?>
             <li class="line-item grand-total"><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></li>
         </ul>
         

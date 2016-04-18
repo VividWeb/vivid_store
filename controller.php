@@ -15,9 +15,8 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '3.0.1.4';
+    protected $pkgVersion = '3.0.1.99';
     protected $pkgAutoloaderRegistries = array(
-        'src/VividStore' => '\VividStore',
         'src/AuthorizeNet' => '\AuthorizeNet',
         'src/Omnipay' => '\Omnipay',
         'src/BoxPacker' => '\DVDoug\BoxPacker'
@@ -42,6 +41,7 @@ class Controller extends Package
             Installer::refreshDatabase($pkg);
         }
         Installer::installSinglePages($pkg);
+        Installer::removeLegacySinglePages($pkg);
         Installer::installProductParentPage($pkg);
         Installer::installStoreProductPageType($pkg);
         Installer::updateConfigStorage($pkg);

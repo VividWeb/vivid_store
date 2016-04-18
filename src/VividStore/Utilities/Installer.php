@@ -66,6 +66,17 @@ class Installer
             SinglePage::add($path, $pkg);
         }
     }
+    public static function removeLegacySinglePages(Package $pkg)
+    {
+        Installer::removeLegacySinglePage('/dashboard/store/discounts/', $pkg);
+    }
+    public static function removeLegacySinglePage($path,$pkg)
+    {
+        $page = Page::getByPath($path);
+        if (is_object($page)) {
+            $page->delete();
+        }
+    }
     public static function installProductParentPage(Package $pkg)
     {
         $productParentPage = Page::getByPath('/product-detail');

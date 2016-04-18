@@ -7,14 +7,12 @@ use Database;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
 {
     static protected $cart = null;
-    static protected $discounts = null;
 
     public static function getCart() {
 
@@ -61,36 +59,10 @@ class Cart
                 Session::set('vividstore.cart', $checkeditems);
             }
 
-            self::$discounts = array();
-
-            $rules = StoreDiscountRule::findAutomaticDiscounts();
-            if (count($rules) > 0) {
-                self::$discounts = array_merge(self::$discounts, $rules);
-            }
-
-            $code = trim(Session::get('vividstore.code'));
-            if ($code) {
-                $rules = StoreDiscountRule::findDiscountRuleByCode($code);
-
-                if (count($rules) > 0) {
-                    self::$discounts = array_merge(self::$discounts, $rules);
-                } else {
-                    Session::set('vividstore.code', '');
-                }
-            }
-
             self::$cart = $checkeditems;
         }
 
         return self::$cart;
-    }
-
-    public static function getDiscounts() {
-        if (!isset(self::$cart)) {
-            self::getCart();
-        }
-
-        return self::$discounts;
     }
 
     public function add($data)
@@ -396,30 +368,4 @@ class Cart
         return false;
     }
 
-    //TODO: Move to Discounts
-    public static function storeCode($code) {
-        $rule = StoreDiscountRule::findDiscountRuleByCode($code);
-
-        if (!empty($rule)) {
-            Session::set('vividstore.code',$code);
-            return true;
-        }
-
-        return false;
-    }
-
-    //TODO: move to iscounts
-    public static function hasCode() {
-        return (bool)Session::get('vividstore.code');
-    }
-
-    //TODO: Move to discounts
-    public static function getCode() {
-        return Session::get('vividstore.code');
-    }
-
-    //TODO: Move to discouns
-    public static function clearCode() {
-        Session::set('vividstore.code', '');
-    }
 }
