@@ -22,4 +22,16 @@ class FreeProductPromotionReward extends StorePromotionRewardTypeReward
     {
         $this->set('form',Core::make("helper/form"));
     }
+    public function addReward($data)
+    {
+        // TODO: Implement addReward() method.
+    }
+    public function update($data)
+    {
+        // TODO: Implement update() method.
+    }
+    public function performReward()
+    {
+        // TODO: Implement performReward() method.
+    }
 }

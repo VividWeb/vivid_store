@@ -18,12 +18,12 @@ class PromotionRule
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="Promotion", inversedBy="promotionRules")
+     * @ManyToOne(targetEntity="Promotion", inversedBy="promotionRewards")
      */
     protected $promotion;
 
     /**
-     * @OneToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleType", mappedBy="promotionRule")
+     * @OneToOne(targetEntity="PromotionRuleType")
      */
     protected $promotionRuleType;
 
@@ -31,4 +31,24 @@ class PromotionRule
      * @Column(type="integer")
      */
     protected $promotionRuleTypeRuleID;
+
+    public function setPromotion($promotion){ $this->promotion = $promotion; }
+    public function setPromotionRuleType($promotionRuleType){ $this->promotionRuleType = $promotionRuleType; }
+    public function setPromotionRuleTypeRuleID($id){ $this->promotionRuleTypeRuleID = $id; }
+
+    public function getID(){ return $this->id; }
+    public function getPromotion(){ return $this->promotion; }
+    public function getPromotionRuleType(){ return $this->promotionRuleType; }
+    public function getPromotionRuleTypeRuleID(){ return $this->promotionRuleTypeRuleID; }
+    public function getPromotionRuleTypeRule(){
+        $promotionRuleTypeController = $this->getPromotionRuleType()->getController();
+        $ruleTypeRule = $promotionRuleTypeController->getByID($this->promotionRuleTypeRuleID);
+        return $ruleTypeRule;
+    }
+
+    public static function getByID($id) {
+        $db = Database::get();
+        $em = $db->getEntityManager();
+        return $em->find('Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRule', $id);
+    }
 }

@@ -21,4 +21,16 @@ class UserGroupPromotionRule extends StorePromotionRuleTypeRule
     {
         $this->set('form',Core::make("helper/form"));
     }
+    public function addRule($data)
+    {
+        // TODO: Implement addRule() method.
+    }
+    public function update($data)
+    {
+        // TODO: Implement update() method.
+    }
+    public function cartMeetsRule()
+    {
+        // TODO: Implement cartMeetsRule() method.
+    }
 }

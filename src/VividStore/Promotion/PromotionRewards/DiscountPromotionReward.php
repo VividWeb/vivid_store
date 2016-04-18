@@ -24,4 +24,16 @@ class DiscountPromotionReward extends StorePromotionRewardTypeReward
         $grouplist = StoreGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
     }
+    public function addReward($data)
+    {
+        // TODO: Implement addReward() method.
+    }
+    public function update($data)
+    {
+        // TODO: Implement update() method.
+    }
+    public function performReward()
+    {
+        // TODO: Implement performReward() method.
+    }
 }

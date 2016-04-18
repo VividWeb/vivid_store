@@ -131,7 +131,7 @@ class PromotionRuleType
     }
     public function addRule($data)
     {
-        $idk = $this->getController()->addRule($data);
-        return $idk;
+        $ruleTypeRule = $this->getController()->addRule($data);
+        return $ruleTypeRule;
     }
 }

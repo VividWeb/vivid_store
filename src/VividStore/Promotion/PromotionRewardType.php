@@ -132,9 +132,9 @@ class PromotionRewardType
         $pkg = Package::getByID($this->pkgID);
         View::element('promotion_reward_types/'.$this->handle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
     }
-    public function addMethod($data)
+    public function addReward($data)
     {
-        $idk = $this->getController()->addReward($data);
-        return $idk;
+        $rewardTypeReward = $this->getController()->addReward($data);
+        return $rewardTypeReward;
     }
 }

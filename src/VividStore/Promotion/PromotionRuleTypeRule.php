@@ -12,16 +12,21 @@ abstract class PromotionRuleTypeRule extends Controller
      */
     protected $id;
 
-    protected $promotion;
-
     /**
-     * @Column(type="string")
+     * @Column(type="integer")
      */
-    protected $label;
+    protected $promotionID;
+
+    public function setPromotionID($id){ $this->promotionID = $id; }
+
+    public function getID(){ return $this->id; }
+    public function getPromotionID(){ return $this->promotionID; }
 
     abstract public static function getByID($id);
-
     abstract public function dashboardForm();
+    abstract public function addRule($data);
+    abstract public function update($data);
+    abstract public function cartMeetsRule();
 
     public function save()
     {
