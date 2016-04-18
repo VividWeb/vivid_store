@@ -122,7 +122,7 @@ class Settings extends DashboardPageController
                 $orderStatus->setInformCustomer(isset($data['osInformCustomer'][$key]) ? 1 : 0);
                 $orderStatus->setSortOrder($key);
                 $orderStatus->setIsStartingStatus($data['osIsStartingStatus']);
-                if ($data['osIsStartingStatus') {
+                if ($data['osIsStartingStatus']) {
                     $existingStartingStatus = StoreOrderStatus::getStartingStatus();
                     $existingStartingStatus->setIsStartingStatus(false);
                     $existingStartingStatus->save();

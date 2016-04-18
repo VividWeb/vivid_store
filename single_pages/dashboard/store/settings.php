@@ -149,7 +149,7 @@
                                         <td class="sorthandle"><input type="hidden" name="osID[]" value="<?php echo $orderStatus->getID(); ?>"><i class="fa fa-arrows-v"></i></td>
                                         <td><input type="text" name="osName[]" value="<?php echo $orderStatus->getName(); ?>" placeholder="<?php echo $orderStatus->getReadableHandle(); ?>" class="form-control ccm-input-text"></td>
                                         <td><input type="radio" name="osIsStartingStatus" value="<?php echo $orderStatus->getID(); ?>" <?php echo $orderStatus->isStartingStatus() ? 'checked':''; ?>></td>
-                                        <td style="display:none;"><input type="checkbox" name="osInformSite[]" value="1" <?php echo $orderStatus->informsSites() ? 'checked':''; ?> class="form-control"></td>
+                                        <td style="display:none;"><input type="checkbox" name="osInformSite[]" value="1" <?php echo $orderStatus->informsSite() ? 'checked':''; ?> class="form-control"></td>
                                         <td style="display:none;"><input type="checkbox" name="osInformCustomer[]" value="1" <?php echo $orderStatus->informsCustomer() ? 'checked':''; ?> class="form-control"></td>
                                     </tr>
                                 <?php } ?>

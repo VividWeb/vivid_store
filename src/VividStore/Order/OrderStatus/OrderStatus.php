@@ -72,7 +72,7 @@ class OrderStatus
     static public function getAll() {
         $db = \Database::connection();
         $em = $db->getEntityManager();
-        return $em->createQuery('select os from get_class() os')->getResult();
+        return $em->createQuery('select os from '.get_class().' os')->getResult();
     }
 
     static public function getList()

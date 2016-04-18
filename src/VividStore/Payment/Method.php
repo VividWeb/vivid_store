@@ -144,7 +144,7 @@ class Method extends Controller
         if ($enabled) {
             $methods = $em->getRepository(get_class())->findBy(array('pmEnabled'=>1));
         } else {
-            $methods = $em->createQuery('select sm from get_class() sm')->getResult();
+            $methods = $em->createQuery('select sm from '.get_class().' sm')->getResult();
         }
         foreach($methods as $method) {
             $method->setMethodController();
