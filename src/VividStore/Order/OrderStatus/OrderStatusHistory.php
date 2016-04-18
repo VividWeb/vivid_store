@@ -38,33 +38,15 @@ class OrderStatusHistory
     /** @Column(type="integer", nullable=true) */
     protected $uID;
 
-    public static $table = 'VividStoreOrderStatusHistories';
+    public function setOrder($order){ $this->order = $order; }
+    public function setOrderStatusHandle($oshStatus){ $this->oshStatus = $oshStatus; }
+    public function setDate($date){ $this->oshDate = $date; }
+    public function setUserID($uID){ $this->uID = $uID; }
 
-    public function setOrder($order)
-    {
-        $this->order = $order;
-    }
-
-    public function getOrder()
-    {
-        return StoreOrder::getByID($this->getOrderID());
-    }
-
-    public function getOrderStatusHandle()
-    {
-        return $this->oshStatus;
-    }
-
-    public function setOrderStatusHandle($oshStatus)
-    {
-        $this->oshStatus = $oshStatus;
-    }
-
-    public function getOrderStatus()
-    {
-        return StoreOrderStatus::getByHandle($this->getOrderStatusHandle());
-    }
-
+    public function getID(){ return $this->oshID; }
+    public function getOrder(){ return $this->order; }
+    public function getOrderStatusHandle(){ return $this->oshStatus; }
+    public function getOrderStatus(){ return StoreOrderStatus::getByHandle($this->getOrderStatusHandle()); }
     public function getOrderStatusName()
     {
         $os = $this->getOrderStatus();
@@ -75,32 +57,9 @@ class OrderStatusHistory
             return null;
         }
     }
-
-    public function getDate($format = 'm/d/Y H:i:s')
-    {
-        return date($format, strtotime($this->oshDate));
-    }
-
-    public function setDate($date)
-    {
-        $this->oshDate = $date;
-    }
-
-    public function getUserID()
-    {
-        return $this->uID;
-    }
-
-    public function setUserID($uID)
-    {
-        $this->uID = $uID;
-    }
-
-    public function getUser()
-    {
-        return User::getByUserID($this->getUserID());
-    }
-
+    public function getDate($format = 'm/d/Y H:i:s'){ return date($format, strtotime($this->oshDate)); }
+    public function getUserID(){ return $this->uID; }
+    public function getUser(){ return User::getByUserID($this->getUserID()); }
     public function getUserName()
     {
         $u = $this->getUser();
@@ -109,24 +68,21 @@ class OrderStatusHistory
         }
     }
 
-    private static function getTableName()
-    {
-        return self::$table;
-    }
-
-    private static function getByID($oshID)
+    public static function getByID($id)
     {
         $db = Database::get();
         $em = $db->getEntityManager();
-        return $em->find(get_class(), $tcID);
+        return $em->find(get_class(), $id);
     }
 
     public static function getForOrder(StoreOrder $order)
     {
+        $db = Database::get();
+        $em = $db->getEntityManager();
         if (!$order->getOrderID()) {
             return false;
         }
-        $history = $em->getRepository(get_class())->findBy(array('oID'=>$order->getOrderID()));
+        $history = $em->getRepository(get_class())->findBy(array('order'=>$order->getOrderID()));
         return $history;
     }
 
@@ -146,12 +102,27 @@ class OrderStatusHistory
     {
         $db = Database::get();
         $user = new user();
+        $now = new \DateTime;
         $newHistoryItem = new self();
         $newHistoryItem->setOrder($order);
         $newHistoryItem->setOrderStatusHandle($statusHandle);
+        $newHistoryItem->setDate($now);
         $newHistoryItem->setUserID($user->uID);
         $newHistoryItem->save();
-        return $newHistoryItem->getHandle();
+        return $newHistoryItem->getOrderStatusHandle();
+    }
+
+    public function save()
+    {
+        $em = \Database::connection()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
+    }
+    public function delete()
+    {
+        $em = \Database::connection()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
     }
 
 }

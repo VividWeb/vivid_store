@@ -312,6 +312,7 @@ class Product
     }
 
     public function getProductID(){ return $this->pID; }
+    public function getID(){ return $this->pID; }
     public function getProductName(){ return $this->pName; }
     public function getProductSKU(){
         if ($this->hasVariations() && $variation = $this->getVariation()) {

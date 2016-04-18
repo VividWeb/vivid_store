@@ -62,6 +62,14 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     </div>
                 </div>
                 <div class="clearfix">
+                    <div class="vivid-store-col-2">
+                        <div class="form-group">
+                            <label for="checkout-billing-first-name"><?=t("Company Name")?></label>
+                            <?php echo $form->text('checkout-billing-company-name',$customer->getValue("billing_company_name")); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix">
                     <?php if ($customer->isGuest()) { ?>
                     <div class="vivid-store-col-2">
                         <div class="form-group">
@@ -126,7 +134,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             <div class="checkout-form-group-summary col-container clearfix ">
                 <div class="vivid-store-col-2">
                     <label><?= t('Name');?></label>
-                    <p class="summary-name"></p>
+                    <p class="summary-name">
+                        <span class="summary-name"></span><br>
+                        <span class="summary-company"></span>
+                    </p>
 
                     <label><?= t('Email');?></label>
                     <p class="summary-email"></p>
@@ -167,6 +178,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     <div class="form-group">
                         <label for="checkout-shipping-last-name"><?=t("Last Name")?></label>
                         <?php echo $form->text('checkout-shipping-last-name',$customer->getValue("shipping_last_name"),array("required"=>"required")); ?>
+                    </div>
+                </div>
+                <div class="vivid-store-col-2">
+                    <div class="form-group">
+                        <label for="checkout-billing-first-name"><?=t("Company Name")?></label>
+                        <?php echo $form->text('checkout-shipping-company-name',$customer->getValue("shipping_company_name")); ?>
                     </div>
                 </div>
                 <div class="vivid-store-col-2">

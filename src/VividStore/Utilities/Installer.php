@@ -42,8 +42,8 @@ class Installer
         Installer::installSinglePage('/dashboard/store', $pkg);
         Installer::installSinglePage('/dashboard/store/orders/', $pkg);
         Installer::installSinglePage('/dashboard/store/products/', $pkg);
-        Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
-        Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
+        //Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
+        //Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
@@ -317,10 +317,12 @@ class Installer
         Installer::installUserAttribute('email',$text,$pkg,$custSet);
         Installer::installUserAttribute('billing_first_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('billing_last_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('billing_company_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('billing_address',$address,$pkg,$custSet);
         Installer::installUserAttribute('billing_phone',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_first_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_last_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('shopping_company_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_address',$address,$pkg,$custSet);
         
     }

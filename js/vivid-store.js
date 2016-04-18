@@ -327,6 +327,7 @@ $("#checkout-form-group-billing").submit(function(e){
         var email = $("#email").val();
         var bfName = $("#checkout-billing-first-name").val();
         var blName = $("#checkout-billing-last-name").val();
+        var bcName = $("#checkout-billing-company-name").val();
         var bPhone = $("#checkout-billing-phone").val();
         var bAddress1 = $("#checkout-billing-address-1").val();
         var bAddress2 = $("#checkout-billing-address-2").val();
@@ -341,7 +342,7 @@ $("#checkout-form-group-billing").submit(function(e){
         $.ajax({
             url: CHECKOUTURL+"/updater",
             type: 'post',
-            data: {adrType: 'billing', email: email, fName: bfName, lName: blName, phone: bPhone, addr1: bAddress1, addr2: bAddress2, count: bCountry, city: bCity, state: bState, postal: bPostal},
+            data: {adrType: 'billing', email: email, fName: bfName, lName: blName, cName: bcName, phone: bPhone, addr1: bAddress1, addr2: bAddress2, count: bCountry, city: bCity, state: bState, postal: bPostal},
             //dataType: 'json',
             success: function(result){
                 //var test = null;
@@ -349,6 +350,7 @@ $("#checkout-form-group-billing").submit(function(e){
                 if(response.error == false){
                     $(".whiteout").remove();
                     obj.find('.checkout-form-group-summary .summary-name').html(response.first_name + ' ' + response.last_name );
+                    obj.find('.checkout-form-group-summary .summary-company').html(bcName);
                     obj.find('.checkout-form-group-summary .summary-phone').html(response.phone);
                     obj.find('.checkout-form-group-summary .summary-email').html(response.email);
                     obj.find('.checkout-form-group-summary .summary-address').html(response.address);

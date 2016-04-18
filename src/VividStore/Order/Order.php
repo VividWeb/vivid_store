@@ -12,6 +12,7 @@ use Config;
 use Loader;
 use Page;
 use UserInfo;
+use Doctrine\Common\Collections\ArrayCollection;
 
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
@@ -199,21 +200,6 @@ class Order
         $order->setTaxLabels($taxes['taxLabels']);
         $order->setOrderTotal($total);
         $order->save();
-
-        $discounts = StoreCart::getDiscounts();
-        foreach ($discounts as $discount) {
-            $orderDiscount = new StoreOrderDiscount();
-            $orderDiscount->setOrder($order);
-            if ($discount->getTrigger() == 'code') {
-                $orderDiscount->setCode(Session::get('vividstore.code'));
-            }
-            $orderDiscount->setDisplay($discount->getDisplay());
-            $orderDiscount->setName($discount->getName());
-            $orderDiscount->setDeductFrom($discount->getDeductFrom());
-            $orderDiscount->setPercentage($discount->getPercentage());
-            $orderDiscount->setValue($discount->getValue());
-            $orderDiscount->save();
-        }
 
         $customer->setLastOrderID($order->getOrderID());
         $order->updateStatus($status);
@@ -446,8 +432,6 @@ class Order
             $u = new \User();
             $u->refreshUserGroups();
         }
-
-        StoreDiscountCode::clearCartCode();
 
         // create order event and dispatch
         $event = new StoreOrderEvent($this);
