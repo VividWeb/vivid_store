@@ -12,6 +12,7 @@
                     <div class="vivid-store-side-panel">
                         <ul>
                             <li><a href="#settings-currency" data-pane-toggle class="active"><?php echo t('Currency')?></a></li>
+                            <li><a href="#settings-products" data-pane-toggle><?php echo t('Products')?></a></li>
                             <li><a href="#settings-tax" data-pane-toggle><?php echo t('Tax')?></a></li>
                             <li><a href="#settings-shipping" data-pane-toggle><?php echo t('Shipping')?></a></li>
                             <li><a href="#settings-payments" data-pane-toggle><?php echo t('Payments')?></a></li>

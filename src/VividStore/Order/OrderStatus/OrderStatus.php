@@ -32,7 +32,7 @@ class OrderStatus
     /** @Column(type="boolean") */
     protected $osIsStartingStatus;
 
-    /** @Column(type="integer") */
+    /** @Column(type="integer",nullable="true") */
     protected $osSortOrder;
 
     public function setHandle($handle){ $this->osHandle = $handle; }
@@ -86,6 +86,8 @@ class OrderStatus
 
     public static function add($osHandle, $osName = null, $osInformSite = 1, $osInformCustomer = 1, $osIsStartingStatus = 0)
     {
+        $db = \Database::connection();
+        $em = $db->getEntityManager();
         if (is_null($osName)) {
             $textHelper = new TextHelper();
             $osName = $textHelper->unhandle($osHandle);
@@ -120,7 +122,6 @@ class OrderStatus
     }
     public function delete()
     {
-        $this->getShippingMethodTypeMethod()->delete();
         $em = \Database::connection()->getEntityManager();
         $em->remove($this);
         $em->flush();

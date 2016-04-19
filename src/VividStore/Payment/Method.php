@@ -40,11 +40,11 @@ class Method extends Controller
     private $methodController;
 
     //Property Setters/Getters
-    public function setPaymentMethodHandle($handle){ $this->pmHandle = $handle; }
-    public function setPaymentMethodName($name){ $this->pmName = $name; }
-    public function setPaymentMethodDisplayName($displayName){ $this->pmDisplayName = $displayName; }
+    public function setHandle($handle){ $this->pmHandle = $handle; }
+    public function setName($name){ $this->pmName = $name; }
+    public function setDisplayName($displayName){ $this->pmDisplayName = $displayName; }
     public function setEnabled($bool){ $this->pmEnabled = $bool; }
-    public function setPaymentMethodPackageID($id){ $this->pkgID = $id; }
+    public function setPackageID($id){ $this->pkgID = $id; }
 
     public function getID(){ return $this->pmID; }
     public function getPaymentMethodID(){ return $this->pmID; }
