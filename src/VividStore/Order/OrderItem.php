@@ -147,6 +147,23 @@ class OrderItem
             $orderItemOption->save();
         }
 
+        if ($product->hasDigitalDownload()) {
+            $fileObjs = $product->getDownloadFileObjects();
+            $fileObj = $fileObjs[0];
+            $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
+            $pk->setPermissionObject($fileObj);
+            $pao = $pk->getPermissionAssignmentObject();
+            $u = new User();
+            $uID = $u->getUserID();
+            $ui = UserInfo::getByID($uID);
+            $user = \Concrete\Core\Permission\Access\Entity\UserEntity::getOrCreate($ui);
+            $pa = $pk->getPermissionAccessObject();
+            if ($pa) {
+                $pa->addListItem($user);
+                $pao->assignPermissionAccess($pa);
+            }
+        }
+
         return $orderItem;
     }
 
