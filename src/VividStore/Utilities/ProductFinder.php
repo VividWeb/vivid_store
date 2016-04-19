@@ -45,7 +45,7 @@ class ProductFinder extends Controller
             $formName = 'pID';
         }
         return '
-            <div class="product-search-form" id="product-search-form'.$randomValue.'" data-ajax-url="'.URL::to('/productfinder').'">
+            <div class="product-search-form" id="product-search-form-'.$randomValue.'" data-ajax-url="'.URL::to('/productfinder').'">
                 <label class="form-label" for="productSearch-'.$randomValue.'">'.t("Search for a product").'</label>
                 <input class="form-control product-search-input" onkeyup="searchForProduct('.$randomValue.')" id="productSearch-'.$randomValue.'" type="text">
                 <input type="hidden" class="product-id-field" name="'.$formName.'">

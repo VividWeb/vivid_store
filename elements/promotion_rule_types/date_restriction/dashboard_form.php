@@ -31,5 +31,5 @@ extract($vars); ?>
 </script>
 
 <script type="text/x-template" id="date-restriction-list-item-template">
-    <?=t('If ordered between')?> <strong><%=dateFrom%></strong> <?=t('and')?> <strong><%=dateTo%></strong>
+    <?=t('If ordered between %s and %s', '<strong><%=dateFrom%></strong>', '<strong><%=dateTo%></strong>')?>
 </script>

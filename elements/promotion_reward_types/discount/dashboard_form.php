@@ -74,5 +74,5 @@ extract($vars); ?>
 </script>
 
 <script type="text/x-template" id="discount-list-item-template">
-    <strong><%=discountAmount%></strong> off of <strong><%=discountTarget%></strong>
+    <?=t('%s off of %s','<strong><%=discountAmount%></strong>', '<strong><%=discountTarget%></strong>')?>
 </script>

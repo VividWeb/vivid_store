@@ -84,7 +84,7 @@
             .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body ul { margin: 0; padding: 0 15px; list-style: none; }
             .ccm-ui .panel-footer.add-to-panel-list .panel .panel-body a { color: #fff; }
 
-#promotion-reward-forms { display: none; }
+#promotion-reward-forms, #promotion-rule-forms { display: none; }
 
 .vivid-store-dialog {  }
     .vivid-store-dialog .ui-dialog-titlebar {  }
@@ -96,3 +96,4 @@
 .product-search-results ul { padding: 0; }
 .product-search-results ul li { list-style: none; padding: 2px 5px; cursor: pointer; }
 .product-search-results ul li:hover { background: #0088ff; color: #fff; }
+.product-search-form .alert { margin-top: 5px; }

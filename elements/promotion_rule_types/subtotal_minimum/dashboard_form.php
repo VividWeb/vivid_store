@@ -24,5 +24,5 @@ extract($vars); ?>
 </script>
 
 <script type="text/x-template" id="subtotal-minimum-list-item-template">
-    If the Subtotal is at least <strong><%=subtotal%></strong>
+    <?=t("If the Subtotal is at least %s",'<strong><%=subtotal%></strong>')?>
 </script>

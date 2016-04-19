@@ -112,7 +112,7 @@
 </div>
 <div id="promotion-rule-forms">
     <?php foreach($ruleTypes as $ruleType){ ?>
-        <div class="promotion-rule-form" id="<?=$rewardType->getHandle()?>-rule-type-form">
+        <div class="promotion-rule-form" id="<?=$ruleType->getHandle()?>-rule-type-form">
             <?=$ruleType->renderDashboardForm()?>
         </div>
     <?php } ?>

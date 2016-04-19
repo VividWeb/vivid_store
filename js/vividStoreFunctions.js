@@ -130,7 +130,7 @@ $(function(){
 function searchForProduct(id){
     var target = '#product-search-form-'+id;
     var inputField = $(target + " .product-search-input");
-    var searchString = $(this).val();
+    var searchString = inputField.val();
     if(searchString.length > 0){
         $(target + " .product-search-results").addClass("active");
         $.ajax({
@@ -148,8 +148,8 @@ function searchForProduct(id){
                     $(target + " .selected-product").html(productName);
                 });
                 $("*:not(.product-search-results ul li)").click(function(){
-                    $(target " .product-search-results").removeClass("active");
-                })
+                    $(target + " .product-search-results").removeClass("active");
+                });
             }
         });
     } else {

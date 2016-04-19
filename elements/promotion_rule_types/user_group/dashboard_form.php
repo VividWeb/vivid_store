@@ -1,28 +1,28 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
 extract($vars); ?>
-<div class="rule-type-form" data-complete-function="onNewSubtotalMinimumRuleType">
+<div class="rule-type-form" data-complete-function="onNewUserGroupRuleType">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group">
-            <?php echo $form->label('subtotalMinimum', t("Subtotal Minimum")); ?>
-            <?php echo $form->text('subtotalMinimum'); ?>
+            <?php echo $form->label('userGroup', t("If user belongs in the following user group")); ?>
+            <?php echo $form->text('userGroup'); ?>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-    function onNewSubtotalMinimumRuleType(){
-        var subtotalMinimum = $('.vivid-store-dialog #subtotalMinimum').val();
+    function onNewUserGroupRuleType(){
+        var userGroupID = $('.vivid-store-dialog #userGroup').val();
 
         var params = {
-            subtotal: subtotalMinimum
+            userGroupID: userGroupID
         }
-        var listItemTemplate = _.template($('#subtotal-minimum-list-item-template').html());
+        var listItemTemplate = _.template($('#user-group-list-item-template').html());
         return listItemTemplate(params);
     }
 </script>
 
-<script type="text/x-template" id="subtotal-minimum-list-item-template">
-    If the Subtotal is at least <strong><%=subtotal%></strong>
+<script type="text/x-template" id="user-group-list-item-template">
+    <?=t("If the User belongs in the User Group: %s", "<strong><%=userGroupID%></strong>")?>
 </script>

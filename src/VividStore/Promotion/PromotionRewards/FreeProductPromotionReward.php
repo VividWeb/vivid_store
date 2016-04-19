@@ -5,6 +5,7 @@ use Package;
 use Database;
 use Core;
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardTypeReward as StorePromotionRewardTypeReward;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder as StoreProductFinder;
 
 
 /**
@@ -21,6 +22,7 @@ class FreeProductPromotionReward extends StorePromotionRewardTypeReward
     public function dashboardForm()
     {
         $this->set('form',Core::make("helper/form"));
+        $this->set('productFinder', StoreProductFinder::renderProductSearchForm());
     }
     public function addReward($data)
     {

@@ -5,6 +5,7 @@ use Package;
 use Database;
 use Core;
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleTypeRule as StorePromotionRuleTypeRule;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder as StoreProductFinder;
 
 /**
  * @Entity
@@ -20,6 +21,7 @@ class ProductExistsPromotionRule extends StorePromotionRuleTypeRule
     public function dashboardForm()
     {
         $this->set('form',Core::make("helper/form"));
+        $this->set('productFinder', StoreProductFinder::renderProductSearchForm());
     }
     public function addRule($data)
     {
