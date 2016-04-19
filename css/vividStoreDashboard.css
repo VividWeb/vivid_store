@@ -89,3 +89,10 @@
 .vivid-store-dialog {  }
     .vivid-store-dialog .ui-dialog-titlebar {  }
     .vivid-store-dialog .ui-dialog-content {  }
+
+.product-search { position: relative; }
+.product-search-results { position: absolute; z-index: 2; display: none; top: 57px; padding: 10px 20px;background: #fff; width: 100%; height: 90px; overflow-y: scroll; border: 1px solid #ccc; box-shadow: 0 0 10px #ccc; }
+.product-search-results.active { display: block; }
+.product-search-results ul { padding: 0; }
+.product-search-results ul li { list-style: none; padding: 2px 5px; cursor: pointer; }
+.product-search-results ul li:hover { background: #0088ff; color: #fff; }

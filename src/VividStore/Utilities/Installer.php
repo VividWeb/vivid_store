@@ -32,8 +32,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate as StoreTaxRate;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-
 class Installer
 {
     public static function installSinglePages(Package $pkg)
@@ -42,8 +40,8 @@ class Installer
         Installer::installSinglePage('/dashboard/store', $pkg);
         Installer::installSinglePage('/dashboard/store/orders/', $pkg);
         Installer::installSinglePage('/dashboard/store/products/', $pkg);
-        //Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
-        //Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
+        Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
+        Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);

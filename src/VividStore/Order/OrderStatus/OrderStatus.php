@@ -32,7 +32,7 @@ class OrderStatus
     /** @Column(type="boolean") */
     protected $osIsStartingStatus;
 
-    /** @Column(type="integer",nullable="true") */
+    /** @Column(type="integer",nullable=true) */
     protected $osSortOrder;
 
     public function setHandle($handle){ $this->osHandle = $handle; }

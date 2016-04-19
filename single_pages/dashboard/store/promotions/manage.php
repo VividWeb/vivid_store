@@ -32,12 +32,6 @@
                 <div class="panel-body" id="promotion-reward-list">
 
                 </div>
-                <script type="text/x-template" id="promotion-reward-list-item">
-                    <div class="well well-sm promotion-item" data-handle="<%=handle%>">
-                        <i class="fa fa-close pull-right"></i>
-                        <%=content%>
-                    </div>
-                </script>
                 <div class="panel-footer add-to-panel-list">
                     <div class="panel panel-promotion">
                         <div class="panel-heading"><i class="fa fa-plus"></i> Add Promotion Reward</div>
@@ -116,10 +110,16 @@
         </div>
     <?php } ?>
 </div>
-<script type="text/javascript">
-    $(function() {
-
-    });
-
-
+<div id="promotion-rule-forms">
+    <?php foreach($ruleTypes as $ruleType){ ?>
+        <div class="promotion-rule-form" id="<?=$rewardType->getHandle()?>-rule-type-form">
+            <?=$ruleType->renderDashboardForm()?>
+        </div>
+    <?php } ?>
+</div>
+<script type="text/x-template" id="promotion-list-item">
+    <div class="well well-sm promotion-item" data-handle="<%=handle%>">
+        <i class="fa fa-close pull-right"></i>
+        <%=content%>
+    </div>
 </script>

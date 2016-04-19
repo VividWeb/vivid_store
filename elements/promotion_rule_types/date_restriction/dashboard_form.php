@@ -1,28 +1,35 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
 extract($vars); ?>
-<div class="rule-type-form" data-complete-function="onNewSubtotalMinimumRuleType">
+<div class="rule-type-form" data-complete-function="onNewDateRestrictionRuleType">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group">
-            <?php echo $form->label('subtotalMinimum', t("Subtotal Minimum")); ?>
-            <?php echo $form->text('subtotalMinimum'); ?>
+                <?php echo $form->label('dateFrom', t("Date From")); ?>
+                <?php echo $form->text('dateFrom'); ?>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <?php echo $form->label('dateTo', t("Date Till")); ?>
+                <?php echo $form->text('dateTo'); ?>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-    function onNewSubtotalMinimumRuleType(){
-        var subtotalMinimum = $('.vivid-store-dialog #subtotalMinimum').val();
-
+    function onNewDateRestrictionRuleType(){
+        var dateFrom = $('.vivid-store-dialog #dateFrom').val();
+        var dateTo = $('.vivid-store-dialog #dateTo').val();
         var params = {
-            subtotal: subtotalMinimum
+            dateFrom: dateFrom,
+            dateTo: dateTo
         }
-        var listItemTemplate = _.template($('#subtotal-minimum-list-item-template').html());
+        var listItemTemplate = _.template($('#date-restriction-list-item-template').html());
         return listItemTemplate(params);
     }
 </script>
 
-<script type="text/x-template" id="subtotal-minimum-list-item-template">
-    If the Subtotal is at least <strong><%=subtotal%></strong>
+<script type="text/x-template" id="date-restriction-list-item-template">
+    <?=t('If ordered between')?> <strong><%=dateFrom%></strong> <?=t('and')?> <strong><%=dateTo%></strong>
 </script>
