@@ -102,8 +102,10 @@ class OrderStatus
 
         if ($osIsStartingStatus) {
             $existingStartingStatus = $em->getRepository(get_class())->findOneBy(array('osIsStartingStatus' => 1));
-            $existingStartingStatus->setIsStartingStatus(false);
-            $existingStartingStatus->save();
+            if(is_object($existingStartingStatus)) {
+                $existingStartingStatus->setIsStartingStatus(false);
+                $existingStartingStatus->save();
+            }
         }
     }
 

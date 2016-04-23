@@ -3,11 +3,13 @@ namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Controller;
 use Core;
+use Database;
 use Session;
 use Illuminate\Filesystem\Filesystem;
 use View;
 use User;
 use UserInfo;
+use UserAttributeKey;
 use Concrete\Attribute\Address\Value as AttributeValue;
 
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
@@ -214,7 +216,7 @@ class Checkout extends Controller
 
     }
 
-    public static function getCountryOptions($addressType)
+    public static function getCountryOptions($addressType='billing')
     {
         $allcountries = Core::make('helper/lists/countries')->getCountries();
         $countries =  $allcountries;

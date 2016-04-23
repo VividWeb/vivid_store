@@ -119,6 +119,12 @@ class Controller extends Package
                 array('css', 'chartist'),
             )
         );
+
+        //moved from individual blocks and single pages.
+        //let's just agree, we pretty much always need this.
+        $v = View::getInstance();
+        $v->requireAsset('javascript','jquery');
+        $v->addFooterItem($this->returnHeaderJS());
     }
     public function uninstall()
     {
@@ -148,22 +154,28 @@ class Controller extends Package
 
     public static function returnHeaderJS()
     {
-        return "
-        <script type=\"text/javascript\">
-            var PRODUCTMODAL = '" . View::url('/productmodal') . "';
-            var CARTURL = '" . View::url('/cart') . "';
-            var CHECKOUTURL = '" . View::url('/checkout') . "';
-            var VividStoreStrings = {
-                areYouSure: '" . t('Are you sure?') . "',
-                error: '" . t('An error has occurred.') . "',
-                qtyMessage: '" . t('Quantity must be greater than zero') . "',
-                addRewardType: '" . t('Add Reward Type') . "',
-                addRuleType: '" . t("Add Rule Type") . "',
-                add: '" . t('Add') . "',
-                cancel: '" . t('Cancel') . "'
-            }
-        </script>
-        ";
+        $vividStoreJS = array(
+            'URLs' => array(
+                'ProductModal' => View::url('/productmodal'),
+                'Cart' => View::url('/cart'),
+                'Checkout' => View::url('/checkout')
+            ),
+            'Strings' => array(
+                'AreYouSure' => t('Are you sure?'),
+                'Error' => t('An error has occured.'),
+                'QtyError' => t('Quantity must be greater than zero'),
+                'AddRewardType' => t('Add Reward Type'),
+                'AddRuleType' => t('Add Rule Type'),
+                'Add' => t('Add'),
+                'Cancel' => t('Cancel')
+            )
+
+        );
+        $script = "<script type=\"text/javascript\">";
+        $script .= "var vividStore = window.vividStore || {};";
+        $script .= "$(function(){ vividStore = $.extend(vividStore,".json_encode($vividStoreJS)."); });";
+        $script .= "</script>";
+        return $script;
     }
 
 

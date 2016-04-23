@@ -66,11 +66,6 @@ class Controller extends BlockController
     }
     public function registerViewAssets($outputContent = '')
     {
-        $this->requireAsset('javascript', 'jquery');
-        $this->requireAsset('javascript', 'vivid-store');
-        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
-        $this->addFooterItem($js);
-        $this->requireAsset('css', 'vivid-store');
         $this->requireAsset('core/lightbox');
     }
     public function save($args)

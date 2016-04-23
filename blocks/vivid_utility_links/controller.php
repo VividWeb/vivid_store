@@ -31,14 +31,6 @@ class Controller extends BlockController
         $this->set("total",StorePrice::format(StoreCalculator::getSubTotal()));
 
     }
-    public function registerViewAssets($outputContent = '')
-    {
-        $this->requireAsset('javascript', 'jquery');
-        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
-        $this->addFooterItem($js);
-        $this->requireAsset('javascript', 'vivid-store');
-        $this->requireAsset('css', 'vivid-store');
-    }
     public function save($args)
     {
         $args['showCartItems'] = isset($args['showCartItems']) ? 1 : 0;

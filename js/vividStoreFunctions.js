@@ -85,17 +85,9 @@ StoreDashboard.ProductGroup = {
     }
 }
 
-StoreDashboard.Order = {
-    init: function(){
-
-    },
-    deleteOrder: function(id){
-        
-    }
-}
-
 $(function(){
     StoreDashboard.ProductGroup.init();
+    StoreDashboard.Product.init();
 
     $("#btn-delete-order").click(function(e){
         e.preventDefault();

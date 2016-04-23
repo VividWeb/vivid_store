@@ -9,7 +9,7 @@ use Package;
 use Session;
 use Config;
 use Loader;
-use UserAttributeKey;
+use Page;
 
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
@@ -23,6 +23,7 @@ class Checkout extends PageController
 
     public function __construct()
     {
+        parent::__construct(Page::getByPath('/checkout/'));
         $this->requiresLogin = StoreCart::requiresLogin();
         $this->customer = new StoreCustomer();
         $guestCheckout = Config::get('vividstore.guestCheckout');
@@ -60,13 +61,6 @@ class Checkout extends PageController
         $this->addFooterItem($js);
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
-        $this->addFooterItem("
-            <script type=\"text/javascript\">
-                $(function() {
-                    vividStore.loadViaHash();
-                });
-            </script>
-        ");
 
         $enabledMethods = StorePaymentMethod::getEnabledMethods();
         $availableMethods = array();

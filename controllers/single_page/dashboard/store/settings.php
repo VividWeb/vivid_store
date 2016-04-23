@@ -111,6 +111,13 @@ class Settings extends DashboardPageController
 
     private function saveOrderStatuses($data) {
         if (isset($data['osID'])) {
+            if ($data['osIsStartingStatus']) {
+                $existingStartingStatus = StoreOrderStatus::getStartingStatus();
+                if(is_object($existingStartingStatus)) {
+                    $existingStartingStatus->setIsStartingStatus(false);
+                    $existingStartingStatus->save();
+                }
+            }
             foreach ($data['osID'] as $key => $id) {
                 $orderStatus = StoreOrderStatus::getByID($id);
                 if(isset($data['osName'][$key]) && $data['osName'][$key]!=''){
@@ -121,12 +128,10 @@ class Settings extends DashboardPageController
                 $orderStatus->setInformSite(isset($data['osInformSite'][$key]) ? 1 : 0);
                 $orderStatus->setInformCustomer(isset($data['osInformCustomer'][$key]) ? 1 : 0);
                 $orderStatus->setSortOrder($key);
-                $orderStatus->setIsStartingStatus($data['osIsStartingStatus']);
-                if ($data['osIsStartingStatus']) {
-                    $existingStartingStatus = StoreOrderStatus::getStartingStatus();
-                    $existingStartingStatus->setIsStartingStatus(false);
-                    $existingStartingStatus->save();
-                }    
+                if($data['osIsStartingStatus'] == $id) {
+                    $orderStatus->setIsStartingStatus(true);
+                }
+                $orderStatus->save();
             }
         }
     }
