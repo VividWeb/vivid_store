@@ -1,5 +1,7 @@
-<?php defined('C5_EXECUTE') or die("Access Denied.");?>
-
+<?php defined('C5_EXECUTE') or die("Access Denied.");
+$manageViews = array('view');
+if(in_array($controller->getTask(),$manageViews)){
+?>
     <div class="row">
         <div class="col-md-6">
             <div class="alert alert-info">
@@ -105,9 +107,7 @@
     </div>
 <div id="promotion-reward-forms">
     <?php foreach($rewardTypes as $rewardType){ ?>
-        <div class="promotion-reward-form" id="<?=$rewardType->getHandle()?>-reward-type-form">
-            <?=$rewardType->renderDashboardForm()?>
-        </div>
+        <?=$rewardType->renderDashboardForm()?>
     <?php } ?>
 </div>
 <div id="promotion-rule-forms">
@@ -123,3 +123,5 @@
         <%=content%>
     </div>
 </script>
+<?php } else { ?>
+<?php } ?>

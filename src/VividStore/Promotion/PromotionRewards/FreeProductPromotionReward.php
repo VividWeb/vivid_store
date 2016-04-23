@@ -24,7 +24,7 @@ class FreeProductPromotionReward extends StorePromotionRewardTypeReward
         $this->set('form',Core::make("helper/form"));
         $this->set('productFinder', StoreProductFinder::renderProductSearchForm());
     }
-    public function addReward($data)
+    public static function addReward($data)
     {
         // TODO: Implement addReward() method.
     }

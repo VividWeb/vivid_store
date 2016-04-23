@@ -322,6 +322,8 @@ vividStore.updateShippingStates(true);
 vividStore.showShippingMethods();
 vividStore.showPaymentForm();
 
+if 
+
 $("#checkout-form-group-billing").submit(function(e){
         e.preventDefault();
         var email = $("#email").val();

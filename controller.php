@@ -154,6 +154,8 @@ class Controller extends Package
             var CARTURL = '" . View::url('/cart') . "';
             var CHECKOUTURL = '" . View::url('/checkout') . "';
             var VividStoreStrings = {
+                areYouSure: '" . t('Are you sure?') . "',
+                error: '" . t('An error has occurred.') . "',
                 qtyMessage: '" . t('Quantity must be greater than zero') . "',
                 addRewardType: '" . t('Add Reward Type') . "',
                 addRuleType: '" . t("Add Rule Type") . "',

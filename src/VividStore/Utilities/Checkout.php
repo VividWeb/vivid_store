@@ -214,6 +214,41 @@ class Checkout extends Controller
 
     }
 
+    public static function getCountryOptions($addressType)
+    {
+        $allcountries = Core::make('helper/lists/countries')->getCountries();
+        $countries =  $allcountries;
+        $db = Database::connection();
+        if($addressType=='shipping'){
+            $ak = UserAttributeKey::getByHandle('shipping_address');
+        } else {
+            $ak = UserAttributeKey::getByHandle('billing_address');
+        }
+
+        $row = $db->GetRow(
+            'select akHasCustomCountries, akDefaultCountry from atAddressSettings where akID = ?',
+            array($ak->getAttributeKeyID())
+        );
+
+        $defaultCountry = $row['akDefaultCountry'];
+        if(!$defaultCountry){
+            $defaultCountry = "US"; // 'mericah
+        }
+
+        if ($row['akHasCustomCountries'] == 1) {
+            $availableCountries = $db->GetCol(
+                'select country from atAddressCustomCountries where akID = ?',
+                array($ak->getAttributeKeyID())
+            );
+            unset($countries);
+            $countries = array();
+            foreach($availableCountries as $countrycode) {
+                $countries[$countrycode] = $allcountries[$countrycode];
+            }
+        }
+        return array('countries'=>$countries,'defaultCountry'=>$defaultCountry);
+    }
+
     public function getShippingMethods()
     {
         if(Filesystem::exists(DIR_BASE."/application/elements/checkout/shipping_methods.php")){

@@ -56,4 +56,6 @@ class Promotion
         $this->promotionRewards = new \Doctrine\Common\Collections\ArrayCollection();
         $this->promotionRules = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    public function getID(){ return $this->id; }
 }

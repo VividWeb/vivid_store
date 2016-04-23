@@ -13,7 +13,7 @@ abstract class PromotionRewardTypeReward extends Controller
     protected $id;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="integer",nullable=true)
      */
     protected $promotionID;
 
@@ -24,7 +24,7 @@ abstract class PromotionRewardTypeReward extends Controller
 
     abstract public static function getByID($id);
     abstract public function dashboardForm();
-    abstract public function addReward($data);
+    abstract public static function addReward($data);
     abstract public function update($data);
     abstract public function performReward();
 

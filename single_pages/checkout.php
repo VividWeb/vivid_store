@@ -1,28 +1,18 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied."));
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
-?>
-<?php if($controller->getTask() == "view" || $controller->getTask() == "failed"){?>
+
+if($controller->getTask() == "view" || $controller->getTask() == "failed"){?>
 
 <div class="clearfix">
 
     <div class="checkout-form-shell">
         <h1><?=t("Checkout")?></h1>
 
-        <?php
-            if ($customer->isGuest() && ($requiresLogin || $guestCheckout == 'off' || ($guestCheckout == 'option' && $_GET['guest'] != '1'))){
-        ?>
+        <?php if ($controller->showLoginScreen){ ?>
         <div class="checkout-form-group active-form-group" id="checkout-form-group-signin">
 
-            <?php 
-                if ($guestCheckout == 'option' && !$requiresLogin) {
-                    $introTitle = t("Sign in, Register or Checkout as Guest");
-                } else {
-                    $introTitle = t("Sign in or Register");
-                }
-            ?>
-            
-            <h2><?=$introTitle?></h2>
+            <h2><?=$controller->hasGuestCheckout() ? t('Sign in, Register or Checkout as Guest') : t('Sign in or Register')?></h2>
             <div class="checkout-form-group-body col-container clearfix">
                 
                 <div class="vivid-store-col-2">
@@ -32,7 +22,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     <a class="btn btn-default" href="<?=View::url('/register')?>"><?=t("Register")?></a> 
                     <?php } ?>   
                 </div>
-                <?php if ($guestCheckout == 'option' && !$requiresLogin) { ?>
+                <?php if ($controller->hasGuestCheckout()) { ?>
                 <div class="vivid-store-col-2">
                     <p><?=t("Or optionally, you may choose to checkout as a guest.")?></p>
                     <a class="btn btn-default" href="<?=View::url('/checkout/?guest=1')?>"><?=t("Checkout as Guest")?></a>
@@ -157,8 +147,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
         <form class="checkout-form-group" id="checkout-form-group-shipping">
             
             <h2><?=t("Shipping Address")?></h2>
-            <div class="checkout-form-group-body col-container clearfix">
-                
+            <div class="checkout-form-group-body col-container clearfix">                
                 <div class="vivid-store-col-1">
                     <div class="checkbox">
                         <label>
@@ -166,8 +155,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                             <?=t("Same as Billing Address")?>
                         </label>
                     </div>
-                </div>
-                
+                </div>                
                 <div class="vivid-store-col-2">
                     <div class="form-group">
                         <label for="checkout-shipping-first-name"><?=t("First Name")?></label>
@@ -280,7 +268,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             </div>
             
         </form>
-      <?php } ?>
+
+        <?php } ?>
 
         <form class="checkout-form-group" id="checkout-form-group-payment" method="post" action="<?=View::url('/checkout/submit')?>">
             
@@ -293,25 +282,27 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                 ?>
                 <div class="col-container clearfix">
                     <div id="checkout-payment-method-options" class="vivid-store-col-1 <?php echo count($enabledPaymentMethods) == 1 ? "hidden" : ""; ?>">
-                        <?php 
-                            $i = 1;
-                            foreach($enabledPaymentMethods as $pm):
-                            if($i==1){
-                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID(),'checked'=>'checked');
-                            } else {
-                                $props = array('data-payment-method-id'=>$pm->getPaymentMethodID());
+                    <?php
+                        $i = 1;
+                        foreach($enabledPaymentMethods as $pm) {
+                            $props = array('data-payment-method-id' => $pm->getPaymentMethodID());
+                            if ($i == 1) {
+                                $props['checked'] = 'checked';
                             }
-                        ?>
+                            ?>
                             <div class='radio'>
-                                <label>  
-                                    <?php $pmsess = Session::get('paymentMethod');   ?>
-                                    <?=$form->radio('payment-method',$pm->getPaymentMethodHandle(),$pmsess[$pm->getPaymentMethodID()],$props)?>
-                                    <?=$pm->getPaymentMethodDisplayName()?>
+                                <label>
+                                    <?php
+                                        $pmsess = Session::get('paymentMethod');
+                                        echo $form->radio('payment-method', $pm->getPaymentMethodHandle(), $pmsess[$pm->getPaymentMethodID()], $props);
+                                        echo $pm->getPaymentMethodDisplayName();
+                                    ?>
                                 </label>
-                            </div>       
-                         <?php 
+                            </div>
+                    <?php
                             $i++;
-                            endforeach;?>
+                        }
+                    ?>
                     </div>
                 </div>
                 <div class="alert alert-danger payment-errors <?php if($controller->getTask()=='view'){echo "hidden";} ?>"><?=$paymentErrors?></div>
@@ -345,15 +336,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
     <div class="checkout-cart-view">
         <h2><?=t("Your Cart")?></h2>
 
-        <?php
-
-        if(\Illuminate\Filesystem\Filesystem::exists(DIR_BASE.'/application/elements/cart_list.php')){
-            View::element('cart_list',array('cart'=>$cart));
-        } else {
-            View::element('cart_list',array('cart'=>$cart),'vivid_store');
-        }
-        ?>
-
+        <?php $controller->getCartListElement(); ?>
 
         <ul class="checkout-totals-line-items">
             <li class="line-item sub-total">
@@ -367,7 +350,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
                     if($taxtotal > 0){
                         foreach($taxes as $tax){
                             if($tax['taxamount']>0){ ?>
-                                <li class="line-item tax-item"><strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong> <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span></li>
+                                <li class="line-item tax-item">
+                                    <strong><?=($tax['name'] ? $tax['name'] : t("Tax"))?>:</strong>
+                                    <span class="tax-amount"><?=Price::format($tax['taxamount']);?></span>
+                                </li>
                             <?php }
                         }
                     }
@@ -375,9 +361,16 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
             </div>
             
             <?php if ($shippingEnabled) { ?>
-            <li class="line-item shipping"><strong><?=t("Shipping")?>:</strong> <span id="shipping-total"><?=Price::format($shippingtotal);?></span></li>
+            <li class="line-item shipping">
+                <strong><?=t("Shipping")?>:</strong>
+                <span id="shipping-total"><?=Price::format($shippingtotal);?></span>
+            </li>
             <?php } ?>
-            <li class="line-item grand-total"><strong><?=t("Grand Total")?>:</strong> <span class="total-amount"><?=Price::format($total)?></span></li>
+            <li class="line-item grand-total">
+                <strong><?=t("Grand Total")?>:</strong>
+                <span class="total-amount"><?=Price::format($total)?>
+                </span>
+            </li>
         </ul>
         
     </div>

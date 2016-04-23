@@ -1,64 +1,102 @@
-$(function(){
-    
-    var url = window.location.pathname.toString();
-    $('#group-filters li a').each(function(){
-        var href = $(this).attr('href');
-        if(url == href) {
-           $(this).parent().addClass("active");
-        }
-    });
-            
-    $("a[data-pane-toggle]").click(function(e){
-        e.preventDefault();
-        var paneTarget = $(this).attr('href');
-        paneTarget = paneTarget.replace('#','');     
-        $(".store-pane, a[data-pane-toggle]").removeClass('active');
-        $('#'+paneTarget).addClass("active"); 
-        $(this).addClass("active");
-    });
-    $(".btn-delete-group").click(function(){
-        var groupID = $(this).parent().attr("data-group-id");
-        var confirmDelete = confirm('Are You Sure?');
+var StoreDashboard = {};
+
+StoreDashboard.Product = {
+    init: function(){
+        this.highlightProductGroupTab();
+        this.setupProductMenu();
+    },
+    highlightProductGroupTab: function(){
+        var url = window.location.toString();
+        $('#group-filters li a').each(function(){
+            var href = $(this).attr('href');
+            if(url == href) {
+                $(this).parent().addClass("active");
+            }
+        });
+    },
+    setupProductMenu: function(){
+        $("a[data-pane-toggle]").click(function(e){
+            e.preventDefault();
+            var paneTarget = $(this).attr('href');
+            paneTarget = paneTarget.replace('#','');
+            $(".store-pane, a[data-pane-toggle]").removeClass('active');
+            $('#'+paneTarget).addClass("active");
+            $(this).addClass("active");
+        });
+    }
+};
+
+StoreDashboard.ProductGroup = {
+    init: function(){
+        this.setupButtons();
+    },
+    setupButtons: function(){
+        $(".btn-delete-group").click(function(){
+            StoreDashboard.ProductGroup.delete($(this).parent().attr('data-group-id'));
+        });
+        $(".btn-save-group-name").click(function(){
+            var groupID = $(this).parent().attr("data-group-id");
+            var groupName = $(this).parent().find(".edit-group-name").val();
+            StoreDashboard.ProductGroup.save(groupID,groupName);
+        });
+        $(".btn-edit-group-name").click(function(){
+            var groupID = $(this).parent().attr("data-group-id");
+            StoreDashboard.ProductGroup.edit(groupID);
+        });
+    },
+    delete: function(groupID){
+        var confirmDelete = confirm(VividStoreStrings.areYouSure);
         if(confirmDelete == true) {
             var deleteurl = $(".group-list").attr("data-delete-url");
-            $.ajax({ 
+            $.ajax({
                 url: deleteurl+"/"+groupID,
                 success: function() {
                     $("li[data-group-id='"+groupID+"']").remove();
                 },
                 error: function(){
-                    alert("Something went wrong");
+                    alert(VividStoreStrings.error);
                 }
-            });             
+            });
         }
-    });
-    $(".btn-save-group-name").click(function(){
-        var groupID = $(this).parent().attr("data-group-id");
+    },
+    save: function(groupID,groupName){
         var saveurl = $(".group-list").attr("data-save-url");
-        var gName = $(this).parent().find(".edit-group-name").val();
-        $.ajax({ 
+        $.ajax({
             url: saveurl+"/"+groupID,
-            data: {gName: gName},
+            data: {gName: groupName},
             type: 'post',
             success: function() {
-                $("li[data-group-id='"+groupID+"']").find(".group-name").text(gName);
+                $("li[data-group-id='"+groupID+"']").find(".group-name").text(groupName);
                 $("li[data-group-id='"+groupID+"']").find(".btn-edit-group-name,.group-name").show();
                 $("li[data-group-id='"+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");
             },
             error: function(){
-                alert("something went wrong");
+                alert(VividStoreStrings.error);
             }
-        });    
-    });
-    $(".btn-edit-group-name").click(function(){
-        $(this).parent().find(".btn-edit-group-name,.group-name").hide();
-        $(this).parent().find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: inline-block !important"); 
-    });
-    $(".btn-cancel-edit").click(function(){
-       $(this).parent().find(".btn-edit-group-name,.group-name").show();
-       $(this).parent().find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");  
-    });
-    
+        });
+    },
+    edit: function(groupID){
+        $("li['data-group-id="+groupID+"']").find(".btn-edit-group-name, .group-name").hide();
+        $("li['data-group-id="+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: inline-block !important");
+    },
+    cancel: function(groupID){
+        $("li['data-group-id="+groupID+"']").find(".btn-edit-group-name, .group-name").show();
+        $("li['data-group-id="+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");
+    }
+}
+
+StoreDashboard.Order = {
+    init: function(){
+
+    },
+    deleteOrder: function(id){
+        
+    }
+}
+
+$(function(){
+    StoreDashboard.ProductGroup.init();
+
     $("#btn-delete-order").click(function(e){
         e.preventDefault();
         var url = $(this).attr("href");
@@ -89,20 +127,23 @@ $(function(){
         } else if(type=='rule-type'){
             var title = VividStoreStrings.addRuleType;
         }
-        $('#'+handle+'-'+type+'-form').dialog({
+        var formTemplate = _.template($('#'+handle+'-'+type+'-form').html());
+
+        $.fn.dialog.open({
             title: title,
             width: 500,
             height: 400,
             modal: true,
+            element: $('<div>' + formTemplate() + '</div>'),
             open: function(){
-                $('#'+handle+'-'+type+'-form').closest('.ui-dialog').addClass('vivid-store-dialog ccm-ui');
+                $('.ui-dialog').addClass('vivid-store-dialog ccm-ui');
             },
             buttons: [
                 {
                     text: VividStoreStrings.add,
                     click: function () {
                         var listItemTemplate = _.template($('#promotion-list-item').html());
-                        var completeFunction = $('#'+handle+'-'+type+'-form').find('.'+type+'-form').attr('data-complete-function')
+                        var completeFunction = $('#'+handle+'-'+type+'-form').attr('data-complete-function')
                         var content = window[completeFunction]();
                         var params = {
                             handle: handle,
