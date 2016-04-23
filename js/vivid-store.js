@@ -409,7 +409,7 @@ $(function() {
     vividStore.showShippingMethods();
     vividStore.showPaymentForm();
 
-    if (window.location == vividStore.URLs.Checkout) {
+    if ((window.location.origin + window.location.pathname) == vividStore.URLs.Checkout) {
         vividStore.loadViaHash();
     }
 
@@ -480,6 +480,7 @@ $(function() {
         if ($(this).is(":checked")) {
             $("#checkout-shipping-first-name").val($("#checkout-billing-first-name").val());
             $("#checkout-shipping-last-name").val($("#checkout-billing-last-name").val());
+            $("#checkout-shipping-company-name").val($("#checkout-billing-company-name").val());
             $("#checkout-shipping-email").val($("#checkout-billing-email").val());
             $("#checkout-shipping-phone").val($("#checkout-billing-phone").val());
             $("#checkout-shipping-address-1").val($("#checkout-billing-address-1").val());

@@ -124,6 +124,8 @@ class Controller extends Package
         //let's just agree, we pretty much always need this.
         $v = View::getInstance();
         $v->requireAsset('javascript','jquery');
+        $v->requireAsset('css','vivid-store');
+        $v->requireAsset('javascript','vivid-store');
         $v->addFooterItem($this->returnHeaderJS());
     }
     public function uninstall()
