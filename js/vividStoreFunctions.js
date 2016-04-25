@@ -134,15 +134,8 @@ $(function(){
                 {
                     text: vividStore.Strings.Add,
                     click: function () {
-                        var listItemTemplate = _.template($('#promotion-list-item').html());
-                        var completeFunction = $('#'+handle+'-'+type+'-form').attr('data-complete-function')
-                        var content = window[completeFunction]();
-                        var params = {
-                            handle: handle,
-                            content: content
-                        }
-                        type = type.replace('-type','');
-                        $("#promotion-"+type+"-list").append(listItemTemplate(params));
+                        var completeFunction = $('#'+handle+'-'+type+'-form').attr('data-complete-function');
+                        window[completeFunction]();
                         $(this).dialog('close');
                         $(".add-to-panel-list .panel-body").removeClass('open');
                     }
@@ -156,6 +149,18 @@ $(function(){
             ]
         });
     });
+
+    $(window).on('on_promotion_reward_save', function(event,data){
+        var listItemTemplate = _.template($('#promotion-list-item').html());
+        var params = {
+            handle: data.handle,
+            content: data.template
+        }
+        type = data.type.replace('-type','');
+        $("#promotion-"+type+"-list").append(listItemTemplate(params));
+    });
+
+
 
 });
 

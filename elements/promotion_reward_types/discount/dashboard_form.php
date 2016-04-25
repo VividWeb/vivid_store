@@ -1,7 +1,7 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
 extract($vars); ?>
-<script type="text/x-template" id="discount-reward-type-form" data-complete-function="addNewDiscountRewardType">
+<script type="text/x-template" id="discount-reward-type-form" data-complete-function="addNewDiscountReward">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group">
@@ -52,7 +52,7 @@ extract($vars); ?>
             $('.vivid-store-dialog #product-selector').addClass('hidden');
         }
     }
-    function addNewDiscountRewardType(){
+    function addNewDiscountReward(){
         var fields = {
             rewardTypeID: <?=$rewardType->getID()?>,
             discountCalculation: $('.vivid-store-dialog #discountCalculation').val(),
@@ -73,14 +73,12 @@ extract($vars); ?>
             error: function(){
                 alert('something went wrong');
             },
-            success: function(data){
-                console.log(data);
-                return onNewDiscountRewardSuccess(fields);
+            success: function(response){
+                onNewDiscountRewardSuccess(fields,JSON.parse(response));
             }
-
         });
     }
-    function onNewDiscountRewardSuccess(fields){
+    function onNewDiscountRewardSuccess(fields,response){
         if(fields.discountCalculation=='percentage'){
             var discountString = fields.discountAmount + "%";
         } else {
@@ -91,15 +89,22 @@ extract($vars); ?>
         } else {
             var discountTargetString = $('.vivid-store-dialog #discountSubject option:selected').text();
         }
+
         var params = {
             discountAmount: discountString,
-            discountTarget: discountTargetString
+            discountTarget: discountTargetString,
+            rewardTypeID: fields.rewardTypeID,
+            rewardTypeRewardID: response.rewardTypeRewardID
         }
+
         var listItemTemplate = _.template($('#discount-list-item-template').html());
-        return listItemTemplate(params);
+        listItemTemplate = listItemTemplate(params);
+        $(window).trigger('on_promotion_reward_save',[{type:'reward',handle:'<?=$rewardType->getHandle()?>',template:listItemTemplate}]);
     }
 </script>
 
 <script type="text/x-template" id="discount-list-item-template">
+    <input type="hidden" name="rewardTypeID[]" value="<%=rewardTypeID%>" />
+    <input type="hidden" name="rewardTypeRewardID[]" value="<%=rewardTypeRewardID%>" />
     <?=t('%s off of %s','<strong><%=discountAmount%></strong>', '<strong><%=discountTarget%></strong>')?>
 </script>

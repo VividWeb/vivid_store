@@ -22,7 +22,7 @@ class PromotionUtility extends Controller
                     'rewardTypeID' => $this->post('rewardTypeID'),
                     'rewardTypeRewardID' => $reward->getID()
                 );
-                return json_encode($returnArray);
+                echo json_encode($returnArray);
             }
         }
     }    
