@@ -45,7 +45,7 @@ StoreDashboard.ProductGroup = {
         });
     },
     delete: function(groupID){
-        var confirmDelete = confirm(VividStoreStrings.areYouSure);
+        var confirmDelete = confirm(vividStore.Strings.AreYouSure);
         if(confirmDelete == true) {
             var deleteurl = $(".group-list").attr("data-delete-url");
             $.ajax({
@@ -54,7 +54,7 @@ StoreDashboard.ProductGroup = {
                     $("li[data-group-id='"+groupID+"']").remove();
                 },
                 error: function(){
-                    alert(VividStoreStrings.error);
+                    alert(vividStore.Strings.Error);
                 }
             });
         }
@@ -71,7 +71,7 @@ StoreDashboard.ProductGroup = {
                 $("li[data-group-id='"+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");
             },
             error: function(){
-                alert(VividStoreStrings.error);
+                alert(vividStore.Strings.Error);
             }
         });
     },
@@ -115,9 +115,9 @@ $(function(){
         var type = $(this).attr('data-promotion');
         var handle = $(this).attr('data-handle');
         if(type=='reward-type'){
-            var title = VividStoreStrings.addRewardType;
+            var title = vividStore.Strings.AddRewardType;
         } else if(type=='rule-type'){
-            var title = VividStoreStrings.addRuleType;
+            var title = vividStore.Strings.AddRuleType;
         }
         var formTemplate = _.template($('#'+handle+'-'+type+'-form').html());
 
@@ -132,7 +132,7 @@ $(function(){
             },
             buttons: [
                 {
-                    text: VividStoreStrings.add,
+                    text: vividStore.Strings.Add,
                     click: function () {
                         var listItemTemplate = _.template($('#promotion-list-item').html());
                         var completeFunction = $('#'+handle+'-'+type+'-form').attr('data-complete-function')
@@ -148,7 +148,7 @@ $(function(){
                     }
                 },
                 {
-                    text: VividStoreStrings.cancel,
+                    text: vividStore.Strings.Cancel,
                     click: function () {
                         $(this).dialog('close');
                     }

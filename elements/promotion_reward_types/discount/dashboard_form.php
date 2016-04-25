@@ -54,14 +54,16 @@ extract($vars); ?>
     }
     function addNewDiscountRewardType(){
         var fields = {
+            rewardTypeID: <?=$rewardType->getID()?>,
             discountCalculation: $('.vivid-store-dialog #discountCalculation').val(),
             discountAmount: $('.vivid-store-dialog #discountAmount').val(),
             discountSubject: $('.vivid-store-dialog #discountSubject').val(),
             discountTarget: $('.vivid-store-dialog #discountTarget').val()
         }
         $.ajax({
-            url: '<?=URL::to('/dashboard/store/promotions/manage/add_reward/',$rewardType->getID())?>',
+            url: '<?=URL::to('/dashboard/store/promotions/utility/save_reward/')?>',
             data: {
+                rewardTypeID: fields.rewardTypeID,
                 discountCalculation: fields.discountCalculation,
                 discountAmount: fields.discountAmount,
                 discountSubject: fields.discountSubject,
@@ -71,7 +73,8 @@ extract($vars); ?>
             error: function(){
                 alert('something went wrong');
             },
-            success: function(){
+            success: function(data){
+                console.log(data);
                 return onNewDiscountRewardSuccess(fields);
             }
 
