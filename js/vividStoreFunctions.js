@@ -164,7 +164,6 @@ $(function(){
 
 });
 
-
 function searchForProduct(id){
     var target = '#product-search-form-'+id;
     var inputField = $(target + " .product-search-input");
