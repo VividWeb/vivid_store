@@ -37,6 +37,8 @@ class Settings extends DashboardPageController
         $pkgconfig = $pkg->getConfig();
         $this->set('pkgconfig',$pkgconfig);
         $this->addHeaderItem('<style type="text/css">.redactor_editor{padding:20px}</style>');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
         $this->requireAsset('css', 'vividStoreDashboard');
         $this->requireAsset('javascript', 'vividStoreFunctions');
     }

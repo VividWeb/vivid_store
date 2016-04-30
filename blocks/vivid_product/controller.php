@@ -63,6 +63,11 @@ class Controller extends BlockController
             $this->set('optionGroups', $product->getProductOptionGroups());
             $this->set('optionItems',$product->getProductOptionItems(true));
         }
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->requireAsset('javascript', 'jquery');
+        $this->addFooterItem($js);
+        $this->requireAsset('javascript', 'vivid-store');
+        $this->requireAsset('css', 'vivid-store');
     }
     public function registerViewAssets($outputContent = '')
     {

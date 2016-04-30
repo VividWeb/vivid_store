@@ -56,11 +56,7 @@ class Checkout extends PageController
         $this->set('total',$totals['total']);
         $this->set('shippingEnabled', StoreCart::isShippable());
 
-        $this->requireAsset('javascript', 'jquery');
-        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
-        $this->addFooterItem($js);
-        $this->requireAsset('javascript', 'vivid-store');
-        $this->requireAsset('css', 'vivid-store');
+        $this->getFooterAssets();
 
         $enabledMethods = StorePaymentMethod::getEnabledMethods();
         $availableMethods = array();
@@ -72,6 +68,15 @@ class Checkout extends PageController
         }
 
         $this->set("enabledPaymentMethods",$availableMethods);
+    }
+
+    public function getFooterAssets()
+    {
+        $this->requireAsset('javascript', 'jquery');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
+        $this->requireAsset('javascript', 'vivid-store');
+        $this->requireAsset('css', 'vivid-store');
     }
 
     public function showLoginScreen()
@@ -147,6 +152,7 @@ class Checkout extends PageController
     }
     public function external()
     {
+        $this->getFooterAssets();
         $pm = Session::get('paymentMethod');
         /*print_r($pm);
         exit();die();
@@ -157,6 +163,7 @@ class Checkout extends PageController
         //$pm = PaymentMethod::getByHandle($pm[3]);
         $this->set('pm',$pm);
         $this->set('action',$pm->getMethodController()->getAction());
+
 
     }
     public function validate()

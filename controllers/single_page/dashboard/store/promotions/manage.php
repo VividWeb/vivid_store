@@ -23,6 +23,14 @@ class Manage extends DashboardPageController
         $this->set('rewardTypes',StorePromotionRewardType::getPromotionRewardTypes());
         $this->set('ruleTypes',StorePromotionRuleType::getPromotionRuleTypes());
         $this->set('promotion',$promotion);
+        $this->getAssets();
+    }
+    private function getAssets()
+    {
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
     }
 
 }
