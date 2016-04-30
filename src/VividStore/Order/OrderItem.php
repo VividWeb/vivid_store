@@ -2,9 +2,13 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Order;
 
 use Database;
+use User;
+use UserInfo;
+
 use Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use Concrete\Package\VividStore\Src\VividStore\Order\OrderItemOption as StoreOrderItemOption;
 use Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
 
 /**
  * @Entity
@@ -148,7 +152,7 @@ class OrderItem
         }
 
         if ($product->hasDigitalDownload()) {
-            $fileObjs = $product->getDownloadFileObjects();
+            $fileObjs = StoreProductFile::getFileObjectsForProduct($product);
             $fileObj = $fileObjs[0];
             $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
             $pk->setPermissionObject($fileObj);
