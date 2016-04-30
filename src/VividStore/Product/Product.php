@@ -436,7 +436,12 @@ class Product
 
     public function getProductImageID() {
         if ($this->hasVariations() && $variation = $this->getVariation()) {
-            return $variation->getVariationImageID();
+            $id = $variation->getVariationImageID();
+            if (!$id) {
+                return $this->pfID;
+            } else {
+                return $id;
+            }
         } else {
             return $this->pfID;
         }
