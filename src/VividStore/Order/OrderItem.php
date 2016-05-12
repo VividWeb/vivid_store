@@ -200,6 +200,14 @@ class OrderItem
         return StoreProduct::getByID($this->pID);
     }
 
+    public function removeOrderItemsByOrder($order)
+    {
+        foreach($order->getOrderItems() as $orderItem){
+            //TODO delete the options with this.
+            $orderItem->delete();
+        }
+    }
+
     public function save()
     {
         $em = \Database::connection()->getEntityManager();
