@@ -15,12 +15,12 @@
     #group-filters li a { transition: .2s ease all; }
     
 
-.vivid-store-side-panel { background: #222; padding: 20px; border-radius: 4px; box-shadow: inset 0 0 20px #222; border: 1px solid #111; margin-bottom: 20px; }
+.vivid-store-side-panel { background: #333c46; padding: 20px; border-radius: 4px; inset 10px 1px 10px rgba(0,0,0,0.12); margin-bottom: 20px; }
    
     .vivid-store-side-panel ul { padding: 0; margin: 0 !important; overflow: auto;}
         .vivid-store-side-panel ul li { float: left; list-style: none; }
-            .vivid-store-side-panel ul li a { transition: .2s ease all; color: #aaa; display: block; padding: 6px 10px; border-radius: 3px; }
-            .vivid-store-side-panel ul li a.active { background: #3a3a3a; color: #ddd !important; cursor: default; text-decoration: none !important; }
+            .vivid-store-side-panel ul li a { transition: .2s ease all; color: #97aabc; display: block; padding: 6px 10px; border-radius: 3px; }
+            .vivid-store-side-panel ul li a.active { background: rgba(0,0,0,0.2); color: #fff !important; cursor: default; text-decoration: none !important; }
             .vivid-store-side-panel ul li a:hover { text-decoration: none !important; color: #fff; }
 
 @media (min-width: 768px) {
