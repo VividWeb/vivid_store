@@ -19,47 +19,47 @@ class ClerkPackage implements \DVDoug\BoxPacker\Box
     protected $reference;
     
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $outerWidth;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $outerLength;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $outerDepth;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $emptyWeight;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $innerWidth;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $innerLength;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $innerDepth;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $innerVolume;
 
     /**
-     * @Column(type="decimal",scale=20,precision=20)
+     * @Column(type="decimal",scale=15,precision=20)
      */
     protected $maxWeight;
     

@@ -33,7 +33,11 @@ class ShippingClerk extends Controller
             //TODO: If an item doesn't fit in any box, make it it's own box.
         }
                 
-        return $packer->pack();
+        try {
+            $packages = $packer->pack();
+        } catch (Exception $e){
+            var_dump($e);
+        }
     }
     public static function test()
     {
