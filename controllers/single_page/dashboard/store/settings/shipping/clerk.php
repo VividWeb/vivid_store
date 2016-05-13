@@ -5,8 +5,10 @@ namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store\Sett
 use \Concrete\Core\Page\Controller\DashboardPageController;
 use View;
 use Core;
+use Config;
 
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk\ClerkPackage as StoreClerkPackage;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 class Clerk extends DashboardPageController
 {
@@ -15,24 +17,30 @@ class Clerk extends DashboardPageController
     {
         $packages = StoreClerkPackage::getPackages();
         $this->set('packages',$packages);
-        
+        $this->set('sizeUnit',Config::get('vividstore.sizeUnit'));
+        $this->set('weightUnit',Config::get('vividstore.weightUnit'));
+        $this->set('calculator',new StoreCalculator());
     }
     public function add()
     {
         $this->set('task',t("Add"));
+        $this->set('sizeUnit',Config::get('vividstore.sizeUnit'));
+        $this->set('weightUnit',Config::get('vividstore.weightUnit'));
     }
     public function edit($id)
     {
         $package = StoreClerkPackage::getByID($id);
         $this->set('reference',$package->getReference());
-        $this->set('outerWidth',$package->getOuterWidth());
-        $this->set('outerLength',$package->getOuterLength());
-        $this->set('outerDepth',$package->getOuterDepth());
-        $this->set('innerDepth',$package->getInnerDepth());
-        $this->set('innerWidth',$package->getInnerWidth());
-        $this->set('innerLength',$package->getInnerLength());
-        $this->set('maxWeight',$package->getMaxWeight());
-        $this->set('emptyWeight',$package->getEmptyWeight());
+        $this->set('outerWidth',StoreCalculator::convertFromMM($package->getOuterWidth()));
+        $this->set('outerLength',StoreCalculator::convertFromMM($package->getOuterLength()));
+        $this->set('outerDepth',StoreCalculator::convertFromMM($package->getOuterDepth()));
+        $this->set('innerDepth',StoreCalculator::convertFromMM($package->getInnerDepth()));
+        $this->set('innerWidth',StoreCalculator::convertFromMM($package->getInnerWidth()));
+        $this->set('innerLength',StoreCalculator::convertFromMM($package->getInnerLength()));
+        $this->set('maxWeight',StoreCalculator::convertFromGrams($package->getMaxWeight()));
+        $this->set('emptyWeight',StoreCalculator::convertFromGrams($package->getEmptyWeight()));
+        $this->set('sizeUnit',Config::get('vividstore.sizeUnit'));
+        $this->set('weightUnit',Config::get('vividstore.weightUnit'));
         $this->set('id',$id);
         $this->set('task',t("Update"));
     }
@@ -44,11 +52,11 @@ class Clerk extends DashboardPageController
         if(!$errors->has())
         {
             if($this->post('id') > 0){
-                StoreClerkPackage::add($this->post());
-                $this->redirect('/dashboard/store/settings/shipping/clerk/success');
-            } else {
                 StoreClerkPackage::getByID($this->post('id'))->update($this->post());
                 $this->redirect('/dashboard/store/settings/shipping/clerk/updated');
+            } else {
+                StoreClerkPackage::add($this->post());
+                $this->redirect('/dashboard/store/settings/shipping/clerk/success');
             }
         }
         if($this->post('id') > 0){

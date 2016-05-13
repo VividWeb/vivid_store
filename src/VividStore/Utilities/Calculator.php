@@ -94,4 +94,71 @@ class Calculator
         
         return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
     }
+
+    public static function convertToMM($size)
+    {
+        $storeSizeUnit = Config::get('vividstore.sizeUnit');
+        switch($storeSizeUnit){
+            case "in":
+                $mm = $size / 0.039370;
+                break;
+            case "cm":
+                $mm = $size * 10;
+                break;
+            case "mm":
+                $mm = $size;
+                break;
+        }
+        return $mm;
+    }
+    public static function convertFromMM($mmSize)
+    {
+        $storeSizeUnit = Config::get('vividstore.sizeUnit');
+        switch($storeSizeUnit){
+            case "in":
+                $size = $mmSize * 0.039370;
+                break;
+            case "cm":
+                $size = $mmSize / 10;
+                break;
+            case "mm":
+                $size = $mmSize;
+                break;
+        }
+        return $size;
+    }
+
+    public static function convertToGrams($weight)
+    {
+        $storeWeightUnit = Config::get('vividstore.weightUnit');
+        switch($storeWeightUnit){
+            case "lb":
+                $grams = $weight / 0.0022046;
+                break;
+            case "kg":
+                $grams = $weight * 1000;
+                break;
+            case "g":
+                $grams = $weight;
+                break;
+        }
+        return $grams;
+    }
+
+    public static function convertFromGrams($grams)
+    {
+        $storeWeightUnit = Config::get('vividstore.weightUnit');
+        switch($storeWeightUnit){
+            case "lb":
+                $weight = $grams * 0.0022046;
+                break;
+            case "kg":
+                $weight = $grams / 1000;
+                break;
+            case "g":
+                $weight = $grams;
+                break;
+        }
+        return $weight;
+    }
 }

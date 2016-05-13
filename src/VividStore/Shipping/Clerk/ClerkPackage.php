@@ -2,6 +2,7 @@
 namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk;
 
 use Database;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 /**
  * @Entity
@@ -18,47 +19,47 @@ class ClerkPackage implements \DVDoug\BoxPacker\Box
     protected $reference;
     
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $outerWidth;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $outerLength;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $outerDepth;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $emptyWeight;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $innerWidth;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $innerLength;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $innerDepth;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $innerVolume;
-    
+
     /**
-     * @Column(type="integer")
+     * @Column(type="decimal",scale=20,precision=20)
      */
     protected $maxWeight;
     
@@ -146,20 +147,20 @@ class ClerkPackage implements \DVDoug\BoxPacker\Box
     {
         return $this->addOrUpdate($data,$this);
     }
-    
+
     public function addOrUpdate($data,$package)
     {
         $package->setReference($data['reference']);
-        $package->setOuterWidth($data['outerWidth']);
-        $package->setOuterLength($data['outerLength']);
-        $package->setOuterDepth($data['outerDepth']);
-        $package->setEmptyWeight($data['emptyWeight']);
-        $package->setInnerWidth($data['innerWidth']);
-        $package->setInnerLength($data['innerLength']);
-        $package->setInnerDepth($data['innerDepth']);
+        $package->setOuterWidth(StoreCalculator::convertToMM($data['outerWidth']));
+        $package->setOuterLength(StoreCalculator::convertToMM($data['outerLength']));
+        $package->setOuterDepth(StoreCalculator::convertToMM($data['outerDepth']));
+        $package->setEmptyWeight(StoreCalculator::convertToGrams($data['emptyWeight']));
+        $package->setInnerWidth(StoreCalculator::convertToMM($data['innerWidth']));
+        $package->setInnerLength(StoreCalculator::convertToMM($data['innerLength']));
+        $package->setInnerDepth(StoreCalculator::convertToMM($data['innerDepth']));
         $innerVolume = $data['innerWidth'] * $data['innerLength'] * $data['innerDepth'];
-        $package->setInnerVolume($innerVolume);
-        $package->setMaxWeight($data['maxWeight']);
+        $package->setInnerVolume(StoreCalculator::convertToMM($innerVolume));
+        $package->setMaxWeight(StoreCalculator::convertToGrams($data['maxWeight']));
         $package->save();
         return $package;
     }
@@ -183,4 +184,5 @@ class ClerkPackage implements \DVDoug\BoxPacker\Box
         $packages = $em->createQuery('select package from \Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk\ClerkPackage package')->getResult();
         return $packages;
     }
+
 }

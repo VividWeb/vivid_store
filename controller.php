@@ -101,6 +101,7 @@ class Controller extends Package
         Route::register('/checkout/paypalresponse','\Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard\PaypalStandardPaymentMethod::validateCompletion');
         Route::register('/dashboard/store/orders/details/slip','\Concrete\Package\VividStore\Src\VividStore\Utilities\OrderSlip::renderOrderPrintSlip');
         Route::register('/dashboard/store/promotions/utility/save_reward','\Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionUtility::saveReward');
+        Route::register('/packtester','\Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk\ShippingClerk::test');
     }
     public function on_start()
     {
