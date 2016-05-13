@@ -329,7 +329,9 @@ class Order
             $this->setTransactionReference($transactionReference);
             $this->save();
         }
-
+        //in case of external payment hitting, update the status.
+        //otherwise nothing should really happen.
+        $this->updateStatus();
         $this->dispatchEmailNotifications();
         StoreCustomer::addCustomerToUserGroupsByOrder($this);
 
