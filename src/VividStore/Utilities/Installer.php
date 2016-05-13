@@ -40,8 +40,8 @@ class Installer
         Installer::installSinglePage('/dashboard/store', $pkg);
         Installer::installSinglePage('/dashboard/store/orders/', $pkg);
         Installer::installSinglePage('/dashboard/store/products/', $pkg);
-        Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
-        Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
+        //Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
+        //Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
