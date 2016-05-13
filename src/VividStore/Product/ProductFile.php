@@ -62,9 +62,9 @@ class ProductFile
     {
         self::removeFilesForProduct($product);
         //add new ones.
-        if(!empty($files['dffID'])){
-            foreach($files['dffID'] as $fileID){
-                self::add($product->getProductID(),$fileID);
+        foreach($files['dffID'] as $fileID){
+            if(!empty($fileID) && $fileID > 0) {
+                self::add($product->getProductID(), $fileID);
                 $fileObj = \File::getByID($fileID);
                 $fs = \FileSet::getByName("Digital Downloads");
                 $fs->addFileToSet($fileObj);
