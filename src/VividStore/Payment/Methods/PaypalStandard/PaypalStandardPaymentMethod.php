@@ -74,7 +74,7 @@ class PaypalStandardPaymentMethod extends StorePaymentMethod
     }
     public function redirectForm()
     {
-        $customer = new Customer();
+        $customer = new StoreCustomer();
         $totals = StoreCalculator::getTotals();
         $paypalEmail = Config::get('vividstore.paypalEmail');
         $order = StoreOrder::getByID(Session::get('orderID'));

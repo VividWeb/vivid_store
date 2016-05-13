@@ -207,7 +207,7 @@ class Order
         $order->addOrderItems(StoreCart::getCart());
         $order->createNeededAccounts();
         $order->assignFilePermissions();
-        if(!$pm->external){
+        if(!$pm->getMethodController()->external){
             $order->completeOrder($transactionReference);
         }
         return $order;
