@@ -21,9 +21,9 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\OrderItem as StoreOrderIte
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
-use \Concrete\Package\VividStore\Src\VividStore\Order\OrderDiscount as StoreOrderDiscount;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusHistory;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
+use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
@@ -206,6 +206,7 @@ class Order
         $order->addCustomerAddress($customer,$order->isShippable());
         $order->addOrderItems(StoreCart::getCart());
         $order->createNeededAccounts();
+        $order->assignFilePermissions();
         if(!$pm->external){
             $order->completeOrder($transactionReference);
         }
@@ -282,7 +283,30 @@ class Order
         $em->remove($this);
         $em->flush();
     }
-    
+
+    private function assignFilePermissions()
+    {
+        foreach($this->getOrderItems() as $orderItem) {
+            $product = $orderItem->getProductObject();
+            if ($product->hasDigitalDownload()) {
+                $fileObjs = StoreProductFile::getFileObjectsForProduct($product);
+                $fileObj = $fileObjs[0];
+                $pk = \Concrete\Core\Permission\Key\FileKey::getByHandle('view_file');
+                $pk->setPermissionObject($fileObj);
+                $pao = $pk->getPermissionAssignmentObject();
+                $u = new User();
+                $uID = $u->getUserID();
+                $ui = UserInfo::getByID($uID);
+                $user = \Concrete\Core\Permission\Access\Entity\UserEntity::getOrCreate($ui);
+                $pa = $pk->getPermissionAccessObject();
+                if ($pa) {
+                    $pa->addListItem($user);
+                    $pao->assignPermissionAccess($pa);
+                }
+            }
+        }
+    }
+
     public function createNeededAccounts()
     {
         $createAccount = false;
@@ -307,7 +331,7 @@ class Order
         }
 
         $this->dispatchEmailNotifications();
-        $this->addCustomerToUserGroupsByOrder();
+        StoreCustomer::addCustomerToUserGroupsByOrder($this);
 
         $event = new StoreOrderEvent($this);
         Events::dispatch('on_vividstore_order', $event);

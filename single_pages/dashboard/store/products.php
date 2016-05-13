@@ -294,11 +294,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
                                 <div class="input-group-addon"><?php echo Config::get('vividstore.weightUnit')?></div>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <?php echo $form->label("pNumberItems", t("Number Of Items"));?>
-                                <?php echo $form->number('pNumberItems',$p->getProductNumberItems(), array('min'=>0, 'step'=>1))?>
-                        </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="form-group">

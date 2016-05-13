@@ -4,6 +4,10 @@ namespace Concrete\Package\VividStore\Src\Vividstore\Customer;
 use Session;
 use User;
 use UserInfo;
+use Core;
+use Config;
+use Page;
+
 
 class Customer
 {
@@ -90,7 +94,7 @@ class Customer
 
     public function createCustomer()
     {
-        $customer = new $this;
+        $customer = new self();
         if($customer->isGuest()){
             $email = $customer->getEmail();
             $user = UserInfo::getByEmail($email);
@@ -135,6 +139,11 @@ class Customer
                 User::loginByUserID($user->getUserID());
 
                 // new user password email
+                $fromEmail = Config::get('vividstore.emailalerts');
+                if (!$fromEmail) {
+                    $fromEmail = "store@" . $_SERVER['SERVER_NAME'];
+                }
+                $fromName = Config::get('vividstore.emailalertsname');
                 if ($fromName) {
                     $mh->from($fromEmail, $fromName);
                 } else {
@@ -173,7 +182,7 @@ class Customer
         $groups[] = \Group::getByName('Store Customer');
         foreach ($groups as $groupObject) {
             if (is_object($groupObject)) {
-                $customer->getUserObject()->enterGroup($groupObject);
+                $customer->getUserInfo()->getUserObject()->enterGroup($groupObject);
             }
         }
     }

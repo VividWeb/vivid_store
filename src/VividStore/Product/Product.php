@@ -143,11 +143,6 @@ class Product
     protected $pWeight;
 
     /**
-     * @Column(type="integer",nullable=true)
-     */
-    protected $pNumberItems;
-    
-    /**
      * @Column(type="boolean")
      */
     protected $pCreateUserAccount;
@@ -227,7 +222,6 @@ class Product
     public function setProductHeight($height){ $this->pHeight = $height; }
     public function setProductLength($length){ $this->pLength = $length; }
     public function setProductWeight($weight){ $this->pWeight = $weight; }
-    public function setNumberItems($number){ $this->pNumberItems = $number; }
     public function setCreatesUserAccount($bool){ $this->pCreateUserAccount = (!is_null($bool) ? $bool : false); }
     public function setAutoCheckout($bool){ $this->pAutoCheckout = (!is_null($bool) ? $bool : false) ; }
     public function setIsExclusive($bool){ $this->pExclusive = (!is_null($bool) ? $bool : false); }
@@ -293,7 +287,6 @@ class Product
         $product->setProductHeight($data['pHeight']);
         $product->setProductLength($data['pLength']);
         $product->setProductWeight($data['pWeight']);
-        $product->setNumberItems($data['pNumberItems']);
         $product->setAutoCheckout($data['pAutoCheckout']);
         $product->setIsExclusive($data['pExclusive']);
 
@@ -424,13 +417,6 @@ class Product
             return $variation->getVariationWeight();
         } else {
             return $this->pWeight;
-        }
-    }
-    public function getProductNumberItems(){
-        if ($this->hasVariations() && $variation = $this->getVariation()) {
-            return $variation->getVariationNumberItems();
-        } else {
-            return $this->pNumberItems;
         }
     }
 

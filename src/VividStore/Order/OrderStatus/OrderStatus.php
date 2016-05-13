@@ -92,14 +92,6 @@ class OrderStatus
             $textHelper = new TextHelper();
             $osName = $textHelper->unhandle($osHandle);
         }
-        $orderStatus = new self();
-        $orderStatus->setHandle($osHandle);
-        $orderStatus->setName($osName);
-        $orderStatus->setInformSite($osInformSite ? 1 : 0);
-        $orderStatus->setInformCustomer($osInformCustomer ? 1 : 0);
-        $orderStatus->setIsStartingStatus($osIsStartingStatus ? 1 : 0);
-        $orderStatus->save();
-
         if ($osIsStartingStatus) {
             $existingStartingStatus = $em->getRepository(get_class())->findOneBy(array('osIsStartingStatus' => 1));
             if(is_object($existingStartingStatus)) {
@@ -107,6 +99,13 @@ class OrderStatus
                 $existingStartingStatus->save();
             }
         }
+        $orderStatus = new self();
+        $orderStatus->setHandle($osHandle);
+        $orderStatus->setName($osName);
+        $orderStatus->setInformSite($osInformSite ? 1 : 0);
+        $orderStatus->setInformCustomer($osInformCustomer ? 1 : 0);
+        $orderStatus->setIsStartingStatus($osIsStartingStatus ? 1 : 0);
+        $orderStatus->save();
     }
 
     public static function getStartingStatus()
