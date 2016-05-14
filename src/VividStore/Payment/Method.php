@@ -8,19 +8,48 @@ use Package;
 use Controller;
 use View;
 
+/**
+ * @Entity
+ * @Table(name="VividStorePaymentMethods")
+ */
 class Method extends Controller
 {
-    private $pmID;
-    private $pmHandle;
-    private $pmName;
-    private $pkgID = 0;
-    private $pmDisplayName;
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
+     */
+    protected $pmID;
+
+    /** @Column(type="text") */
+    protected $pmHandle;
+
+    /** @Column(type="text") */
+    protected $pmName;
+
+    /** @Column(type="text", nullable=true) */
+    protected $pmDisplayName;
+
+    /** @Column(type="boolean") */
+    protected $pmEnabled;
+
+    /**
+     * @Column(type="integer")
+     */
+    protected $pkgID;
+
     private $methodController;
-      
+
+    //Property Setters/Getters
+    public function setHandle($handle){ $this->pmHandle = $handle; }
+    public function setName($name){ $this->pmName = $name; }
+    public function setDisplayName($displayName){ $this->pmDisplayName = $displayName; }
+    public function setEnabled($bool){ $this->pmEnabled = $bool; }
+    public function setPackageID($id){ $this->pkgID = $id; }
+
+    public function getID(){ return $this->pmID; }
     public function getPaymentMethodID(){ return $this->pmID; }
     public function getPaymentMethodHandle(){ return $this->pmHandle; }
     public function getPaymentMethodName(){ return $this->pmName; }
-    public function getPaymentMethodPkgID(){ return $this->pkgID; }
     public function getPaymentMethodDisplayName()
     {
         if($this->pmDisplayName == ""){
@@ -28,30 +57,9 @@ class Method extends Controller
         } else { return $this->pmDisplayName; }
     }
     public function isEnabled(){ return $this->pmEnabled; }
-    
-    public static function getByID($pmID) {
-        $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM VividStorePaymentMethods WHERE pmID=?",$pmID);
-        if(!empty($data)){
-            $method = new Method();
-            $method->setPropertiesFromArray($data);
-            $method->setMethodController();
-        }
-        return($method instanceof Method) ? $method : false;
-    }
-    
-    public static function getByHandle($pmHandle){
-        $db = Database::get();
-        $pm = $db->GetRow("SELECT pmID FROM VividStorePaymentMethods WHERE pmHandle=?",$pmHandle);
-        return self::getByID($pm['pmID']);
-    }
-    
-    
-    public function setPropertiesFromArray($arr) {
-        foreach($arr as $key => $prop) {
-            $this->{$key} = $prop;
-        }
-    }
+    public function getPaymentMethodPkgID(){ return $this->pkgID; }
+
+
     public function getMethodDirectory()
     {
         if ($this->pkgID > 0){
@@ -60,17 +68,39 @@ class Method extends Controller
         }
         return $dir;
     }
-    
     protected function setMethodController()
     {
         $th = Core::make("helper/text");
         $namespace = "Concrete\\Package\\".$th->camelcase(Package::getByID($this->pkgID)->getPackageHandle())."\\Src\\VividStore\\Payment\\Methods\\".$th->camelcase($this->pmHandle);
-        
+
         $className = $th->camelcase($this->pmHandle)."PaymentMethod";
         $namespace = $namespace.'\\'.$className;
         $this->methodController = new $namespace();
     }
     public function getMethodController(){ return $this->methodController; }
+
+
+    public static function getByID($pmID)
+    {
+        $db = \Database::connection();
+        $em = $db->getEntityManager();
+        $method = $em->find(get_class(), $pmID);
+        if ($method) {
+            $method->setMethodController();
+        }
+        return ($method instanceof self) ? $method : false;
+    }
+
+    public static function getByHandle($pmHandle)
+    {
+        $db = \Database::connection();
+        $em = $db->getEntityManager();
+        $method = $em->getRepository(get_class())->findOneBy(array('pmHandle' => $pmHandle));
+        if (is_object($method)) {
+            $method->setMethodController();
+        }
+        return ($method instanceof self) ? $method : false;
+    }
 
     /*
      * @param string $pmHandle
@@ -79,57 +109,45 @@ class Method extends Controller
      * @param string $pmDisplayName
      * @param bool $enabled
      */
-    public static function add($pmHandle, $pmName, $pkg=null, $pmDisplayName=null, $enabled=false)
+    public static function add($pmHandle, $pmName, $pkg = null, $pmButtonLabel ='', $enabled = false)
     {
-        $db = Database::get();
-        $pkgID = 0;
-        if($pkg instanceof Package){
-            $pkgID = $pkg->getPackageID();
-        }
-        if($pmDisplayName==null){
-            $pmDisplayName = $pmName;
-        }
-        //make sure this gateway isn't already installed
         $pm = self::getByHandle($pmHandle);
-        if(!($pm instanceof Method)){
-            $vals = array($pmHandle,$pmName,$pmDisplayName,$pkgID);
-            $db->Execute("INSERT INTO VividStorePaymentMethods (pmHandle,pmName,pmDisplayName,pkgID) VALUES (?,?,?,?)", $vals);
-            $pm = self::getByHandle($pmHandle);
-            if($enabled){
-                $pm->setEnabled(1);
-            }
+        if (!($pm instanceof self)) {
+            $paymentMethod = new self();
+            $paymentMethod->setHandle($pmHandle);
+            $paymentMethod->setName($pmName);
+            $paymentMethod->setPackageID($pkg->getPackageID());
+            $paymentMethod->setDisplayName($pmName);
+            $paymentMethod->setEnabled($enabled);
+            $paymentMethod->save();
         }
-        return $pm;
     }
-    public function setEnabled($status)
+
+    public function save()
     {
-        $db = Database::get();
-        $db->Execute("UPDATE VividStorePaymentMethods SET pmEnabled=? WHERE pmID=?",array($status,$this->pmID));
+        $em = Database::get()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
     }
-    public function setDisplayName($name)
-    {
-        $db = Database::get();
-        $db->Execute("UPDATE VividStorePaymentMethods SET pmDisplayName=? WHERE pmID=?",array($name,$this->pmID));
-    }
-      
+
     public function delete()
     {
-        $db = Database::get();
-        $db->Execute("DELETE FROM VividStorePaymentMethods WHERE pmID=?",$this->pmID);
+        $em = \Database::connection()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
     }
 
     public static function getMethods($enabled=false)
     {
-        $db = Database::get();
-        if($enabled==true){
-            $results = $db->GetAll("SELECT * FROM VividStorePaymentMethods WHERE pmEnabled=1");
-        }else{
-            $results = $db->GetAll("SELECT * FROM VividStorePaymentMethods");
+        $db = \Database::connection();
+        $em = $db->getEntityManager();
+        if ($enabled) {
+            $methods = $em->getRepository(get_class())->findBy(array('pmEnabled'=>1));
+        } else {
+            $methods = $em->createQuery('select sm from '.get_class().' sm')->getResult();
         }
-        $methods = array();
-        foreach($results as $result){
-            $method = self::getByID($result['pmID']);
-            $methods[] = $method;
+        foreach($methods as $method) {
+            $method->setMethodController();
         }
         return $methods;
     }

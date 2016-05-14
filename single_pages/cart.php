@@ -111,35 +111,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOpt
     ?>
     </ul>
 
-    <?php if ($discountsWithCodesExist) { ?>
-    <h3><?= t('Enter Discount Code');?></h3>
-        <form method="post" action="<?= View::url('/cart/');?>">
-        <input type="text" name="code" />
-            <input type="hidden" name="action" value="code" />
-            <button type="submit" class="btn-cart-discount-apply"><?= t('Apply');?></button>
-        </form>
-    <?php } ?>
-
-    <?php if ($codesuccess) { ?>
-        <p><?= t('Discount has been applied');?></p>
-    <?php } ?>
-
-    <?php if ($codeerror) { ?>
-        <p><?= t('Invalid code');?></p>
-    <?php } ?>
-
-    <?php if(!empty($discounts)) { ?>
-    <h3><?= t('Discounts');?></h3>
-    <div class="cart-page-discounts">
-        <ul>
-        <?php foreach($discounts as $discount) { ?>
-            <li><?php echo h($discount->getDisplay()); ?></li>
-        <?php } ?>
-        </ul>
-    </div>
-
-    <?php }?>
-
     <?php if ($cart  && !empty($cart)) { ?>
     <div class="cart-page-cart-total">        
         <span class="cart-grand-total-label"><?=t("Sub Total")?>:</span>

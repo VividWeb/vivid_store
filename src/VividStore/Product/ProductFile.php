@@ -53,7 +53,7 @@ class ProductFile
         $results = self::getFilesForProduct($product);
         $fileObjects = array();
         foreach($results as $result){
-            $fileObjects[] = File::getByID($result->getFileID());
+            $fileObjects[] = \File::getByID($result->getFileID());
         }
         return $fileObjects;
     }
@@ -62,9 +62,9 @@ class ProductFile
     {
         self::removeFilesForProduct($product);
         //add new ones.
-        if(!empty($files['ddfID'])){
-            foreach($files['ddfID'] as $fileID){
-                self::add($pID,$fileID);
+        foreach($files['dffID'] as $fileID){
+            if(!empty($fileID) && $fileID > 0) {
+                self::add($product->getProductID(), $fileID);
                 $fileObj = \File::getByID($fileID);
                 $fs = \FileSet::getByName("Digital Downloads");
                 $fs->addFileToSet($fileObj);

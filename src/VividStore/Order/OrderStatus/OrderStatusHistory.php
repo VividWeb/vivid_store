@@ -11,79 +11,79 @@ use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusH;
 
-class OrderStatusHistory extends Object
+/**
+ * @Entity
+ * @Table(name="VividStoreOrderStatusHistories")
+ */
+class OrderStatusHistory
 {
-    public static $table = 'VividStoreOrderStatusHistories';
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
+     */
+    protected $oshID;
 
-    public function getOrderID() {
-        return $this->oID;
+    /**
+     * @ManyToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Order\Order",  cascade={"persist"})
+     * @JoinColumn(name="oID", referencedColumnName="oID", onDelete="CASCADE")
+     */
+    protected $order;
+
+    /** @Column(type="text") */
+    protected $oshStatus;
+
+    /** @Column(type="datetime") */
+    protected $oshDate;
+
+    /** @Column(type="integer", nullable=true) */
+    protected $uID;
+
+    public function setOrder($order){ $this->order = $order; }
+    public function setOrderStatusHandle($oshStatus){ $this->oshStatus = $oshStatus; }
+    public function setDate($date){ $this->oshDate = $date; }
+    public function setUserID($uID){ $this->uID = $uID; }
+
+    public function getID(){ return $this->oshID; }
+    public function getOrder(){ return $this->order; }
+    public function getOrderStatusHandle(){ return $this->oshStatus; }
+    public function getOrderStatus(){ return StoreOrderStatus::getByHandle($this->getOrderStatusHandle()); }
+    public function getOrderStatusName()
+    {
+        $os = $this->getOrderStatus();
+
+        if ($os) {
+            return $os->getName();
+        } else {
+            return null;
+        }
     }
-
-    public function getOrder() {
-        return StoreOrder::getByID($this->getOrderID());
-    }
-
-    public function getOrderStatusHandle() {
-        return $this->oshStatus;
-    }
-
-    public function getOrderStatus() {
-        return StoreOrderStatus::getByHandle($this->getOrderStatusHandle());
-    }
-
-    public function getOrderStatusName() {
-        return $this->getOrderStatus()->getName();
-    }
-
-    public function getDate($format = 'm/d/Y H:i:s') {
-        return date($format, strtotime($this->oshDate));
-    }
-
-    public function getUserID() {
-        return $this->uID;
-    }
-
-    public function getUser() {
-        return User::getByUserID($this->getUserID());
-    }
-
-    public function getUserName() {
+    public function getDateTimeObject(){ return $this->oshDate; }
+    public function getDate($format = 'm/d/Y H:i:s'){ return $this->getDateTimeObject()->format($format); }
+    public function getUserID(){ return $this->uID; }
+    public function getUser(){ return User::getByUserID($this->getUserID()); }
+    public function getUserName()
+    {
         $u = $this->getUser();
         if($u){
             return $u->getUserName();
         }
     }
 
-    private static function getTableName()
-    {
-        return self::$table;
-    }
-
-    private static function getByID($oshID)
+    public static function getByID($id)
     {
         $db = Database::get();
-        $data = $db->GetRow("SELECT * FROM " . self::getTableName() . " WHERE oshID=?", $oshID);
-        $history = null;
-        if (!empty($data)) {
-            $history = new OrderStatusHistory();
-            $history->setPropertiesFromArray($data);
-        }
-        return ($history instanceof OrderStatusHistory) ? $history : false;
+        $em = $db->getEntityManager();
+        return $em->find(get_class(), $id);
     }
 
     public static function getForOrder(StoreOrder $order)
     {
+        $db = Database::get();
+        $em = $db->getEntityManager();
         if (!$order->getOrderID()) {
             return false;
         }
-        $sql = "SELECT * FROM " . self::$table . " WHERE oID=? ORDER BY oshDate DESC";
-        $rows = Database::get()->getAll($sql, $order->getOrderID());
-        $history = array();
-        if (count($rows) > 0) {
-            foreach ($rows as $row) {
-                $history[] = self::getByID($row['oshID']);
-            }
-        }
+        $history = $em->getRepository(get_class())->findBy(array('order'=>$order->getOrderID()),array('oshDate'=>'DESC'));
         return $history;
     }
 
@@ -92,27 +92,36 @@ class OrderStatusHistory extends Object
         $history = self::getForOrder($order);
 
         if (empty($history) || $history[0]->getOrderStatusHandle() !=$statusHandle) {
-            $updatedOrder = clone $order;
-            $updatedOrder->updateStatus(self::recordStatusChange($order, $statusHandle));
-            $event = new StoreOrderEvent($updatedOrder, $order);
+            self::recordStatusChange($order, $statusHandle);
+            $event = new StoreOrderEvent($order, $order);
             Events::dispatch('on_vividstore_order_status_update', $event);
         }
     }
 
     private static function recordStatusChange(StoreOrder $order, $statusHandle)
     {
-        $db = Database::get();
-        $newOrderStatus = StoreOrderStatus::getByHandle($statusHandle);
         $user = new user();
+        $now = new \DateTime;
+        $newHistoryItem = new self();
+        $newHistoryItem->setOrder($order);
+        $newHistoryItem->setOrderStatusHandle($statusHandle);
+        $newHistoryItem->setDate($now);
+        $newHistoryItem->setUserID($user->uID);
+        $newHistoryItem->save();
+        return $newHistoryItem->getOrderStatusHandle();
+    }
 
-        $statusHistorySql = "INSERT INTO " . self::$table . " SET oID=?, oshStatus=?, uID=?";
-        $statusHistoryValues = array(
-            $order->getOrderID(),
-            $newOrderStatus->getHandle(),
-            $user->uID
-        );
-        $db->Execute($statusHistorySql, $statusHistoryValues);
-        return $newOrderStatus->getHandle();
+    public function save()
+    {
+        $em = \Database::connection()->getEntityManager();
+        $em->persist($this);
+        $em->flush();
+    }
+    public function delete()
+    {
+        $em = \Database::connection()->getEntityManager();
+        $em->remove($this);
+        $em->flush();
     }
 
 }

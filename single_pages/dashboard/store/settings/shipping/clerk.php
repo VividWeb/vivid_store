@@ -31,10 +31,18 @@ if(in_array($controller->getTask(),$listViews)){?>
                 <?php foreach($packages as $package){?>
                     <tr>
                         <td><?=$package->getReference()?></td>
-                        <td><?=$package->getOuterWidth()?> x <?=$package->getOuterLength()?> x <?=$package->getOuterDepth()?>mm</td>
-                        <td><?=$package->getInnerWidth()?> x <?=$package->getInnerLength()?> x <?=$package->getInnerDepth()?>mm</td>
-                        <td><?=$package->getEmptyWeight()?>g</td>
-                        <td><?=$package->getMaxWeight()?>g</td>
+                        <td>
+                            <?=$calculator->convertFromMM($package->getOuterWidth())?> x
+                            <?=$calculator->convertFromMM($package->getOuterLength())?> x
+                            <?=$calculator->convertFromMM($package->getOuterDepth())?><?=$sizeUnit?>
+                        </td>
+                        <td>
+                            <?=$calculator->convertFromMM($package->getInnerWidth())?> x
+                            <?=$calculator->convertFromMM($package->getInnerLength())?> x
+                            <?=$calculator->convertFromMM($package->getInnerDepth())?><?=$sizeUnit?>
+                        </td>
+                        <td><?=$calculator->convertFromGrams($package->getEmptyWeight())?><?=$weightUnit?></td>
+                        <td><?=$calculator->convertFromGrams($package->getMaxWeight())?><?=$weightUnit?></td>
                         <td>
                             <a href="<?=URL::to('dashboard/store/settings/shipping/clerk/edit/',$package->getID())?>" class="btn btn-default"><?=t("Edit")?></a>
                             <a href="<?=URL::to('dashboard/store/settings/shipping/clerk/delete/',$package->getID())?>" class="btn btn-danger"><?=t("Delete")?></a>
@@ -62,7 +70,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                     <?=$form->label('outerLength',t("Outer Length of Box (longest side)"))?>
                     <div class="input-group">
                         <?=$form->text('outerLength',$outerLength)?>
-                        <span class="input-group-addon">mm</span>
+                        <span class="input-group-addon"><?=$sizeUnit?></span>
                     </div>
                 </div>
             </div>
@@ -71,7 +79,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                 <?=$form->label('outerWidth',t("Outer Width of Box"))?>
                     <div class="input-group">
                         <?=$form->text('outerWidth',$outerWidth)?>
-                        <span class="input-group-addon">mm</span>
+                        <span class="input-group-addon"><?=$sizeUnit?></span>
                     </div>
                 </div>
             </div>
@@ -80,7 +88,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                     <?=$form->label('outerDepth',t("Outer Depth of Box"))?>
                     <div class="input-group">
                         <?=$form->text('outerDepth',$outerDepth)?>
-                        <span class="input-group-addon">mm</span>
+                        <span class="input-group-addon"><?=$sizeUnit?></span>
                     </div>
                 </div>
             </div>
@@ -91,7 +99,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                     <?=$form->label('innerLength',t("Inner Length of Box (longest side)"))?>
                     <div class="input-group">
                         <?=$form->text('innerLength',$innerLength)?>
-                        <span class="input-group-addon">mm</span>
+                        <span class="input-group-addon"><?=$sizeUnit?></span>
                     </div>
                 </div>
             </div>
@@ -100,7 +108,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                     <?=$form->label('innerWidth',t("Inner Width of Box"))?>
                     <div class="input-group">
                         <?=$form->text('innerWidth',$innerWidth)?>
-                        <span class="input-group-addon">mm</span>
+                        <span class="input-group-addon"><?=$sizeUnit?></span>
                     </div>
                 </div>
             </div>
@@ -109,7 +117,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                     <?=$form->label('innerDepth',t("Inner Depth of Box"))?>
                     <div class="input-group">
                         <?=$form->text('innerDepth',$innerDepth)?>
-                        <span class="input-group-addon">mm</span>
+                        <span class="input-group-addon"><?=$sizeUnit?></span>
                     </div>
                 </div>
             </div>
@@ -120,7 +128,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                     <?=$form->label('emptyWeight',t("Empty Box Weight"))?>
                     <div class="input-group">
                         <?=$form->text('emptyWeight',$emptyWeight)?>
-                        <span class="input-group-addon">g</span>
+                        <span class="input-group-addon"><?=$weightUnit?></span>
                     </div>
                 </div>
             </div>
@@ -129,7 +137,7 @@ if(in_array($controller->getTask(),$listViews)){?>
                     <?=$form->label('maxWeight',t("Max Weight"))?>
                     <div class="input-group">
                         <?=$form->text('maxWeight',$maxWeight)?>
-                        <span class="input-group-addon">g</span>
+                        <span class="input-group-addon"><?=$weightUnit?></span>
                     </div>
                 </div>
             </div>

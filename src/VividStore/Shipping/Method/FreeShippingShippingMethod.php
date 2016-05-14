@@ -160,7 +160,7 @@ class FreeShippingShippingMethod extends StoreShippingMethodTypeMethod
     {
         $totalWeight = StoreCart::getCartWeight();
         $maxWeight = $this->getMaximumWeight();
-        if($max!=0){
+        if($maxWeight!=0){
             if($totalWeight >= $this->getMinimumWeight() && $totalWeight <= $this->getMaximumWeight()){
                 return true;
             } else {

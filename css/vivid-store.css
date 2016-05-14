@@ -124,7 +124,7 @@
         .checkout-form-group-complete .checkout-form-group-summary  { display: block; }
         #checkout-form-group-signin .checkout-form-group-body { display: block; }
         .checkout-form-group-summary .vivid-store-col-2 { padding-top: 0; padding-bottom: 0;}
-        .checkout-form-group-buttons { text-align: right; padding: 0 15px;}
+        .checkout-form-group-buttons { clear: both; text-align: right; padding: 0 15px;}
 
 .active-form-group .checkout-form-group-body { display: block; }
     

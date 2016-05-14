@@ -12,6 +12,7 @@
                     <div class="vivid-store-side-panel">
                         <ul>
                             <li><a href="#settings-currency" data-pane-toggle class="active"><?php echo t('Currency')?></a></li>
+                            <li><a href="#settings-products" data-pane-toggle><?php echo t('Products')?></a></li>
                             <li><a href="#settings-tax" data-pane-toggle><?php echo t('Tax')?></a></li>
                             <li><a href="#settings-shipping" data-pane-toggle><?php echo t('Shipping')?></a></li>
                             <li><a href="#settings-payments" data-pane-toggle><?php echo t('Payments')?></a></li>
@@ -148,9 +149,9 @@
                                     <tr>
                                         <td class="sorthandle"><input type="hidden" name="osID[]" value="<?php echo $orderStatus->getID(); ?>"><i class="fa fa-arrows-v"></i></td>
                                         <td><input type="text" name="osName[]" value="<?php echo $orderStatus->getName(); ?>" placeholder="<?php echo $orderStatus->getReadableHandle(); ?>" class="form-control ccm-input-text"></td>
-                                        <td><input type="radio" name="osIsStartingStatus" value="<?php echo $orderStatus->getID(); ?>" <?php echo $orderStatus->isStartingStatus() ? 'checked':''; ?>></td>
-                                        <td style="display:none;"><input type="checkbox" name="osInformSite[]" value="1" <?php echo $orderStatus->getInformSite() ? 'checked':''; ?> class="form-control"></td>
-                                        <td style="display:none;"><input type="checkbox" name="osInformCustomer[]" value="1" <?php echo $orderStatus->getInformCustomer() ? 'checked':''; ?> class="form-control"></td>
+                                        <td><input type="radio" name="osIsStartingStatus" value="<?php echo $orderStatus->getID(); ?>"  <?php echo $orderStatus->isStartingStatus() ? 'checked':''; ?>></td>
+                                        <td style="display:none;"><input type="checkbox" name="osInformSite[]" value="1" <?php echo $orderStatus->informsSite() ? 'checked':''; ?> class="form-control"></td>
+                                        <td style="display:none;"><input type="checkbox" name="osInformCustomer[]" value="1" <?php echo $orderStatus->informsCustomer() ? 'checked':''; ?> class="form-control"></td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>

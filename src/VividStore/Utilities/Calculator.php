@@ -53,10 +53,7 @@ class Calculator
     {
         return StoreTax::getTaxes();
     }
-    public static function getDiscountTotals()
-    {
-        //should return 3 totals: subtotal, shipping, grand total
-    }
+
     public static function getGrandTotal()
     {
         $subTotal = self::getSubTotal();
@@ -69,20 +66,7 @@ class Calculator
             }
         }        $shippingTotal = self::getShippingTotal();
         $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
-        
-        $discounts = StoreCart::getDiscounts(); //TODO: Get total somewhere else.
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'total') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $grandTotal -= $discount->drValue;
-                }
 
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $grandTotal -= ($discount->drPercentage / 100 * $grandTotal);
-                }
-            }
-        }
-        
         return $grandTotal;
     }
 
@@ -105,36 +89,76 @@ class Calculator
         }
 
         $shippingTotal = self::getShippingTotal();
-        $discountedSubtotal = $subTotal;
-        $discounts = StoreCart::getDiscounts();
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'subtotal') {
-                
-                if ($discount->drDeductType  == 'value' ) {
-                    $discountedSubtotal -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $discountedSubtotal -= ($discount->drPercentage / 100 * $discountedSubtotal);
-                }
-            }
-        }
         
-        $total = ($discountedSubtotal + $addedTaxTotal + $shippingTotal);
+        $total = ($subTotal + $addedTaxTotal + $shippingTotal);
         
-        
-        foreach($discounts as $discount) {
-            if ($discount->drDeductFrom == 'total') {
-                if ($discount->drDeductType  == 'value' ) {
-                    $total -= $discount->drValue;
-                }
-
-                if ($discount->drDeductType  == 'percentage' ) {
-                    $total -= ($discount->drPercentage / 100 * $total);
-                }
-            }
-        }
-
         return array('subTotal'=>$subTotal,'taxes'=>$taxes, 'taxTotal'=>$addedTaxTotal + $includedTaxTotal, 'shippingTotal'=>$shippingTotal, 'total'=>$total);
+    }
+
+    public static function convertToMM($size)
+    {
+        $storeSizeUnit = Config::get('vividstore.sizeUnit');
+        switch($storeSizeUnit){
+            case "in":
+                $mm = $size / 0.039370;
+                break;
+            case "cm":
+                $mm = $size * 10;
+                break;
+            case "mm":
+                $mm = $size;
+                break;
+        }
+        return $mm;
+    }
+    public static function convertFromMM($mmSize)
+    {
+        $storeSizeUnit = Config::get('vividstore.sizeUnit');
+        switch($storeSizeUnit){
+            case "in":
+                $size = $mmSize * 0.039370;
+                break;
+            case "cm":
+                $size = $mmSize / 10;
+                break;
+            case "mm":
+                $size = $mmSize;
+                break;
+        }
+        return $size;
+    }
+
+    public static function convertToGrams($weight)
+    {
+        $storeWeightUnit = Config::get('vividstore.weightUnit');
+        switch($storeWeightUnit){
+            case "lb":
+                $grams = $weight / 0.0022046;
+                break;
+            case "kg":
+                $grams = $weight * 1000;
+                break;
+            case "g":
+                $grams = $weight;
+                break;
+        }
+        return $grams;
+    }
+
+    public static function convertFromGrams($grams)
+    {
+        $storeWeightUnit = Config::get('vividstore.weightUnit');
+        switch($storeWeightUnit){
+            case "lb":
+                $weight = $grams * 0.0022046;
+                break;
+            case "kg":
+                $weight = $grams / 1000;
+                break;
+            case "g":
+                $weight = $grams;
+                break;
+        }
+        return $weight;
     }
 }

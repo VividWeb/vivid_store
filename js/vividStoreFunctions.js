@@ -1,64 +1,94 @@
-$(function(){
-    
-    var url = window.location.pathname.toString();
-    $('#group-filters li a').each(function(){
-        var href = $(this).attr('href');
-        if(url == href) {
-           $(this).parent().addClass("active");
-        }
-    });
-            
-    $("a[data-pane-toggle]").click(function(e){
-        e.preventDefault();
-        var paneTarget = $(this).attr('href');
-        paneTarget = paneTarget.replace('#','');     
-        $(".store-pane, a[data-pane-toggle]").removeClass('active');
-        $('#'+paneTarget).addClass("active"); 
-        $(this).addClass("active");
-    });
-    $(".btn-delete-group").click(function(){
-        var groupID = $(this).parent().attr("data-group-id");
-        var confirmDelete = confirm('Are You Sure?');
+var StoreDashboard = {};
+
+StoreDashboard.Product = {
+    init: function(){
+        this.highlightProductGroupTab();
+        this.setupProductMenu();
+    },
+    highlightProductGroupTab: function(){
+        var url = window.location.toString();
+        $('#group-filters li a').each(function(){
+            var href = $(this).attr('href');
+            if(url == href) {
+                $(this).parent().addClass("active");
+            }
+        });
+    },
+    setupProductMenu: function(){
+        $("a[data-pane-toggle]").click(function(e){
+            e.preventDefault();
+            var paneTarget = $(this).attr('href');
+            paneTarget = paneTarget.replace('#','');
+            $(".store-pane, a[data-pane-toggle]").removeClass('active');
+            $('#'+paneTarget).addClass("active");
+            $(this).addClass("active");
+        });
+    }
+};
+
+StoreDashboard.ProductGroup = {
+    init: function(){
+        this.setupButtons();
+    },
+    setupButtons: function(){
+        $(".btn-delete-group").click(function(){
+            StoreDashboard.ProductGroup.delete($(this).parent().attr('data-group-id'));
+        });
+        $(".btn-save-group-name").click(function(){
+            var groupID = $(this).parent().attr("data-group-id");
+            var groupName = $(this).parent().find(".edit-group-name").val();
+            StoreDashboard.ProductGroup.save(groupID,groupName);
+        });
+        $(".btn-edit-group-name").click(function(){
+            var groupID = $(this).parent().attr("data-group-id");
+            StoreDashboard.ProductGroup.edit(groupID);
+        });
+    },
+    delete: function(groupID){
+        var confirmDelete = confirm(vividStore.Strings.AreYouSure);
         if(confirmDelete == true) {
             var deleteurl = $(".group-list").attr("data-delete-url");
-            $.ajax({ 
+            $.ajax({
                 url: deleteurl+"/"+groupID,
                 success: function() {
                     $("li[data-group-id='"+groupID+"']").remove();
                 },
                 error: function(){
-                    alert("Something went wrong");
+                    alert(vividStore.Strings.Error);
                 }
-            });             
+            });
         }
-    });
-    $(".btn-save-group-name").click(function(){
-        var groupID = $(this).parent().attr("data-group-id");
+    },
+    save: function(groupID,groupName){
         var saveurl = $(".group-list").attr("data-save-url");
-        var gName = $(this).parent().find(".edit-group-name").val();
-        $.ajax({ 
+        $.ajax({
             url: saveurl+"/"+groupID,
-            data: {gName: gName},
+            data: {gName: groupName},
             type: 'post',
             success: function() {
-                $("li[data-group-id='"+groupID+"']").find(".group-name").text(gName);
+                $("li[data-group-id='"+groupID+"']").find(".group-name").text(groupName);
                 $("li[data-group-id='"+groupID+"']").find(".btn-edit-group-name,.group-name").show();
                 $("li[data-group-id='"+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");
             },
             error: function(){
-                alert("something went wrong");
+                alert(vividStore.Strings.Error);
             }
-        });    
-    });
-    $(".btn-edit-group-name").click(function(){
-        $(this).parent().find(".btn-edit-group-name,.group-name").hide();
-        $(this).parent().find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: inline-block !important"); 
-    });
-    $(".btn-cancel-edit").click(function(){
-       $(this).parent().find(".btn-edit-group-name,.group-name").show();
-       $(this).parent().find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");  
-    });
-    
+        });
+    },
+    edit: function(groupID){
+        $("li['data-group-id="+groupID+"']").find(".btn-edit-group-name, .group-name").hide();
+        $("li['data-group-id="+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: inline-block !important");
+    },
+    cancel: function(groupID){
+        $("li['data-group-id="+groupID+"']").find(".btn-edit-group-name, .group-name").show();
+        $("li['data-group-id="+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");
+    }
+}
+
+$(function(){
+    StoreDashboard.ProductGroup.init();
+    StoreDashboard.Product.init();
+
     $("#btn-delete-order").click(function(e){
         e.preventDefault();
         var url = $(this).attr("href");
@@ -77,8 +107,92 @@ $(function(){
         }
     });
 
+    $(".add-to-panel-list .panel-heading").click(function(){
+       $(this).next().toggleClass('open');
+    });
+    $('.add-to-panel-list li a').click(function(e){
+        e.preventDefault();
+        var type = $(this).attr('data-promotion');
+        var handle = $(this).attr('data-handle');
+        if(type=='reward-type'){
+            var title = vividStore.Strings.AddRewardType;
+        } else if(type=='rule-type'){
+            var title = vividStore.Strings.AddRuleType;
+        }
+        var formTemplate = _.template($('#'+handle+'-'+type+'-form').html());
+
+        $.fn.dialog.open({
+            title: title,
+            width: 500,
+            height: 400,
+            modal: true,
+            element: $('<div>' + formTemplate() + '</div>'),
+            open: function(){
+                $('.ui-dialog').addClass('vivid-store-dialog ccm-ui');
+            },
+            buttons: [
+                {
+                    text: vividStore.Strings.Add,
+                    click: function () {
+                        var completeFunction = $('#'+handle+'-'+type+'-form').attr('data-complete-function');
+                        window[completeFunction]();
+                        $(this).dialog('close');
+                        $(".add-to-panel-list .panel-body").removeClass('open');
+                    }
+                },
+                {
+                    text: vividStore.Strings.Cancel,
+                    click: function () {
+                        $(this).dialog('close');
+                    }
+                }
+            ]
+        });
+    });
+
+    $(window).on('on_promotion_reward_save', function(event,data){
+        var listItemTemplate = _.template($('#promotion-list-item').html());
+        var params = {
+            handle: data.handle,
+            content: data.template
+        }
+        type = data.type.replace('-type','');
+        $("#promotion-"+type+"-list").append(listItemTemplate(params));
+    });
+
+
+
 });
 
+function searchForProduct(id){
+    var target = '#product-search-form-'+id;
+    var inputField = $(target + " .product-search-input");
+    var searchString = inputField.val();
+    if(searchString.length > 0){
+        $(target + " .product-search-results").addClass("active");
+        $.ajax({
+            type: "post",
+            url: $(target).attr('data-ajax-url'),
+            data: {query: searchString},
+            success: function(html){
+                $(target + " .results-list").html(html);
+                $(target + " .product-search-results ul li").click(function(){
+                    var pID = $(this).attr('data-product-id');
+                    var productName = $(this).text();
+                    $(target + " .product-id-field").val(pID);
+                    $(target + " .product-search-results").removeClass("active");
+                    $(target + " .product-search-input").val('');
+                    $(target + " .selected-product").html(productName);
+                });
+                $("*:not(.product-search-results ul li)").click(function(){
+                    $(target + " .product-search-results").removeClass("active");
+                });
+            }
+        });
+    } else {
+        $(target + " .product-search-results").removeClass("active");
+    }
+}
 
 function updateTaxStates(){
     var countryCode = $("#taxCountry").val();

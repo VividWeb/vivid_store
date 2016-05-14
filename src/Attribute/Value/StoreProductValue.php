@@ -3,8 +3,27 @@ namespace Concrete\Package\VividStore\Src\Attribute\Value;
 
 use Database;
 use \Concrete\Core\Attribute\Value\Value as Value;
-defined('C5_EXECUTE') or die(_("Access Denied."));
+
+/**
+ * @Entity
+ * @Table(name="VividStoreProductAttributeValues")
+ */
 class StoreProductValue extends Value {
+
+    /**
+     * @Id @Column(type="integer")
+     */
+    protected $oID;
+
+    /**
+     * @Id @Column(type="integer")
+     */
+    protected $akID;
+
+    /**
+     * @Id @Column(type="integer")
+     */
+    protected $avID;
 
     public function setProduct($product) {
         $this->product = $product;

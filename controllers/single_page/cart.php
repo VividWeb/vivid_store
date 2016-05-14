@@ -6,7 +6,6 @@ use View;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
@@ -18,10 +17,6 @@ class Cart extends PageController
         $codesuccess = false;
 
         if ($this->isPost()) {
-            if ($this->post('action') == 'code' && $this->post('code')) {
-                $codesuccess = StoreCart::storeCode($this->post('code'));
-                $codeerror = !$codesuccess;
-            }
 
             if ($this->post('action') == 'update') {
                 $data = $this->post();
@@ -44,11 +39,7 @@ class Cart extends PageController
 
         $this->set('actiondata', $returndata);
 
-        $this->set('codeerror', $codeerror);
-        $this->set('codesuccess', $codesuccess);
-
         $this->set('cart',StoreCart::getCart());
-        $this->set('discounts',StoreCart::getDiscounts());
         $this->set('total',StoreCalculator::getSubTotal());
         
         $this->requireAsset('javascript', 'jquery');
@@ -57,8 +48,6 @@ class Cart extends PageController
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
 
-        $discountsWithCodesExist = StoreDiscountRule::discountsWithCodesExist();
-        $this->set("discountsWithCodesExist",$discountsWithCodesExist);
     }
     public function add()
     {

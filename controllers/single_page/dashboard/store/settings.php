@@ -37,6 +37,8 @@ class Settings extends DashboardPageController
         $pkgconfig = $pkg->getConfig();
         $this->set('pkgconfig',$pkgconfig);
         $this->addHeaderItem('<style type="text/css">.redactor_editor{padding:20px}</style>');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
         $this->requireAsset('css', 'vividStoreDashboard');
         $this->requireAsset('javascript', 'vividStoreFunctions');
     }
@@ -111,22 +113,27 @@ class Settings extends DashboardPageController
 
     private function saveOrderStatuses($data) {
         if (isset($data['osID'])) {
+            if ($data['osIsStartingStatus']) {
+                $existingStartingStatus = StoreOrderStatus::getStartingStatus();
+                if(is_object($existingStartingStatus)) {
+                    $existingStartingStatus->setIsStartingStatus(false);
+                    $existingStartingStatus->save();
+                }
+            }
             foreach ($data['osID'] as $key => $id) {
                 $orderStatus = StoreOrderStatus::getByID($id);
-                $orderStatusSettings = array(
-                    'osName' => ((isset($data['osName'][$key]) && $data['osName'][$key]!='') ?
-                        $data['osName'][$key] : $orderStatus->getReadableHandle()),
-                    'osInformSite' => isset($data['osInformSite'][$key]) ? 1 : 0,
-                    'osInformCustomer' => isset($data['osInformCustomer'][$key]) ? 1 : 0,
-                    'osSortOrder' => $key
-                );
-                $orderStatus->update($orderStatusSettings);
-            }
-            if (isset($data['osIsStartingStatus'])) {
-                StoreOrderStatus::setNewStartingStatus(StoreOrderStatus::getByID($data['osIsStartingStatus'])->getHandle());
-            } else {
-                $orderStatuses = StoreOrderStatus::getAll();
-                StoreOrderStatus::setNewStartingStatus($orderStatuses[0]->getHandle());
+                if(isset($data['osName'][$key]) && $data['osName'][$key]!=''){
+                    $orderStatus->setName($data['osName'][$key]);
+                } else {
+                    $orderStatus->setName($orderStatus->getReadableHandle());
+                }
+                $orderStatus->setInformSite(isset($data['osInformSite'][$key]) ? 1 : 0);
+                $orderStatus->setInformCustomer(isset($data['osInformCustomer'][$key]) ? 1 : 0);
+                $orderStatus->setSortOrder($key);
+                if($data['osIsStartingStatus'] == $id) {
+                    $orderStatus->setIsStartingStatus(true);
+                }
+                $orderStatus->save();
             }
         }
     }

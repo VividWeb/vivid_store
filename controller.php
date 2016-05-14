@@ -15,11 +15,8 @@ class Controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '3.0.1.4';
-    protected $pkgAutoloaderRegistries = array(
-        'src/AuthorizeNet' => '\AuthorizeNet',
-        'src/Omnipay' => '\Omnipay'
-    );
+    protected $pkgVersion = '3.0.1.99';
+
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");
@@ -40,11 +37,14 @@ class Controller extends Package
             Installer::refreshDatabase($pkg);
         }
         Installer::installSinglePages($pkg);
+        Installer::removeLegacySinglePages($pkg);
         Installer::installProductParentPage($pkg);
         Installer::installStoreProductPageType($pkg);
         Installer::updateConfigStorage($pkg);
         Installer::setDefaultConfigValues($pkg);
         Installer::installPaymentMethods($pkg);
+        Installer::installPromotionRewardTypes($pkg);
+        Installer::installPromotionRuleTypes($pkg);
         Installer::installShippingMethods($pkg);
         Installer::installBlocks($pkg);
         Installer::setPageTypeDefaults($pkg);
@@ -96,10 +96,13 @@ class Controller extends Package
         Route::register('/productfinder','\Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder::getProductMatch');
         Route::register('/checkout/paypalresponse','\Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard\PaypalStandardPaymentMethod::validateCompletion');
         Route::register('/dashboard/store/orders/details/slip','\Concrete\Package\VividStore\Src\VividStore\Utilities\OrderSlip::renderOrderPrintSlip');
+        Route::register('/dashboard/store/promotions/utility/save_reward','\Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionUtility::saveReward');
     }
     public function on_start()
     {
         $this->registerRoutes();
+
+        require_once __DIR__ . '/vendor/autoload.php';
 
         $al = AssetList::getInstance();
         $al->register( 'css', 'vivid-store', 'css/vivid-store.css', array('version' => '1', 'position' => Asset::ASSET_POSITION_HEADER, 'minify' => false, 'combine' => false), $this );
@@ -144,14 +147,28 @@ class Controller extends Package
 
     public static function returnHeaderJS()
     {
-        return "
-        <script type=\"text/javascript\">
-            var PRODUCTMODAL = '" . View::url('/productmodal') . "';
-            var CARTURL = '" . View::url('/cart') . "';
-            var CHECKOUTURL = '" . View::url('/checkout') . "';
-            var QTYMESSAGE = '" . t('Quantity must be greater than zero') . "';
-        </script>
-        ";
+        $vividStoreJS = array(
+            'URLs' => array(
+                'ProductModal' => View::url('/productmodal'),
+                'Cart' => View::url('/cart'),
+                'Checkout' => View::url('/checkout')
+            ),
+            'Strings' => array(
+                'AreYouSure' => t('Are you sure?'),
+                'Error' => t('An error has occured.'),
+                'QtyError' => t('Quantity must be greater than zero'),
+                'AddRewardType' => t('Add Reward Type'),
+                'AddRuleType' => t('Add Rule Type'),
+                'Add' => t('Add'),
+                'Cancel' => t('Cancel')
+            )
+
+        );
+        $script = "<script type=\"text/javascript\">";
+        $script .= "var vividStore = window.vividStore || {};";
+        $script .= "$(function(){ vividStore = $.extend(vividStore,".json_encode($vividStoreJS)."); });";
+        $script .= "</script>";
+        return $script;
     }
 
 

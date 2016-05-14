@@ -3,11 +3,13 @@ namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Controller;
 use Core;
+use Database;
 use Session;
 use Illuminate\Filesystem\Filesystem;
 use View;
 use User;
 use UserInfo;
+use UserAttributeKey;
 use Concrete\Attribute\Address\Value as AttributeValue;
 
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
@@ -61,6 +63,7 @@ class Checkout extends Controller
                     $phone = $customer->getValue('billing_phone');
                     $first_name = $customer->getValue('billing_first_name');
                     $last_name = $customer->getValue('billing_last_name');
+                    $company_name = $customer->getValue('billing_company_name');
                     $email = $customer->getEmail();
                 }
 
@@ -71,7 +74,7 @@ class Checkout extends Controller
                     $email = '';
                     $first_name = $customer->getValue('shipping_first_name');
                     $last_name = $customer->getValue('shipping_last_name');
-
+                    $company_name = $customer->getValue('shipping_company_name');
                 }
 
                 // use concrete5's built in address class for formatting
@@ -85,7 +88,7 @@ class Checkout extends Controller
 
                 $address = nl2br($address . '');  // force to string
 
-                echo json_encode(array('first_name'=>$first_name,'last_name'=>$last_name,'phone'=>$phone,'email'=>$email,'address'=>$address, "error"=>false));
+                echo json_encode(array('first_name'=>$first_name,'last_name'=>$last_name,'company_name'=>$company_name,'phone'=>$phone,'email'=>$email,'address'=>$address, "error"=>false));
             }
         } else {
             echo "An error occured";
@@ -116,6 +119,8 @@ class Checkout extends Controller
         Session::set('billing_first_name',trim($data['fName']));
         $customer->setValue("billing_last_name",trim($data['lName']));
         Session::set('billing_last_name',trim($data['lName']));
+        $customer->setValue("billing_company_name",trim($data['cName']));
+        Session::set('billing_company_name',trim($data['cName']));
         $customer->setValue("billing_phone",trim($data['phone']));
         Session::set('billing_phone',trim($data['phone']));
         $address = array(
@@ -139,6 +144,8 @@ class Checkout extends Controller
         Session::set('shipping_first_name',trim($data['fName']));
         $customer->setValue("shipping_last_name",trim($data['lName']));
         Session::set('shipping_last_name',trim($data['lName']));
+        $customer->setValue("shipping_company_name",trim($data['cName']));
+        Session::set('shipping_company_name',trim($data['cName']));
         $address = array(
             "address1"=>trim($data['addr1']),
             "address2"=>trim($data['addr2']),
@@ -177,6 +184,9 @@ class Checkout extends Controller
         if(strlen($data['lName']) > 255){
             $e->add(t('Please enter a last name under 255 characters'));
         }
+        if(strlen($data['lName']) > 255){
+            $e->add(t('Please enter a company name under 255 characters'));
+        }
         if(strlen($data['addr1']) < 3 ){
             $e->add(t('You must enter an address'));
         }
@@ -204,6 +214,41 @@ class Checkout extends Controller
         
         return $e;
 
+    }
+
+    public static function getCountryOptions($addressType='billing')
+    {
+        $allcountries = Core::make('helper/lists/countries')->getCountries();
+        $countries =  $allcountries;
+        $db = Database::connection();
+        if($addressType=='shipping'){
+            $ak = UserAttributeKey::getByHandle('shipping_address');
+        } else {
+            $ak = UserAttributeKey::getByHandle('billing_address');
+        }
+
+        $row = $db->GetRow(
+            'select akHasCustomCountries, akDefaultCountry from atAddressSettings where akID = ?',
+            array($ak->getAttributeKeyID())
+        );
+
+        $defaultCountry = $row['akDefaultCountry'];
+        if(!$defaultCountry){
+            $defaultCountry = "US"; // 'mericah
+        }
+
+        if ($row['akHasCustomCountries'] == 1) {
+            $availableCountries = $db->GetCol(
+                'select country from atAddressCustomCountries where akID = ?',
+                array($ak->getAttributeKeyID())
+            );
+            unset($countries);
+            $countries = array();
+            foreach($availableCountries as $countrycode) {
+                $countries[$countrycode] = $allcountries[$countrycode];
+            }
+        }
+        return array('countries'=>$countries,'defaultCountry'=>$defaultCountry);
     }
 
     public function getShippingMethods()

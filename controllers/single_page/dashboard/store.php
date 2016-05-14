@@ -43,9 +43,12 @@ class Store extends DashboardPageController
         $this->set('orders',$paginator->getCurrentPageResults());
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
-        
-        $this->addHeaderItem(Core::make('helper/html')->css($packagePath.'/css/vividStoreDashboard.css'));
-            
+
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
+
     }
     
 

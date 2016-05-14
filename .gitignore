@@ -4,3 +4,5 @@ desktop.ini
 thumbs.db
 /.settings/
 /.buildpath
+/.idea
+vendor

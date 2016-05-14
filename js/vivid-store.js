@@ -35,7 +35,7 @@ exitModal: function(){
     productModal: function(pID){
         vividStore.waiting();
         $.ajax({
-           url: PRODUCTMODAL,
+           url: vividStore.URLs.ProductModal,
            data: {pID: pID},
            type: 'post',
            success: function(modalContent){
@@ -53,7 +53,7 @@ exitModal: function(){
         $.ajax({
             type: "POST",
             data: res,
-            url: CARTURL+'/getmodal',
+            url: vividStore.URLs.Cart+'/getmodal',
             success: function(data){
                 vividStore.openModal(data);
             }
@@ -77,21 +77,21 @@ exitModal: function(){
             var cereal = $(form).serialize(); //haha, cereal.
             vividStore.waiting();
             $.ajax({ 
-                url: CARTURL+"/add",
+                url: vividStore.URLs.Cart+"/add",
                 data: cereal,
                 type: 'post',
                 success: function(data) {
                     var res = jQuery.parseJSON(data);
 
                     if (res.product.pAutoCheckout == '1') {
-                        window.location.href = CHECKOUTURL;
+                        window.location.href = vividStore.URLs.Checkout;
                         return false;
                     }
 
                     vividStore.displayCart(res);
 
                     $.ajax({
-                       url: CARTURL+'/getTotalItems',
+                       url: vividStore.URLs.Cart+'/getTotalItems',
                        success: function(itemCount){
                            $(".vivid-store-utility-links .items-counter").text(itemCount);
                            if (itemCount > 0) {
@@ -100,7 +100,7 @@ exitModal: function(){
                        } 
                     });
                     $.ajax({
-                       url: CARTURL+'/getSubTotal',
+                       url: vividStore.URLs.Cart+'/getSubTotal',
                        success: function(subTotal){
                            $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
                        } 
@@ -117,7 +117,7 @@ exitModal: function(){
         var qty = $("*[data-instance-id='"+instanceID+"']").find(".cart-list-product-qty input").val();
         vividStore.waiting();
         $.ajax({ 
-            url: CARTURL+"/update",
+            url: vividStore.URLs.Cart+"/update",
             data: {instance: instanceID, pQty: qty},
             type: 'post',
             success: function(data) {
@@ -127,7 +127,7 @@ exitModal: function(){
                 }
 
                 $.ajax({
-                    url: CARTURL + '/getTotalItems',
+                    url: vividStore.URLs.Cart + '/getTotalItems',
                     success: function (itemCount) {
                         $(".vivid-store-utility-links .items-counter").text(itemCount);
 
@@ -137,14 +137,14 @@ exitModal: function(){
                             $(".vivid-store-utility-links").addClass('vivid-cart-empty');
                         } else {
                             $.ajax({
-                                url: CARTURL + "/getSubTotal",
+                                url: vividStore.URLs.Cart + "/getSubTotal",
                                 success: function (total) {
                                     $(".cart-grand-total-value").text(total);
                                 }
                             });
 
                             $.ajax({
-                                url: CARTURL + '/getSubTotal',
+                                url: vividStore.URLs.Cart + '/getSubTotal',
                                 success: function (subTotal) {
                                     $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
                                 }
@@ -161,7 +161,7 @@ exitModal: function(){
     removeItem: function(instanceID, modal){
         vividStore.waiting();
         $.ajax({ 
-            url: CARTURL+"/remove",
+            url: vividStore.URLs.Cart+"/remove",
             data: {instance: instanceID},
             type: 'post',
             success: function(data) {
@@ -171,7 +171,7 @@ exitModal: function(){
                 }
 
                 $.ajax({
-                    url: CARTURL + '/getTotalItems',
+                    url: vividStore.URLs.Cart + '/getTotalItems',
                     success: function (itemCount) {
                         $(".vivid-store-utility-links .items-counter").text(itemCount);
 
@@ -181,14 +181,14 @@ exitModal: function(){
                             $(".vivid-store-utility-links").addClass('vivid-cart-empty');
                         } else {
                             $.ajax({
-                                url: CARTURL + "/getSubTotal",
+                                url: vividStore.URLs.Cart + "/getSubTotal",
                                 success: function (total) {
                                     $(".cart-grand-total-value").text(total);
                                 }
                             });
 
                             $.ajax({
-                                url: CARTURL + '/getSubTotal',
+                                url: vividStore.URLs.Cart + '/getSubTotal',
                                 success: function (subTotal) {
                                     $(".vivid-store-utility-links .total-cart-amount").text(subTotal);
                                 }
@@ -203,7 +203,7 @@ exitModal: function(){
     //Clear the Cart
     clearCart: function(modal){
          $.ajax({ 
-             url: CARTURL+"/clear",
+             url: vividStore.URLs.Cart+"/clear",
              success: function(data) {
                  if (modal) {
                      var res = jQuery.parseJSON(data);
@@ -211,7 +211,7 @@ exitModal: function(){
                  }
 
                  $.ajax({
-                     url: CARTURL+"/getSubTotal",
+                     url: vividStore.URLs.Cart+"/getSubTotal",
                      success: function(total){
                          $(".cart-grand-total-value").text(total);
                          $(".cart-page-cart-list-item").remove();
@@ -253,7 +253,7 @@ exitModal: function(){
         }
        
         $.ajax({
-           url: CHECKOUTURL+"/getstates",
+           url: vividStore.URLs.Checkout+"/getstates",
            type: 'post',
            data: {country: countryCode, selectedState: selectedState, type: "billing"},
            success: function(states){
@@ -274,7 +274,7 @@ exitModal: function(){
         }
 
         $.ajax({
-           url: CHECKOUTURL+"/getstates",
+           url: vividStore.URLs.Checkout+"/getstates",
            type: 'post',
            data: {country: countryCode, selectedState: selectedState, type: "shipping"},
            success: function(states){
@@ -301,7 +301,7 @@ exitModal: function(){
     
     showShippingMethods: function(){
         $.ajax({
-            url: CHECKOUTURL+"/getShippingMethods",
+            url: vividStore.URLs.Checkout+"/getShippingMethods",
             success: function(html){
                 $("#checkout-shipping-method-options").html(html);
             }
@@ -312,185 +312,159 @@ exitModal: function(){
         var pmID = $("#checkout-payment-method-options input[type='radio']:checked").attr('data-payment-method-id');
         $('.payment-method-container').addClass('hidden');
         $(".payment-method-container[data-payment-method-id='"+pmID+"']").removeClass('hidden');
-    }
-    
-    
-};
+    },
 
-vividStore.updateBillingStates(true);
-vividStore.updateShippingStates(true);
-vividStore.showShippingMethods();
-vividStore.showPaymentForm();
-
-$("#checkout-form-group-billing").submit(function(e){
-        e.preventDefault();
-        var email = $("#email").val();
-        var bfName = $("#checkout-billing-first-name").val();
-        var blName = $("#checkout-billing-last-name").val();
-        var bPhone = $("#checkout-billing-phone").val();
-        var bAddress1 = $("#checkout-billing-address-1").val();
-        var bAddress2 = $("#checkout-billing-address-2").val();
-        var bCountry = $("#checkout-billing-country").val();
-        var bCity = $("#checkout-billing-city").val();
-        var bState = $("#checkout-billing-state").val();
-        var bPostal = $("#checkout-billing-zip").val();
-        $("#checkout-form-group-billing .checkout-form-group-body .checkout-errors").remove();
+    saveAddressInfo: function(addressType){
+        var email = "";
+        if(addressType=='billing') {
+            email = $("#email").val();
+        }
+        var firstName = $("#checkout-"+addressType+"-first-name").val();
+        var lastName = $("#checkout-"+addressType+"-last-name").val();
+        var companyName = $("#checkout-"+addressType+"-company-name").val();
+        var phone = $("#checkout-"+addressType+"-phone").val();
+        var address1 = $("#checkout-"+addressType+"-address-1").val();
+        var address2 = $("#checkout-"+addressType+"-address-2").val();
+        var country = $("#checkout-"+addressType+"-country").val();
+        var city = $("#checkout-"+addressType+"-city").val();
+        var state = $("#checkout-"+addressType+"-state").val();
+        var postal = $("#checkout-"+addressType+"-zip").val();
+        $("#checkout-form-group-"+addressType+" .checkout-form-group-body .checkout-errors").remove();
 
         vividStore.waiting();
-        var obj = $(this);
+        var obj = $("#checkout-form-group-"+addressType);
         $.ajax({
-            url: CHECKOUTURL+"/updater",
+            url: vividStore.URLs.Checkout + "/updater",
             type: 'post',
-            data: {adrType: 'billing', email: email, fName: bfName, lName: blName, phone: bPhone, addr1: bAddress1, addr2: bAddress2, count: bCountry, city: bCity, state: bState, postal: bPostal},
-            //dataType: 'json',
-            success: function(result){
+            data: {
+                adrType: addressType,
+                email: email,
+                fName: firstName,
+                lName: lastName,
+                cName: companyName,
+                phone: phone,
+                addr1: address1,
+                addr2: address2,
+                count: country,
+                city: city,
+                state: state,
+                postal: postal
+            },
+            success: function (result) {
                 //var test = null;
                 var response = JSON.parse(result);
-                if(response.error == false){
+                if (response.error == false) {
                     $(".whiteout").remove();
-                    obj.find('.checkout-form-group-summary .summary-name').html(response.first_name + ' ' + response.last_name );
+                    obj.find('.checkout-form-group-summary .summary-name').html(response.first_name + ' ' + response.last_name);
+                    obj.find('.checkout-form-group-summary .summary-company').html(companyName);
                     obj.find('.checkout-form-group-summary .summary-phone').html(response.phone);
-                    obj.find('.checkout-form-group-summary .summary-email').html(response.email);
+                    if(addressType=='billing') {
+                        obj.find('.checkout-form-group-summary .summary-email').html(response.email);
+                    }
                     obj.find('.checkout-form-group-summary .summary-address').html(response.address);
                     vividStore.nextPane(obj);
                     //update tax
                     $.ajax({
-                        url: CARTURL+"/getTaxTotal",
-                        success: function(results){
+                        url: vividStore.URLs.Cart + "/getTaxTotal",
+                        success: function (results) {
                             var taxes = JSON.parse(results);
                             //alert(taxes.length);
                             $("#taxes").html("");
-                            for(var i=0;i<taxes.length;i++){
-                                if(taxes[i].taxed===true){
-                                    $("#taxes").append('<li class="line-item tax-item"><strong>'+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span><li>");
+                            for (var i = 0; i < taxes.length; i++) {
+                                if (taxes[i].taxed === true) {
+                                    $("#taxes").append('<li class="line-item tax-item"><strong>' + taxes[i].name + ":</strong> <span class=\"tax-amount\">" + taxes[i].taxamount + "</span><li>");
                                 }
                             }
-                        } 
+                        }
                     });
                     $.ajax({
-                        url: CARTURL+"/getTotal",
-                        success: function(total){
+                        url: vividStore.URLs.Cart + "/getTotal",
+                        success: function (total) {
                             $(".total-amount").text(total);
                         }
                     });
+                    if(addressType=='shipping') {
+                        vividStore.showShippingMethods();
+                    }
                 } else {
-                    $("#checkout-form-group-billing .checkout-form-group-body").prepend('<div class="vivid-store-col-1 checkout-errors"><div class="alert alert-danger"></div></div>');
-                    $("#checkout-form-group-billing .alert").html(response.errors.join('<br>'));
+                    $("#checkout-form-group-"+addressType+" .checkout-form-group-body").prepend('<div class="vivid-store-col-1 checkout-errors"><div class="alert alert-danger"></div></div>');
+                    $("#checkout-form-group-"+addressType+" .alert").html(response.errors.join('<br>'));
                     $('.whiteout').remove();
                 }
             },
-            error: function(data){
+            error: function (data) {
                 alert("something went wrong");
                 $(".whiteout").remove();
-                
-            }  
-       });
-       
-    });
-    $("#checkout-form-group-shipping").submit(function(e){
-       e.preventDefault();
-       var sfName = $("#checkout-shipping-first-name").val();
-       var slName = $("#checkout-shipping-last-name").val();
-       var sAddress1 = $("#checkout-shipping-address-1").val();
-       var sAddress2 = $("#checkout-shipping-address-2").val();
-       var sCountry = $("#checkout-shipping-country").val();
-       var sCity = $("#checkout-shipping-city").val();
-       var sState = $("#checkout-shipping-state").val();
-       var sPostal = $("#checkout-shipping-zip").val();
-       $("#checkout-form-group-shipping .checkout-form-group-body .checkout-errors").remove();
 
-       vividStore.waiting();
-       var obj = $(this);
-       $.ajax({
-           url: CHECKOUTURL+"/updater",
-           type: 'post',
-           data: {adrType: 'shipping', fName: sfName, lName: slName, addr1: sAddress1, addr2: sAddress2, count: sCountry, city: sCity, state: sState, postal: sPostal},
-           //dataType: 'json', 
-           success: function(result){
-                var response = JSON.parse(result);
-                if(response.error == false){
-                    $(".whiteout").remove();
-                    obj.find('.checkout-form-group-summary .summary-name').html(response.first_name + ' ' + response.last_name );
-                    obj.find('.checkout-form-group-summary .summary-address').html(response.address);
-                    vividStore.nextPane(obj);   
-                    //update tax
-                    $.ajax({
-                        url: CARTURL+"/getTaxTotal",
-                        success: function(results){
-                            var taxes = JSON.parse(results);
-                            $("#taxes").html("");  
-                            for(var i=0;i<taxes.length;i++){
-                                if(taxes[i].taxed===true){
-                                    $("#taxes").append('<li class="line-item tax-item"><strong>'+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span></li>");
-                                }
-                            }
-                        } 
-                    });
-                    vividStore.showShippingMethods();
-                    $.ajax({
-                        url: CARTURL+"/getTotal",
-                        success: function(total){
-                            $(".total-amount").text(total);
-                        }
-                    });
-                } else {
-                    $("#checkout-form-group-shipping .checkout-form-group-body").prepend('<div class="vivid-store-col-1 checkout-errors"><div class="alert alert-danger"></div></div>');
-                    $("#checkout-form-group-shipping .alert").html(response.errors.join('<br>'));
-                    $('.whiteout').remove();
-                }
-            },
-            error: function(data){
-                alert("something went wrong");
-                $(".whiteout").remove();
-                
-            } 
-       });
-       
-    });
-$("#checkout-form-group-shipping-method").submit(function(e){
-    e.preventDefault();
-    vividStore.waiting();
-    var obj = $(this);
-    if($("#checkout-shipping-method-options input[type='radio']:checked").length < 1){
-        $('.whiteout').remove();
-        alert("You must choose a shipping method");
-    } else {
-        var smID = $("#checkout-shipping-method-options input[type='radio']:checked").val();
-        var methodText = $.trim($("#checkout-shipping-method-options input[type='radio']:checked").parent().text());
-        obj.find('.summary-shipping-method').html(methodText);
-
-        $.ajax({
-            type: 'post',
-            data: {smID: smID },
-            url: CARTURL+"/getShippingTotal",
-            success: function(total){
-                $("#shipping-total").text(total);
-                $.ajax({
-                    url: CARTURL+"/getTaxTotal",
-                    success: function(results){
-                        var taxes = JSON.parse(results);
-                        $("#taxes").html("");
-                        for(var i=0;i<taxes.length;i++){
-                            if(taxes[i].taxed===true){
-                                $("#taxes").append('<li class="line-item tax-item"><strong>'+taxes[i].name+":</strong> <span class=\"tax-amount\">"+taxes[i].taxamount+"</span></li>");
-                            }
-                        }
-                    }
-                });
-                $.ajax({
-                    url: CARTURL+"/getTotal",
-                    success: function(total){
-                        $(".total-amount").text(total);
-                        vividStore.nextPane(obj);
-                        $('.whiteout').remove();
-                    }
-                });
             }
         });
-
     }
-});
-    $(".btn-previous-pane").click(function(){
+    
+};
+
+$(function() {
+
+    vividStore.updateBillingStates(true);
+    vividStore.updateShippingStates(true);
+    vividStore.showShippingMethods();
+    vividStore.showPaymentForm();
+
+    if ((window.location.origin + window.location.pathname) == vividStore.URLs.Checkout) {
+        vividStore.loadViaHash();
+    }
+
+    $("#checkout-form-group-billing").submit(function (e) {
+        e.preventDefault();
+        vividStore.saveAddressInfo('billing');
+    });
+    $("#checkout-form-group-shipping").submit(function (e) {
+        e.preventDefault();
+        vividStore.saveAddressInfo('shipping');
+    });
+    $("#checkout-form-group-shipping-method").submit(function (e) {
+        e.preventDefault();
+        vividStore.waiting();
+        var obj = $(this);
+        if ($("#checkout-shipping-method-options input[type='radio']:checked").length < 1) {
+            $('.whiteout').remove();
+            alert("You must choose a shipping method");
+        } else {
+            var smID = $("#checkout-shipping-method-options input[type='radio']:checked").val();
+            var methodText = $.trim($("#checkout-shipping-method-options input[type='radio']:checked").parent().text());
+            obj.find('.summary-shipping-method').html(methodText);
+
+            $.ajax({
+                type: 'post',
+                data: {smID: smID},
+                url: vividStore.URLs.Cart + "/getShippingTotal",
+                success: function (total) {
+                    $("#shipping-total").text(total);
+                    $.ajax({
+                        url: vividStore.URLs.Cart + "/getTaxTotal",
+                        success: function (results) {
+                            var taxes = JSON.parse(results);
+                            $("#taxes").html("");
+                            for (var i = 0; i < taxes.length; i++) {
+                                if (taxes[i].taxed === true) {
+                                    $("#taxes").append('<li class="line-item tax-item"><strong>' + taxes[i].name + ":</strong> <span class=\"tax-amount\">" + taxes[i].taxamount + "</span></li>");
+                                }
+                            }
+                        }
+                    });
+                    $.ajax({
+                        url: vividStore.URLs.Cart + "/getTotal",
+                        success: function (total) {
+                            $(".total-amount").text(total);
+                            vividStore.nextPane(obj);
+                            $('.whiteout').remove();
+                        }
+                    });
+                }
+            });
+
+        }
+    });
+    $(".btn-previous-pane").click(function () {
         //hide the body of the current pane, go to the next pane, show that body.
         var pane = $(this).closest(".checkout-form-group").find('.checkout-form-group-body').parent().prev();
         $('.active-form-group').removeClass('active-form-group');
@@ -502,21 +476,23 @@ $("#checkout-form-group-shipping-method").submit(function(e){
 
         $(this).closest(".checkout-form-group").prev().removeClass("checkout-form-group-complete");
     });
-    $("#ckbx-copy-billing").change(function(){
-       if($(this).is(":checked")){
-           $("#checkout-shipping-first-name").val($("#checkout-billing-first-name").val());
-           $("#checkout-shipping-last-name").val($("#checkout-billing-last-name").val());
-           $("#checkout-shipping-email").val($("#checkout-billing-email").val());
-           $("#checkout-shipping-phone").val($("#checkout-billing-phone").val());
-           $("#checkout-shipping-address-1").val($("#checkout-billing-address-1").val());
-           $("#checkout-shipping-address-2").val($("#checkout-billing-address-2").val());
-           $("#checkout-shipping-country").val($("#checkout-billing-country").val());
-           $("#checkout-shipping-city").val($("#checkout-billing-city").val());
-           var billingstate = $("#checkout-billing-state").clone().val($("#checkout-billing-state").val()).attr("name","checkout-shipping-state").attr("id","checkout-shipping-state");
-           $("#checkout-shipping-state").replaceWith(billingstate);
-           $("#checkout-shipping-zip").val($("#checkout-billing-zip").val());
-       } 
+    $("#ckbx-copy-billing").change(function () {
+        if ($(this).is(":checked")) {
+            $("#checkout-shipping-first-name").val($("#checkout-billing-first-name").val());
+            $("#checkout-shipping-last-name").val($("#checkout-billing-last-name").val());
+            $("#checkout-shipping-company-name").val($("#checkout-billing-company-name").val());
+            $("#checkout-shipping-email").val($("#checkout-billing-email").val());
+            $("#checkout-shipping-phone").val($("#checkout-billing-phone").val());
+            $("#checkout-shipping-address-1").val($("#checkout-billing-address-1").val());
+            $("#checkout-shipping-address-2").val($("#checkout-billing-address-2").val());
+            $("#checkout-shipping-country").val($("#checkout-billing-country").val());
+            $("#checkout-shipping-city").val($("#checkout-billing-city").val());
+            var billingstate = $("#checkout-billing-state").clone().val($("#checkout-billing-state").val()).attr("name", "checkout-shipping-state").attr("id", "checkout-shipping-state");
+            $("#checkout-shipping-state").replaceWith(billingstate);
+            $("#checkout-shipping-zip").val($("#checkout-billing-zip").val());
+        }
     });
-    $("#checkout-payment-method-options input[type='radio']").change(function(){
+    $("#checkout-payment-method-options input[type='radio']").change(function () {
         vividStore.showPaymentForm();
     });
+});

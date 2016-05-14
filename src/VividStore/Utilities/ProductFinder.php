@@ -4,6 +4,7 @@ namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 use Controller;
 use User;
 use Database;
+use URL;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
@@ -34,9 +35,31 @@ class ProductFinder extends Controller
             } else { //if no results ?>
                 <li><?=t("I can't find a product by that name")?></li>
             <?php }
+        }        
+        
+    }
+    public function renderProductSearchForm($formName=null,$savedValue=null)
+    {
+        $randomValue = rand(1,1000);
+        if(!$formName){
+            $formName = 'pID';
         }
-        
-        
+        return '
+            <div class="product-search-form" id="product-search-form-'.$randomValue.'" data-ajax-url="'.URL::to('/productfinder').'">
+                <label class="form-label" for="productSearch-'.$randomValue.'">'.t("Search for a product").'</label>
+                <input class="form-control product-search-input" onkeyup="searchForProduct('.$randomValue.')" id="productSearch-'.$randomValue.'" type="text">
+                <input type="hidden" class="product-id-field" name="'.$formName.'">
+                <div class="product-search-results">
+                    <ul class="results-list">
+    
+                    </ul>
+                </div>
+                <div class="alert alert-info">
+                    <strong>'.t("Selected Product:").'</strong>
+                    <span class="selected-product"></span>
+                </div>
+            </div>
+        ';
     }
     
 }

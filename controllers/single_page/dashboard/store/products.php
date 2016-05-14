@@ -47,12 +47,19 @@ class Products extends DashboardPageController
         $this->set('products',$paginator->getCurrentPageResults());
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
-        $this->requireAsset('css', 'vividStoreDashboard');
-        $this->requireAsset('javascript', 'vividStoreFunctions');
+
+        $this->getAssets();
 
         $grouplist = StoreGroupList::getGroupList();
         $this->set("grouplist",$grouplist);
         
+    }
+    private function getAssets()
+    {
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
+        $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
     }
     public function success(){
         $this->set("success",t("Product Added"));
@@ -71,6 +78,7 @@ class Products extends DashboardPageController
     public function add()
     {
         $this->loadFormAssets();
+        $this->getAssets();
         $this->set("actionType",t("Add"));
         
         $grouplist = StoreGroupList::getGroupList();
@@ -107,6 +115,7 @@ class Products extends DashboardPageController
         }
 
         $this->loadFormAssets();
+        $this->getAssets();
         $this->set("actionType",t("Update"));
         
         //get the product

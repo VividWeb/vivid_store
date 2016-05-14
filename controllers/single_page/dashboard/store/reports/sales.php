@@ -43,7 +43,10 @@ class Sales extends DashboardPageController
         $this->set('pagination',$pagination);
         $this->set('paginator', $paginator);
 
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
         $this->requireAsset('css', 'vividStoreDashboard');
+        $this->requireAsset('javascript', 'vividStoreFunctions');
      
     }
     //TODO

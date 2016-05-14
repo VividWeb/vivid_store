@@ -6,10 +6,20 @@ use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;
 use \Concrete\Package\VividStore\Src\Attribute\Value\StoreOrderValue as StoreOrderValue;
 use \Concrete\Core\Attribute\Key\Key as Key;
 
+/**
+ * @Entity
+ * @Table(name="VividStoreOrderAttributeKeys")
+ */
 class StoreOrderKey extends Key {
 
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
+     */
+    protected $akID;
+
     public function getAttributes($oID, $method = 'getValue') {
-        $db = Database::get();
+        $db = Database::connection();
         $values = $db->GetAll("select akID, avID from VividStoreOrderAttributeValues where oID = ?", array($oID));
         $avl = new AttributeValueList();
         foreach($values as $val) {

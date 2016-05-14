@@ -2,137 +2,110 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage;
 
 use PageController;
+use Database;
 use Core;
 use View;
 use Package;
 use Session;
 use Config;
 use Loader;
-use UserAttributeKey;
+use Page;
 
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
-use \Concrete\Package\VividStore\Src\VividStore\Discount\DiscountRule as StoreDiscountRule;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout as StoreCheckoutUtility;
 
 class Checkout extends PageController
 {
+
+    public function __construct()
+    {
+        parent::__construct(Page::getByPath('/checkout/'));
+        $this->requiresLogin = StoreCart::requiresLogin();
+        $this->customer = new StoreCustomer();
+        $guestCheckout = Config::get('vividstore.guestCheckout');
+        $this->guestCheckout = $guestCheckout ? $guestCheckout : 'off';
+        $this->showLoginScreen = $this->showLoginScreen();
+    }
     public function view()
     {
-        $customer = new StoreCustomer();
-        $this->set('customer', $customer);
-        $guestCheckout = Config::get('vividstore.guestCheckout');
-        $this->set('guestCheckout', ($guestCheckout ? $guestCheckout : 'off'));
-        $this->set('requiresLogin', StoreCart::requiresLogin());
-
         if(StoreCart::getTotalItemsInCart() == 0){
             $this->redirect("/cart/");
         }
+
+        $this->set('customer', $this->customer);
         $this->set('form',Core::make("helper/form"));
 
-        $allcountries = Core::make('helper/lists/countries')->getCountries();
-
-        $db = Loader::db();
-
-        $ak = UserAttributeKey::getByHandle('billing_address');
-        $row = $db->GetRow(
-            'select akHasCustomCountries, akDefaultCountry from atAddressSettings where akID = ?',
-            array($ak->getAttributeKeyID())
-        );
-
-        $defaultBillingCountry = $row['akDefaultCountry'];
-
-        if ($row['akHasCustomCountries'] == 1) {
-            $availableBillingCountries = $db->GetCol(
-                'select country from atAddressCustomCountries where akID = ?',
-                array($ak->getAttributeKeyID())
-            );
-
-            $billingCountries = array();
-            foreach($availableBillingCountries as $countrycode) {
-                $billingCountries[$countrycode] = $allcountries[$countrycode];
-            }
-        } else {
-            $billingCountries =  $allcountries;
-        }
-
-        $ak = UserAttributeKey::getByHandle('shipping_address');
-        $row = $db->GetRow(
-            'select akHasCustomCountries, akDefaultCountry from atAddressSettings where akID = ?',
-            array($ak->getAttributeKeyID())
-        );
-
-        $defaultShippingCountry = $row['akDefaultCountry'];
-
-        if ($row['akHasCustomCountries'] == 1) {
-            $availableShippingCountries = $db->GetCol(
-                'select country from atAddressCustomCountries where akID = ?',
-                array($ak->getAttributeKeyID())
-            );
-
-            $shippingCountries = array();
-            foreach($availableShippingCountries as $countrycode) {
-                $shippingCountries[$countrycode] = $allcountries[$countrycode];
-            }
-        } else {
-            $shippingCountries = $allcountries;
-        }
-
-        $discountsWithCodesExist = StoreDiscountRule::discountsWithCodesExist();
-
-        $this->set("discountsWithCodesExist",$discountsWithCodesExist);
-
-        $this->set('cart', StoreCart::getCart());
-        $this->set('discounts', StoreCart::getDiscounts());
-        $this->set('hasCode', StoreCart::hasCode());
-
-        $this->set("billingCountries",$billingCountries);
-        $this->set("shippingCountries",$shippingCountries);
-
-        $this->set("defaultBillingCountry",$defaultBillingCountry);
-        $this->set("defaultShippingCountry",$defaultShippingCountry);
-
         $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
+        $billingCountryArray = StoreCheckoutUtility::getCountryOptions();
+        $shippingCountryArray = StoreCheckoutUtility::getCountryOptions('shipping');
+        $this->set("billingCountries",$billingCountryArray['countries']);
+        $this->set("shippingCountries",$shippingCountryArray['countries']);
+        $this->set("defaultBillingCountry",$billingCountryArray['defaultCountry']);
+        $this->set("defaultShippingCountry",$shippingCountryArray['defaultCountry']);
 
         $totals = StoreCalculator::getTotals();
 
         $this->set('subtotal',$totals['subTotal']);
         $this->set('taxes',$totals['taxes']);
-
         $this->set('taxtotal',$totals['taxTotal']);
-
         $this->set('shippingtotal',$totals['shippingTotal']);
         $this->set('total',$totals['total']);
         $this->set('shippingEnabled', StoreCart::isShippable());
 
-        $this->requireAsset('javascript', 'jquery');
-        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
-        $this->addFooterItem($js);
-        $this->requireAsset('javascript', 'vivid-store');
-        $this->requireAsset('css', 'vivid-store');
-        $this->addFooterItem("
-            <script type=\"text/javascript\">
-                $(function() {
-                    vividStore.loadViaHash();
-                });
-            </script>
-        ");
+        $this->getFooterAssets();
 
         $enabledMethods = StorePaymentMethod::getEnabledMethods();
-
         $availableMethods = array();
-
         foreach($enabledMethods as $em) {
             $emmc = $em->getMethodController();
-
             if ($totals['total'] >= $emmc->getPaymentMinimum() && $totals['total'] <=  $emmc->getPaymentMaximum()) {
                 $availableMethods[] = $em;
             }
         }
 
         $this->set("enabledPaymentMethods",$availableMethods);
+    }
+
+    public function getFooterAssets()
+    {
+        $this->requireAsset('javascript', 'jquery');
+        $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
+        $this->addFooterItem($js);
+        $this->requireAsset('javascript', 'vivid-store');
+        $this->requireAsset('css', 'vivid-store');
+    }
+
+    public function showLoginScreen()
+    {
+
+        //this is a really dirty check we should move to another class.
+        if($this->customer->isGuest() && ($this->requiresLogin || $this->guestCheckout == 'off' || ($this->guestCheckout == 'option' && $_GET['guest'] != '1'))){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function hasGuestCheckout()
+    {
+        if ($this->guestCheckout == 'option' && !$this->requiresLogin) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function getCartListElement()
+    {
+        $fileSystem = new \Illuminate\Filesystem\Filesystem;
+        if($fileSystem->exists(DIR_BASE.'/application/elements/cart_list.php')){
+            View::element('cart_list',array('cart'=>StoreCart::getCart()));
+        } else {
+            View::element('cart_list',array('cart'=>StoreCart::getCart()),'vivid_store');
+        }
     }
     
     public function failed()
@@ -179,6 +152,7 @@ class Checkout extends PageController
     }
     public function external()
     {
+        $this->getFooterAssets();
         $pm = Session::get('paymentMethod');
         /*print_r($pm);
         exit();die();
@@ -189,6 +163,7 @@ class Checkout extends PageController
         //$pm = PaymentMethod::getByHandle($pm[3]);
         $this->set('pm',$pm);
         $this->set('action',$pm->getMethodController()->getAction());
+
 
     }
     public function validate()

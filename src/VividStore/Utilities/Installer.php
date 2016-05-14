@@ -24,13 +24,13 @@ use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as Pag
 
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardType as StorePromotionRewardType;
+use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleType as StorePromotionRuleType;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as StoreShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxRate as StoreTaxRate;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class Installer
 {
@@ -40,7 +40,8 @@ class Installer
         Installer::installSinglePage('/dashboard/store', $pkg);
         Installer::installSinglePage('/dashboard/store/orders/', $pkg);
         Installer::installSinglePage('/dashboard/store/products/', $pkg);
-        Installer::installSinglePage('/dashboard/store/discounts/', $pkg);
+        //Installer::installSinglePage('/dashboard/store/promotions/', $pkg);
+        //Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
@@ -61,6 +62,17 @@ class Installer
         $page = Page::getByPath($path);
         if (!is_object($page) || $page->isError()) {
             SinglePage::add($path, $pkg);
+        }
+    }
+    public static function removeLegacySinglePages(Package $pkg)
+    {
+        Installer::removeLegacySinglePage('/dashboard/store/discounts/', $pkg);
+    }
+    public static function removeLegacySinglePage($path,$pkg)
+    {
+        $page = Page::getByPath($path);
+        if (is_object($page)) {
+            $page->delete();
         }
     }
     public static function installProductParentPage(Package $pkg)
@@ -135,11 +147,38 @@ class Installer
         Installer::installPaymentMethod('invoice','Invoice',$pkg,null,true);
         Installer::installPaymentMethod('paypal_standard','PayPal',$pkg);
     }
-    public static function installPaymentMethod($handle,$name,$pkg=null,$displayName=null,$enabled=false)
+    public static function installPaymentMethod($handle,$name,$pkg,$displayName=null,$enabled=false)
     {
         $pm = StorePaymentMethod::getByHandle($handle);
         if (!is_object($pm)) {
             StorePaymentMethod::add($handle,$name,$pkg,$displayName,$enabled);
+        }
+    }
+    public static function installPromotionRewardTypes(Package $pkg)
+    {
+        Installer::installPromotionRewardType('discount','Discount',$pkg);
+        Installer::installPromotionRewardType('free_product','Free Product',$pkg);
+    }
+    public static function installPromotionRewardType($handle,$name,$pkg)
+    {
+        $promotionRewardType = StorePromotionRewardType::getByHandle($handle);
+        if (!is_object($promotionRewardType)) {
+            StorePromotionRewardType::add($handle,$name,$pkg);
+        }
+    }
+    public static function installPromotionRuleTypes(Package $pkg)
+    {
+        Installer::installPromotionRuleType('subtotal_minimum','Subtotal Minimum',$pkg);
+        Installer::installPromotionRuleType('product_exists','Product X is in Cart',$pkg);
+        Installer::installPromotionRuleType('date_restriction','Date Limit',$pkg);
+        Installer::installPromotionRuleType('qty_in_cart','Number of Items in Cart',$pkg);
+        Installer::installPromotionRuleType('user_group','Specific User Group',$pkg);
+    }
+    public static function installPromotionRuleType($handle,$name,$pkg)
+    {
+        $promotionRuleType = StorePromotionRuleType::getByHandle($handle);
+        if (!is_object($promotionRuleType)) {
+            StorePromotionRuleType::add($handle,$name,$pkg);
         }
     }
     public static function installShippingMethods(Package $pkg)
@@ -276,10 +315,12 @@ class Installer
         Installer::installUserAttribute('email',$text,$pkg,$custSet);
         Installer::installUserAttribute('billing_first_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('billing_last_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('billing_company_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('billing_address',$address,$pkg,$custSet);
         Installer::installUserAttribute('billing_phone',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_first_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_last_name',$text,$pkg,$custSet);
+        Installer::installUserAttribute('shipping_company_name',$text,$pkg,$custSet);
         Installer::installUserAttribute('shipping_address',$address,$pkg,$custSet);
         
     }
@@ -405,8 +446,6 @@ class Installer
 
     public static function installOrderStatuses(Package $package)
     {
-        $table = StoreOrderStatus::getTableName();
-        $db = Database::get();
         $statuses = array(
             array('osHandle' => 'incomplete', 'osName' => t('Incomplete'), 'osInformSite' => 1, 'osInformCustomer' => 0, 'osIsStartingStatus' => 0),
             array('osHandle' => 'pending', 'osName' => t('Pending'), 'osInformSite' => 1, 'osInformCustomer' => 1, 'osIsStartingStatus' => 1),
@@ -415,12 +454,9 @@ class Installer
             array('osHandle' => 'complete', 'osName' => t('Complete'), 'osInformSite' => 1, 'osInformCustomer' => 1, 'osIsStartingStatus' => 0),
         );
         foreach ($statuses as $status) {
-            $row = $db->GetRow("SELECT * FROM " . $table . " WHERE osHandle=?", array($status['osHandle']));
-            if (!isset($row['osHandle'])) {
+            $orderStatus = StoreOrderStatus::getByHandle($status['osHandle']);
+            if(!is_object($orderStatus)){
                 StoreOrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer'], $status['osIsStartingStatus']);
-            } else {
-                $orderStatus = StoreOrderStatus::getByID($row['osID']);
-                $orderStatus->update($status, true);
             }
         }
     }
