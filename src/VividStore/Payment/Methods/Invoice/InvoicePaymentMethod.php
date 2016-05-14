@@ -1,31 +1,29 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\Invoice;
+namespace Concrete\Package\VividStore\src\VividStore\Payment\Methods\Invoice;
 
 use Core;
 use Config;
-
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 
 class InvoicePaymentMethod extends StorePaymentMethod
 {
     public function dashboardForm()
     {
-        $this->set('form',Core::make("helper/form"));
-        $this->set('invoiceMinimum',Config::get('vividstore.invoiceMinimum'));
-        $this->set('invoiceMaximum',Config::get('vividstore.invoiceMaximum'));
+        $this->set('form', Core::make("helper/form"));
+        $this->set('invoiceMinimum', Config::get('vividstore.invoiceMinimum'));
+        $this->set('invoiceMaximum', Config::get('vividstore.invoiceMaximum'));
     }
     
     public function save($data)
     {
-        Config::save('vividstore.invoiceMinimum',$data['invoiceMinimum']);
-        Config::save('vividstore.invoiceMaximum',$data['invoiceMaximum']);
+        Config::save('vividstore.invoiceMinimum', $data['invoiceMinimum']);
+        Config::save('vividstore.invoiceMaximum', $data['invoiceMaximum']);
     }
-    public function validate($args,$e)
+    public function validate($args, $e)
     {
         
         //$e->add("error message");        
         return $e;
-        
     }
     public function checkoutForm()
     {
@@ -37,10 +35,10 @@ class InvoicePaymentMethod extends StorePaymentMethod
         
         //nothing to do except return success
         return array('error'=>0, 'transactionReference'=>'');
-        
     }
 
-    public function getPaymentMinimum() {
+    public function getPaymentMinimum()
+    {
         $defaultMin  = 0;
 
         $minconfig = trim(Config::get('vividstore.invoiceMinimum'));
@@ -52,7 +50,8 @@ class InvoicePaymentMethod extends StorePaymentMethod
         }
     }
 
-    public function getPaymentMaximum() {
+    public function getPaymentMaximum()
+    {
         $defaultMax  = 1000000000;
 
         $maxconfig = trim(Config::get('vividstore.invoiceMaximum'));
@@ -62,5 +61,4 @@ class InvoicePaymentMethod extends StorePaymentMethod
             return min($maxconfig, $defaultMax);
         }
     }
-
 }

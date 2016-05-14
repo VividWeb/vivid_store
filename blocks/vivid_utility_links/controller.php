@@ -8,7 +8,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
-class Controller extends BlockController
+class controller extends BlockController
 {
     protected $btTable = 'btVividUtilityLinks';
     protected $btInterfaceWidth = "450";
@@ -27,14 +27,13 @@ class Controller extends BlockController
     }
     public function view()
     {
-        $this->set("itemCount",StoreCart::getTotalItemsInCart());
-        $this->set("total",StorePrice::format(StoreCalculator::getSubTotal()));
+        $this->set("itemCount", StoreCart::getTotalItemsInCart());
+        $this->set("total", StorePrice::format(StoreCalculator::getSubTotal()));
         $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
         $this->requireAsset('javascript', 'jquery');
         $this->addFooterItem($js);
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
-
     }
     public function save($args)
     {
@@ -48,13 +47,13 @@ class Controller extends BlockController
     public function validate($args)
     {
         $e = Core::make("helper/validation/error");
-        if($args['cartLabel']==""){
+        if ($args['cartLabel']=="") {
             $e->add(t('Cart Label must be set'));
         }
-        if(strlen($args['cartLabel']) > 255){
+        if (strlen($args['cartLabel']) > 255) {
             $e->add(t('Cart Link Label exceeds 255 characters'));
         }
-        if(strlen($args['itemsLabel']) > 255){
+        if (strlen($args['itemsLabel']) > 255) {
             $e->add(t('Cart Items Label exceeds 255 characters'));
         }
         return $e;

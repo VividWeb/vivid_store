@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\Attribute\Value;
+namespace Concrete\Package\VividStore\src\Attribute\Value;
 
 use Database;
 use \Concrete\Core\Attribute\Value\Value as Value;
@@ -8,8 +8,8 @@ use \Concrete\Core\Attribute\Value\Value as Value;
  * @Entity
  * @Table(name="VividStoreOrderAttributeValues")
  */
-class StoreOrderValue extends Value {
-
+class StoreOrderValue extends Value
+{
     /**
      * @Id @Column(type="integer")
      */
@@ -25,11 +25,13 @@ class StoreOrderValue extends Value {
      */
     protected $avID;
 
-    public function setOrder($order) {
+    public function setOrder($order)
+    {
         $this->order = $order;
     }
     
-    public static function getByID($avID) {
+    public static function getByID($avID)
+    {
         $cav = new StoreOrderValue();
         $cav->load($avID);
         if ($cav->getAttributeValueID() == $avID) {
@@ -37,7 +39,8 @@ class StoreOrderValue extends Value {
         }
     }
 
-    public function delete() {
+    public function delete()
+    {
         $db = Database::get();
         $db->Execute('delete from VividStoreOrderAttributeValues where oID = ? and akID = ? and avID = ?', array(
             $this->order->getOrderID(),

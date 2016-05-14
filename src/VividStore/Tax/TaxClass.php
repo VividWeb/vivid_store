@@ -1,9 +1,8 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Tax;
+namespace Concrete\Package\VividStore\src\VividStore\Tax;
 
 use Core;
 use Database;
-
 
 /**
  * @Entity
@@ -11,7 +10,6 @@ use Database;
  */
 class TaxClass
 {
-    
     /**
      * @Id
      * @Column(type="integer")
@@ -39,24 +37,47 @@ class TaxClass
      */
     protected $locked;
     
-    public function setTaxClassHandle($handle){ $this->taxClassHandle = $handle; }
-    public function setTaxClassName($name){ $this->taxClassName = $name; }
-    public function setTaxClassRates(array $rates = null){
-        if($rates){
-            $rates = implode(',',$rates);
+    public function setTaxClassHandle($handle)
+    {
+        $this->taxClassHandle = $handle;
+    }
+    public function setTaxClassName($name)
+    {
+        $this->taxClassName = $name;
+    }
+    public function setTaxClassRates(array $rates = null)
+    {
+        if ($rates) {
+            $rates = implode(',', $rates);
             $this->taxClassRates = $rates;
         }
     }
-    public function setTaxClassLock($locked){ $this->locked = $locked; }
+    public function setTaxClassLock($locked)
+    {
+        $this->locked = $locked;
+    }
     
-    public function getTaxClassID(){ return $this->tcID; }
-    public function getTaxClassHandle(){ return $this->taxClassHandle; }
-    public function getTaxClassName(){ return $this->taxClassName; }
-    public function isLocked(){ return $this->locked; }
-    public function getTaxClassRates(){
-        $taxRates =  explode(',',$this->taxClassRates); 
+    public function getTaxClassID()
+    {
+        return $this->tcID;
+    }
+    public function getTaxClassHandle()
+    {
+        return $this->taxClassHandle;
+    }
+    public function getTaxClassName()
+    {
+        return $this->taxClassName;
+    }
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+    public function getTaxClassRates()
+    {
+        $taxRates =  explode(',', $this->taxClassRates);
         $taxes = array();
-        foreach($taxRates as $tr){
+        foreach ($taxRates as $tr) {
             if ($tr) {
                 $taxrate = TaxRate::getByID($tr);
                 if ($taxrate) {
@@ -67,32 +88,35 @@ class TaxClass
         return $taxes;
     }
     
-    public function getTaxClassRateIDs(){
-        return explode(',',$this->taxClassRates);   
+    public function getTaxClassRateIDs()
+    {
+        return explode(',', $this->taxClassRates);
     }
-    public function addTaxClassRate($trID){
+    public function addTaxClassRate($trID)
+    {
         $taxClassRates = $this->taxClassRates;
-        $taxClassRates = explode(",",$taxClassRates);
+        $taxClassRates = explode(",", $taxClassRates);
         $taxClassRates[] = $trID;
         $this->setTaxClassRates($taxClassRates);
         $this->save();
     }
-    public function taxClassContainsTaxRate(TaxRate $taxRate){
+    public function taxClassContainsTaxRate(TaxRate $taxRate)
+    {
         $trID = $taxRate->getTaxRateID();
-        if(in_array($trID,$this->getTaxClassRateIDs())){
+        if (in_array($trID, $this->getTaxClassRateIDs())) {
             return true;
         } else {
             return false;
         }
     }
-    public static function getByID($tcID) 
+    public static function getByID($tcID)
     {
         $db = Database::get();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass', $tcID);
     }
     
-    public static function getByHandle($taxClassHandle) 
+    public static function getByHandle($taxClassHandle)
     {
         $db = Database::get();
         $em = $db->getEntityManager();
@@ -107,7 +131,7 @@ class TaxClass
     public static function add($data)
     {
         $locked = 0;
-        if($data['taxClassLocked']){
+        if ($data['taxClassLocked']) {
             $locked = $data['taxClassLocked'];
         }
         $tc = new self();
@@ -123,7 +147,7 @@ class TaxClass
     public function update($data)
     {
         $locked = 0;
-        if($data['taxClassLocked']){
+        if ($data['taxClassLocked']) {
             $locked = $data['taxClassLocked'];
         }
         $this->setTaxClassName($data['taxClassName']);
@@ -144,6 +168,4 @@ class TaxClass
         $em->remove($this);
         $em->flush();
     }
-    
-    
 }

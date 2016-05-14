@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
+namespace Concrete\Package\VividStore\src\VividStore\Utilities;
 
 use Package;
 use BlockType;
@@ -21,7 +21,6 @@ use \Concrete\Core\Attribute\Type as AttributeType;
 use AttributeSet;
 use \Concrete\Core\Page\Type\PublishTarget\Type\AllType as PageTypePublishTargetAllType;
 use \Concrete\Core\Page\Type\PublishTarget\Configuration\AllConfiguration as PageTypePublishTargetAllConfiguration;
-
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardType as StorePromotionRewardType;
@@ -44,9 +43,9 @@ class Installer
         //Installer::installSinglePage('/dashboard/store/promotions/manage', $pkg);
         Installer::installSinglePage('/dashboard/store/products/attributes', $pkg);
         Installer::installSinglePage('/dashboard/store/settings/', $pkg);
-        Installer::installSinglePage('/dashboard/store/settings/shipping',$pkg);
-        Installer::installSinglePage('/dashboard/store/settings/shipping/clerk',$pkg);
-        Installer::installSinglePage('/dashboard/store/settings/tax',$pkg);
+        Installer::installSinglePage('/dashboard/store/settings/shipping', $pkg);
+        Installer::installSinglePage('/dashboard/store/settings/shipping/clerk', $pkg);
+        Installer::installSinglePage('/dashboard/store/settings/tax', $pkg);
         Installer::installSinglePage('/dashboard/store/reports', $pkg);
         Installer::installSinglePage('/dashboard/store/reports/sales', $pkg);
         Installer::installSinglePage('/dashboard/store/reports/products', $pkg);
@@ -57,7 +56,7 @@ class Installer
         Page::getByPath('/checkout/')->setAttribute('exclude_nav', 1);
         Page::getByPath('/checkout/complete')->setAttribute('exclude_nav', 1);
     }
-    public static function installSinglePage($path,$pkg)
+    public static function installSinglePage($path, $pkg)
     {
         $page = Page::getByPath($path);
         if (!is_object($page) || $page->isError()) {
@@ -68,7 +67,7 @@ class Installer
     {
         Installer::removeLegacySinglePage('/dashboard/store/discounts/', $pkg);
     }
-    public static function removeLegacySinglePage($path,$pkg)
+    public static function removeLegacySinglePage($path, $pkg)
     {
         $page = Page::getByPath($path);
         if (is_object($page)) {
@@ -91,10 +90,11 @@ class Installer
         }
         $productParentPage->setAttribute('exclude_nav', 1);
     }
-    public static function installStoreProductPageType(Package $pkg){
+    public static function installStoreProductPageType(Package $pkg)
+    {
         //install product detail page type
         $pageType = PageType::getByHandle('store_product');
-        if(!is_object($pageType)){
+        if (!is_object($pageType)) {
             $template = PageTemplate::getByHandle('full');
             PageType::add(
                 array(
@@ -123,75 +123,75 @@ class Installer
     }
     public static function setDefaultConfigValues(Package $pkg)
     {
-        Installer::setConfigValue('vividstore.productPublishTarget',Page::getByPath('/product-detail')->getCollectionID());
-        Installer::setConfigValue('vividstore.symbol','$');
-        Installer::setConfigValue('vividstore.whole','.');
-        Installer::setConfigValue('vividstore.thousand',',');
-        Installer::setConfigValue('vividstore.sizeUnit','in');
-        Installer::setConfigValue('vividstore.weightUnit','lb');
-        Installer::setConfigValue('vividstore.taxName',t('Tax'));
-        Installer::setConfigValue('vividstore.cartOverlay',false);
+        Installer::setConfigValue('vividstore.productPublishTarget', Page::getByPath('/product-detail')->getCollectionID());
+        Installer::setConfigValue('vividstore.symbol', '$');
+        Installer::setConfigValue('vividstore.whole', '.');
+        Installer::setConfigValue('vividstore.thousand', ',');
+        Installer::setConfigValue('vividstore.sizeUnit', 'in');
+        Installer::setConfigValue('vividstore.weightUnit', 'lb');
+        Installer::setConfigValue('vividstore.taxName', t('Tax'));
+        Installer::setConfigValue('vividstore.cartOverlay', false);
         Installer::setConfigValue('vividstore.sizeUnit', 'in');
         Installer::setConfigValue('vividstore.weightUnit', 'lb');
     }
-    public static function setConfigValue($key,$value)
+    public static function setConfigValue($key, $value)
     {
         $config = Config::get($key);
-        if(empty($config)){
-            Config::save($key,$value);
+        if (empty($config)) {
+            Config::save($key, $value);
         }
     }
     public static function installPaymentMethods(Package $pkg)
     {
-        Installer::installPaymentMethod('auth_net','Authorize .NET',$pkg);
-        Installer::installPaymentMethod('invoice','Invoice',$pkg,null,true);
-        Installer::installPaymentMethod('paypal_standard','PayPal',$pkg);
+        Installer::installPaymentMethod('auth_net', 'Authorize .NET', $pkg);
+        Installer::installPaymentMethod('invoice', 'Invoice', $pkg, null, true);
+        Installer::installPaymentMethod('paypal_standard', 'PayPal', $pkg);
     }
-    public static function installPaymentMethod($handle,$name,$pkg,$displayName=null,$enabled=false)
+    public static function installPaymentMethod($handle, $name, $pkg, $displayName=null, $enabled=false)
     {
         $pm = StorePaymentMethod::getByHandle($handle);
         if (!is_object($pm)) {
-            StorePaymentMethod::add($handle,$name,$pkg,$displayName,$enabled);
+            StorePaymentMethod::add($handle, $name, $pkg, $displayName, $enabled);
         }
     }
     public static function installPromotionRewardTypes(Package $pkg)
     {
-        Installer::installPromotionRewardType('discount','Discount',$pkg);
-        Installer::installPromotionRewardType('free_product','Free Product',$pkg);
+        Installer::installPromotionRewardType('discount', 'Discount', $pkg);
+        Installer::installPromotionRewardType('free_product', 'Free Product', $pkg);
     }
-    public static function installPromotionRewardType($handle,$name,$pkg)
+    public static function installPromotionRewardType($handle, $name, $pkg)
     {
         $promotionRewardType = StorePromotionRewardType::getByHandle($handle);
         if (!is_object($promotionRewardType)) {
-            StorePromotionRewardType::add($handle,$name,$pkg);
+            StorePromotionRewardType::add($handle, $name, $pkg);
         }
     }
     public static function installPromotionRuleTypes(Package $pkg)
     {
-        Installer::installPromotionRuleType('subtotal_minimum','Subtotal Minimum',$pkg);
-        Installer::installPromotionRuleType('product_exists','Product X is in Cart',$pkg);
-        Installer::installPromotionRuleType('date_restriction','Date Limit',$pkg);
-        Installer::installPromotionRuleType('qty_in_cart','Number of Items in Cart',$pkg);
-        Installer::installPromotionRuleType('user_group','Specific User Group',$pkg);
+        Installer::installPromotionRuleType('subtotal_minimum', 'Subtotal Minimum', $pkg);
+        Installer::installPromotionRuleType('product_exists', 'Product X is in Cart', $pkg);
+        Installer::installPromotionRuleType('date_restriction', 'Date Limit', $pkg);
+        Installer::installPromotionRuleType('qty_in_cart', 'Number of Items in Cart', $pkg);
+        Installer::installPromotionRuleType('user_group', 'Specific User Group', $pkg);
     }
-    public static function installPromotionRuleType($handle,$name,$pkg)
+    public static function installPromotionRuleType($handle, $name, $pkg)
     {
         $promotionRuleType = StorePromotionRuleType::getByHandle($handle);
         if (!is_object($promotionRuleType)) {
-            StorePromotionRuleType::add($handle,$name,$pkg);
+            StorePromotionRuleType::add($handle, $name, $pkg);
         }
     }
     public static function installShippingMethods(Package $pkg)
     {
-        Installer::installShippingMethod('flat_rate','Flat Rate',$pkg);
-        Installer::installShippingMethod('free_shipping','Free Shipping',$pkg);
+        Installer::installShippingMethod('flat_rate', 'Flat Rate', $pkg);
+        Installer::installShippingMethod('free_shipping', 'Free Shipping', $pkg);
     }
     
-    public static function installShippingMethod($handle,$name,$pkg)
+    public static function installShippingMethod($handle, $name, $pkg)
     {
         $smt = StoreShippingMethodType::getByHandle($handle);
-        if(!is_object($smt)){
-            StoreShippingMethodType::add($handle,$name,$pkg);
+        if (!is_object($smt)) {
+            StoreShippingMethodType::add($handle, $name, $pkg);
         }
     }
     
@@ -199,7 +199,7 @@ class Installer
     {
         $shippingMethodEnabled = Config::get('vividstore.shippingenabled');
         //if it wasn't even enabled, then why bother.
-        if($shippingMethodEnabled){
+        if ($shippingMethodEnabled) {
             $basePrice = Config::get('vividstore.shippingbase');
             $perItem = Config::get('vividstore.shippingitem');
             $data = array(
@@ -214,7 +214,7 @@ class Installer
             );
             $shippingMethodType = StoreShippingMethodType::getByHandle('flat_rate');
             $shippingMethodTypeMethod = $shippingMethodType->addMethod($data);
-            StoreShippingMethod::add($shippingMethodTypeMethod,$shippingMethodType,'Flat Rate',true);
+            StoreShippingMethod::add($shippingMethodTypeMethod, $shippingMethodType, 'Flat Rate', true);
         }
     }
     
@@ -222,7 +222,7 @@ class Installer
     {
         $taxEnabled = Config::get('vividstore.taxenabled');
         //if it wasn't even enabled, then why bother.
-        if($taxEnabled){
+        if ($taxEnabled) {
             $taxCountry = Config::get('vividstore.taxcountry');
             $taxState = Config::get('vividstore.taxstate');
             $taxCity = Config::get('vividstore.taxcity');
@@ -252,14 +252,14 @@ class Installer
     public static function installBlocks(Package $pkg)
     {
         $bts = BlockTypeSet::getByHandle('vivid_store');
-        if(!is_object($bts)){
-            BlockTypeSet::add("vivid_store","Store", $pkg);
+        if (!is_object($bts)) {
+            BlockTypeSet::add("vivid_store", "Store", $pkg);
         }
         Installer::installBlock('vivid_product_list', $pkg);
         Installer::installBlock('vivid_utility_links', $pkg);
         Installer::installBlock('vivid_product', $pkg);
     }
-    public static function installBlock($handle,$pkg)
+    public static function installBlock($handle, $pkg)
     {
         $blockType = BlockType::getByHandle($handle);
         if (!is_object($blockType)) {
@@ -275,7 +275,7 @@ class Installer
         $bt = BlockType::getByHandle('vivid_product');
         $blocks = $pageObj->getBlocks('Main');
         //only install blocks if there's none on there.
-        if(count($blocks)<1){
+        if (count($blocks)<1) {
             $data = array(
                 'productLocation'=>'page',
                 'showProductName'=>1,
@@ -306,30 +306,29 @@ class Installer
 
         //define attr group, and the different attribute types we'll use
         $custSet = AttributeSet::getByHandle('customer_info');
-        if(!is_object($custSet)){
+        if (!is_object($custSet)) {
             $custSet = $uakc->addSet('customer_info', t('Store Customer Info'), $pkg);
         }
         $text = AttributeType::getByHandle('text');
         $address = AttributeType::getByHandle('address');
         
-        Installer::installUserAttribute('email',$text,$pkg,$custSet);
-        Installer::installUserAttribute('billing_first_name',$text,$pkg,$custSet);
-        Installer::installUserAttribute('billing_last_name',$text,$pkg,$custSet);
-        Installer::installUserAttribute('billing_company_name',$text,$pkg,$custSet);
-        Installer::installUserAttribute('billing_address',$address,$pkg,$custSet);
-        Installer::installUserAttribute('billing_phone',$text,$pkg,$custSet);
-        Installer::installUserAttribute('shipping_first_name',$text,$pkg,$custSet);
-        Installer::installUserAttribute('shipping_last_name',$text,$pkg,$custSet);
-        Installer::installUserAttribute('shipping_company_name',$text,$pkg,$custSet);
-        Installer::installUserAttribute('shipping_address',$address,$pkg,$custSet);
-        
+        Installer::installUserAttribute('email', $text, $pkg, $custSet);
+        Installer::installUserAttribute('billing_first_name', $text, $pkg, $custSet);
+        Installer::installUserAttribute('billing_last_name', $text, $pkg, $custSet);
+        Installer::installUserAttribute('billing_company_name', $text, $pkg, $custSet);
+        Installer::installUserAttribute('billing_address', $address, $pkg, $custSet);
+        Installer::installUserAttribute('billing_phone', $text, $pkg, $custSet);
+        Installer::installUserAttribute('shipping_first_name', $text, $pkg, $custSet);
+        Installer::installUserAttribute('shipping_last_name', $text, $pkg, $custSet);
+        Installer::installUserAttribute('shipping_company_name', $text, $pkg, $custSet);
+        Installer::installUserAttribute('shipping_address', $address, $pkg, $custSet);
     }
-    public static function installUserAttribute($handle,$type,$pkg,$set,$data=null)
+    public static function installUserAttribute($handle, $type, $pkg, $set, $data=null)
     {
         $attr = UserAttributeKey::getByHandle($handle);
         if (!is_object($attr)) {
             $name = Core::make("helper/text")->camelcase($handle);
-            if(!$data){
+            if (!$data) {
                 $data = array(
                     'akHandle' => $handle,
                     'akName' => t($name),
@@ -341,7 +340,7 @@ class Installer
                     'akCheckedByDefault' => true
                 );
             }
-            UserAttributeKey::add($type,$data,$pkg)->setAttributeSet($set);
+            UserAttributeKey::add($type, $data, $pkg)->setAttributeSet($set);
         }
     }
     
@@ -374,12 +373,12 @@ class Installer
         Installer::installOrderAttribute('shipping_address', $address, $pkg, $orderCustSet);
     }
     
-    public static function installOrderAttribute($handle,$type,$pkg,$set,$data=null)
+    public static function installOrderAttribute($handle, $type, $pkg, $set, $data=null)
     {
         $attr = StoreOrderKey::getByHandle($handle);
         if (!is_object($attr)) {
             $name = Core::make("helper/text")->camelcase($handle);
-            if(!$data){
+            if (!$data) {
                 $data = array(
                     'akHandle' => $handle,
                     'akName' => t($name)
@@ -408,7 +407,7 @@ class Installer
     {
         //create fileset to place digital downloads
         $fs = FileSet::getByName('Digital Downloads');
-        if(!is_object($fs)){
+        if (!is_object($fs)) {
             FileSet::add("Digital Downloads");
         }
     }
@@ -441,7 +440,6 @@ class Installer
             $db->execute("RENAME TABLE " . $existingOldTableName . " TO " . $newTableName);
         }
         $db->commit();
-
     }
 
     public static function installOrderStatuses(Package $package)
@@ -455,7 +453,7 @@ class Installer
         );
         foreach ($statuses as $status) {
             $orderStatus = StoreOrderStatus::getByHandle($status['osHandle']);
-            if(!is_object($orderStatus)){
+            if (!is_object($orderStatus)) {
                 StoreOrderStatus::add($status['osHandle'], $status['osName'], $status['osInformSite'], $status['osInformCustomer'], $status['osIsStartingStatus']);
             }
         }
@@ -464,7 +462,7 @@ class Installer
     public static function installDefaultTaxClass($pkg)
     {
         $defaultTaxClass = StoreTaxClass::getByHandle("default");
-        if(!is_object($defaultTaxClass)){
+        if (!is_object($defaultTaxClass)) {
             $data = array(
                 'taxClassName' => t('Default'),
                 'taxClassLocked' => true
@@ -475,8 +473,8 @@ class Installer
         $db = Database::get();
         $productsWithNoTaxClass = $db->GetAll("SELECT * FROM VividStoreProducts WHERE pTaxClass = ''");
         $tcID = $defaultTaxClass->getTaxClassID();
-        foreach($productsWithNoTaxClass as $p){
-            $db->Query("UPDATE VividStoreProducts SET pTaxClass=? WHERE pID = ?",array($tcID,$p['pID']));
+        foreach ($productsWithNoTaxClass as $p) {
+            $db->Query("UPDATE VividStoreProducts SET pTaxClass=? WHERE pID = ?", array($tcID, $p['pID']));
         }
     }
 
@@ -528,6 +526,4 @@ class Installer
             $db->commit();
         }
     }
-
-
 }

@@ -14,9 +14,12 @@ ob_start();
     <p>Your username is: <strong><?php echo $username; ?></strong></p>
     <p>Your password is: <strong><?php echo $password; ?></strong></p>
 
-<?php if ($link) { ?>
-    <p>You can now access <?php echo $link; ?></p>
-<?php } ?>
+<?php if ($link) {
+    ?>
+    <p>You can now access <?php echo $link;
+    ?></p>
+<?php 
+} ?>
 
 <?php
 $bodyHTML = ob_get_clean();
@@ -35,9 +38,12 @@ ob_start();
     Your username is: <?php echo $username; ?>
     Your password is: <?php echo $password; ?>
 
-<?php if ($link) { ?>
-    You can now access <?php echo $link; ?>
-<?php } ?>
+<?php if ($link) {
+    ?>
+    You can now access <?php echo $link;
+    ?>
+<?php 
+} ?>
 
 <?php
 

@@ -1,8 +1,6 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRules;
+namespace Concrete\Package\VividStore\src\VividStore\Promotion\PromotionRules;
 
-use Package;
-use Database;
 use Core;
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleTypeRule as StorePromotionRuleTypeRule;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder as StoreProductFinder;
@@ -13,14 +11,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder as Store
  */
 class ProductExistsPromotionRule extends StorePromotionRuleTypeRule
 {
-
     public static function getByID($id)
     {
         // TODO: Implement getByID() method.
     }
     public function dashboardForm()
     {
-        $this->set('form',Core::make("helper/form"));
+        $this->set('form', Core::make("helper/form"));
         $this->set('productFinder', StoreProductFinder::renderProductSearchForm());
     }
     public function addRule($data)

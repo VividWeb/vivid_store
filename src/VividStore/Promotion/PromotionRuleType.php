@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Promotion;
+namespace Concrete\Package\VividStore\src\VividStore\Promotion;
 
 use Database;
 use Core;
@@ -61,13 +61,29 @@ class PromotionRuleType
         $obj = $namespace.'\\'.$className;
         $this->controller = new $obj();
     }
-    public function getID() { return $this->id; }
-    public function getHandle(){ return $this->handle; }
-    public function getName() { return $this->name; }
-    public function getPackageID(){ return $this->pkgID; }
-    public function getController(){ return $this->controller; }
+    public function getID()
+    {
+        return $this->id;
+    }
+    public function getHandle()
+    {
+        return $this->handle;
+    }
+    public function getName()
+    {
+        return $this->name;
+    }
+    public function getPackageID()
+    {
+        return $this->pkgID;
+    }
+    public function getController()
+    {
+        return $this->controller;
+    }
 
-    public static function getByID($id) {
+    public static function getByID($id)
+    {
         $db = Database::get();
         $em = $db->getEntityManager();
         $obj = $em->find('Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleType', $id);
@@ -75,7 +91,8 @@ class PromotionRuleType
         return $obj;
     }
 
-    public static function getByHandle($handle){
+    public static function getByHandle($handle)
+    {
         $db = Database::get();
         $em = $db->getEntityManager();
         $obj = $em
@@ -86,7 +103,7 @@ class PromotionRuleType
             return $obj;
         }
     }
-    public static function add($handle,$name,$pkg)
+    public static function add($handle, $name, $pkg)
     {
         $smt = new self();
         $smt->setHandle($handle);
@@ -106,7 +123,7 @@ class PromotionRuleType
     public function delete()
     {
         $promotions = StorePromotion::getPromotions($this->getID());
-        foreach($promotions as $promotion){
+        foreach ($promotions as $promotion) {
             $promotion->delete();
         }
         $em = Database::get()->getEntityManager();
@@ -117,7 +134,7 @@ class PromotionRuleType
     {
         $em = Database::get()->getEntityManager();
         $ruleTypes = $em->createQuery('select rt from \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleType rt')->getResult();
-        foreach($ruleTypes as $ruleType){
+        foreach ($ruleTypes as $ruleType) {
             $ruleType->setController();
         }
         return $ruleTypes;
@@ -127,7 +144,7 @@ class PromotionRuleType
         $controller = $this->getController();
         $controller->dashboardForm($promotion);
         $pkg = Package::getByID($this->pkgID);
-        View::element('promotion_rule_types/'.$this->handle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
+        View::element('promotion_rule_types/'.$this->handle.'/dashboard_form', array('vars'=>$controller->getSets()), $pkg->getPackageHandle());
     }
     public function addRule($data)
     {

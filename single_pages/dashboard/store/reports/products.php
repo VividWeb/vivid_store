@@ -1,6 +1,7 @@
 <?php 
 defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
+
 ?>
 
 <div class="ccm-dashboard-content-full">
@@ -25,7 +26,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 			<div class="form-group form-group-full">
 				<?php echo $form->label('orderBy', t('Order By'))?>
 				<div class="ccm-search-field-content ccm-search-field-content-select2">
-					<?php echo $form->select('orderBy',array('quantity'=>'Quantity Sold','pricePaid'=>'Total'),$orderBy); ?>
+					<?php echo $form->select('orderBy', array('quantity'=>'Quantity Sold', 'pricePaid'=>'Total'), $orderBy); ?>
 				</div>
 			</div>
 		</div>
@@ -45,17 +46,21 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price;
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach($products as $product){ ?>
+		<?php foreach ($products as $product) {
+    ?>
 		<tr>
 			<td><?=$product['name']?></td>
 			<td><?=$product['quantity']?></td>
 			<td><?=Price::format($product['pricePaid'])?></td>
 		</tr>
-		<?php } ?>
+		<?php 
+} ?>
 	</tbody>
 </table>
 
-<?php if ($paginator->getTotalPages() > 1) { ?>
+<?php if ($paginator->getTotalPages() > 1) {
+    ?>
     <?= $pagination ?>
-<?php } ?>
+<?php 
+} ?>
 

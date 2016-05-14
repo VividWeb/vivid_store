@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
+namespace Concrete\Package\VividStore\src\VividStore\Utilities;
 
 use Controller;
 use User;
@@ -10,15 +10,14 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class ProductFinder extends Controller
 {
-        
     public function getProductMatch()
     {
         $u = new User();
         if (!$u->isLoggedIn()) {
-          echo "Access Denied";
-          exit;
+            echo "Access Denied";
+            exit;
         }
-        if(!$_POST['query']){
+        if (!$_POST['query']) {
             echo "Access Denied";
             exit;
         } else {
@@ -26,22 +25,24 @@ class ProductFinder extends Controller
             $db = Database::get();
             $results = $db->query('SELECT * FROM VividStoreProducts WHERE pName LIKE "%'.$query.'%"');
             
-            if($results){
-            foreach($results as $result){ ?>
+            if ($results) {
+                foreach ($results as $result) {
+                    ?>
         
                 <li data-product-id="<?=$result['pID']?>"><?=$result['pName']?></li>
         
-            <?php } //for each
+            <?php 
+                } //for each
             } else { //if no results ?>
                 <li><?=t("I can't find a product by that name")?></li>
-            <?php }
-        }        
-        
+            <?php 
+            }
+        }
     }
-    public function renderProductSearchForm($formName=null,$savedValue=null)
+    public function renderProductSearchForm($formName=null, $savedValue=null)
     {
-        $randomValue = rand(1,1000);
-        if(!$formName){
+        $randomValue = rand(1, 1000);
+        if (!$formName) {
             $formName = 'pID';
         }
         return '
@@ -61,5 +62,4 @@ class ProductFinder extends Controller
             </div>
         ';
     }
-    
 }

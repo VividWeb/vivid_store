@@ -2,6 +2,7 @@
 defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKey;
+
 ?>
 <link href="/concrete/css/app.css" rel="stylesheet" type="text/css" media="all">
 <div class="ccm-ui">
@@ -13,17 +14,25 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
         <div class="col-xs-12">
             <?php $orderemail = $order->getAttribute("email");
 
-            if ($orderemail) { ?>
+            if ($orderemail) {
+                ?>
             <h4><?=t("Email")?></h4>
-            <p><a href="mailto:<?=$order->getAttribute("email"); ?>"><?=$order->getAttribute("email"); ?></a></p>
-            <?php } ?>
+            <p><a href="mailto:<?=$order->getAttribute("email");
+                ?>"><?=$order->getAttribute("email");
+                ?></a></p>
+            <?php 
+            } ?>
 
             <?php
             $ui = UserInfo::getByID($order->getCustomerID());
-            if ($ui) { ?>
+            if ($ui) {
+                ?>
             <h4><?=t("User")?></h4>
-            <p><a href="<?= View::url('/dashboard/users/search/view/' . $ui->getUserID());?>"><?= $ui->getUserName(); ?></a></p>
-            <?php } ?>
+            <p><a href="<?= View::url('/dashboard/users/search/view/' . $ui->getUserID());
+                ?>"><?= $ui->getUserName();
+                ?></a></p>
+            <?php 
+            } ?>
         </div>
 
         <div class="col-xs-6">
@@ -35,13 +44,16 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             </p>
         </div>
         <div class="col-xs-6">
-            <?php if ($order->getAttribute("shipping_address")->address1) { ?>
+            <?php if ($order->getAttribute("shipping_address")->address1) {
+    ?>
             <h4><?=t("Shipping Information")?></h4>
             <p>
                 <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?><br>
-                <?=$order->getAttributeValueObject(StoreOrderKey::getByHandle('shipping_address'))->getValue('displaySanitized', 'display'); ?>
+                <?=$order->getAttributeValueObject(StoreOrderKey::getByHandle('shipping_address'))->getValue('displaySanitized', 'display');
+    ?>
             </p>
-            <?php } ?>
+            <?php 
+} ?>
         </div>
     </div>
     
@@ -61,24 +73,24 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
             <?php 
                 $items = $order->getOrderItems();
 
-                if($items){
-                    foreach($items as $item){
-              ?>
+                if ($items) {
+                    foreach ($items as $item) {
+                        ?>
                 <tr>
                     <td><?=$item->getProductName()?></td>
                     <td>
                         <?php
                             $options = $item->getProductOptions();
-                            if($options){
-                                echo "<ul class='list-unstyled'>";
-                                foreach($options as $option){
-                                    echo "<li>";
-                                    echo "<strong>".$option['oioKey'].": </strong>";
-                                    echo $option['oioValue'];
-                                    echo "</li>";
-                                }
-                                echo "</ul>";
+                        if ($options) {
+                            echo "<ul class='list-unstyled'>";
+                            foreach ($options as $option) {
+                                echo "<li>";
+                                echo "<strong>".$option['oioKey'].": </strong>";
+                                echo $option['oioValue'];
+                                echo "</li>";
                             }
+                            echo "</ul>";
+                        }
                         ?>
                     </td>
                     <td><?=Price::format($item->getPricePaid())?></td>
@@ -86,6 +98,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
                     <td><?=Price::format($item->getSubTotal())?></td>
                 </tr>
               <?php
+
                     }
                 }
             ?>
@@ -94,9 +107,11 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
     
     <p>
         <strong><?=t("Subtotal")?>: </strong><?=Price::format($order->getSubTotal())?><br>
-        <?php foreach($order->getTaxes() as $tax){?>
+        <?php foreach ($order->getTaxes() as $tax) {
+    ?>
             <strong><?=$tax['label']?>:</strong> <?=$tax['amount']?><br>
-        <?php } ?>
+        <?php 
+} ?>
         <strong><?=t("Shipping")?>: </strong><?=Price::format($order->getShippingTotal())?><br>
         <strong><?=t("Grand Total")?>: </strong><?=Price::format($order->getTotal())?>
     </p>
@@ -107,7 +122,8 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
 
     <?php $applieddiscounts = $order->getAppliedDiscounts();
 
-    if (!empty($applieddiscounts)) { ?>
+    if (!empty($applieddiscounts)) {
+        ?>
         <h3><?=t("Discounts Applied")?></h3>
         <hr />
         <table class="table table-striped">
@@ -122,15 +138,23 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
 
             </thead>
             <tbody>
-            <?php foreach($applieddiscounts as $discount) { ?>
+            <?php foreach ($applieddiscounts as $discount) {
+    ?>
                 <tr>
-                    <td><?= h($discount['odName']); ?></td>
-                    <td><?= h($discount['odDisplay']); ?></td>
-                    <td><?= h($discount['odDeductFrom']); ?></td>
-                    <td><?= ($discount['odValue'] > 0 ? $discount['odValue'] : $discount['odPercentage'] . '%' ); ?></td>
-                    <td><?= ($discount['odCode'] ? t('by code'). ' ' .$discount['odCode']: t('Automatically') ); ?></td>
+                    <td><?= h($discount['odName']);
+    ?></td>
+                    <td><?= h($discount['odDisplay']);
+    ?></td>
+                    <td><?= h($discount['odDeductFrom']);
+    ?></td>
+                    <td><?= ($discount['odValue'] > 0 ? $discount['odValue'] : $discount['odPercentage'] . '%');
+    ?></td>
+                    <td><?= ($discount['odCode'] ? t('by code'). ' ' .$discount['odCode']: t('Automatically'));
+    ?></td>
                 </tr>
-            <?php } ?>
+            <?php 
+}
+        ?>
 
             </tbody>
         </table>
@@ -138,12 +162,18 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
     <p>
         <strong><?=t("Items Subtotal")?>:</strong>  <?= Price::format($order->getSubTotal())?><br>
         <?php $shipping = $order->getShippingTotal();
-        if ($shipping > 0) { ?>
+        if ($shipping > 0) {
+            ?>
         <strong><?=t("Shipping")?>:</strong>  <?= Price::format($shipping)?><br>
-        <?php } ?>
-        <?php foreach($order->getTaxes() as $tax){?>
+        <?php 
+        }
+        ?>
+        <?php foreach ($order->getTaxes() as $tax) {
+    ?>
             <strong><?=$tax['label']?>:</strong> <?=$tax['amount']?>
-        <?php } ?>
+        <?php 
+}
+        ?>
         <strong class="text-large"><?=t("Total")?>:</strong>  <?= Price::format($order->getTotal())?><br>
         <strong><?=t("Payment Method")?>:</strong> <?=$order->getPaymentMethodName()?>
     </p>
@@ -151,6 +181,7 @@ use \Concrete\Package\VividStore\Src\Attribute\Key\StoreOrderKey as StoreOrderKe
 
 
 
-    <?php } ?>
+    <?php 
+    } ?>
     </div>
     </div>

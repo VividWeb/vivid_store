@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation;
+namespace Concrete\Package\VividStore\src\VividStore\Product\ProductVariation;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariationOptionItem as StoreProductVariationOptionItem;
@@ -15,7 +15,6 @@ use File;
  */
 class ProductVariation
 {
-
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
@@ -104,28 +103,35 @@ class ProductVariation
     }
 
 
-    public function getVariationImageID() { return $this->pvfID; }
-    public function getVariationImageObj(){
-        if($this->pvfID){
+    public function getVariationImageID()
+    {
+        return $this->pvfID;
+    }
+    public function getVariationImageObj()
+    {
+        if ($this->pvfID) {
             $fileObj = File::getByID($this->pvfID);
             return $fileObj;
         }
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->options = new ArrayCollection();
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         return $this->options;
     }
 
-    public function getOptionItemIDs() {
+    public function getOptionItemIDs()
+    {
         $options = $this->getOptions();
 
         $optionids = array();
 
-        foreach($options as $opt) {
+        foreach ($options as $opt) {
             $optionids[] = $opt->getOption()->getID();
         }
 
@@ -193,7 +199,7 @@ class ProductVariation
      */
     public function setVariationPrice($pvPrice)
     {
-        if ($pvPrice != ''){
+        if ($pvPrice != '') {
             $this->pvPrice = $pvPrice;
         } else {
             $this->pvPrice = null;
@@ -213,7 +219,7 @@ class ProductVariation
      */
     public function setVariationSalePrice($pvSalePrice)
     {
-        if ($pvSalePrice != ''){
+        if ($pvSalePrice != '') {
             $this->pvSalePrice = $pvSalePrice;
         } else {
             $this->pvSalePrice = null;
@@ -353,26 +359,27 @@ class ProductVariation
     }
 
 
-    public function isUnlimited() {
+    public function isUnlimited()
+    {
         return $this->getVariationQtyUnlim();
     }
 
     public function isSellable()
     {
-        if($this->isUnlimited() || $this->getVariationQty()> 0){
+        if ($this->isUnlimited() || $this->getVariationQty()> 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    public static function addVariations(array $data, StoreProduct $product) {
-
+    public static function addVariations(array $data, StoreProduct $product)
+    {
         $optItems = $product->getProductOptionItems();
 
         $optionArrays = array();
 
-        foreach($optItems as $optItem) {
+        foreach ($optItems as $optItem) {
             $optionArrays[$optItem->getProductOptionGroupID()][] = $optItem->getID();
         }
 
@@ -381,8 +388,7 @@ class ProductVariation
         $variationIDs = array();
 
         if (!empty($comboOptions)) {
-            foreach($comboOptions as $key=>$optioncombo) {
-
+            foreach ($comboOptions as $key=>$optioncombo) {
                 if (!is_array($optioncombo)) {
                     $optioncomboarray =  array();
                     $optioncomboarray[] = $optioncombo;
@@ -408,7 +414,7 @@ class ProductVariation
                         'pvLength'=>'')
                     );
 
-                    foreach($optioncombo as $optionvalue) {
+                    foreach ($optioncombo as $optionvalue) {
                         $option = StoreProductOptionItem::getByID($optionvalue);
 
                         if ($option) {
@@ -433,7 +439,6 @@ class ProductVariation
                     $variation->setVariationHeight($data['pvHeight'][$key]);
                     $variation->setVariationLength($data['pvLength'][$key]);
                     $variation->save();
-
                 }
 
                 $variationIDs[] = $variation->getID();
@@ -445,28 +450,28 @@ class ProductVariation
         if (!empty($variationIDs)) {
             $options = implode(',', $variationIDs);
             $pvIDstoDelete = $db->getAll("SELECT pvID FROM VividStoreProductVariations WHERE pID = ? and pvID not in ($options)", array($product->getProductID()));
-        }  else {
+        } else {
             $pvIDstoDelete = $db->getAll("SELECT pvID FROM VividStoreProductVariations WHERE pID = ?", array($product->getProductID()));
         }
 
         if (!empty($pvIDstoDelete)) {
-            foreach($pvIDstoDelete as $pvID) {
+            foreach ($pvIDstoDelete as $pvID) {
                 $variation = self::getByID($pvID);
                 if ($variation) {
                     $variation->delete();
                 }
             }
         }
-
     }
 
-    public static function getByID($pvID) {
+    public static function getByID($pvID)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation', $pvID);
     }
 
-    public static function add($productID, $data )
+    public static function add($productID, $data)
     {
         $variation = new self();
         $variation->setProductID($productID);
@@ -485,7 +490,8 @@ class ProductVariation
         return $variation;
     }
 
-    public static function getByOptionItemIDs(array $optionids) {
+    public static function getByOptionItemIDs(array $optionids)
+    {
         $db = \Database::connection();
 
         if (is_array($optionids) && !empty($optionids)) {
@@ -527,14 +533,15 @@ class ProductVariation
 
         //clear out existing product option groups
         $existingVariations = self::getVariationsForProduct($product);
-        foreach($existingVariations as $variation){
+        foreach ($existingVariations as $variation) {
             if (!in_array($variation->getID(), $excluding)) {
                 $variation->delete();
             }
         }
     }
 
-    public static function combinations($arrays, $i = 0) {
+    public static function combinations($arrays, $i = 0)
+    {
         if (!isset($arrays[$i])) {
             return array();
         }
@@ -558,6 +565,4 @@ class ProductVariation
 
         return $result;
     }
-
-
 }

@@ -1,6 +1,7 @@
 <?php 
 defined('C5_EXECUTE') or die("Access Denied.");
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as Price;
+
 $subject = t("Order Receipt");
 
 
@@ -27,25 +28,28 @@ ob_start();
                         <p>
                             <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
                             <?=$order->getAttribute("billing_address")->address1?><br>
-                            <?php if($order->getAttribute("billing_address")->address2){
-                                echo $order->getAttribute("billing_address")->address2 . "<br>";
-                            } ?>
+                            <?php if ($order->getAttribute("billing_address")->address2) {
+    echo $order->getAttribute("billing_address")->address2 . "<br>";
+} ?>
                             <?=$order->getAttribute("billing_address")->city?>, <?=$order->getAttribute("billing_address")->state_province?> <?=$order->getAttribute("billing_address")->postal_code?><br>
                             <?=$order->getAttribute("billing_phone")?>
                         </p>
                     </td>
                     <td>
-                       <?php if ($order->isShippable()) { ?>
+                       <?php if ($order->isShippable()) {
+    ?>
                         <strong><?=t('Shipping Information')?></strong>
                         <p>
                             <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?><br>
                             <?=$order->getAttribute("shipping_address")->address1?><br>
-                            <?php if($order->getAttribute("shipping_address")->address2){
-                                echo $order->getAttribute("shipping_address")->address2 . "<br>";
-                            } ?>
+                            <?php if ($order->getAttribute("shipping_address")->address2) {
+    echo $order->getAttribute("shipping_address")->address2 . "<br>";
+}
+    ?>
                             <?=$order->getAttribute("shipping_address")->city?>, <?=$order->getAttribute("shipping_address")->state_province?> <?=$order->getAttribute("shipping_address")->postal_code?><br>
                         </p>
-                        <?php } ?>
+                        <?php 
+} ?>
                     </td>
                 </tr>
             </table>
@@ -64,28 +68,29 @@ ob_start();
                 <tbody>
                     <?php 
                         $items = $order->getOrderItems();
-                        if($items){
-                            foreach($items as $item){
-                      ?>
+                        if ($items) {
+                            foreach ($items as $item) {
+                                ?>
                         <tr>
                             <td><?=$item->getProductName()?>
                                 <?php if ($sku = $item->getSKU()) {
-                                    echo '(' .  $sku . ')';
-                                } ?>
+    echo '(' .  $sku . ')';
+}
+                                ?>
                             </td>
                             <td>
                                 <?php
                                     $options = $item->getProductOptions();
-                                    if($options){
-                                        echo "<ul class='list-unstyled'>";
-                                        foreach($options as $option){
-                                            echo "<li>";
-                                            echo "<strong>".$option['oioKey'].": </strong>";
-                                            echo $option['oioValue'];
-                                            echo "</li>";
-                                        }
-                                        echo "</ul>";
+                                if ($options) {
+                                    echo "<ul class='list-unstyled'>";
+                                    foreach ($options as $option) {
+                                        echo "<li>";
+                                        echo "<strong>".$option['oioKey'].": </strong>";
+                                        echo $option['oioValue'];
+                                        echo "</li>";
                                     }
+                                    echo "</ul>";
+                                }
                                 ?>
                             </td>
                             <td><?=$item->getQty()?></td>
@@ -93,6 +98,7 @@ ob_start();
                             <td><?=Price::format($item->getSubTotal())?></td>
                         </tr>
                       <?php
+
                             }
                         }
                     ?>
@@ -103,38 +109,45 @@ ob_start();
             <?php
                 $downloads = array();
                 $orderItems = $order->getOrderItems();
-                foreach($orderItems as $item){
+                foreach ($orderItems as $item) {
                     $pObj = $item->getProductObject();
-                    if(is_object($pObj)){
-                        if($pObj->hasDigitalDownload()){
+                    if (is_object($pObj)) {
+                        if ($pObj->hasDigitalDownload()) {
                             $fileObjs = $pObj->getProductDownloadFileObjects();
                             $downloads[$item->getProductName()] = $fileObjs[0];
                         }
                     }
                 }
-                if(count($downloads) > 0){?>
+                if (count($downloads) > 0) {
+                    ?>
                     <div style="margin: 30px 0;">
                     <p><strong><?=t("Your Downloads")?></strong></p>
                     <p><?=t("Note: You must be logged in to download files")?></p>
                     <ul class="order-downloads">
                     <?php
-                    foreach($downloads as $name=>$file){
-                        if(is_object($file)){
+                    foreach ($downloads as $name=>$file) {
+                        if (is_object($file)) {
                             echo '<li><a href="'.$file->getDownloadURL().'">'.$name.'</a></li>';
                         }
-                    }?>
+                    }
+                    ?>
                     </ul>
                     </div>
-                <?php } ?>
+                <?php 
+                } ?>
 
             <p>
-                <?php if ($order->isShippable()) { ?>
+                <?php if ($order->isShippable()) {
+    ?>
                 <strong><?=t("Shipping")?>:</strong>  <?=Price::format($order->getShippingTotal())?><br>
-                <?php } ?>
+                <?php 
+} ?>
 
-                <?php foreach($order->getTaxes() as $tax){?>
+                <?php foreach ($order->getTaxes() as $tax) {
+    ?>
                     <strong><?=$tax['label']?>:</strong> <?=Price::format($tax['amount'] ? $tax['amount'] : $tax['amountIncluded'])?><br>
-                <?php } ?>
+                <?php 
+} ?>
 
                 <strong class="text-large"><?=t("Total")?>:</strong>  <?=Price::format($order->getTotal())?>
             </p>
@@ -158,11 +171,11 @@ ob_start();
 
 ?>
 
-<?=t("Order #%s has been received",$order->getOrderID())?>
+<?=t("Order #%s has been received", $order->getOrderID())?>
 
 <?=t("BILLING INFORMATION")?>
 <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?>
-<?php if($order->getAttribute("billing_address")->address2){
+<?php if ($order->getAttribute("billing_address")->address2) {
     echo $order->getAttribute("billing_address")->address2;
 } ?>
 <?=$order->getAttribute("billing_address")->city?>, <?=$order->getAttribute("billing_address")->state_province?> <?=$order->getAttribute("billing_address")->postal_code?>
@@ -171,7 +184,7 @@ ob_start();
 <?=t("SHIPPING INFORMATION")?>
 <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?>
 <?=$order->getAttribute("shipping_address")->address1?>
-<?php if($order->getAttribute("shipping_address")->address2){
+<?php if ($order->getAttribute("shipping_address")->address2) {
     echo $order->getAttribute("shipping_address")->address2;
 } ?>
 <?=$order->getAttribute("shipping_address")->city?>, <?=$order->getAttribute("shipping_address")->state_province?> <?=$order->getAttribute("shipping_address")->postal_code?>
@@ -179,8 +192,8 @@ ob_start();
 <?=t("ORDER ITEMS")?>
 <?php 
     $items = $order->getOrderItems();
-    if($items){
-        foreach($items as $item){
+    if ($items) {
+        foreach ($items as $item) {
             echo "{$item->getQty()}x {$item->getProductName()}";
         }
     }

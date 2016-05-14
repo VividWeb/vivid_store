@@ -1,14 +1,11 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewards;
+namespace Concrete\Package\VividStore\src\VividStore\Promotion\PromotionRewards;
 
-use Package;
 use Database;
 use Core;
-
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardType as StorePromotionRewardType;
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardTypeReward as StorePromotionRewardTypeReward;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder as StoreProductFinder;
-
 
 /**
  * @Entity
@@ -16,16 +13,21 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\ProductFinder as Store
  */
 class FreeProductPromotionReward extends StorePromotionRewardTypeReward
 {
-
     /**
      * @ManyToOne(targetEntity="Concrete\Package\VividStore\Src\VividStore\Product\Product")
      * @JoinColumn(name="product_id", referencedColumnName="pID")
      */
     private $product;
 
-    public function setProduct($product){ $this->product = $product; }
+    public function setProduct($product)
+    {
+        $this->product = $product;
+    }
 
-    public function getProduct(){ return $this->product; }
+    public function getProduct()
+    {
+        return $this->product;
+    }
 
     public static function getByID($id)
     {
@@ -35,9 +37,9 @@ class FreeProductPromotionReward extends StorePromotionRewardTypeReward
     }
     public function dashboardForm()
     {
-        $this->set('form',Core::make("helper/form"));
+        $this->set('form', Core::make("helper/form"));
         $this->set('productFinder', StoreProductFinder::renderProductSearchForm());
-        $this->set("rewardType",StorePromotionRewardType::getByHandle('free_product'));
+        $this->set("rewardType", StorePromotionRewardType::getByHandle('free_product'));
     }
     public static function addReward($data)
     {

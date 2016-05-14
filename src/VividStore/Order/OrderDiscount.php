@@ -1,7 +1,6 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Order;
+namespace Concrete\Package\VividStore\src\VividStore\Order;
 
-use Database;
 
 /**
  * @Entity

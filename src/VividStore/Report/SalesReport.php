@@ -1,11 +1,10 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Report;
+namespace Concrete\Package\VividStore\src\VividStore\Report;
 
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderList as StoreOrderList;
 
 class SalesReport extends StoreOrderList
 {
-    
     public function __construct()
     {
         parent::__construct();
@@ -13,7 +12,7 @@ class SalesReport extends StoreOrderList
         $this->setToDate();
         $this->setLimit(0);
     }
-    public static function getTotalsByRange($from,$to,$limit=0)
+    public static function getTotalsByRange($from, $to, $limit=0)
     {
         $sr = new SalesReport();
         $sr->setFromDate($from);
@@ -25,7 +24,7 @@ class SalesReport extends StoreOrderList
         $taxTotal = 0;
         $includedTaxTotal = 0;
         $shippingTotal = 0;
-        foreach($sr->getResults() as $order){
+        foreach ($sr->getResults() as $order) {
             $total = $total + $order->getTotal();
             $productTotal = $productTotal + $order->getSubTotal();
             $taxTotal = $taxTotal + $order->getTaxTotal();
@@ -46,26 +45,25 @@ class SalesReport extends StoreOrderList
     public static function getTodaysSales()
     {
         $today = date('Y-m-d');
-        return self::getTotalsByRange($today,$today,0);
+        return self::getTotalsByRange($today, $today, 0);
     }
     public static function getThirtyDays()
     {
         $today = date('Y-m-d');
         $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
-        return self::getTotalsByRange($thirtyDaysAgo,$today,0);
+        return self::getTotalsByRange($thirtyDaysAgo, $today, 0);
     }
     public static function getYearToDate()
     {
         $today = date('Y-m-d');
         $jan1 = new \DateTime(date("Y")."-01-01");
         $jan1 = $jan1->format("Y-m-d");
-        return self::getTotalsByRange($jan1,$today,0);
+        return self::getTotalsByRange($jan1, $today, 0);
     }
     public static function getByMonth($date)
     {
         $from = date('Y-m-01', strtotime($date));
         $to = date('Y-m-t', strtotime($date));
-        return self::getTotalsByRange($from,$to,0);
+        return self::getTotalsByRange($from, $to, 0);
     }
-    
 }

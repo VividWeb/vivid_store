@@ -4,11 +4,11 @@ extract($vars);
 ?>
 <div class="form-group">
     <label><?=t('Test Mode')?></label>
-    <?php echo $form->select('paypalTestMode',array(false=>'Live',true=>'Test Mode'),$paypalTestMode); ?>
+    <?php echo $form->select('paypalTestMode', array(false=>'Live', true=>'Test Mode'), $paypalTestMode); ?>
 </div>
 <div class="form-group">
-    <?php echo $form->label('paypalCurrency',t("Currency")); ?>
-    <?php echo $form->select('paypalCurrency',$currencies,$paypalCurrency?$paypalCurrency:'USD');?>
+    <?php echo $form->label('paypalCurrency', t("Currency")); ?>
+    <?php echo $form->select('paypalCurrency', $currencies, $paypalCurrency?$paypalCurrency:'USD');?>
 </div>
 <div class="form-group">
     <label><?=t("PayPal E-mail")?></label>

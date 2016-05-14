@@ -24,5 +24,5 @@ extract($vars); ?>
 </script>
 
 <script type="text/x-template" id="cart-qty-minimum-list-item-template">
-    <?=t("If there's at least %s items in the cart",'<strong><%=qty%></strong>')?>
+    <?=t("If there's at least %s items in the cart", '<strong><%=qty%></strong>')?>
 </script>

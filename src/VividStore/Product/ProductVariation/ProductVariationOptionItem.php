@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation;
+namespace Concrete\Package\VividStore\src\VividStore\Product\ProductVariation;
 
 use Database;
 
@@ -9,7 +9,6 @@ use Database;
  */
 class ProductVariationOptionItem
 {
-
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
@@ -29,7 +28,8 @@ class ProductVariationOptionItem
     protected $option;
 
 
-    public function getID() {
+    public function getID()
+    {
         return $this->pvoiID;
     }
 
@@ -59,5 +59,4 @@ class ProductVariationOptionItem
         $em->persist($this);
         $em->flush();
     }
-
 }

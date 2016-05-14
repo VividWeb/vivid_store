@@ -1,5 +1,4 @@
 <?php
-
 namespace Concrete\Package\VividStore\Controller\SinglePage\Dashboard\Store;
 
 use \Concrete\Core\Page\Controller\DashboardPageController;
@@ -11,7 +10,6 @@ use File;
 use Loader;
 use PageType;
 use GroupList;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductFile as StoreProductFile;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup as StoreProductGroup;
@@ -26,10 +24,10 @@ use \Concrete\Package\VividStore\Src\VividStore\Group\GroupList as StoreGroupLis
 use \Concrete\Package\VividStore\Src\Attribute\Key\StoreProductKey;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\TaxClass as StoreTaxClass;
 
-class Products extends DashboardPageController
+class products extends DashboardPageController
 {
-
-    public function view($gID=null){
+    public function view($gID=null)
+    {
         $products = new StoreProductList();
         $products->setItemsPerPage(10);
         $products->setGroupID($gID);
@@ -44,15 +42,14 @@ class Products extends DashboardPageController
 
         $paginator = $products->getPagination();
         $pagination = $paginator->renderDefaultView();
-        $this->set('products',$paginator->getCurrentPageResults());
-        $this->set('pagination',$pagination);
+        $this->set('products', $paginator->getCurrentPageResults());
+        $this->set('pagination', $pagination);
         $this->set('paginator', $paginator);
 
         $this->getAssets();
 
         $grouplist = StoreGroupList::getGroupList();
-        $this->set("grouplist",$grouplist);
-        
+        $this->set("grouplist", $grouplist);
     }
     private function getAssets()
     {
@@ -61,32 +58,34 @@ class Products extends DashboardPageController
         $this->requireAsset('css', 'vividStoreDashboard');
         $this->requireAsset('javascript', 'vividStoreFunctions');
     }
-    public function success(){
-        $this->set("success",t("Product Added"));
+    public function success()
+    {
+        $this->set("success", t("Product Added"));
         $this->view();
     }
     
     public function updated()
     {
-        $this->set("success",t("Product Updated"));
+        $this->set("success", t("Product Updated"));
         $this->view();
     }
-    public function removed(){
-        $this->set("success",t("Product Removed"));
+    public function removed()
+    {
+        $this->set("success", t("Product Removed"));
         $this->view();
     }
     public function add()
     {
         $this->loadFormAssets();
         $this->getAssets();
-        $this->set("actionType",t("Add"));
+        $this->set("actionType", t("Add"));
         
         $grouplist = StoreGroupList::getGroupList();
-        $this->set("grouplist",$grouplist);
-        foreach($grouplist as $productgroup){
+        $this->set("grouplist", $grouplist);
+        foreach ($grouplist as $productgroup) {
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }
-        $this->set("productgroups",$productgroups);
+        $this->set("productgroups", $productgroups);
 
         $gl = new GroupList();
         $gl->setItemsPerPage(1000);
@@ -95,8 +94,8 @@ class Products extends DashboardPageController
 
         $usergrouparray = array();
 
-        foreach($usergroups as $ug) {
-            if ( $ug->gName != 'Administrators') {
+        foreach ($usergroups as $ug) {
+            if ($ug->gName != 'Administrators') {
                 $usergrouparray[$ug->gID] = $ug->gName;
             }
         }
@@ -107,16 +106,16 @@ class Products extends DashboardPageController
     public function edit($pID, $status = '')
     {
         if ($status == 'updated') {
-            $this->set("success",t("Product Updated"));
+            $this->set("success", t("Product Updated"));
         }
 
         if ($status == 'added') {
-            $this->set("success",t("Product Added"));
+            $this->set("success", t("Product Added"));
         }
 
         $this->loadFormAssets();
         $this->getAssets();
-        $this->set("actionType",t("Update"));
+        $this->set("actionType", t("Update"));
         
         //get the product
         $product = StoreProduct::getByID($pID);
@@ -128,10 +127,10 @@ class Products extends DashboardPageController
         $optItems = $product->getProductOptionItems();
         $groups = $product->getProductOptionGroups();
 
-        $this->set('p',$product);
-        $this->set("images",$product->getProductImages());
-        $this->set("groups",$groups);
-        $this->set('optItems',$optItems);
+        $this->set('p', $product);
+        $this->set("images", $product->getProductImages());
+        $this->set("groups", $groups);
+        $this->set('optItems', $optItems);
         $this->set('locationPages', $product->getProductLocationPages());
         $this->set('pgroups', $product->getProductGroupIDs());
 
@@ -141,14 +140,14 @@ class Products extends DashboardPageController
         $optionArrays = array();
         $optionItemLookup = array();
 
-        foreach($optItems as $optItem) {
+        foreach ($optItems as $optItem) {
             $optionArrays[$optItem->getProductOptionGroupID()][] = $optItem->getID();
             $optionItemLookup[ $optItem->getID()] = $optItem;
         }
 
         $groupLookup = array();
 
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             $groupLookup[$group->getID()] = $group;
         }
 
@@ -159,7 +158,7 @@ class Products extends DashboardPageController
 
         $checkedOptions = array();
 
-        foreach($comboOptions as $option) {
+        foreach ($comboOptions as $option) {
             if (!is_array($option)) {
                 $checkedOptions[] = array($option);
             } else {
@@ -172,11 +171,11 @@ class Products extends DashboardPageController
         $this->set('comboOptions', $comboOptions);
         $this->set('optionItemLookup', $optionItemLookup);
 
-        foreach($variations as $variation) {
+        foreach ($variations as $variation) {
             $options = $variation->getOptions();
             $optionids = array();
 
-            foreach($options as $varoption) {
+            foreach ($options as $varoption) {
                 $option = $varoption->getOption();
 
                 if ($option) {
@@ -185,7 +184,7 @@ class Products extends DashboardPageController
             }
 
             sort($optionids);
-            $variationLookup[implode('_',$optionids)] = $variation;
+            $variationLookup[implode('_', $optionids)] = $variation;
         }
 
         $this->set('variations', $variations);
@@ -193,10 +192,10 @@ class Products extends DashboardPageController
 
         //populate "Groups" select box options
         $grouplist = StoreGroupList::getGroupList();
-        foreach($grouplist as $productgroup){
+        foreach ($grouplist as $productgroup) {
             $productgroups[$productgroup->getGroupID()] = $productgroup->getGroupName();
         }
-        $this->set("productgroups",$productgroups);
+        $this->set("productgroups", $productgroups);
 
         $gl = new GroupList();
         $gl->setItemsPerPage(1000);
@@ -205,8 +204,8 @@ class Products extends DashboardPageController
 
         $usergrouparray = array();
 
-        foreach($usergroups as $ug) {
-            if ( $ug->gName != 'Administrators') {
+        foreach ($usergroups as $ug) {
+            if ($ug->gName != 'Administrators') {
                 $usergrouparray[$ug->gID] = $ug->gName;
             }
         }
@@ -216,10 +215,10 @@ class Products extends DashboardPageController
     }
 
 
-    public function generate($pID,$templateID=null)
+    public function generate($pID, $templateID=null)
     {
         StoreProduct::getByID($pID)->generatePage($templateID);
-        $this->redirect('/dashboard/store/products/edit',$pID);
+        $this->redirect('/dashboard/store/products/edit', $pID);
     }
     public function delete($pID)
     {
@@ -233,7 +232,7 @@ class Products extends DashboardPageController
         $this->requireAsset('core/file-manager');
         $this->requireAsset('core/sitemap');
         
-        $this->set('fp',FilePermissions::getGlobal());
+        $this->set('fp', FilePermissions::getGlobal());
         $this->set('tp', new TaskPermission());
         $this->set('al', Core::make('helper/concrete/asset_library'));
                 
@@ -242,27 +241,27 @@ class Products extends DashboardPageController
         $this->requireAsset('javascript', 'vividStoreFunctions');
         
         $attrList = StoreProductKey::getList();
-        $this->set('attribs',$attrList);
+        $this->set('attribs', $attrList);
         
         $pageType = PageType::getByHandle("store_product");
         $pageTemplates = $pageType->getPageTypePageTemplateObjects();
         $templates = array();
-        foreach($pageTemplates as $pt){
+        foreach ($pageTemplates as $pt) {
             $templates[$pt->getPageTemplateID()] = $pt->getPageTemplateName();
         }
-        $this->set('pageTemplates',$templates);
+        $this->set('pageTemplates', $templates);
         $taxClasses = array();
-        foreach(StoreTaxClass::getTaxClasses() as $taxClass){
+        foreach (StoreTaxClass::getTaxClasses() as $taxClass) {
             $taxClasses[$taxClass->getTaxClassID()] = $taxClass->getTaxClassName();
         }
-        $this->set('taxClasses',$taxClasses);
+        $this->set('taxClasses', $taxClasses);
     }
     public function save()
     {
         $data = $this->post();
-        if($data['pID']){
+        if ($data['pID']) {
             $this->edit($data['pID']);
-        } else{
+        } else {
             $this->add();
         }
         if ($this->isPost()) {
@@ -275,32 +274,32 @@ class Products extends DashboardPageController
                 $product = StoreProduct::saveProduct($data);
                 //save product attributes
                 $aks = StoreProductKey::getList();
-                foreach($aks as $uak) {
+                foreach ($aks as $uak) {
                     $uak->saveAttributeForm($product);
                 }
                 //save images
-                StoreProductImage::addImagesForProduct($data,$product);
+                StoreProductImage::addImagesForProduct($data, $product);
                 
                 //save product groups
-                StoreProductGroup::addGroupsForProduct($data,$product);
+                StoreProductGroup::addGroupsForProduct($data, $product);
                 
                 //save product user groups
-                StoreProductUserGroup::addUserGroupsForProduct($data,$product);
+                StoreProductUserGroup::addUserGroupsForProduct($data, $product);
                 
                 //save product options
-                StoreProductOption::addProductOptions($data,$product);
+                StoreProductOption::addProductOptions($data, $product);
                 
                 //save files
-                StoreProductFile::addFilesForProduct($data,$product);
+                StoreProductFile::addFilesForProduct($data, $product);
                 
                 //save category locations
-                StoreProductLocation::addLocationsForProduct($data,$product);
+                StoreProductLocation::addLocationsForProduct($data, $product);
 
                 // save variations
                 StoreProductVariation::addVariations($data, $product);
 
 
-                if($data['pID']){
+                if ($data['pID']) {
                     $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'updated');
                 } else {
                     $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'success');
@@ -312,46 +311,45 @@ class Products extends DashboardPageController
     {
         $e = Loader::helper('validation/error');
         
-        if($args['pName']==""){
+        if ($args['pName']=="") {
             $e->add(t('You must have a Product Name'));
         }
-        if(strlen($args['pName']) > 255){
+        if (strlen($args['pName']) > 255) {
             $e->add(t('Keep the Product name under 255 Characters'));
         }
-        if(!is_numeric($args['pPrice'])){
+        if (!is_numeric($args['pPrice'])) {
             $e->add(t('The Price must be set, and numeric'));
         }
-        if(!is_numeric($args['pQty']) && !$args['pQtyUnlim']){
+        if (!is_numeric($args['pQty']) && !$args['pQtyUnlim']) {
             $e->add(t('The Quantity must be set, and numeric'));
         }
-        if(!is_numeric($args['pWidth'])){
+        if (!is_numeric($args['pWidth'])) {
             $e->add(t('The Product Width must be a number'));
         }
-        if(!is_numeric($args['pHeight'])){
+        if (!is_numeric($args['pHeight'])) {
             $e->add(t('The Product Height must be a number'));
         }
-        if(!is_numeric($args['pLength'])){
+        if (!is_numeric($args['pLength'])) {
             $e->add(t('The Product Length must be a number'));
         }
-        if(!is_numeric($args['pWeight'])){
+        if (!is_numeric($args['pWeight'])) {
             $e->add(t('The Product Weight must be a number'));
         }
         
         return $e;
-        
     }
     
     // GROUPS PAGE
     public function groups()
     {
         $grouplist = StoreGroupList::getGroupList();
-        $this->set("grouplist",$grouplist);
+        $this->set("grouplist", $grouplist);
         $this->requireAsset('css', 'vividStoreDashboard');
         $this->requireAsset('javascript', 'vividStoreFunctions');
     }
     public function groupadded()
     {
-        $this->set('success',"Group Successfully Added!");
+        $this->set('success', "Group Successfully Added!");
         $this->groups();
     }
     public function addgroup()
@@ -373,10 +371,10 @@ class Products extends DashboardPageController
     {
         $e = Loader::helper('validation/error');
         
-        if($args['groupName']==""){
+        if ($args['groupName']=="") {
             $e->add(t('You did not enter anything for the Group Name'));
         }
-        if(strlen($args['groupName']) > 100){
+        if (strlen($args['groupName']) > 100) {
             $e->add(t('Keep the Group Name under 100 Characters'));
         }
         return $e;

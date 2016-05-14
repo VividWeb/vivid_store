@@ -88,21 +88,21 @@ if ($taxCalc == 'extract') {
                     );
                 ?>
                 
-                labels: [ <?php for($i=0;$i<7;$i++){
-                        if($i!=6){
-                            echo "'".$months[$i]->format("m/d")."',";
-                        } else {
-                            echo "'".$months[$i]->format("m/d")."'";
-                        }
-                    } ?> ],
+                labels: [ <?php for ($i=0;$i<7;$i++) {
+    if ($i!=6) {
+        echo "'".$months[$i]->format("m/d")."',";
+    } else {
+        echo "'".$months[$i]->format("m/d")."'";
+    }
+} ?> ],
                 // Our series array that contains series objects or in this case series data arrays
                 series: [
                     [
                         <?php 
-                            for($i=0;$i<7;$i++){
+                            for ($i=0;$i<7;$i++) {
                                 $date = $months[$i]->format('Y-m-d');
-                                $report = $sr->getTotalsByRange($date,$date);
-                                if($i==6){
+                                $report = $sr->getTotalsByRange($date, $date);
+                                if ($i==6) {
                                     echo "{meta: '".t('Total')."', value: ".$report['total']."}";
                                 } else {
                                     echo "{meta: '".t('Total')."', value: ".$report['total']."},";
@@ -146,26 +146,28 @@ if ($taxCalc == 'extract') {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($orders as $o){?>
+                <?php foreach ($orders as $o) {
+    ?>
                 <tr>
-                    <td><a href="<?=URL::to('/dashboard/store/orders/order',$o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
+                    <td><a href="<?=URL::to('/dashboard/store/orders/order', $o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
                     <td><?=$dh->formatDateTime($o->getOrderDate())?></td>
                     <td><?=Price::format($o->getSubTotal())?></td>
                     <td><?=Price::format($o->getShippingTotal())?></td>
                     <td>
                         <?php
                         $tax = $o->getTaxTotal();
-                        $includedTax = $o->getIncludedTaxTotal();
-                        if ($tax) {
-                            echo Price::format($tax);
-                        } elseif ($includedTax) {
-                            echo Price::format($includedTax);
-                        }
-                        ?>
+    $includedTax = $o->getIncludedTaxTotal();
+    if ($tax) {
+        echo Price::format($tax);
+    } elseif ($includedTax) {
+        echo Price::format($includedTax);
+    }
+    ?>
                     </td>
                     <td><?=Price::format($o->getTotal())?></td>
                 </tr>
-                <?php } ?>
+                <?php 
+} ?>
             </tbody>
         </table>
 
