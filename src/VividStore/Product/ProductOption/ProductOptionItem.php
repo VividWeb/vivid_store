@@ -11,7 +11,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 class ProductOptionItem
 {
     /**
-     * @Id @Column(type="integer")
+     * @Id @Column(type="integer", options={"unsigned"=true})
      * @GeneratedValue
      */
     protected $poiID;

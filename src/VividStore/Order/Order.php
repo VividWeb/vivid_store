@@ -29,7 +29,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustom
 class Order
 {
     /** 
-     * @Id @Column(type="integer") 
+     * @Id @Column(type="integer", options={"unsigned"=true})
      * @GeneratedValue 
      */
     protected $oID;
