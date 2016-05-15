@@ -14,7 +14,7 @@ extract($vars);
         <div class="col-container">
             <div class="form-group vivid-store-col-2">
                 <label for="checkout-exp-month"><?=t("Month")?></label>
-                <?php echo $form->select('authnet-checkout-exp-month',array(
+                <?php echo $form->select('authnet-checkout-exp-month', array(
                     "01"=>"01 ".t("Jan"),
                     "02"=>"02 ".t("Feb"),
                     "03"=>"03 ".t("Mar"),
@@ -31,7 +31,7 @@ extract($vars);
             </div>
             <div class="form-group vivid-store-col-2">
                 <label for="checkout-exp-year"><?=t("Year")?></label>
-                <?php echo $form->select('authnet-checkout-exp-year',$years); ?>
+                <?php echo $form->select('authnet-checkout-exp-year', $years); ?>
             </div>
         </div>
     </div>    

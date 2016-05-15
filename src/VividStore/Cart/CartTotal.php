@@ -1,8 +1,7 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Cart;
+namespace Concrete\Package\VividStore\src\VividStore\Cart;
 
 use \Concrete\Core\Controller\Controller as RouteController;
-
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Tax\Tax as StoreTax;
@@ -10,7 +9,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCal
 
 class CartTotal extends RouteController
 {
-        
     public function getSubTotal()
     {
         echo StorePrice::format(StoreCalculator::getSubTotal());
@@ -32,5 +30,4 @@ class CartTotal extends RouteController
     {
         echo StoreCart::getTotalItemsInCart();
     }
-    
 }

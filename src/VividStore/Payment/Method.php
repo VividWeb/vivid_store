@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Payment;
+namespace Concrete\Package\VividStore\src\VividStore\Payment;
 
 use Concrete\Core\Foundation\Object as Object;
 use Database;
@@ -40,29 +40,64 @@ class Method extends Controller
     private $methodController;
 
     //Property Setters/Getters
-    public function setHandle($handle){ $this->pmHandle = $handle; }
-    public function setName($name){ $this->pmName = $name; }
-    public function setDisplayName($displayName){ $this->pmDisplayName = $displayName; }
-    public function setEnabled($bool){ $this->pmEnabled = $bool; }
-    public function setPackageID($id){ $this->pkgID = $id; }
+    public function setHandle($handle)
+    {
+        $this->pmHandle = $handle;
+    }
+    public function setName($name)
+    {
+        $this->pmName = $name;
+    }
+    public function setDisplayName($displayName)
+    {
+        $this->pmDisplayName = $displayName;
+    }
+    public function setEnabled($bool)
+    {
+        $this->pmEnabled = $bool;
+    }
+    public function setPackageID($id)
+    {
+        $this->pkgID = $id;
+    }
 
-    public function getID(){ return $this->pmID; }
-    public function getPaymentMethodID(){ return $this->pmID; }
-    public function getPaymentMethodHandle(){ return $this->pmHandle; }
-    public function getPaymentMethodName(){ return $this->pmName; }
+    public function getID()
+    {
+        return $this->pmID;
+    }
+    public function getPaymentMethodID()
+    {
+        return $this->pmID;
+    }
+    public function getPaymentMethodHandle()
+    {
+        return $this->pmHandle;
+    }
+    public function getPaymentMethodName()
+    {
+        return $this->pmName;
+    }
     public function getPaymentMethodDisplayName()
     {
-        if($this->pmDisplayName == ""){
+        if ($this->pmDisplayName == "") {
             return $this->pmName;
-        } else { return $this->pmDisplayName; }
+        } else {
+            return $this->pmDisplayName;
+        }
     }
-    public function isEnabled(){ return $this->pmEnabled; }
-    public function getPaymentMethodPkgID(){ return $this->pkgID; }
+    public function isEnabled()
+    {
+        return $this->pmEnabled;
+    }
+    public function getPaymentMethodPkgID()
+    {
+        return $this->pkgID;
+    }
 
 
     public function getMethodDirectory()
     {
-        if ($this->pkgID > 0){
+        if ($this->pkgID > 0) {
             $pkg = Package::getByID($this->pkgID);
             $dir = $pkg->getPackagePath()."/src/VividStore/Payment/Methods/".$this->pmHandle."/";
         }
@@ -77,7 +112,10 @@ class Method extends Controller
         $namespace = $namespace.'\\'.$className;
         $this->methodController = new $namespace();
     }
-    public function getMethodController(){ return $this->methodController; }
+    public function getMethodController()
+    {
+        return $this->methodController;
+    }
 
 
     public static function getByID($pmID)
@@ -146,7 +184,7 @@ class Method extends Controller
         } else {
             $methods = $em->createQuery('select sm from '.get_class().' sm')->getResult();
         }
-        foreach($methods as $method) {
+        foreach ($methods as $method) {
             $method->setMethodController();
         }
         return $methods;
@@ -162,7 +200,7 @@ class Method extends Controller
         $class = $this->getMethodController();
         $class->checkoutForm();
         $pkg = Package::getByID($this->pkgID);
-        View::element($this->pmHandle.'/checkout_form',array('vars'=>$class->getSets()),$pkg->getPackageHandle());
+        View::element($this->pmHandle.'/checkout_form', array('vars'=>$class->getSets()), $pkg->getPackageHandle());
     }
       
     public function renderDashboardForm()
@@ -170,14 +208,14 @@ class Method extends Controller
         $controller = $this->getMethodController();
         $controller->dashboardForm();
         $pkg = Package::getByID($this->pkgID);
-        View::element($this->pmHandle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
+        View::element($this->pmHandle.'/dashboard_form', array('vars'=>$controller->getSets()), $pkg->getPackageHandle());
     }
     public function renderRedirectForm()
     {
         $controller = $this->getMethodController();
         $controller->redirectForm();
         $pkg = Package::getByID($this->pkgID);
-        View::element($this->pmHandle.'/redirect_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
+        View::element($this->pmHandle.'/redirect_form', array('vars'=>$controller->getSets()), $pkg->getPackageHandle());
     }
     
     public function submitPayment()
@@ -187,12 +225,13 @@ class Method extends Controller
         return $class->submitPayment();
     }
 
-    public function getPaymentMinimum() {
+    public function getPaymentMinimum()
+    {
         return 0;
     }
 
-    public function getPaymentMaximum() {
+    public function getPaymentMaximum()
+    {
         return 1000000000; // raises pinky
     }
-      
 }

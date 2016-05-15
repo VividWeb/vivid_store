@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
+namespace Concrete\Package\VividStore\src\VividStore\Utilities;
 
 use Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
@@ -14,8 +14,8 @@ class Calculator
     {
         $cart = StoreCart::getCart();
         $subtotal = 0;
-        if($cart){
-            foreach ($cart as $cartItem){
+        if ($cart) {
+            foreach ($cart as $cartItem) {
                 $pID = $cartItem['product']['pID'];
                 $qty = $cartItem['product']['qty'];
                 $product = StoreProduct::getByID($pID);
@@ -23,26 +23,26 @@ class Calculator
                 if ($cartItem['product']['variation']) {
                     $product->setVariation($cartItem['product']['variation']);
                 }
-                if(is_object($product)){
+                if (is_object($product)) {
                     $productSubTotal = $product->getActivePrice() * $qty;
                     $subtotal = $subtotal + $productSubTotal;
                 }
             }
         }
-        return max($subtotal,0);
+        return max($subtotal, 0);
     }
     public static function getShippingTotal($smID = null)
     {
         $sessionShippingMethodID = Session::get('smID');
-        if($smID){
+        if ($smID) {
             $shippingMethod = StoreShippingMethod::getByID($smID);
-            Session::set('smID',$smID);
-        } elseif(!empty($sessionShippingMethodID)) {
+            Session::set('smID', $smID);
+        } elseif (!empty($sessionShippingMethodID)) {
             $shippingMethod = StoreShippingMethod::getByID($sessionShippingMethodID);
         } else {
             $shippingTotal = 0;
         }
-        if(is_object($shippingMethod)){
+        if (is_object($shippingMethod)) {
             $shippingTotal = $shippingMethod->getShippingMethodTypeMethod()->getRate();
         } else {
             $shippingTotal = 0;
@@ -60,26 +60,28 @@ class Calculator
         $taxTotal = 0;
         $taxes = self::getTaxTotals();
         $taxCalc = Config::get('vividstore.calculation');
-        if($taxes && $taxCalc != 'extract'){
-            foreach($taxes as $tax) {
+        if ($taxes && $taxCalc != 'extract') {
+            foreach ($taxes as $tax) {
                 $taxTotal += $tax['taxamount'];
             }
-        }        $shippingTotal = self::getShippingTotal();
+        }
+        $shippingTotal = self::getShippingTotal();
         $grandTotal = ($subTotal + $taxTotal + $shippingTotal);
 
         return $grandTotal;
     }
 
     // returns an array of formatted cart totals
-    public static function getTotals() {
+    public static function getTotals()
+    {
         $subTotal = self::getSubTotal();
         $taxes = StoreTax::getTaxes();
         $addedTaxTotal = 0;
         $includedTaxTotal = 0;
         $taxCalc = Config::get('vividstore.calculation');
 
-        if($taxes){
-            foreach($taxes as $tax) {
+        if ($taxes) {
+            foreach ($taxes as $tax) {
                 if ($taxCalc != 'extract') {
                     $addedTaxTotal += $tax['taxamount'];
                 } else {
@@ -98,7 +100,7 @@ class Calculator
     public static function convertToMM($size)
     {
         $storeSizeUnit = Config::get('vividstore.sizeUnit');
-        switch($storeSizeUnit){
+        switch ($storeSizeUnit) {
             case "in":
                 $mm = $size / 0.039370;
                 break;
@@ -114,7 +116,7 @@ class Calculator
     public static function convertFromMM($mmSize)
     {
         $storeSizeUnit = Config::get('vividstore.sizeUnit');
-        switch($storeSizeUnit){
+        switch ($storeSizeUnit) {
             case "in":
                 $size = $mmSize * 0.039370;
                 break;
@@ -131,7 +133,7 @@ class Calculator
     public static function convertToGrams($weight)
     {
         $storeWeightUnit = Config::get('vividstore.weightUnit');
-        switch($storeWeightUnit){
+        switch ($storeWeightUnit) {
             case "lb":
                 $grams = $weight / 0.0022046;
                 break;
@@ -148,7 +150,7 @@ class Calculator
     public static function convertFromGrams($grams)
     {
         $storeWeightUnit = Config::get('vividstore.weightUnit');
-        switch($storeWeightUnit){
+        switch ($storeWeightUnit) {
             case "lb":
                 $weight = $grams * 0.0022046;
                 break;

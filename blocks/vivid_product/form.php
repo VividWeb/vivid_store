@@ -51,14 +51,14 @@ $(function(){
 <legend><?=t("Product to include")?></legend>
 
 <div class="form-group">
-    <?=$form->label('productLocation',t("Choose a Product to show"))?>
-    <?=$form->select('productLocation',array('page'=>'Find product associated with this page','search'=>'Search a product'),$productLocation,array('onChange'=>'updateProductLocation();'))?>
+    <?=$form->label('productLocation', t("Choose a Product to show"))?>
+    <?=$form->select('productLocation', array('page'=>'Find product associated with this page', 'search'=>'Search a product'), $productLocation, array('onChange'=>'updateProductLocation();'))?>
 </div>
 
 <div class="form-group" id="product-search">
-    <?=$form->label('productSearch','Search for a product')?>
+    <?=$form->label('productSearch', 'Search for a product')?>
     <?=$form->text('productSearch')?>
-    <?=$form->hidden('pID',$pID)?>
+    <?=$form->hidden('pID', $pID)?>
     <div id="product-search-results">
         <ul id="results-list">
             
@@ -77,31 +77,31 @@ $(function(){
     <div class="col-xs-6">
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showProductName',1,!isset($showProductName)?true:$showProductName);?>
+                <?php echo $form->checkbox('showProductName', 1, !isset($showProductName)?true:$showProductName);?>
                 <?=t('Show Product Name')?>
             </label>
         </div>    
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showProductDescription',1,!isset($showProductDescription)?true:$showProductDescription);?>
+                <?php echo $form->checkbox('showProductDescription', 1, !isset($showProductDescription)?true:$showProductDescription);?>
                 <?=t('Show Short Description')?>
             </label>
         </div> 
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showProductDetails',1,!isset($showProductDetails)?true:$showProductDetails);?>
+                <?php echo $form->checkbox('showProductDetails', 1, !isset($showProductDetails)?true:$showProductDetails);?>
                 <?=t('Show Product Details')?>
             </label>
         </div>   
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showProductPrice',1,!isset($showProductPrice)?true:$showProductPrice);?>
+                <?php echo $form->checkbox('showProductPrice', 1, !isset($showProductPrice)?true:$showProductPrice);?>
                 <?=t('Show Price')?>
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showWeight',1,$showWeight);?>
+                <?php echo $form->checkbox('showWeight', 1, $showWeight);?>
                 <?=t('Show Weight')?>
             </label>
         </div>
@@ -109,31 +109,31 @@ $(function(){
     <div class="col-xs-6">
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showImage',1,!isset($showImage)?true:$showImage);?>
+                <?php echo $form->checkbox('showImage', 1, !isset($showImage)?true:$showImage);?>
                 <?=t('Show Product Image')?>
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showCartButton',1,!isset($showCartButton)?true:$showCartButton);?>
+                <?php echo $form->checkbox('showCartButton', 1, !isset($showCartButton)?true:$showCartButton);?>
                 <?=t('Show "Add to Cart" Button')?>
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showIsFeatured',1,$showIsFeatured);?>
+                <?php echo $form->checkbox('showIsFeatured', 1, $showIsFeatured);?>
                 <?=t('Show if it\'s featured')?>
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showGroups',1,!isset($showGroups)?true:$showGroups);?>
+                <?php echo $form->checkbox('showGroups', 1, !isset($showGroups)?true:$showGroups);?>
                 <?=t('Show Group Product is in')?>
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <?php echo $form->checkbox('showDimensions',1,$showDimensions);?>
+                <?php echo $form->checkbox('showDimensions', 1, $showDimensions);?>
                 <?=t('Show Dimensions')?>
             </label>
         </div>
@@ -143,7 +143,7 @@ $(function(){
 
 <div class="form-group">
     <?php echo $form->label('btnText', t("Add to Cart Button Text"))?>
-    <?php echo $form->text('btnText',$btnText)?>
+    <?php echo $form->text('btnText', $btnText)?>
 </div>
 
 

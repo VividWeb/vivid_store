@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Promotion;
+namespace Concrete\Package\VividStore\src\VividStore\Promotion;
 
 use Database;
 use Controller;
@@ -17,10 +17,19 @@ abstract class PromotionRewardTypeReward extends Controller
      */
     protected $promotionID;
 
-    public function setPromotionID($id){ $this->promotionID = $id; }
+    public function setPromotionID($id)
+    {
+        $this->promotionID = $id;
+    }
 
-    public function getID(){ return $this->id; }
-    public function getPromotionID(){ return $this->promotionID; }
+    public function getID()
+    {
+        return $this->id;
+    }
+    public function getPromotionID()
+    {
+        return $this->promotionID;
+    }
 
     abstract public static function getByID($id);
     abstract public function dashboardForm();
@@ -40,5 +49,4 @@ abstract class PromotionRewardTypeReward extends Controller
         $em->remove($this);
         $em->flush();
     }
-
 }

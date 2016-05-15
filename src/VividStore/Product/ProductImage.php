@@ -1,9 +1,8 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Product;
+namespace Concrete\Package\VividStore\src\VividStore\Product;
 
 use Database;
 use File;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 /**
@@ -12,7 +11,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
  */
 class ProductImage
 {
-    
     /** 
      * @Id @Column(type="integer") 
      * @GeneratedValue 
@@ -22,28 +20,50 @@ class ProductImage
     /**
      * @Column(type="integer")
      */
-    protected $pID; 
+    protected $pID;
     
     /**
      * @Column(type="integer")
      */
-    protected $pifID; 
+    protected $pifID;
     
     /**
      * @Column(type="integer")
      */
-    protected $piSort; 
+    protected $piSort;
     
-    private function setProductID($pID){ $this->pID = $pID; }
-    private function setFileID($pifID){ $this->pifID = $pifID; }
-    private function setSort($piSort){ $this->piSort = $piSort; }
+    private function setProductID($pID)
+    {
+        $this->pID = $pID;
+    }
+    private function setFileID($pifID)
+    {
+        $this->pifID = $pifID;
+    }
+    private function setSort($piSort)
+    {
+        $this->piSort = $piSort;
+    }
     
-    public function getID(){ return $this->piID; }
-    public function getProductID() { return $this->pID; }
-    public function getFileID() { return $this->pifID; }
-    public function getSort() { return $this->piSort; }
+    public function getID()
+    {
+        return $this->piID;
+    }
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+    public function getFileID()
+    {
+        return $this->pifID;
+    }
+    public function getSort()
+    {
+        return $this->piSort;
+    }
     
-    public static function getByID($piID) {
+    public static function getByID($piID)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductImage', $piID);
@@ -60,7 +80,7 @@ class ProductImage
     {
         $images = self::getImagesForProduct($product);
         $imageObjects = array();
-        foreach($images as $img){
+        foreach ($images as $img) {
             $imageObjects[] = File::getByID($img->getFileID());
         }
         return $imageObjects;
@@ -71,20 +91,20 @@ class ProductImage
         self::removeImagesForProduct($product);
         
         //add new ones.
-        for($i=0;$i<count($images['pifID']);$i++){
-            self::add($product->getProductID(),$images['pifID'][$i],$images['piSort'][$i]);
+        for ($i=0;$i<count($images['pifID']);$i++) {
+            self::add($product->getProductID(), $images['pifID'][$i], $images['piSort'][$i]);
         }
     }
 
     public static function removeImagesForProduct(StoreProduct $product)
     {
         $existingImages = self::getImagesForProduct($product);
-        foreach($existingImages as $img){
+        foreach ($existingImages as $img) {
             $img->delete();
         }
     }
     
-    public static function add($pID,$pifID,$piSort)
+    public static function add($pID, $pifID, $piSort)
     {
         $productImage = new self();
         $productImage->setProductID($pID);
@@ -107,5 +127,4 @@ class ProductImage
         $em->remove($this);
         $em->flush();
     }
-    
 }

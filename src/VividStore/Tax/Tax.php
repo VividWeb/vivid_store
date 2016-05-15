@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Tax;
+namespace Concrete\Package\VividStore\src\VividStore\Tax;
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
@@ -21,11 +21,13 @@ class Tax
         $taxes = array();
         if (count($taxRates) > 0) {
             foreach ($taxRates as $taxRate) {
-                if($taxRate->isTaxable()){
+                if ($taxRate->isTaxable()) {
                     $taxAmount = $taxRate->calculate();
                     if ($taxAmount > 0) {
                         $tax = true;
-                    } else { $tax = false; }
+                    } else {
+                        $tax = false;
+                    }
                     if ($format == true) {
                         $taxAmount = StorePrice::format($taxAmount);
                     }
@@ -49,8 +51,8 @@ class Tax
         $taxes = array();
         if (count($taxRates) > 0) {
             foreach ($taxRates as $taxRate) {
-                if($taxRate->isTaxable()){
-                    $taxAmount = $taxRate->calculateProduct($product,$qty);
+                if ($taxRate->isTaxable()) {
+                    $taxAmount = $taxRate->calculateProduct($product, $qty);
                     $taxes[] = array(
                         'name' => $taxRate->getTaxLabel(),
                         'taxamount' => $taxAmount,
@@ -60,7 +62,6 @@ class Tax
             }
         }
         return $taxes;
-        
     }
     public static function getConcatenatedTaxStrings()
     {
@@ -71,18 +72,18 @@ class Tax
         $taxIncludedTotal = array();
         $taxLabels = array();
 
-        foreach($taxes as $tax){
+        foreach ($taxes as $tax) {
             if ($taxCalc == 'extract') {
                 $taxIncludedTotal[] = $tax['taxamount'];
-            }  else {
+            } else {
                 $taxTotal[] = $tax['taxamount'];
             }
             $taxLabels[] = $tax['name'];
         }
 
-        $taxTotal = implode(',',$taxTotal);
-        $taxIncludedTotal = implode(',',$taxIncludedTotal);
-        $taxLabels = implode(',',$taxLabels);
+        $taxTotal = implode(',', $taxTotal);
+        $taxIncludedTotal = implode(',', $taxIncludedTotal);
+        $taxLabels = implode(',', $taxLabels);
 
         $taxStrings = array(
             'taxTotal' => $taxTotal,

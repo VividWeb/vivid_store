@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk;
+namespace Concrete\Package\VividStore\src\VividStore\Shipping\Clerk;
 
 use \DVDoug\BoxPacker\Packer as ClerkPacker;
 use Controller;
@@ -18,11 +18,11 @@ class ShippingClerk extends Controller
     {
         $packer = new ClerkPacker();
         $boxes = StoreClerkPackage::getPackages();
-        foreach($boxes as $box){
+        foreach ($boxes as $box) {
             $packer->addBox($box);
         }
         $cartItems = StoreCart::getCart();
-        foreach($cartItems as $cartItem){
+        foreach ($cartItems as $cartItem) {
             $product = StoreProduct::getByID((int)$cartItem['product']['pID']);
             $description = $product->getProductName();
             $width = StoreCalculator::convertToMM($product->getDimensions('w'));
@@ -35,7 +35,7 @@ class ShippingClerk extends Controller
                 
         try {
             $packages = $packer->pack();
-        } catch (Exception $e){
+        } catch (Exception $e) {
             var_dump($e);
         }
     }

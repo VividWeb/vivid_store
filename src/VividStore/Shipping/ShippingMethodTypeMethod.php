@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Shipping;
+namespace Concrete\Package\VividStore\src\VividStore\Shipping;
 
 use Database;
 use Controller;
@@ -25,15 +25,30 @@ abstract class ShippingMethodTypeMethod extends Controller
     protected $disableEnabled;
     
     
-    public function setShippingMethodID($smID){ $this->smID = $smID; }
-    public function enableDisableButton($bool = false){ $this->disableEnabled = $bool; }
+    public function setShippingMethodID($smID)
+    {
+        $this->smID = $smID;
+    }
+    public function enableDisableButton($bool = false)
+    {
+        $this->disableEnabled = $bool;
+    }
     
-    public function disableEnabled(){ return $this->disableEnabled; }
+    public function disableEnabled()
+    {
+        return $this->disableEnabled;
+    }
     
     abstract public static function getByID($smtmID);
     
-    public function getShippingMethodTypeMethodID(){ return $this->smtmID; }
-    public function getShippingMethodID() { return $this->smID; }
+    public function getShippingMethodTypeMethodID()
+    {
+        return $this->smtmID;
+    }
+    public function getShippingMethodID()
+    {
+        return $this->smID;
+    }
     
     abstract public function dashboardForm();
     abstract public function addMethodTypeMethod($data);
@@ -53,5 +68,4 @@ abstract class ShippingMethodTypeMethod extends Controller
         $em->remove($this);
         $em->flush();
     }
-    
 }

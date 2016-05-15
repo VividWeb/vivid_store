@@ -1,10 +1,8 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Cart;
+namespace Concrete\Package\VividStore\src\VividStore\Cart;
 
 use Session;
-use Config;
 use Database;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
@@ -12,16 +10,17 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\Product
 defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
 {
-    static protected $cart = null;
+    protected static $cart = null;
 
-    public static function getCart() {
+    public static function getCart()
+    {
 
         // this acts as a singleton, in that it wil only fetch the cart from the session and check it for validity once per request
         if (!isset(self::$cart)) {
             $cart = Session::get('vividstore.cart');
-            if(!is_array($cart)) {
-               Session::set('vividstore.cart',array());
-               $cart = array();
+            if (!is_array($cart)) {
+                Session::set('vividstore.cart', array());
+                $cart = array();
             }
 
             $db = Database::get();
@@ -29,7 +28,7 @@ class Cart
             $checkeditems = array();
             $update = false;
             // loop through and check if product hasn't been deleted. Remove from cart session if not found.
-            foreach($cart as $cartitem) {
+            foreach ($cart as $cartitem) {
                 $product = StoreProduct::getByID((int)$cartitem['product']['pID']);
 
                 if ($product) {
@@ -41,7 +40,7 @@ class Cart
 
                     $include = true;
 
-                    if ( $cartitem['product']['variation']) {
+                    if ($cartitem['product']['variation']) {
                         if (!StoreProductVariation::getByID($cartitem['product']['variation'])) {
                             $include = false;
                         }
@@ -91,7 +90,7 @@ class Cart
 
         $removeexistingexclusive  = false;
 
-        foreach(self::getCart() as $k=>$cart) {
+        foreach (self::getCart() as $k=>$cart) {
             $cartproduct = StoreProduct::getByID((int)$cart['product']['pID']);
 
             if ($cartproduct && $cartproduct->isExclusive()) {
@@ -104,7 +103,7 @@ class Cart
 
         // search for product options, if found, collect the id
         foreach ($cartItem['productAttributes'] as $name=>$value) {
-            if (substr( $name, 0, 3) == 'pog') {
+            if (substr($name, 0, 3) == 'pog') {
                 $optionItemIds[] = $value;
             }
         }
@@ -146,7 +145,6 @@ class Cart
                 }
 
                 $added = $newquantity - $existingproductcount;
-
             } else {
                 $added = 1;
                 $newquantity = 1;
@@ -170,7 +168,6 @@ class Cart
             }
 
             $added = $newquantity;
-
         }
 
         Session::set('vividstore.cart', $cart);
@@ -191,23 +188,21 @@ class Cart
          */
 
 
-        foreach(self::getCart() as $k=>$cart) {
+        foreach (self::getCart() as $k=>$cart) {
             //  check if product is the same id first.
-            if($cart['product']['pID'] == $cartItem['product']['pID']) {
+            if ($cart['product']['pID'] == $cartItem['product']['pID']) {
 
                 // check if the number of attributes is the same
-                if(count($cart['productAttributes']) == count($cartItem['productAttributes']) ) {
-
-                    if(empty($cartItem['productAttributes'])) {
-                      // if we have no attributes, it's a direct match
+                if (count($cart['productAttributes']) == count($cartItem['productAttributes'])) {
+                    if (empty($cartItem['productAttributes'])) {
+                        // if we have no attributes, it's a direct match
                       return array('exists'=>true,'cartItemKey'=>$k);
-
                     } else {
                         // otherwise loop through attributes
                         $attsmatch = true;
 
-                        foreach($cartItem['productAttributes'] as $key=>$value) {
-                            if( array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value ) {
+                        foreach ($cartItem['productAttributes'] as $key=>$value) {
+                            if (array_key_exists($key, $cart['productAttributes']) && $cart['productAttributes'][$key] == $value) {
                                 // attributes match, keep checking
                             } else {
                                 //different attributes means different "product".
@@ -225,8 +220,6 @@ class Cart
         }
 
         return array('exists'=>false,'cartItemKey'=>null);
-
-
     }
 
     public static function update($data)
@@ -264,7 +257,7 @@ class Cart
     {
         $cart = self::getCart();
         unset($cart[$instanceID]);
-        Session::set('vividstore.cart',$cart);
+        Session::set('vividstore.cart', $cart);
         self::$cart = null;
     }
 
@@ -276,10 +269,11 @@ class Cart
         self::$cart = null;
     }
     
-    public static function getTotalItemsInCart(){
+    public static function getTotalItemsInCart()
+    {
         $total = 0;
-        if(self::getCart()){
-            foreach(self::getCart() as $item){
+        if (self::getCart()) {
+            foreach (self::getCart() as $item) {
                 $subtotal = $item['product']['qty'];
                 $total = $total + $subtotal;
             }
@@ -287,23 +281,23 @@ class Cart
         return $total;
     }
 
-    public function isShippable() {
+    public function isShippable()
+    {
         $shippableItems = self::getShippableItems();
         $shippingMethods = StoreShippingMethod::getAvailableMethods();
-        if(count($shippingMethods) > 0){
-            if(count($shippableItems) > 0){
+        if (count($shippingMethods) > 0) {
+            if (count($shippableItems) > 0) {
                 return true;
-            } else{
+            } else {
                 return false;
             }
         } else {
-           return false;
+            return false;
         }
     }
 
     public function getShippableItems()
     {
-
         $shippableItems = array();
         //go through items
         if (self::getCart()) {
@@ -322,13 +316,13 @@ class Cart
     public function getCartWeight()
     {
         $totalWeight = 0;
-        if(self::getCart()){
-            foreach(self::getCart() as $item){
+        if (self::getCart()) {
+            foreach (self::getCart() as $item) {
                 $product = StoreProduct::getByID($item['product']['pID']);
-                if($product->isShippable()){
+                if ($product->isShippable()) {
                     $totalProductWeight = $product->getProductWeight() * $item['product']['qty'];
                     $totalWeight = $totalWeight + $totalProductWeight;
-                }      
+                }
             }
         }
         //only returns weight of shippable items.
@@ -337,9 +331,10 @@ class Cart
 
 
     // determines if a cart requires a customer to be logged in
-    public static function requiresLogin() {
-        if(self::getCart()){
-            foreach(self::getCart() as $item) {
+    public static function requiresLogin()
+    {
+        if (self::getCart()) {
+            foreach (self::getCart() as $item) {
                 $product = StoreProduct::getByID($item['product']['pID']);
                 if ($product) {
                     if (($product->hasUserGroups() || $product->hasDigitalDownload()) && !$product->createsLogin()) {
@@ -353,9 +348,10 @@ class Cart
     }
 
     // determines if the cart contains a product that will auto-create a user account
-    public function createsAccount() {
-        if(self::getCart()){
-            foreach(self::getCart() as $item) {
+    public function createsAccount()
+    {
+        if (self::getCart()) {
+            foreach (self::getCart() as $item) {
                 $product = StoreProduct::getByID($item['product']['pID']);
                 if ($product) {
                     if ($product->createsLogin()) {
@@ -367,5 +363,4 @@ class Cart
 
         return false;
     }
-
 }

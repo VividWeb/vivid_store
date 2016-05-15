@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\Attribute\Value;
+namespace Concrete\Package\VividStore\src\Attribute\Value;
 
 use Database;
 use \Concrete\Core\Attribute\Value\Value as Value;
@@ -8,8 +8,8 @@ use \Concrete\Core\Attribute\Value\Value as Value;
  * @Entity
  * @Table(name="VividStoreProductAttributeValues")
  */
-class StoreProductValue extends Value {
-
+class StoreProductValue extends Value
+{
     /**
      * @Id @Column(type="integer")
      */
@@ -25,11 +25,13 @@ class StoreProductValue extends Value {
      */
     protected $avID;
 
-    public function setProduct($product) {
+    public function setProduct($product)
+    {
         $this->product = $product;
     }
     
-    public static function getByID($avID) {
+    public static function getByID($avID)
+    {
         $cav = new StoreProductValue();
         $cav->load($avID);
         if ($cav->getAttributeValueID() == $avID) {
@@ -37,7 +39,8 @@ class StoreProductValue extends Value {
         }
     }
 
-    public function delete() {
+    public function delete()
+    {
         $db = Database::get();
         $db->Execute('delete from VividStoreProductAttributeValues where pID = ? and akID = ? and avID = ?', array(
             $this->product->getProductID(),

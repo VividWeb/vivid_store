@@ -2,15 +2,11 @@
 namespace Concrete\Package\VividStore\Controller\SinglePage;
 
 use PageController;
-use Database;
 use Core;
 use View;
-use Package;
 use Session;
 use Config;
-use Loader;
 use Page;
-
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
@@ -18,9 +14,8 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustom
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Checkout as StoreCheckoutUtility;
 
-class Checkout extends PageController
+class checkout extends PageController
 {
-
     public function __construct()
     {
         parent::__construct(Page::getByPath('/checkout/'));
@@ -32,42 +27,42 @@ class Checkout extends PageController
     }
     public function view()
     {
-        if(StoreCart::getTotalItemsInCart() == 0){
+        if (StoreCart::getTotalItemsInCart() == 0) {
             $this->redirect("/cart/");
         }
 
         $this->set('customer', $this->customer);
-        $this->set('form',Core::make("helper/form"));
+        $this->set('form', Core::make("helper/form"));
 
-        $this->set("states",Core::make('helper/lists/states_provinces')->getStates());
+        $this->set("states", Core::make('helper/lists/states_provinces')->getStates());
         $billingCountryArray = StoreCheckoutUtility::getCountryOptions();
         $shippingCountryArray = StoreCheckoutUtility::getCountryOptions('shipping');
-        $this->set("billingCountries",$billingCountryArray['countries']);
-        $this->set("shippingCountries",$shippingCountryArray['countries']);
-        $this->set("defaultBillingCountry",$billingCountryArray['defaultCountry']);
-        $this->set("defaultShippingCountry",$shippingCountryArray['defaultCountry']);
+        $this->set("billingCountries", $billingCountryArray['countries']);
+        $this->set("shippingCountries", $shippingCountryArray['countries']);
+        $this->set("defaultBillingCountry", $billingCountryArray['defaultCountry']);
+        $this->set("defaultShippingCountry", $shippingCountryArray['defaultCountry']);
 
         $totals = StoreCalculator::getTotals();
 
-        $this->set('subtotal',$totals['subTotal']);
-        $this->set('taxes',$totals['taxes']);
-        $this->set('taxtotal',$totals['taxTotal']);
-        $this->set('shippingtotal',$totals['shippingTotal']);
-        $this->set('total',$totals['total']);
+        $this->set('subtotal', $totals['subTotal']);
+        $this->set('taxes', $totals['taxes']);
+        $this->set('taxtotal', $totals['taxTotal']);
+        $this->set('shippingtotal', $totals['shippingTotal']);
+        $this->set('total', $totals['total']);
         $this->set('shippingEnabled', StoreCart::isShippable());
 
         $this->getFooterAssets();
 
         $enabledMethods = StorePaymentMethod::getEnabledMethods();
         $availableMethods = array();
-        foreach($enabledMethods as $em) {
+        foreach ($enabledMethods as $em) {
             $emmc = $em->getMethodController();
             if ($totals['total'] >= $emmc->getPaymentMinimum() && $totals['total'] <=  $emmc->getPaymentMaximum()) {
                 $availableMethods[] = $em;
             }
         }
 
-        $this->set("enabledPaymentMethods",$availableMethods);
+        $this->set("enabledPaymentMethods", $availableMethods);
     }
 
     public function getFooterAssets()
@@ -83,7 +78,7 @@ class Checkout extends PageController
     {
 
         //this is a really dirty check we should move to another class.
-        if($this->customer->isGuest() && ($this->requiresLogin || $this->guestCheckout == 'off' || ($this->guestCheckout == 'option' && $_GET['guest'] != '1'))){
+        if ($this->customer->isGuest() && ($this->requiresLogin || $this->guestCheckout == 'off' || ($this->guestCheckout == 'option' && $_GET['guest'] != '1'))) {
             return true;
         } else {
             return false;
@@ -101,16 +96,16 @@ class Checkout extends PageController
     public function getCartListElement()
     {
         $fileSystem = new \Illuminate\Filesystem\Filesystem;
-        if($fileSystem->exists(DIR_BASE.'/application/elements/cart_list.php')){
-            View::element('cart_list',array('cart'=>StoreCart::getCart()));
+        if ($fileSystem->exists(DIR_BASE.'/application/elements/cart_list.php')) {
+            View::element('cart_list', array('cart'=>StoreCart::getCart()));
         } else {
-            View::element('cart_list',array('cart'=>StoreCart::getCart()),'vivid_store');
+            View::element('cart_list', array('cart'=>StoreCart::getCart()), 'vivid_store');
         }
     }
     
     public function failed()
     {
-        $this->set('paymentErrors',Session::get('paymentErrors'));
+        $this->set('paymentErrors', Session::get('paymentErrors'));
         $this->view();
     }
     public function submit()
@@ -120,35 +115,34 @@ class Checkout extends PageController
         //process payment
         $pmHandle = $data['payment-method'];
         $pm = StorePaymentMethod::getByHandle($pmHandle);
-        if($pm === false){
+        if ($pm === false) {
             //There was no payment method enabled somehow.
             //so we'll force invoice.
             $pm = StorePaymentMethod::getByHandle('invoice');
         }
 
-        if($pm->getMethodController()->external == true){
+        if ($pm->getMethodController()->external == true) {
             $pmsess = Session::get('paymentMethod');
             $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
-            Session::set('paymentMethod',$pmsess);
-            $order = StoreOrder::add($data,$pm,null,'incomplete');
-            Session::set('orderID',$order->getOrderID());
+            Session::set('paymentMethod', $pmsess);
+            $order = StoreOrder::add($data, $pm, null, 'incomplete');
+            Session::set('orderID', $order->getOrderID());
             $this->redirect('/checkout/external');
         } else {
             $payment = $pm->submitPayment();
-            if($payment['error']==1){
+            if ($payment['error']==1) {
                 $pmsess = Session::get('paymentMethod');
                 $pmsess[$pm->getPaymentMethodID()] = $data['payment-method'];
-                Session::set('paymentMethod',$pmsess);
+                Session::set('paymentMethod', $pmsess);
                 $errors = $payment['errorMessage'];
-                Session::set('paymentErrors',$errors);
+                Session::set('paymentErrors', $errors);
                 $this->redirect("/checkout/failed#payment");
             } else {
                 $transactionReference = $payment['transactionReference'];
-                StoreOrder::add($data,$pm,$transactionReference);
+                StoreOrder::add($data, $pm, $transactionReference);
                 $this->redirect('/checkout/complete');
             }
         }
-
     }
     public function external()
     {
@@ -157,18 +151,14 @@ class Checkout extends PageController
         /*print_r($pm);
         exit();die();
         */
-        foreach($pm as $pmID=>$handle){
+        foreach ($pm as $pmID=>$handle) {
             $pm = StorePaymentMethod::getByID($pmID);
         }
         //$pm = PaymentMethod::getByHandle($pm[3]);
-        $this->set('pm',$pm);
-        $this->set('action',$pm->getMethodController()->getAction());
-
-
+        $this->set('pm', $pm);
+        $this->set('action', $pm->getMethodController()->getAction());
     }
     public function validate()
     {
-        
     }
-
 }

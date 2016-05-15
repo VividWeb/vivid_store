@@ -1,8 +1,7 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Product;
+namespace Concrete\Package\VividStore\src\VividStore\Product;
 
 use Database;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 /**
@@ -11,7 +10,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
  */
 class ProductLocation
 {
-    
     /** 
      * @Id @Column(type="integer") 
      * @GeneratedValue 
@@ -21,21 +19,37 @@ class ProductLocation
     /**
      * @Column(type="integer")
      */
-    protected $pID; 
+    protected $pID;
     
     /**
      * @Column(type="integer")
      */
-    protected $cID; 
+    protected $cID;
     
-    private function setProductID($pID){ $this->pID = $pID; }
-    private function setCollectionID($cID){ $this->cID = $cID; }
+    private function setProductID($pID)
+    {
+        $this->pID = $pID;
+    }
+    private function setCollectionID($cID)
+    {
+        $this->cID = $cID;
+    }
     
-    public function getID(){ return $this->id; }
-    public function getProductID() { return $this->pID; }
-    public function getCollectionID() { return $this->cID; }
+    public function getID()
+    {
+        return $this->id;
+    }
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+    public function getCollectionID()
+    {
+        return $this->cID;
+    }
     
-    public static function getByID($cID) {
+    public static function getByID($cID)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductLocation', $cID);
@@ -54,8 +68,8 @@ class ProductLocation
         self::removeLocationsForProduct($product);
         //add new ones.
         if (!empty($locations['cID'])) {
-            foreach($locations['cID'] as $cID){
-                self::add($product->getProductID(),$cID);
+            foreach ($locations['cID'] as $cID) {
+                self::add($product->getProductID(), $cID);
             }
         }
     }
@@ -63,12 +77,12 @@ class ProductLocation
     public static function removeLocationsForProduct(StoreProduct $product)
     {
         $existingLocations = self::getLocationsForProduct($product);
-        foreach($existingLocations as $location){
+        foreach ($existingLocations as $location) {
             $location->delete();
         }
     }
     
-    public static function add($pID,$cID)
+    public static function add($pID, $cID)
     {
         $location = new self();
         $location->setProductID($pID);
@@ -90,5 +104,4 @@ class ProductLocation
         $em->remove($this);
         $em->flush();
     }
-    
 }

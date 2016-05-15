@@ -3,13 +3,12 @@ namespace Concrete\Package\VividStore\Controller\SinglePage;
 
 use PageController;
 use View;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
-class Cart extends PageController
+class cart extends PageController
 {
     public function view()
     {
@@ -17,7 +16,6 @@ class Cart extends PageController
         $codesuccess = false;
 
         if ($this->isPost()) {
-
             if ($this->post('action') == 'update') {
                 $data = $this->post();
                 $result = StoreCart::update($data);
@@ -39,15 +37,14 @@ class Cart extends PageController
 
         $this->set('actiondata', $returndata);
 
-        $this->set('cart',StoreCart::getCart());
-        $this->set('total',StoreCalculator::getSubTotal());
+        $this->set('cart', StoreCart::getCart());
+        $this->set('total', StoreCalculator::getSubTotal());
         
         $this->requireAsset('javascript', 'jquery');
         $js = \Concrete\Package\VividStore\Controller::returnHeaderJS();
         $this->addFooterItem($js);
         $this->requireAsset('javascript', 'vivid-store');
         $this->requireAsset('css', 'vivid-store');
-
     }
     public function add()
     {
@@ -63,10 +60,10 @@ class Cart extends PageController
         $returndata = array('success'=>true,'quantity'=>(int)$data['quantity'],'added'=>$added,'product'=>$productdata, 'action'=>'add');
         echo json_encode($returndata);
         exit();
-
     }
 
-    public function code() {
+    public function code()
+    {
         StoreCart::storeCode($this->post('code'));
         exit();
     }

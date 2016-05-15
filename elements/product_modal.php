@@ -4,7 +4,7 @@
         <?php
             $imgObj = $product->getProductImageObj();
             $ih = Core::make("helper/image");
-            $thumb = $ih->getThumbnail($imgObj,400,999,false);
+            $thumb = $ih->getThumbnail($imgObj, 400, 999, false);
         ?>
         <img src="<?=$thumb->src?>">
     </div>
@@ -23,29 +23,36 @@
             <?php
             $optionGroups = $product->getProductOptionGroups();
             $optionItems = $product->getProductOptionItems();
-            foreach($optionGroups as $optionGroup){
+            foreach ($optionGroups as $optionGroup) {
                 ?>
                 <div class="product-option-group clearfix">
                     <label class="option-group-label"><?=$optionGroup->getName()?></label>
                     <select name="pog<?=$optionGroup->getID()?>">
                         <?php
-                        foreach($optionItems as $option){
-                            if($option->getProductOptionGroupID()==$optionGroup->getID()){?>
+                        foreach ($optionItems as $option) {
+                            if ($option->getProductOptionGroupID()==$optionGroup->getID()) {
+                                ?>
                                 <option value="<?=$option->getID()?>"><?=$option->getName()?></option>
-                            <?php }
+                            <?php 
+                            }
                         }//foreach
                         ?>
                     </select>
                 </div>
-            <?php } ?>
+            <?php 
+            } ?>
         </div>
         <input type="hidden" name="pID" value="<?=$product->getProductID()?>">
         <div class="product-modal-buttons">
-            <?php if($product->isSellable()){?>
+            <?php if ($product->isSellable()) {
+    ?>
             <a href="javascript:vividStore.addToCart(<?=$product->getProductID()?>,'modal')"><?=t("Add to Cart")?></a>
-            <?php } else {?>
+            <?php 
+} else {
+    ?>
                 <span class="out-of-stock-label"><?=t("Out of Stock")?></span>
-            <?php } ?>
+            <?php 
+} ?>
         </div>
     </div>
 </form>

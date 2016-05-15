@@ -1,8 +1,7 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Product;
+namespace Concrete\Package\VividStore\src\VividStore\Product;
 
 use Database;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 /**
@@ -25,15 +24,28 @@ class ProductUserGroup
     /**
      * @Column(type="integer")
      */
-    protected $gID; 
+    protected $gID;
     
-    private function setProductID($pID){ $this->pID = $pID; }
-    private function setUserGroupID($gID){ $this->gID = $gID; }
+    private function setProductID($pID)
+    {
+        $this->pID = $pID;
+    }
+    private function setUserGroupID($gID)
+    {
+        $this->gID = $gID;
+    }
     
-    public function getProductID(){ return $this->pID; }
-    public function getUserGroupID() { return $this->gID; }
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+    public function getUserGroupID()
+    {
+        return $this->gID;
+    }
     
-    public static function getByID($pgID) {
+    public static function getByID($pgID)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup', $pgID);
@@ -50,7 +62,7 @@ class ProductUserGroup
     {
         $userGroups = self::getUserGroupsForProduct($product);
         $groupIDs = array();
-        foreach($userGroups as $userGroup) {
+        foreach ($userGroups as $userGroup) {
             $groupIDs[] = $userGroup->getUserGroupID();
         }
         return $groupIDs;
@@ -72,12 +84,12 @@ class ProductUserGroup
     public static function removeUserGroupsForProduct(StoreProduct $product)
     {
         $existingUserGroups = self::getUserGroupsForProduct($product);
-        foreach($existingUserGroups as $group){
+        foreach ($existingUserGroups as $group) {
             $group->delete();
         }
     }
 
-    public static function add($pID,$gID)
+    public static function add($pID, $gID)
     {
         $productUserGroup = new self();
         $productUserGroup->setProductID($pID);
@@ -99,5 +111,4 @@ class ProductUserGroup
         $em->remove($this);
         $em->flush();
     }
-    
 }

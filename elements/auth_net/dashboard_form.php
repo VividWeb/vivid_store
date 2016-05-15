@@ -4,7 +4,7 @@ extract($vars);
 ?>
 <div class="form-group">
     <label><?=t('Test Mode')?></label>
-    <?php echo $form->select('authnetTestmode',array(false=>'No',true=>'Yes'),$authnetTestmode); ?>
+    <?php echo $form->select('authnetTestmode', array(false=>'No', true=>'Yes'), $authnetTestmode); ?>
 </div>
 
 <div class="form-group">

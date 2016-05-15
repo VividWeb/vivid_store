@@ -1,7 +1,6 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewards;
+namespace Concrete\Package\VividStore\src\VividStore\Promotion\PromotionRewards;
 
-use Package;
 use Database;
 use Core;
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewardType as StorePromotionRewardType;
@@ -34,15 +33,39 @@ class DiscountPromotionReward extends StorePromotionRewardTypeReward
      */
     protected $discountTarget;
 
-    public function setDiscountCalculation($calculation){ $this->discountCalculation = $calculation; }
-    public function setDiscountAmount($amount){ $this->discountAmount = $amount; }
-    public function setDiscountSubject($subject){ $this->discountSubject = $subject; }
-    public function setDiscountTarget($targetID){ $this->discountTarget = $targetID; }
+    public function setDiscountCalculation($calculation)
+    {
+        $this->discountCalculation = $calculation;
+    }
+    public function setDiscountAmount($amount)
+    {
+        $this->discountAmount = $amount;
+    }
+    public function setDiscountSubject($subject)
+    {
+        $this->discountSubject = $subject;
+    }
+    public function setDiscountTarget($targetID)
+    {
+        $this->discountTarget = $targetID;
+    }
 
-    public function getDiscountCalculation(){ return $this->discountCalculation; }
-    public function getDiscountAmount(){ return $this->discountAmount; }
-    public function getDiscountSubject(){ return $this->discountSubject; }
-    public function getDiscountTarget(){ return $this->discountTarget; }
+    public function getDiscountCalculation()
+    {
+        return $this->discountCalculation;
+    }
+    public function getDiscountAmount()
+    {
+        return $this->discountAmount;
+    }
+    public function getDiscountSubject()
+    {
+        return $this->discountSubject;
+    }
+    public function getDiscountTarget()
+    {
+        return $this->discountTarget;
+    }
     
     public static function getByID($id)
     {
@@ -52,10 +75,10 @@ class DiscountPromotionReward extends StorePromotionRewardTypeReward
     }
     public function dashboardForm()
     {
-        $this->set('form',Core::make("helper/form"));
+        $this->set('form', Core::make("helper/form"));
         $grouplist = StoreGroupList::getGroupList();
-        $this->set("grouplist",$grouplist);
-        $this->set("rewardType",StorePromotionRewardType::getByHandle('discount'));
+        $this->set("grouplist", $grouplist);
+        $this->set("rewardType", StorePromotionRewardType::getByHandle('discount'));
     }
     public static function addReward($data)
     {

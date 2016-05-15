@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\Attribute\Key;
+namespace Concrete\Package\VividStore\src\Attribute\Key;
 
 use Database;
 use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;
@@ -10,19 +10,20 @@ use \Concrete\Core\Attribute\Key\Key as Key;
  * @Entity
  * @Table(name="VividStoreOrderAttributeKeys")
  */
-class StoreOrderKey extends Key {
-
+class StoreOrderKey extends Key
+{
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
      */
     protected $akID;
 
-    public function getAttributes($oID, $method = 'getValue') {
+    public function getAttributes($oID, $method = 'getValue')
+    {
         $db = Database::connection();
         $values = $db->GetAll("select akID, avID from VividStoreOrderAttributeValues where oID = ?", array($oID));
         $avl = new AttributeValueList();
-        foreach($values as $val) {
+        foreach ($values as $val) {
             $ak = StoreOrderKey::getByID($val['akID']);
             if (is_object($ak)) {
                 $value = $ak->getAttributeValue($val['avID'], $method);
@@ -32,20 +33,23 @@ class StoreOrderKey extends Key {
         return $avl;
     }
     
-    public function load($akID) {
+    public function load($akID)
+    {
         parent::load($akID);
         $db = Database::get();
         $row = $db->GetRow("select * from VividStoreOrderAttributeKeys where akID = ?", array($akID));
         $this->setPropertiesFromArray($row);
     }
     
-    public function getAttributeValue($avID, $method = 'getValue') {
+    public function getAttributeValue($avID, $method = 'getValue')
+    {
         $av = StoreOrderValue::getByID($avID);
         $av->setAttributeKey($this);
         return $av->{$method}();
     }
        
-    public static function getByID($akID) {
+    public static function getByID($akID)
+    {
         $ak = new StoreOrderKey();
         $ak->load($akID);
         if ($ak->getAttributeKeyID() > 0) {
@@ -53,7 +57,8 @@ class StoreOrderKey extends Key {
         }
     }
 
-    public static function getByHandle($akHandle) {
+    public static function getByHandle($akHandle)
+    {
         $db = Database::get();
         $q = "SELECT ak.akID
             FROM AttributeKeys ak
@@ -71,11 +76,13 @@ class StoreOrderKey extends Key {
     }
     
     
-    public static function getList() {
+    public static function getList()
+    {
         return parent::getList('store_order');
     }
     
-    protected function saveAttribute($order, $value = false) {
+    protected function saveAttribute($order, $value = false)
+    {
         $av = $order->getAttributeValueObject($this, true);
         parent::saveAttribute($av, $value);
         $db = Database::get();
@@ -86,10 +93,10 @@ class StoreOrderKey extends Key {
             'avID' => $av->getAttributeValueID()
         ), array('oID', 'akID'));
         unset($av);
-        
     }
     
-    public static function add($type, $args, $pkg = false) {
+    public static function add($type, $args, $pkg = false)
+    {
         $ak = parent::add('store_order', $type, $args, $pkg);
         
         extract($args);
@@ -103,7 +110,8 @@ class StoreOrderKey extends Key {
         return $ak;
     }
     
-    public function update($args) {
+    public function update($args)
+    {
         $ak = parent::update($args);
         extract($args);
         $v = array($ak->getAttributeKeyID());
@@ -111,7 +119,8 @@ class StoreOrderKey extends Key {
         $db->Execute('REPLACE INTO VividStoreOrderAttributeKeys (akID) VALUES (?)', $v);
     }
 
-    public function delete() {
+    public function delete()
+    {
         parent::delete();
         $db = Database::get();
         $r = $db->Execute('select avID from VividStoreOrderAttributeValues where akID = ?', array($this->getAttributeKeyID()));
@@ -120,6 +129,4 @@ class StoreOrderKey extends Key {
         }
         $db->Execute('delete from VividStoreOrderAttributeValues where akID = ?', array($this->getAttributeKeyID()));
     }
-
-
 }

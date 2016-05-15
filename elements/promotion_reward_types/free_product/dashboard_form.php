@@ -48,5 +48,5 @@ extract($vars); ?>
 <script type="text/x-template" id="free-product-list-item-template">
     <input type="hidden" name="rewardTypeID[]" value="<%=rewardTypeID%>" />
     <input type="hidden" name="rewardTypeRewardID[]" value="<%=rewardTypeRewardID%>" />
-    <?=t('Free Product: %s','<strong><%=productName%></strong>')?>
+    <?=t('Free Product: %s', '<strong><%=productName%></strong>')?>
 </script>

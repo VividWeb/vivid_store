@@ -1,26 +1,35 @@
 <?php 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 $addViews = array('select_type','add','edit');
-if (isset($key)) { ?>
+if (isset($key)) {
+    ?>
     
     <form method="post" action="<?php echo $this->action('edit')?>" id="ccm-attribute-key-form">
     
-        <?php  Loader::element("attribute/type_form_required", array('category' => $category, 'type' => $type, 'key' => $key)); ?>
+        <?php  Loader::element("attribute/type_form_required", array('category' => $category, 'type' => $type, 'key' => $key));
+    ?>
     
     </form>
 
-<?php  } elseif (in_array($controller->getTask(),$addViews)) { ?>
+<?php 
+} elseif (in_array($controller->getTask(), $addViews)) {
+    ?>
 
 	
-	<?php  if (isset($type)) { ?>
+	<?php  if (isset($type)) {
+     ?>
 		<form method="post" action="<?php echo $this->action('add')?>" id="ccm-attribute-key-form">
-		    <?php  Loader::element("attribute/type_form_required", array('category' => $category, 'type' => $type)); ?>
+		    <?php  Loader::element("attribute/type_form_required", array('category' => $category, 'type' => $type));
+     ?>
 		</form>	
-	<?php  } ?>
+	<?php 
+ }
+    ?>
 	
-<?php  } else {
-
-    Loader::element('dashboard/attributes_table', array('category' => $category, 'attribs'=> $attrList, 'editURL' => '/dashboard/store/products/attributes')); ?>
+<?php 
+} else {
+    Loader::element('dashboard/attributes_table', array('category' => $category, 'attribs'=> $attrList, 'editURL' => '/dashboard/store/products/attributes'));
+    ?>
 
 	<form method="get" class="form-horizontal" action="<?php echo $this->action('select_type')?>" id="ccm-attribute-type-form">
     	
@@ -41,4 +50,5 @@ if (isset($key)) { ?>
 	</form>
 
 
-<?php  } ?>
+<?php 
+} ?>

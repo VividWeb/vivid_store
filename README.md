@@ -5,7 +5,7 @@ A Free eCommerce Add-on For Concrete5 5.7
 * [Read the license here](https://github.com/VividWeb/vivid_store/blob/development/LICENSE.txt)
 
 ## Installing from Command Line
-We no longer include the third party dependencies with our package (on GitHub at least), so a simple download of the repo will not work.
+We no longer include the third party dependencies in our GitHub repository. So, a simple download of the repo will not work.
 You'll need composer to install the dependencies.
 * Install in your packages folder
 ```

@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
+namespace Concrete\Package\VividStore\src\VividStore\Utilities;
 
 use Config;
 
@@ -17,7 +17,7 @@ class Price
     public static function formatFloat($price)
     {
         $price = floatval($price);
-        $price = number_format($price, 2, ".","");
+        $price = number_format($price, 2, ".", "");
         return $price;
     }
     public function getFloat($price)
@@ -32,5 +32,4 @@ class Price
 
         return $price;
     }
-    
 }

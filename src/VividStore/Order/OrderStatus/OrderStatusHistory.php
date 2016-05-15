@@ -1,15 +1,12 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus;
+namespace Concrete\Package\VividStore\src\VividStore\Order\OrderStatus;
 
-use \Concrete\Core\Foundation\Object as Object;
 use Database;
 use Events;
 use User;
-
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderEvent as StoreOrderEvent;
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
-use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatusHistory as StoreOrderStatusH;
 
 /**
  * @Entity
@@ -38,15 +35,39 @@ class OrderStatusHistory
     /** @Column(type="integer", nullable=true) */
     protected $uID;
 
-    public function setOrder($order){ $this->order = $order; }
-    public function setOrderStatusHandle($oshStatus){ $this->oshStatus = $oshStatus; }
-    public function setDate($date){ $this->oshDate = $date; }
-    public function setUserID($uID){ $this->uID = $uID; }
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+    public function setOrderStatusHandle($oshStatus)
+    {
+        $this->oshStatus = $oshStatus;
+    }
+    public function setDate($date)
+    {
+        $this->oshDate = $date;
+    }
+    public function setUserID($uID)
+    {
+        $this->uID = $uID;
+    }
 
-    public function getID(){ return $this->oshID; }
-    public function getOrder(){ return $this->order; }
-    public function getOrderStatusHandle(){ return $this->oshStatus; }
-    public function getOrderStatus(){ return StoreOrderStatus::getByHandle($this->getOrderStatusHandle()); }
+    public function getID()
+    {
+        return $this->oshID;
+    }
+    public function getOrder()
+    {
+        return $this->order;
+    }
+    public function getOrderStatusHandle()
+    {
+        return $this->oshStatus;
+    }
+    public function getOrderStatus()
+    {
+        return StoreOrderStatus::getByHandle($this->getOrderStatusHandle());
+    }
     public function getOrderStatusName()
     {
         $os = $this->getOrderStatus();
@@ -57,14 +78,26 @@ class OrderStatusHistory
             return null;
         }
     }
-    public function getDateTimeObject(){ return $this->oshDate; }
-    public function getDate($format = 'm/d/Y H:i:s'){ return $this->getDateTimeObject()->format($format); }
-    public function getUserID(){ return $this->uID; }
-    public function getUser(){ return User::getByUserID($this->getUserID()); }
+    public function getDateTimeObject()
+    {
+        return $this->oshDate;
+    }
+    public function getDate($format = 'm/d/Y H:i:s')
+    {
+        return $this->getDateTimeObject()->format($format);
+    }
+    public function getUserID()
+    {
+        return $this->uID;
+    }
+    public function getUser()
+    {
+        return User::getByUserID($this->getUserID());
+    }
     public function getUserName()
     {
         $u = $this->getUser();
-        if($u){
+        if ($u) {
             return $u->getUserName();
         }
     }
@@ -83,7 +116,7 @@ class OrderStatusHistory
         if (!$order->getOrderID()) {
             return false;
         }
-        $history = $em->getRepository(get_class())->findBy(array('order'=>$order->getOrderID()),array('oshDate'=>'DESC'));
+        $history = $em->getRepository(get_class())->findBy(array('order'=>$order->getOrderID()), array('oshDate'=>'DESC'));
         return $history;
     }
 
@@ -123,5 +156,4 @@ class OrderStatusHistory
         $em->remove($this);
         $em->flush();
     }
-
 }

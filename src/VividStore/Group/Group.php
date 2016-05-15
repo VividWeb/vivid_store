@@ -1,8 +1,7 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Group;
+namespace Concrete\Package\VividStore\src\VividStore\Group;
 
 use Database;
-use Concrete\Core\Foundation\Object as Object;
 
 /**
  * @Entity
@@ -10,7 +9,6 @@ use Concrete\Core\Foundation\Object as Object;
  */
 class Group
 {
-    
     /** 
      * @Id @Column(type="integer") 
      * @GeneratedValue 
@@ -20,14 +18,24 @@ class Group
     /**
      * @Column(type="string")
      */
-    protected $groupName; 
+    protected $groupName;
     
-    private function setGroupName($groupName){ $this->groupName = $groupName; }
+    private function setGroupName($groupName)
+    {
+        $this->groupName = $groupName;
+    }
     
-    public function getGroupName(){ return $this->groupName; }
-    public function getGroupID() { return $this->gID; }
+    public function getGroupName()
+    {
+        return $this->groupName;
+    }
+    public function getGroupID()
+    {
+        return $this->gID;
+    }
     
-    public static function getByID($gID) {
+    public static function getByID($gID)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Group\Group', $gID);
@@ -61,5 +69,4 @@ class Group
         $em->remove($this);
         $em->flush();
     }
-    
 }

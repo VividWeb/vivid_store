@@ -7,11 +7,11 @@ $taxCalc = Config::get('vividstore.calculation');
 $dh = Core::make('helper/date');
 
 if ($taxCalc == 'extract') {
-	$taxValue = 'includedTaxTotal';
-	$extraTaxLable =  t('Incl.');
+    $taxValue = 'includedTaxTotal';
+    $extraTaxLable =  t('Incl.');
 } else {
-	$taxValue = 'taxTotal';
-	$extraTaxLable = '';
+    $taxValue = 'taxTotal';
+    $extraTaxLable = '';
 }
 ?>
 
@@ -112,20 +112,20 @@ $(function(){
             );
         ?>
 	    
-	    labels: [ <?php for($i=0;$i<6;$i++){
-                if($i!=5){
-                    echo "'".$months[$i]->format("M")."',";
-                } else {
-                    echo "'".$months[$i]->format("M")."'";
-                }
-            } ?> ],
+	    labels: [ <?php for ($i=0;$i<6;$i++) {
+    if ($i!=5) {
+        echo "'".$months[$i]->format("M")."',";
+    } else {
+        echo "'".$months[$i]->format("M")."'";
+    }
+} ?> ],
 		// Our series array that contains series objects or in this case series data arrays
 	    series: [
 	    	[
 				<?php 
-                    for($i=0;$i<6;$i++){
+                    for ($i=0;$i<6;$i++) {
                         $report = SalesReport::getByMonth($months[$i]->format('Y-M'));
-                        if($i==5){
+                        if ($i==5) {
                             echo "{meta: '".t('Total')."', value: ".$report['total']."}";
                         } else {
                             echo "{meta: '".t('Total')."', value: ".$report['total']."},";
@@ -135,9 +135,9 @@ $(function(){
 			],
 			[
 				<?php 
-                    for($i=0;$i<6;$i++){
+                    for ($i=0;$i<6;$i++) {
                         $report = SalesReport::getByMonth($months[$i]->format('Y-M'));
-                        if($i==5){
+                        if ($i==5) {
                             echo "{meta: '".t('Products')."', value: ".$report['productTotal']."}";
                         } else {
                             echo "{meta: '".t('Products')."', value: ".$report['productTotal']."},";
@@ -147,9 +147,9 @@ $(function(){
 			],
 			[
 				<?php 
-                    for($i=0;$i<6;$i++){
+                    for ($i=0;$i<6;$i++) {
                         $report = SalesReport::getByMonth($months[$i]->format('Y-M'));
-                        if($i==5){
+                        if ($i==5) {
                             echo "{meta: '".t('Shipping')."', value: ".$report['shippingTotal']."}";
                         } else {
                             echo "{meta: '".t('Shipping')."', value: ".$report['shippingTotal']."},";
@@ -229,28 +229,32 @@ $(function(){
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach($orders as $o){?>
+		<?php foreach ($orders as $o) {
+    ?>
 		<tr>
-			<td><a href="<?=URL::to('/dashboard/store/orders/order',$o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
+			<td><a href="<?=URL::to('/dashboard/store/orders/order', $o->getOrderID())?>"><?=$o->getOrderID()?></a></td>
 			<td><?=$dh->formatDateTime($o->getOrderDate())?></td>
 			<td><?=Price::format($o->getSubTotal())?></td>
 			<td><?=Price::format($o->getShippingTotal())?></td>
 			<td>
 				<?php
-				$tax = $o->getTaxTotal();
-				$includedTax = $o->getIncludedTaxTotal();
-				if ($tax) {
-					echo Price::format($tax);
-				} elseif ($includedTax) {
-					echo Price::format($includedTax);
-				}
-				?>
+                $tax = $o->getTaxTotal();
+    $includedTax = $o->getIncludedTaxTotal();
+    if ($tax) {
+        echo Price::format($tax);
+    } elseif ($includedTax) {
+        echo Price::format($includedTax);
+    }
+    ?>
 			</td>
 			<td><?=Price::format($o->getTotal())?></td>
 		</tr>
-		<?php } ?>
+		<?php 
+} ?>
 	</tbody>
 </table>
-<?php if ($paginator->getTotalPages() > 1) { ?>
+<?php if ($paginator->getTotalPages() > 1) {
+    ?>
     <?= $pagination ?>
-<?php } ?>
+<?php 
+} ?>

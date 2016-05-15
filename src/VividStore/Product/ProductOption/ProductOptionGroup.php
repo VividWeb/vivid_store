@@ -1,8 +1,7 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Product\ProductOption;
+namespace Concrete\Package\VividStore\src\VividStore\Product\ProductOption;
 
 use Database;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 /**
@@ -11,7 +10,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
  */
 class ProductOptionGroup
 {
-    
     /** 
      * @Id @Column(type="integer") 
      * @GeneratedValue 
@@ -21,7 +19,7 @@ class ProductOptionGroup
     /**
      * @Column(type="integer")
      */
-    protected $pID; 
+    protected $pID;
     
     /**
      * @Column(type="string")
@@ -33,17 +31,42 @@ class ProductOptionGroup
      */
     protected $pogSort;
 
-    private function setID($pogID){ $this->pogID = $pogID; }
-    private function setProductID($pID){ $this->pID = $pID; }
-    private function setName($name){ $this->pogName = $name; }
-    private function setSort($sort){ $this->pogSort = $sort; }
+    private function setID($pogID)
+    {
+        $this->pogID = $pogID;
+    }
+    private function setProductID($pID)
+    {
+        $this->pID = $pID;
+    }
+    private function setName($name)
+    {
+        $this->pogName = $name;
+    }
+    private function setSort($sort)
+    {
+        $this->pogSort = $sort;
+    }
     
-    public function getID(){ return $this->pogID; }
-    public function getProductID() { return $this->pID; }
-    public function getName() { return $this->pogName; }
-    public function getSort() { return $this->pogSort; }
+    public function getID()
+    {
+        return $this->pogID;
+    }
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+    public function getName()
+    {
+        return $this->pogName;
+    }
+    public function getSort()
+    {
+        return $this->pogSort;
+    }
     
-    public static function getByID($id) {
+    public static function getByID($id)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup', $id);
@@ -64,26 +87,26 @@ class ProductOptionGroup
 
         //clear out existing product option groups
         $existingOptionGroups = self::getOptionGroupsForProduct($product);
-        foreach($existingOptionGroups as $optionGroup){
+        foreach ($existingOptionGroups as $optionGroup) {
             if (!in_array($optionGroup->getID(), $excluding)) {
                 $optionGroup->delete();
             }
         }
     }
     
-    public static function add($product,$name,$sort)
+    public static function add($product, $name, $sort)
     {
         $productOptionGroup = new self();
         $pID = $product->getProductID();
-        return self::addOrUpdate($pID,$name,$sort,$productOptionGroup);
+        return self::addOrUpdate($pID, $name, $sort, $productOptionGroup);
     }
-    public function update($product,$name,$sort)
+    public function update($product, $name, $sort)
     {
         $productOptionGroup = $this;
         $pID = $product->getProductID();
-        return self::addOrUpdate($pID,$name,$sort,$productOptionGroup);
+        return self::addOrUpdate($pID, $name, $sort, $productOptionGroup);
     }
-    public static function addOrUpdate($pID,$name,$sort,$obj)
+    public static function addOrUpdate($pID, $name, $sort, $obj)
     {
         $obj->setProductID($pID);
         $obj->setName($name);
@@ -105,5 +128,4 @@ class ProductOptionGroup
         $em->remove($this);
         $em->flush();
     }
-    
 }

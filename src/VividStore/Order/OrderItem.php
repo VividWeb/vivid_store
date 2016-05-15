@@ -1,10 +1,7 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Order;
+namespace Concrete\Package\VividStore\src\VividStore\Order;
 
 use Database;
-use User;
-use UserInfo;
-
 use Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use Concrete\Package\VividStore\Src\VividStore\Order\OrderItemOption as StoreOrderItemOption;
 use Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
@@ -68,26 +65,83 @@ class OrderItem
      */
     protected $oiQty;
 
-    public function getID(){ return $this->oiID; }
-    public function getProductID(){ return $this->pID; }
-    public function getOrder(){ return $this->order; }
-    public function getProductName(){ return $this->oiProductName; }
-    public function getSKU(){ return $this->oiSKU; }
-    public function getPricePaid(){ return $this->oiPricePaid; }
-    public function getTax(){ return $this->oiTax; }
-    public function getTaxIncluded(){ return $this->oiTaxIncluded; }
-    public function getTaxName(){ return $this->oiTaxName; }
-    public function getQty(){ return $this->oiQty; }
+    public function getID()
+    {
+        return $this->oiID;
+    }
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+    public function getOrder()
+    {
+        return $this->order;
+    }
+    public function getProductName()
+    {
+        return $this->oiProductName;
+    }
+    public function getSKU()
+    {
+        return $this->oiSKU;
+    }
+    public function getPricePaid()
+    {
+        return $this->oiPricePaid;
+    }
+    public function getTax()
+    {
+        return $this->oiTax;
+    }
+    public function getTaxIncluded()
+    {
+        return $this->oiTaxIncluded;
+    }
+    public function getTaxName()
+    {
+        return $this->oiTaxName;
+    }
+    public function getQty()
+    {
+        return $this->oiQty;
+    }
 
-    public function setProductID($productid) { $this->pID = $productid; }
-    public function setOrder($order){ $this->order = $order; }
-    public function setProductName($oiProductName){ $this->oiProductName = $oiProductName; }
-    public function setSKU($oiSKU){ $this->oiSKU = $oiSKU; }
-    public function setPricePaid($oiPricePaid){ $this->oiPricePaid = $oiPricePaid; }
-    public function setTax($oitax){ $this->oiTax = $oitax; }
-    public function setTaxIncluded($oiTaxIncluded){ $this->oiTaxIncluded = $oiTaxIncluded; }
-    public function setTaxName($oiTaxName){ $this->oiTaxName = $oiTaxName; }
-    public function setQty($oiQty){ $this->oiQty = $oiQty; }
+    public function setProductID($productid)
+    {
+        $this->pID = $productid;
+    }
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+    public function setProductName($oiProductName)
+    {
+        $this->oiProductName = $oiProductName;
+    }
+    public function setSKU($oiSKU)
+    {
+        $this->oiSKU = $oiSKU;
+    }
+    public function setPricePaid($oiPricePaid)
+    {
+        $this->oiPricePaid = $oiPricePaid;
+    }
+    public function setTax($oitax)
+    {
+        $this->oiTax = $oitax;
+    }
+    public function setTaxIncluded($oiTaxIncluded)
+    {
+        $this->oiTaxIncluded = $oiTaxIncluded;
+    }
+    public function setTaxName($oiTaxName)
+    {
+        $this->oiTaxName = $oiTaxName;
+    }
+    public function setQty($oiQty)
+    {
+        $this->oiQty = $oiQty;
+    }
 
     public static function getByID($oiID)
     {
@@ -168,13 +222,13 @@ class OrderItem
     public function getProductOptionGroupNameByID($id)
     {
         $db = Database::connection();
-        $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroups WHERE pogID=?",$id);
+        $optionGroup = $db->GetRow("SELECT * FROM VividStoreProductOptionGroups WHERE pogID=?", $id);
         return $optionGroup['pogName'];
     }
-     public function getProductOptionValueByID($id)
+    public function getProductOptionValueByID($id)
     {
         $db = Database::connection();
-        $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?",$id);
+        $optionItem = $db->GetRow("SELECT * FROM VividStoreProductOptionItems WHERE poiID=?", $id);
         return $optionItem['poiName'];
     }
     public function getProductObject($pID = null)
@@ -184,7 +238,7 @@ class OrderItem
 
     public function removeOrderItemsByOrder($order)
     {
-        foreach($order->getOrderItems() as $orderItem){
+        foreach ($order->getOrderItems() as $orderItem) {
             //TODO delete the options with this.
             $orderItem->delete();
         }

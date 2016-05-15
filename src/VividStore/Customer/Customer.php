@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\Vividstore\Customer;
+namespace Concrete\Package\VividStore\src\VividStore\Customer;
 
 use Session;
 use User;
@@ -8,28 +8,30 @@ use Core;
 use Config;
 use Page;
 
-
 class Customer
 {
     protected $ui;
 
-    public function __construct($uID = null) {
+    public function __construct($uID = null)
+    {
         $u = new User();
 
         if ($u->isLoggedIn()) {
             $this->ui = UserInfo::getByID($u->getUserID());
-        } elseif($uID) {
+        } elseif ($uID) {
             $this->ui = UserInfo::getByID($uID);
         } else {
             $this->ui = null;
         }
     }
 
-    public function getUserInfo() {
+    public function getUserInfo()
+    {
         return $this->ui;
     }
 
-    public function setValue($handle, $value) {
+    public function setValue($handle, $value)
+    {
         if ($this->isGuest()) {
             Session::set('vivid_' . $handle, $value);
         } else {
@@ -37,7 +39,8 @@ class Customer
         }
     }
 
-    public function getValue($handle) {
+    public function getValue($handle)
+    {
         if ($this->isGuest()) {
             $val = Session::get('vivid_' .$handle);
 
@@ -51,7 +54,8 @@ class Customer
         }
     }
 
-    public function getValueArray($handle) {
+    public function getValueArray($handle)
+    {
         if ($this->isGuest()) {
             $val = Session::get('vivid_' .$handle);
             return $val;
@@ -60,11 +64,13 @@ class Customer
         }
     }
 
-    public function isGuest() {
+    public function isGuest()
+    {
         return is_null($this->ui);
     }
 
-    public function getUserID(){
+    public function getUserID()
+    {
         if ($this->isGuest()) {
             return 0;
         } else {
@@ -72,7 +78,8 @@ class Customer
         }
     }
 
-    public function getEmail(){
+    public function getEmail()
+    {
         if ($this->isGuest()) {
             return Session::get('vivid_email');
         } else {
@@ -80,22 +87,25 @@ class Customer
         }
     }
 
-    public function setEmail($email){
+    public function setEmail($email)
+    {
         Session::set('vivid_email', $email);
     }
 
-    public function getLastOrderID(){
+    public function getLastOrderID()
+    {
         return Session::get('vivid_lastOrderID');
     }
 
-    public function setLastOrderID($id){
+    public function setLastOrderID($id)
+    {
         Session::set('vivid_lastOrderID', $id);
     }
 
     public function createCustomer()
     {
         $customer = new self();
-        if($customer->isGuest()){
+        if ($customer->isGuest()) {
             $email = $customer->getEmail();
             $user = UserInfo::getByEmail($email);
 
@@ -168,12 +178,12 @@ class Customer
         $groups = array();
         $customer = new Customer();
         $orderItems = $order->getOrderItems();
-        foreach($orderItems as $orderItem){
+        foreach ($orderItems as $orderItem) {
             $product = $orderItem->getProductObject();
             if ($product && $product->hasUserGroups()) {
                 $productUserGroups = $product->getProductUserGroups();
 
-                foreach($productUserGroups as $pug) {
+                foreach ($productUserGroups as $pug) {
                     $groups[] = \Group::getByID($pug->getUserGroupID());
                 }
             }
@@ -186,6 +196,4 @@ class Customer
             }
         }
     }
-
-
 }

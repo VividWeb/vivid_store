@@ -34,9 +34,11 @@ extract($vars); ?>
             <div class="form-group">
                 <label class="form-label" for="discountTarget"><?=t("Group to discount")?></label>
                 <select name="discountTarget" id="discountTarget" class="form-control">
-                    <?php foreach ($grouplist as $group) { ?>
+                    <?php foreach ($grouplist as $group) {
+    ?>
                         <option value="<?=$group->getGroupID()?>"><?=$group->getGroupName()?></option>
-                    <?php } ?>
+                    <?php 
+} ?>
                 </select>
             </div>
         </div>
@@ -106,5 +108,5 @@ extract($vars); ?>
 <script type="text/x-template" id="discount-list-item-template">
     <input type="hidden" name="rewardTypeID[]" value="<%=rewardTypeID%>" />
     <input type="hidden" name="rewardTypeRewardID[]" value="<%=rewardTypeRewardID%>" />
-    <?=t('%s off of %s','<strong><%=discountAmount%></strong>', '<strong><%=discountTarget%></strong>')?>
+    <?=t('%s off of %s', '<strong><%=discountAmount%></strong>', '<strong><%=discountTarget%></strong>')?>
 </script>

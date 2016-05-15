@@ -27,16 +27,16 @@
                     <h3><?php echo t('Currency Settings');?></h3>
 
                     <div class="form-group">
-                        <?php echo $form->label('symbol',t('Currency Symbol')); ?>
-                        <?php echo $form->text('symbol',Config::get('vividstore.symbol'),array("style"=>"width:80px;"));?>
+                        <?php echo $form->label('symbol', t('Currency Symbol')); ?>
+                        <?php echo $form->text('symbol', Config::get('vividstore.symbol'), array("style"=>"width:80px;"));?>
                     </div>
                     <div class="form-group">
-                        <?php echo $form->label('thousand',t('Thousands Separator %se.g. , or a space%s', "<small>", "</small>")); ?>
-                        <?php echo $form->text('thousand',Config::get('vividstore.thousand'),array("style"=>"width:60px;"));?>
+                        <?php echo $form->label('thousand', t('Thousands Separator %se.g. , or a space%s', "<small>", "</small>")); ?>
+                        <?php echo $form->text('thousand', Config::get('vividstore.thousand'), array("style"=>"width:60px;"));?>
                     </div>
                     <div class="form-group">
-                        <?php echo $form->label('whole',t('Whole Number Separator %se.g. period or a comma%s', "<small>", "</small>")); ?>
-                        <?php echo $form->text('whole',Config::get('vividstore.whole'),array("style"=>"width:60px;")); ?>
+                        <?php echo $form->label('whole', t('Whole Number Separator %se.g. period or a comma%s', "<small>", "</small>")); ?>
+                        <?php echo $form->text('whole', Config::get('vividstore.whole'), array("style"=>"width:60px;")); ?>
                     </div>
             
                 </div><!-- #settings-currency -->
@@ -46,7 +46,7 @@
 
                     <div class="form-group">
                         <label for="calculation"><?php echo t("Are Prices Entered with Tax Included?")?></label>
-                        <?php echo $form->select('calculation',array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"),'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")),Config::get('vividstore.calculation')); ?>
+                        <?php echo $form->select('calculation', array('add'=>t("No, I will enter product prices EXCLUSIVE of tax"), 'extract'=>t("Yes, I will enter product prices INCLUSIVE of tax")), Config::get('vividstore.calculation')); ?>
                     </div>
                     
                 </div>
@@ -57,16 +57,16 @@
                     <div class="row">
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <?php echo $form->label('weightUnit',t('Units for Weight'));?>
+                                <?php echo $form->label('weightUnit', t('Units for Weight'));?>
                                 <?php // do not add other units to this list. these are specific to making calculated shipping work ?>
-                                <?php echo $form->select('weightUnit',array('lb'=>t('lb'),'kg'=>t('kg'),'g'=>t('g')),Config::get('vividstore.weightUnit'));?>
+                                <?php echo $form->select('weightUnit', array('lb'=>t('lb'), 'kg'=>t('kg'), 'g'=>t('g')), Config::get('vividstore.weightUnit'));?>
                             </div>
                         </div> 
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <?php echo $form->label('sizeUnit',t('Units for Size'));?>
+                                <?php echo $form->label('sizeUnit', t('Units for Size'));?>
                                 <?php // do not add other units to this list. these are specific to making calculated shipping work ?>
-                                <?php echo $form->select('sizeUnit',array('in'=>t('in'),'cm'=>t('cm'),'mm'=>t('mm')),Config::get('vividstore.sizeUnit'));?>
+                                <?php echo $form->select('sizeUnit', array('in'=>t('in'), 'cm'=>t('cm'), 'mm'=>t('mm')), Config::get('vividstore.sizeUnit'));?>
                             </div>
                         </div>                        
                     </div>
@@ -77,8 +77,9 @@
                 <div class="col-sm-7 store-pane" id="settings-payments">
                     <h3><?php echo t("Payment Methods")?></h3>
                     <?php
-                        if($installedPaymentMethods){
-                            foreach($installedPaymentMethods as $pm){?>
+                        if ($installedPaymentMethods) {
+                            foreach ($installedPaymentMethods as $pm) {
+                                ?>
                             
                             <div class="panel panel-default">
                             
@@ -88,17 +89,20 @@
                                         <input type="hidden" name="paymentMethodHandle[<?php echo $pm->getPaymentMethodID()?>]" value="<?php echo $pm->getPaymentMethodHandle()?>">
                                         <label><?php echo t("Enabled")?></label>
                                         <?php
-                                            echo $form->select("paymentMethodEnabled[".$pm->getPaymentMethodID()."]", array(0=>"No",1=>"Yes"),$pm->isEnabled());
-                                        ?>
+                                            echo $form->select("paymentMethodEnabled[".$pm->getPaymentMethodID()."]", array(0=>"No", 1=>"Yes"), $pm->isEnabled());
+                                ?>
                                     </div>
-                                    <div id="paymentMethodForm-<?php echo $pm->getPaymentMethodID(); ?>" style="display:<?php echo $pm->isEnabled() ? 'block':'none'; ?>">
+                                    <div id="paymentMethodForm-<?php echo $pm->getPaymentMethodID();
+                                ?>" style="display:<?php echo $pm->isEnabled() ? 'block':'none';
+                                ?>">
                                         <div class="form-group">
                                             <label><?php echo t("Display Name (on checkout)")?></label>
-                                            <?php echo $form->text('paymentMethodDisplayName['.$pm->getPaymentMethodID().']',$pm->getPaymentMethodDisplayName()); ?>
+                                            <?php echo $form->text('paymentMethodDisplayName['.$pm->getPaymentMethodID().']', $pm->getPaymentMethodDisplayName());
+                                ?>
                                         </div>
                                         <?php
                                             $pm->renderDashboardForm();
-                                        ?>
+                                ?>
                                     </div>
                                 </div>
                             
@@ -128,32 +132,48 @@
                 <div class="col-sm-7 store-pane" id="settings-order-statuses">
                     <h3><?php echo t("Order Statuses")?></h3>
                     <?php
-                    if(count($orderStatuses)>0){ ?>
+                    if (count($orderStatuses)>0) {
+                        ?>
                         <div class="panel panel-default">
 
                             <table class="table" id="orderStatusTable">
                                 <thead>
                                 <tr>
                                     <th rowspan="1">&nbsp;</th>
-                                    <th rowspan="1"><?php echo t('Display Name'); ?></th>
-                                    <th rowspan="1"><?php echo t('Default Status'); ?></th>
-                                    <th colspan="2" style="display:none;"><?php echo t('Send Change Notifications to...'); ?></th>
+                                    <th rowspan="1"><?php echo t('Display Name');
+                        ?></th>
+                                    <th rowspan="1"><?php echo t('Default Status');
+                        ?></th>
+                                    <th colspan="2" style="display:none;"><?php echo t('Send Change Notifications to...');
+                        ?></th>
                                 </tr>
                                 <tr style="display:none;">
-                                    <th><?php echo t('Site'); ?></th>
-                                    <th><?php echo t('Customer'); ?></th>
+                                    <th><?php echo t('Site');
+                        ?></th>
+                                    <th><?php echo t('Customer');
+                        ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php foreach($orderStatuses as $orderStatus){?>
+                                <?php foreach ($orderStatuses as $orderStatus) {
+    ?>
                                     <tr>
-                                        <td class="sorthandle"><input type="hidden" name="osID[]" value="<?php echo $orderStatus->getID(); ?>"><i class="fa fa-arrows-v"></i></td>
-                                        <td><input type="text" name="osName[]" value="<?php echo $orderStatus->getName(); ?>" placeholder="<?php echo $orderStatus->getReadableHandle(); ?>" class="form-control ccm-input-text"></td>
-                                        <td><input type="radio" name="osIsStartingStatus" value="<?php echo $orderStatus->getID(); ?>"  <?php echo $orderStatus->isStartingStatus() ? 'checked':''; ?>></td>
-                                        <td style="display:none;"><input type="checkbox" name="osInformSite[]" value="1" <?php echo $orderStatus->informsSite() ? 'checked':''; ?> class="form-control"></td>
-                                        <td style="display:none;"><input type="checkbox" name="osInformCustomer[]" value="1" <?php echo $orderStatus->informsCustomer() ? 'checked':''; ?> class="form-control"></td>
+                                        <td class="sorthandle"><input type="hidden" name="osID[]" value="<?php echo $orderStatus->getID();
+    ?>"><i class="fa fa-arrows-v"></i></td>
+                                        <td><input type="text" name="osName[]" value="<?php echo $orderStatus->getName();
+    ?>" placeholder="<?php echo $orderStatus->getReadableHandle();
+    ?>" class="form-control ccm-input-text"></td>
+                                        <td><input type="radio" name="osIsStartingStatus" value="<?php echo $orderStatus->getID();
+    ?>"  <?php echo $orderStatus->isStartingStatus() ? 'checked':'';
+    ?>></td>
+                                        <td style="display:none;"><input type="checkbox" name="osInformSite[]" value="1" <?php echo $orderStatus->informsSite() ? 'checked':'';
+    ?> class="form-control"></td>
+                                        <td style="display:none;"><input type="checkbox" name="osInformCustomer[]" value="1" <?php echo $orderStatus->informsCustomer() ? 'checked':'';
+    ?> class="form-control"></td>
                                     </tr>
-                                <?php } ?>
+                                <?php 
+}
+                        ?>
                                 </tbody>
                             </table>
                             <script>
@@ -171,6 +191,7 @@
                         </div>
 
                     <?php
+
                     } else {
                         echo t("No Order Statuses are available");
                     }
@@ -183,8 +204,8 @@
                     <h3><?php echo t('Notification Emails');?></h3>
 
                     <div class="form-group">
-                        <?php echo $form->label('notificationEmails',t('Send order notification to email %sseparate multiple emails with commas%s', '<small class="text-muted">','</small>')); ?>
-                        <?php echo $form->text('notificationEmails',Config::get('vividstore.notificationemails'), array('placeholder'=>t('Email Address')));?>
+                        <?php echo $form->label('notificationEmails', t('Send order notification to email %sseparate multiple emails with commas%s', '<small class="text-muted">', '</small>')); ?>
+                        <?php echo $form->text('notificationEmails', Config::get('vividstore.notificationemails'), array('placeholder'=>t('Email Address')));?>
                     </div>
 
                     <h4><?php echo t('Emails Sent From');?></h4>
@@ -192,15 +213,15 @@
                     <div class="row">
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <?php echo $form->label('emailAlert',t('From Email'));?>
-                                <?php echo $form->text('emailAlert',Config::get('vividstore.emailalerts'),array('placeholder'=>t('From Email Address'))); ?>
+                                <?php echo $form->label('emailAlert', t('From Email'));?>
+                                <?php echo $form->text('emailAlert', Config::get('vividstore.emailalerts'), array('placeholder'=>t('From Email Address'))); ?>
                             </div>
                         </div>
 
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <?php echo $form->label('emailAlertName',t('From Name'));?>
-                                <?php echo $form->text('emailAlertName',Config::get('vividstore.emailalertsname'),array('placeholder'=>t('From Name'))); ?>
+                                <?php echo $form->label('emailAlertName', t('From Name'));?>
+                                <?php echo $form->text('emailAlertName', Config::get('vividstore.emailalertsname'), array('placeholder'=>t('From Name'))); ?>
                             </div>
                         </div>
                     </div>
@@ -210,8 +231,8 @@
                 <div class="col-sm-7 store-pane" id="settings-products">
                     <h3><?php echo t("Order Statuses")?></h3>
                     <div class="form-group">
-                        <?php echo $form->label('productPublishTarget',t('Page to Publish Product Pages Under'));?>
-                        <?php echo $pageSelector->selectPage('productPublishTarget',$productPublishTarget)?>
+                        <?php echo $form->label('productPublishTarget', t('Page to Publish Product Pages Under'));?>
+                        <?php echo $pageSelector->selectPage('productPublishTarget', $productPublishTarget)?>
                     </div>
             
                 </div>
@@ -224,9 +245,9 @@
                         <?php $guestCheckout =  Config::get('vividstore.guestCheckout');
                         $guestCheckout = ($guestCheckout ? $guestCheckout : 'off');
                         ?>
-                        <label><?php echo $form->radio('guestCheckout','off', $guestCheckout == 'off' || $guestCheckout == '' ); ?> <?php  echo t('Disabled'); ?></label><br />
-                        <label><?php echo $form->radio('guestCheckout','option',$guestCheckout == 'option'); ?> <?php  echo t('Offer as checkout option'); ?></label><br />
-                        <label><?php echo $form->radio('guestCheckout','always', $guestCheckout == 'always'); ?> <?php  echo t('Always (unless login required for products in cart)'); ?></label><br />
+                        <label><?php echo $form->radio('guestCheckout', 'off', $guestCheckout == 'off' || $guestCheckout == ''); ?> <?php  echo t('Disabled'); ?></label><br />
+                        <label><?php echo $form->radio('guestCheckout', 'option', $guestCheckout == 'option'); ?> <?php  echo t('Offer as checkout option'); ?></label><br />
+                        <label><?php echo $form->radio('guestCheckout', 'always', $guestCheckout == 'always'); ?> <?php  echo t('Always (unless login required for products in cart)'); ?></label><br />
 
                     </div>
 

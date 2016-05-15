@@ -1,8 +1,7 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Product;
+namespace Concrete\Package\VividStore\src\VividStore\Product;
 
 use Database;
-
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 
 /**
@@ -11,7 +10,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
  */
 class ProductFile
 {
-    
     /** 
      * @Id @Column(type="integer") 
      * @GeneratedValue 
@@ -21,21 +19,37 @@ class ProductFile
     /**
      * @Column(type="integer")
      */
-    protected $pID; 
+    protected $pID;
     
     /**
      * @Column(type="integer")
      */
-    protected $dffID; 
+    protected $dffID;
     
-    private function setProductID($pID){ $this->pID = $pID; }
-    private function setFileID($fID){ $this->dffID = $fID; }
+    private function setProductID($pID)
+    {
+        $this->pID = $pID;
+    }
+    private function setFileID($fID)
+    {
+        $this->dffID = $fID;
+    }
     
-    public function getID(){ return $this->dfID; }
-    public function getProductID() { return $this->pID; }
-    public function getFileID() { return $this->dffID; }
+    public function getID()
+    {
+        return $this->dfID;
+    }
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+    public function getFileID()
+    {
+        return $this->dffID;
+    }
     
-    public static function getByID($id) {
+    public static function getByID($id)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductFile', $id);
@@ -52,18 +66,18 @@ class ProductFile
     {
         $results = self::getFilesForProduct($product);
         $fileObjects = array();
-        foreach($results as $result){
+        foreach ($results as $result) {
             $fileObjects[] = \File::getByID($result->getFileID());
         }
         return $fileObjects;
     }
     
-    public static function addFilesForProduct(array $files,StoreProduct $product)
+    public static function addFilesForProduct(array $files, StoreProduct $product)
     {
         self::removeFilesForProduct($product);
         //add new ones.
-        foreach($files['dffID'] as $fileID){
-            if(!empty($fileID) && $fileID > 0) {
+        foreach ($files['dffID'] as $fileID) {
+            if (!empty($fileID) && $fileID > 0) {
                 self::add($product->getProductID(), $fileID);
                 $fileObj = \File::getByID($fileID);
                 $fs = \FileSet::getByName("Digital Downloads");
@@ -85,12 +99,12 @@ class ProductFile
     public static function removeFilesForProduct(StoreProduct $product)
     {
         $existingFiles = self::getFilesForProduct($product);
-        foreach($existingFiles as $file){
+        foreach ($existingFiles as $file) {
             $file->delete();
         }
     }
     
-    public static function add($pID,$fID)
+    public static function add($pID, $fID)
     {
         $productFile = new self();
         $productFile->setProductID($pID);
@@ -112,5 +126,4 @@ class ProductFile
         $em->remove($this);
         $em->flush();
     }
-    
 }

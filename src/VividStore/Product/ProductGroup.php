@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Product;
+namespace Concrete\Package\VividStore\src\VividStore\Product;
 
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Group as StoreGroup;
@@ -25,15 +25,28 @@ class ProductGroup
     /**
      * @Column(type="integer")
      */
-    protected $gID; 
+    protected $gID;
     
-    private function setProductID($pID){ $this->pID = $pID; }
-    private function setGroupID($gID){ $this->gID = $gID; }
+    private function setProductID($pID)
+    {
+        $this->pID = $pID;
+    }
+    private function setGroupID($gID)
+    {
+        $this->gID = $gID;
+    }
     
-    public function getProductID(){ return $this->pID; }
-    public function getGroupID() { return $this->gID; }
+    public function getProductID()
+    {
+        return $this->pID;
+    }
+    public function getGroupID()
+    {
+        return $this->gID;
+    }
     
-    public static function getByID($pgID) {
+    public static function getByID($pgID)
+    {
         $db = Database::connection();
         $em = $db->getEntityManager();
         return $em->find('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup', $pgID);
@@ -55,7 +68,7 @@ class ProductGroup
     {
         $groups = self::getGroupsForProduct($product);
         $ids = array();
-        foreach($groups as $g) {
+        foreach ($groups as $g) {
             $ids[] = $g->getGroupID();
         }
         return $ids;
@@ -75,12 +88,12 @@ class ProductGroup
     public static function removeGroupsForProduct(StoreProduct $product)
     {
         $existingGroups = self::getGroupsForProduct($product);
-        foreach($existingGroups as $group){
+        foreach ($existingGroups as $group) {
             $group->delete();
         }
     }
     
-    public static function add($pID,$gID)
+    public static function add($pID, $gID)
     {
         $productGroup = new self();
         $productGroup->setProductID($pID);
@@ -102,5 +115,4 @@ class ProductGroup
         $em->remove($this);
         $em->flush();
     }
-    
 }

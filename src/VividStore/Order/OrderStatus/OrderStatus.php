@@ -1,7 +1,6 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus;
+namespace Concrete\Package\VividStore\src\VividStore\Order\OrderStatus;
 
-use \Concrete\Core\Foundation\Object as Object;
 use \Concrete\Core\Utility\Service\Text as TextHelper;
 use Database;
 
@@ -35,24 +34,64 @@ class OrderStatus
     /** @Column(type="integer",nullable=true) */
     protected $osSortOrder;
 
-    public function setHandle($handle){ $this->osHandle = $handle; }
-    public function setName($name){ $this->osName = $name; }
-    public function setInformSite($bool){ $this->osInformSite = $bool; }
-    public function setInformCustomer($bool){ $this->osInformCustomer = $bool; }
-    public function setIsStartingStatus($bool){ $this->osIsStartingStatus = $bool; }
-    public function setSortOrder($order){ $this->osSortOrder = $order; }
+    public function setHandle($handle)
+    {
+        $this->osHandle = $handle;
+    }
+    public function setName($name)
+    {
+        $this->osName = $name;
+    }
+    public function setInformSite($bool)
+    {
+        $this->osInformSite = $bool;
+    }
+    public function setInformCustomer($bool)
+    {
+        $this->osInformCustomer = $bool;
+    }
+    public function setIsStartingStatus($bool)
+    {
+        $this->osIsStartingStatus = $bool;
+    }
+    public function setSortOrder($order)
+    {
+        $this->osSortOrder = $order;
+    }
     
-    public function getID(){ return $this->osID; }
-    public function getHandle(){ return $this->osHandle; }
-    public function getReadableHandle(){ 
+    public function getID()
+    {
+        return $this->osID;
+    }
+    public function getHandle()
+    {
+        return $this->osHandle;
+    }
+    public function getReadableHandle()
+    {
         $textHelper = new TextHelper();
         return $textHelper->unhandle($this->osHandle);
     }
-    public function getName(){ return $this->osName; }
-    public function informsSite(){ return $this->osInformSite; }
-    public function informsCustomer(){ return $this->osInformCustomer; }
-    public function isStartingStatus(){ return $this->osIsStartingStatus; }
-    public function getSortOrder(){ return $this->osSortOrder; }
+    public function getName()
+    {
+        return $this->osName;
+    }
+    public function informsSite()
+    {
+        return $this->osInformSite;
+    }
+    public function informsCustomer()
+    {
+        return $this->osInformCustomer;
+    }
+    public function isStartingStatus()
+    {
+        return $this->osIsStartingStatus;
+    }
+    public function getSortOrder()
+    {
+        return $this->osSortOrder;
+    }
 
     public static function getByID($osID)
     {
@@ -62,20 +101,21 @@ class OrderStatus
         return $em->find(get_class(), $osID);
     }
 
-    static public function getByHandle($osHandle)
+    public static function getByHandle($osHandle)
     {
         $db = \Database::connection();
         $em = $db->getEntityManager();
         return $em->getRepository(get_class())->findOneBy(array('osHandle' => $osHandle));
     }
 
-    static public function getAll() {
+    public static function getAll()
+    {
         $db = \Database::connection();
         $em = $db->getEntityManager();
         return $em->createQuery('select os from '.get_class().' os')->getResult();
     }
 
-    static public function getList()
+    public static function getList()
     {
         $statuses = array();
         foreach (self::getAll() as $status) {
@@ -94,7 +134,7 @@ class OrderStatus
         }
         if ($osIsStartingStatus) {
             $existingStartingStatus = $em->getRepository(get_class())->findOneBy(array('osIsStartingStatus' => 1));
-            if(is_object($existingStartingStatus)) {
+            if (is_object($existingStartingStatus)) {
                 $existingStartingStatus->setIsStartingStatus(false);
                 $existingStartingStatus->save();
             }

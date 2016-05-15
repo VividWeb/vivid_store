@@ -1,13 +1,11 @@
 <?php 
-namespace Concrete\Package\VividStore\Src\VividStore\Shipping;
+namespace Concrete\Package\VividStore\src\VividStore\Shipping;
 
 use Database;
 use Core;
 use Package;
 use View;
-
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
-
 
 /**
  * @Entity
@@ -71,16 +69,38 @@ class ShippingMethodType
         $obj = $namespace.'\\'.$className;
         $this->methodTypeController = new $obj();
     }
-    public function hideFromAddMenu($bool = false){ $this->hideFromAddMenu = $bool; }
+    public function hideFromAddMenu($bool = false)
+    {
+        $this->hideFromAddMenu = $bool;
+    }
     
-    public function isHiddenFromAddMenu(){ return $this->hideFromAddMenu; }
-    public function getShippingMethodTypeID() { return $this->smtID; }
-    public function getHandle(){ return $this->smtHandle; }
-    public function getShippingMethodTypeName() { return $this->smtName; }
-    public function getPackageID(){ return $this->pkgID; }
-    public function getMethodTypeController(){ return $this->methodTypeController; }
+    public function isHiddenFromAddMenu()
+    {
+        return $this->hideFromAddMenu;
+    }
+    public function getShippingMethodTypeID()
+    {
+        return $this->smtID;
+    }
+    public function getHandle()
+    {
+        return $this->smtHandle;
+    }
+    public function getShippingMethodTypeName()
+    {
+        return $this->smtName;
+    }
+    public function getPackageID()
+    {
+        return $this->pkgID;
+    }
+    public function getMethodTypeController()
+    {
+        return $this->methodTypeController;
+    }
     
-    public static function getByID($smtID) {
+    public static function getByID($smtID)
+    {
         $db = Database::get();
         $em = $db->getEntityManager();
         $obj = $em->find('Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType', $smtID);
@@ -88,7 +108,8 @@ class ShippingMethodType
         return $obj;
     }
     
-    public static function getByHandle($smtHandle){
+    public static function getByHandle($smtHandle)
+    {
         $db = Database::get();
         $em = $db->getEntityManager();
         $obj = $em
@@ -99,7 +120,7 @@ class ShippingMethodType
             return $obj;
         }
     }
-    public static function add($smtHandle,$smtName,$pkg,$hideFromAddMenu=false)
+    public static function add($smtHandle, $smtName, $pkg, $hideFromAddMenu=false)
     {
         $smt = new self();
         $smt->setHandle($smtHandle);
@@ -120,7 +141,7 @@ class ShippingMethodType
     public function delete()
     {
         $methods = StoreShippingMethod::getAvailableMethods($this->getShippingMethodTypeID());
-        foreach($methods as $method){
+        foreach ($methods as $method) {
             $method->delete();
         }
         $em = Database::get()->getEntityManager();
@@ -138,7 +159,7 @@ class ShippingMethodType
         $controller = $this->getMethodTypeController();
         $controller->dashboardForm($sm);
         $pkg = Package::getByID($this->pkgID);
-        View::element('shipping_method_types/'.$this->smtHandle.'/dashboard_form',array('vars'=>$controller->getSets()),$pkg->getPackageHandle());
+        View::element('shipping_method_types/'.$this->smtHandle.'/dashboard_form', array('vars'=>$controller->getSets()), $pkg->getPackageHandle());
     }
     public function addMethod($data)
     {

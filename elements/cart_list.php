@@ -4,12 +4,13 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionGroup as StoreProductOptionGroup;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOptionItem as StoreProductOptionItem;
+
 ?>
 <ul class="checkout-cart-list">
     <?php
-    if($cart){
+    if ($cart) {
         $i=1;
-        foreach ($cart as $k=>$cartItem){
+        foreach ($cart as $k=>$cartItem) {
             $pID = $cartItem['product']['pID'];
             $qty = $cartItem['product']['qty'];
             $product = StoreProduct::getByID($pID);
@@ -18,8 +19,12 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOpt
                 $product->setVariation($cartItem['product']['variation']);
             }
 
-            if($i%2==0){$classes=" striped"; }else{ $classes=""; }
-            if(is_object($product)){
+            if ($i%2==0) {
+                $classes=" striped";
+            } else {
+                $classes="";
+            }
+            if (is_object($product)) {
                 ?>
 
                 <li class="checkout-cart-item clearfix<?=$classes?>" data-instance-id="<?=$k?>" data-product-id="<?=$pID?>">
@@ -38,33 +43,42 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\ProductOption\ProductOpt
                         <?=StorePrice::format($product->getActivePrice())?>
                     </div>
 
-                    <?php if ($product->allowQuantity()) { ?>
+                    <?php if ($product->allowQuantity()) {
+    ?>
                     <div class="checkout-cart-product-qty">
                         <span class="checkout-cart-item-label"><?=t("Quantity:")?></span>
                         <?=$qty?>
                     </div>
-                    <?php } ?>
+                    <?php 
+}
+                ?>
 
-                    <?php if($cartItem['productAttributes']){?>
+                    <?php if ($cartItem['productAttributes']) {
+    ?>
                         <div class="checkout-cart-item-attributes">
-                            <?php foreach($cartItem['productAttributes'] as $groupID => $valID){
-                                $groupID = str_replace("pog","",$groupID);
-                                $optiongroup = StoreProductOptionGroup::getByID($groupID);
-                                $optionvalue = StoreProductOptionItem::getByID($valID);
+                            <?php foreach ($cartItem['productAttributes'] as $groupID => $valID) {
+    $groupID = str_replace("pog", "", $groupID);
+    $optiongroup = StoreProductOptionGroup::getByID($groupID);
+    $optionvalue = StoreProductOptionItem::getByID($valID);
 
-                                ?>
+    ?>
                                 <div class="cart-list-item-attribute">
                                     <span class="cart-list-item-attribute-label"><?= ($optiongroup ? $optiongroup->getName() : '')?>:</span>
                                     <span class="cart-list-item-attribute-value"><?= ($optionvalue ? $optionvalue->getName(): '')?></span>
                                 </div>
-                            <?php }  ?>
+                            <?php 
+}
+    ?>
                         </div>
-                    <?php } ?>
+                    <?php 
+}
+                ?>
 
 
                 </li>
 
                 <?php
+
             }//if is_object
             $i++;
         }//foreach

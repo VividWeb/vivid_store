@@ -1,8 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\Src\VividStore\Promotion;
-
-use Package;
-use Database;
+namespace Concrete\Package\VividStore\src\VividStore\Promotion;
 
 
 /**
@@ -52,10 +49,14 @@ class Promotion
      */
     protected $showSalePrice;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->promotionRewards = new \Doctrine\Common\Collections\ArrayCollection();
         $this->promotionRules = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function getID(){ return $this->id; }
+    public function getID()
+    {
+        return $this->id;
+    }
 }
