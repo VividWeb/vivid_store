@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Payment\Methods\AuthNet;
+namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\AuthNet;
 
 use Core;
 use Config;

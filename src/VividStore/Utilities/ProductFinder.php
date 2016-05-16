@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Utilities;
+namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Controller;
 use User;

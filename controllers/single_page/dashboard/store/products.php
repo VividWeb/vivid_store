@@ -300,9 +300,9 @@ class products extends DashboardPageController
 
 
                 if ($data['pID']) {
-                    $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'updated');
+                    $this->redirect('/dashboard/store/products/', 'updated');
                 } else {
-                    $this->redirect('/dashboard/store/products/edit/' . $product->getProductID(), 'success');
+                    $this->redirect('/dashboard/store/products/', 'success');
                 }
             }//if no errors
         }//if post

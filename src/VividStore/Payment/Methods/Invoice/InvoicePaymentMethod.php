@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Payment\Methods\Invoice;
+namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\Invoice;
 
 use Core;
 use Config;

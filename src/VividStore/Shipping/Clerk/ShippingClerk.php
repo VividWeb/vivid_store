@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Shipping\Clerk;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk;
 
 use \DVDoug\BoxPacker\Packer as ClerkPacker;
 use Controller;

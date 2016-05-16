@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Product\ProductVariation;
+namespace Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation;
 
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariationOptionItem as StoreProductVariationOptionItem;

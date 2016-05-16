@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Promotion\PromotionRules;
+namespace Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRules;
 
 use Core;
 use \Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRuleTypeRule as StorePromotionRuleTypeRule;

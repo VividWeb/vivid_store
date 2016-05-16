@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Order\OrderStatus;
+namespace Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus;
 
 use Database;
 use Events;

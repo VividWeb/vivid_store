@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Shipping;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping;
 
 use Database;
 use Controller;

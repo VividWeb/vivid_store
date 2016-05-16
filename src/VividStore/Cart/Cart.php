@@ -1,13 +1,13 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Cart;
+namespace Concrete\Package\VividStore\Src\VividStore\Cart;
 
 use Session;
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethod as StoreShippingMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class Cart
 {
     protected static $cart = null;
@@ -362,5 +362,10 @@ class Cart
         }
 
         return false;
+    }
+    //deprecated
+    public function getTotal()
+    {
+        return StoreCalculator::getGrandTotal();
     }
 }

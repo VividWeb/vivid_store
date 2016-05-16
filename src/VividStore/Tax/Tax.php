@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Tax;
+namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
