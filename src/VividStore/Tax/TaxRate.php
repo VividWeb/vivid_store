@@ -9,8 +9,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-
 /**
  * @Entity
  * @Table(name="VividStoreTaxRates")

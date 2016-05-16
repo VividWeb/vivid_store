@@ -4,8 +4,6 @@ namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 use Controller;
 use Core;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-
 class States extends Controller
 {
     public function getStateList()

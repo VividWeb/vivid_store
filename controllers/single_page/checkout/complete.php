@@ -6,7 +6,6 @@ use View;
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class complete extends PageController
 {
     public function view()
