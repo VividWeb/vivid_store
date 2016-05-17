@@ -12,7 +12,7 @@ extract($vars);
 <div class="clearfix col-container">
     <div class="vivid-store-col-2">
         <div class="col-container">
-            <div class="form-group vivid-store-col-2">
+            <div class="form-group vivid-store-col-3">
                 <label for="checkout-exp-month"><?=t("Month")?></label>
                 <?php echo $form->select('authnet-checkout-exp-month', array(
                     "01"=>"01 ".t("Jan"),
@@ -29,9 +29,13 @@ extract($vars);
                     "12"=>"12 ".t("Dec")
                  )); ?>
             </div>
-            <div class="form-group vivid-store-col-2">
+            <div class="form-group vivid-store-col-3">
                 <label for="checkout-exp-year"><?=t("Year")?></label>
                 <?php echo $form->select('authnet-checkout-exp-year', $years); ?>
+            </div>
+            <div class="form-group vivid-store-col-3">
+                <label for="beanstream-checkout-cvv"><?=t("CCV")?></label>
+                <?php echo $form->text('authnet-checkout-ccv'); ?>
             </div>
         </div>
     </div>    

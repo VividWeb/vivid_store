@@ -8,7 +8,7 @@ extract($vars);
 </div>
 
 <div class="form-group">
-    <label><?=t("Auth.net Login ID")?></label>
+    <label><?=t("API Login ID")?></label>
     <input type="text" name="authnetLoginID" value="<?=$authnetLoginID?>" class="form-control">
 </div>
 
