@@ -8,5 +8,9 @@
   "minimum-stability": "dev",
   "support": {
     "source": "https://github.com/VividWeb/vivid_store/src"
+  },
+  "require": {
+    "dvdoug/boxpacker": "~1.5",
+    "omnipay/authorizenet": "~2.0"
   }
 }

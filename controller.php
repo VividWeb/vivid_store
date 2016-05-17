@@ -15,12 +15,7 @@ class controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.5.7';
-    protected $pkgVersion = '3.1';
-    protected $pkgAutoloaderRegistries = array(
-        'src/AuthorizeNet' => '\AuthorizeNet',
-        'src/Omnipay' => '\Omnipay',
-        'src/BoxPacker' => '\DVDoug\BoxPacker'
-    );
+    protected $pkgVersion = '3.1.1dev1';
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");
@@ -104,6 +99,8 @@ class controller extends Package
     public function on_start()
     {
         $this->registerRoutes();
+
+        require_once __DIR__ . '/vendor/autoload.php';
 
         $al = AssetList::getInstance();
         $al->register('css', 'vivid-store', 'css/vivid-store.css', array('version' => '1', 'position' => Asset::ASSET_POSITION_HEADER, 'minify' => false, 'combine' => false), $this);
