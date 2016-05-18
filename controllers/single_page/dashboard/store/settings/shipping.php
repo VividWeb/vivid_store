@@ -35,6 +35,17 @@ class shipping extends DashboardPageController
         $sm->delete();
         $this->redirect('/dashboard/store/settings/shipping/removed');
     }
+    public function toggle_status($smID)
+    {
+        $sm = StoreShippingMethod::getByID($smID);
+        if($sm->isEnabled()){
+            $sm->setEnabled(false);
+        } else {
+            $sm->setEnabled(true);
+        }
+        $sm->save();
+        $this->redirect('/dashboard/store/settings/shipping/status_updated');
+    }
     public function success()
     {
         $this->view();
@@ -49,6 +60,11 @@ class shipping extends DashboardPageController
     {
         $this->view();
         $this->set("message", t("Successfully removed"));
+    }
+    public function status_updated()
+    {
+        $this->view();
+        $this->set("message", t("Updated Shipping Method Status"));
     }
     public function add_method()
     {
