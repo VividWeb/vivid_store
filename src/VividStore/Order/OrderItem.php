@@ -193,10 +193,9 @@ class OrderItem
         $orderItem->save();
 
         foreach ($data['productAttributes'] as $optionGroup => $selectedOption) {
-            $optionGroupID = str_replace("po", "", $optionGroup);
-            $optionGroupName = self::getProductOptionNameByID($optionGroupID);
+            $optionGroupID = str_replace("pog", "", $optionGroup);
+            $optionGroupName = self::getProductOptionGroupNameByID($optionGroupID);
             $optionValue = self::getProductOptionValueByID($selectedOption);
-
             $orderItemOption = new StoreOrderItemOption();
             $orderItemOption->setOrderItemOptionKey($optionGroupName);
             $orderItemOption->setOrderItemOptionValue($optionValue);
@@ -219,6 +218,7 @@ class OrderItem
     {
         return \Database::connection()->GetAll("SELECT * FROM VividStoreOrderItemOptions WHERE oiID=?", $this->oiID);
     }
+
     public function getProductOptionGroupNameByID($id)
     {
         $db = Database::connection();

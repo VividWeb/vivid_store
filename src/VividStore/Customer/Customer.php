@@ -192,7 +192,10 @@ class Customer
         $groups[] = \Group::getByName('Store Customer');
         foreach ($groups as $groupObject) {
             if (is_object($groupObject)) {
-                $customer->getUserInfo()->getUserObject()->enterGroup($groupObject);
+                $ui = $customer->getUserInfo();
+                if(is_object($ui)){
+                    $ui->getUserObject()->enterGroup($groupObject);
+                }
             }
         }
     }
