@@ -20,20 +20,20 @@ class ProductFinder extends Controller
             exit;
         } else {
             $query = $_POST['query'];
-            $db = Database::get();
-            $results = $db->query('SELECT * FROM VividStoreProducts WHERE pName LIKE "%'.$query.'%"');
-            
+
+            $qb = Database::get()->getEntityManager()->createQueryBuilder();
+            $qb->select('p')
+                ->from('Concrete\Package\VividStore\Src\VividStore\Product\Product', 'p')
+                ->where($qb->expr()->like('p.pName', ':query'))
+                ->setParameter('query','%'.$query.'%');
+            $results = $qb->getQuery()->getResult();
+
             if ($results) {
                 foreach ($results as $result) {
-                    ?>
-        
-                <li data-product-id="<?=$result['pID']?>"><?=$result['pName']?></li>
-        
-            <?php 
-                } //for each
-            } else { //if no results ?>
-                <li><?=t("I can't find a product by that name")?></li>
-            <?php 
+                    echo '<li data-product-id="'.$result->getID().'">'.$result->getProductName().'</li>';
+                }
+            } else {
+                echo '<li>'.t("I can't find a product by that name").'</li>';
             }
         }
     }
