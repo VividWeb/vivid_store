@@ -17,7 +17,7 @@
         </div>
         <div class="product-modal-options clearfix">
             <div class="product-modal-option-group">
-                <span class="option-group-label"><?=t('Quantity')?></span>
+                <label class="option-group-label"><?=t('Quantity')?></label>
                 <input type="number" name="quantity" class="product-qty" value="1" max="<?=$product->getProductQty()?>">
             </div>
             <?php
@@ -25,7 +25,7 @@
             $optionItems = $product->getProductOptionItems();
             foreach ($optionGroups as $optionGroup) {
                 ?>
-                <div class="product-option-group clearfix">
+                <div class="product-modal-option-group clearfix">
                     <label class="option-group-label"><?=$optionGroup->getName()?></label>
                     <select name="pog<?=$optionGroup->getID()?>">
                         <?php

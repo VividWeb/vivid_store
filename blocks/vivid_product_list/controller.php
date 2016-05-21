@@ -90,8 +90,6 @@ class controller extends BlockController
                 }
             }
         }
-
-
         $products->setItemsPerPage($this->maxProducts);
         $products->setGroupIDs($this->getGroupFilters());
         $products->setFeatureType($this->showFeatured);
