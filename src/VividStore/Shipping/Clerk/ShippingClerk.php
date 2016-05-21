@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Shipping\Clerk;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk;
 
 use \DVDoug\BoxPacker\Packer as ClerkPacker;
 use Controller;
@@ -32,17 +32,6 @@ class ShippingClerk extends Controller
             $packer->addItem(new StoreClerkItem($description, $width, $length, $depth, $weight));
             //TODO: If an item doesn't fit in any box, make it it's own box.
         }
-                
-        try {
-            $packages = $packer->pack();
-        } catch (Exception $e) {
-            var_dump($e);
-        }
-    }
-    public static function test()
-    {
-        echo "<pre>";
-        var_dump(self::getPackages());
-        echo "</pre>";
+        return $packer->pack();
     }
 }

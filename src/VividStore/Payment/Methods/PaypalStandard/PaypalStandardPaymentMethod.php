@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Payment\Methods\PaypalStandard;
+namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard;
 
 use Core;
 use URL;

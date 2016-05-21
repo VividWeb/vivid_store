@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Product;
+namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Group as StoreGroup;

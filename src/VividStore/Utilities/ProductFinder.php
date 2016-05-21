@@ -1,12 +1,10 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Utilities;
+namespace Concrete\Package\VividStore\Src\VividStore\Utilities;
 
 use Controller;
 use User;
 use Database;
 use URL;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class ProductFinder extends Controller
 {

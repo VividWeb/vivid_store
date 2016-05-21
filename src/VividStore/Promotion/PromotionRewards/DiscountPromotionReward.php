@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Promotion\PromotionRewards;
+namespace Concrete\Package\VividStore\Src\VividStore\Promotion\PromotionRewards;
 
 use Database;
 use Core;

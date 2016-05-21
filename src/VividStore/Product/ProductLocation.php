@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Product;
+namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
@@ -12,7 +12,7 @@ class ProductLocation
 {
     /** 
      * @Id @Column(type="integer") 
-     * @GeneratedValue 
+     * @GeneratedValue(strategy="UUID")
      */
     protected $id;
     
@@ -69,7 +69,9 @@ class ProductLocation
         //add new ones.
         if (!empty($locations['cID'])) {
             foreach ($locations['cID'] as $cID) {
-                self::add($product->getProductID(), $cID);
+                if($cID>0) {
+                    self::add($product->getProductID(), $cID);
+                }
             }
         }
     }

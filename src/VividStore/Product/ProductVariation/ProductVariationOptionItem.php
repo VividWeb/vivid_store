@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Product\ProductVariation;
+namespace Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation;
 
 use Database;
 

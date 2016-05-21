@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Customer;
+namespace Concrete\Package\VividStore\Src\VividStore\Customer;
 
 use Session;
 use User;

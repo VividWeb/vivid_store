@@ -105,13 +105,15 @@ if (in_array($controller->getTask(), $addViews)) {
 						<td><?=$method->getName()?></td>
 						<td class="text-right">
 							<a href="<?=URL::to('/dashboard/store/settings/shipping/edit', $method->getShippingMethodID())?>" class="btn btn-default"><?=t("Edit")?></a>
-							<?php if ($method->getShippingMethodTypeMethod()->disableEnabled()) {
-    ?>
-							    <a href="" class="btn btn-default"><?=t("Disable")?></a>
-							<?php 
-} else {
-    ?>
-							<a href="<?=URL::to('/dashboard/store/settings/shipping/delete', $method->getShippingMethodID())?>" class="btn btn-danger"><?=t("Delete")?></a>
+                            <a href="<?=URL::to('/dashboard/store/settings/shipping/toggle_status', $method->getShippingMethodID())?>" class="btn btn-default">
+                                <?php if($method->isEnabled()){?>
+                                    <?=t("Disable")?>
+                                <?php } else { ?>
+                                    <?=t("Enable")?>
+                                <?php } ?>
+                            </a>
+                            <?php if (!$method->getShippingMethodTypeMethod()->disableEnabled()) { ?>
+							    <a href="<?=URL::to('/dashboard/store/settings/shipping/delete', $method->getShippingMethodID())?>" class="btn btn-danger"><?=t("Delete")?></a>
 						    <?php 
 }
     ?>

@@ -1,11 +1,12 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Payment\Methods\AuthNet;
+namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\AuthNet;
 
 use Core;
 use Config;
-use \AuthorizeNet\Service\Aim\Request as AuthorizeNetAIM;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
-use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
+use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
+use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
+use \Omnipay\Omnipay;
 
 class AuthNetPaymentMethod extends StorePaymentMethod
 {
@@ -56,33 +57,32 @@ class AuthNetPaymentMethod extends StorePaymentMethod
     
     public function submitPayment()
     {
-        $dir = $this->getMethodDirectory();
-        //require_once $dir.'anet_php_sdk/AuthorizeNet.php';
-        $METHOD_TO_USE = "AIM";
-        define("AUTHORIZENET_API_LOGIN_ID", Config::get('vividstore.authnetLoginID'));    // Add your API LOGIN ID
-        define("AUTHORIZENET_TRANSACTION_KEY", Config::get('vividstore.authnetTransactionKey')); // Add your API transaction key
-        define("AUTHORIZENET_SANDBOX", Config::get('vividstore.authnetTestmode'));       // Set to false to test against production
-        define("TEST_REQUEST", "FALSE");           // You may want to set to true if testing against production
-        //define("AUTHORIZENET_MD5_SETTING","");                // Add your MD5 Setting.
-        //$site_root = ""; // Add the URL to your site
 
-        if (AUTHORIZENET_API_LOGIN_ID == "") {
-            die('Enter your merchant credentials');
-        }
-        $transaction = new AuthorizeNetAIM;
-        $transaction->setSandbox(AUTHORIZENET_SANDBOX);
-        $transaction->setFields(
-            array(
-                'amount' => StoreCart::getTotal(),
-                'card_num' => $_POST['authnet-checkout-credit-card'],
-                'exp_date' => $_POST['authnet-checkout-exp-month'].$_POST['authnet-checkout-exp-year']
-            )
+        $gateway = Omnipay::create('AuthorizeNet_AIM');
+        $gateway->setApiLoginId(Config::get('vividstore.authnetLoginID'));
+        $gateway->setTransactionKey(Config::get('vividstore.authnetTransactionKey'));
+        $gateway->setDeveloperMode(Config::get('vividstore.authnetTestmode'));
+        $customer = new StoreCustomer();
+        $formData = array(
+            'firstName' => $customer->getValue("billing_first_name"),
+            'lastName' => $customer->getValue("billing_last_name"),
+            'billingPhone' => $customer->getValue("billing_phone"),
+            'email' => $customer->getEmail(),
+            'number' => $_POST['authnet-checkout-credit-card'],
+            'expiryMonth' => $_POST['authnet-checkout-exp-month'],
+            'expiryYear' => $_POST['authnet-checkout-exp-year'],
+            'cvv' => $_POST['authnet-checkout-ccv']
         );
-        $response = $transaction->authorizeAndCapture();
-        if ($response->approved) {
-            return array('error'=>0, 'transactionReference'=>$response->transaction_id);
+        $response = $gateway->purchase(array(
+            'amount' => StoreCalculator::getGrandTotal(),
+            'currency' => 'USD',
+            'card' => $formData
+        ))->send();
+        if ($response->isSuccessful()) {
+            return array('error'=>0, 'transactionReference'=>$response->getTransactionReference());
         } else {
-            return array('error'=>1,'errorMessage'=>$response->error_message." Error Code: ".$response->response_code. ". Message: ".$response->response_reason_text);
+            // payment failed: display message to customer
+            return array('error'=>1, 'errorMessage'=>$response->getMessage());
         }
     }
 }

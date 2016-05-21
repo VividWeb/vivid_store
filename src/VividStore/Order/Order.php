@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Order;
+namespace Concrete\Package\VividStore\Src\VividStore\Order;
 
 use Database;
 use User;
@@ -29,7 +29,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustom
 class Order
 {
     /** 
-     * @Id @Column(type="integer") 
+     * @Id @Column(type="integer", options={"unsigned"=true})
      * @GeneratedValue 
      */
     protected $oID;

@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Report;
+namespace Concrete\Package\VividStore\Src\VividStore\Report;
 
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderList as StoreOrderList;
 

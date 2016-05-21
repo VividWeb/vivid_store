@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\Attribute\Key;
+namespace Concrete\Package\VividStore\Src\Attribute\Key;
 
 use Database;
 use \Concrete\Core\Attribute\Value\ValueList as AttributeValueList;

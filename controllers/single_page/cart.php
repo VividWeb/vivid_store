@@ -7,7 +7,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Cart\Cart as StoreCart;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
 class cart extends PageController
 {
     public function view()

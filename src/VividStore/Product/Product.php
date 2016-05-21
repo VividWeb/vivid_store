@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Product;
+namespace Concrete\Package\VividStore\Src\VividStore\Product;
 
 use Package;
 use Page;
@@ -29,7 +29,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 class Product
 {
     /** 
-     * @Id @Column(type="integer") 
+     * @Id @Column(type="integer", options={"unsigned"=true})
      * @GeneratedValue 
      */
     protected $pID;

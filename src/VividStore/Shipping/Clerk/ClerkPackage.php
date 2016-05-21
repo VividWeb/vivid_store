@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Shipping\Clerk;
+namespace Concrete\Package\VividStore\Src\VividStore\Shipping\Clerk;
 
 use Database;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;

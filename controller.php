@@ -14,9 +14,8 @@ use View;
 class controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
-    protected $appVersionRequired = '5.7.3';
-    protected $pkgVersion = '3.0.1.99';
-
+    protected $appVersionRequired = '5.7.5.7';
+    protected $pkgVersion = '3.1.1';
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");

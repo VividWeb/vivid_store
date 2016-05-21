@@ -1,5 +1,5 @@
 <?php 
-namespace Concrete\Package\VividStore\src\VividStore\Order;
+namespace Concrete\Package\VividStore\Src\VividStore\Order;
 
 use Database;
 use Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;

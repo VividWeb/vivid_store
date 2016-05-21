@@ -11,7 +11,6 @@
   },
   "require": {
     "dvdoug/boxpacker": "~1.5",
-    "authorizenet/authorizenet": "~1.8",
-    "omnipay/common": "~2.5"
+    "omnipay/authorizenet": "~2.0"
   }
 }

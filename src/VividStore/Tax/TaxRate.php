@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\VividStore\src\VividStore\Tax;
+namespace Concrete\Package\VividStore\Src\VividStore\Tax;
 
 use Database;
 use Config;
@@ -8,8 +8,6 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustom
 use \Concrete\Package\VividStore\Src\VividStore\Product\Product as StoreProduct;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
-
-defined('C5_EXECUTE') or die(_("Access Denied."));
 
 /**
  * @Entity
