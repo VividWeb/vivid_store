@@ -17,7 +17,7 @@ class controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.5.7';
-    protected $pkgVersion = '3.1.1';
+    protected $pkgVersion = '3.1.2';
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");
@@ -76,7 +76,10 @@ class controller extends Package
     public function upgrade()
     {
         $pkg = Package::getByHandle('vivid_store');
-        Installer::upgrade($pkg);
+        if (version_compare($pkg->getPackageVersion(), '3.1.2', '<')) {
+            Installer::upgrade($pkg);
+        }
+        parent::upgrade();
         $this->installStore();
     }
 
