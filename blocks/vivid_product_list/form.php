@@ -36,32 +36,29 @@
         </div>
     </div>
 
+    <div class="checkbox">
+        <label>
+            <?php echo $form->checkbox('showSortOptions', 1, $showSortOptions);?>
+            <?=t('Show Sort Options on Front End')?>
+        </label>
+    </div>
+
     <div class="row">
-        <?php if (!empty($productgroups)) {
-    ?>
+        <?php if (!empty($productgroups)) { ?>
         <div class="col-xs-12 col-sm-6">
             <div class="form-group">
-                <?php echo $form->label('gID', t('Filter by Groups'));
-    ?>
-
+                <?php echo $form->label('gID', t('Filter by Groups'));  ?>
                 <div class="ccm-search-field-content ccm-search-field-content-select2">
                     <select multiple="multiple" name="filtergroups[]" id="groups-select" class="existing-select2 select2-select" style="width: 100%">
-                        <?php foreach ($productgroups as $pgkey=>$pglabel) {
-    ?>
-                            <option value="<?php echo $pgkey;
-    ?>" <?php echo(in_array($pgkey, $groupfilters) ? 'selected="selected"' : '');
-    ?>><?php echo $pglabel;
-    ?></option>
-                        <?php 
-}
-    ?>
+                        <?php foreach ($productgroups as $pgkey=>$pglabel) { ?>
+                            <option value="<?=$pgkey?>" <?php echo(in_array($pgkey, $groupfilters) ? 'selected="selected"' : ''); ?>><?=$pglabel ?></option>
+                        <?php } ?>
                     </select>
                 </div>
             </div>
         </div>
 
-        <?php 
-} ?>
+        <?php } ?>
 
         <div class="col-xs-12 col-sm-6">
             <div class="form-group">
@@ -71,7 +68,6 @@
         </div>
 
     </div>
-
 
     <legend><?=t('Pagination')?></legend>
     <div class="row">
@@ -134,9 +130,6 @@
     </div>
     <div class="checkbox">
         <label>
-            <?php if ($showQuickViewLink!=0) {
-    $showQuickViewLink=1;
-}?>
             <?php echo $form->checkbox('showQuickViewLink', 1, $showQuickViewLink);?>
             <?=t('Quickview Link (Modal Window)')?>
         </label>

@@ -3,7 +3,20 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 use \Concrete\Package\VividStore\Src\VividStore\Product\ProductVariation\ProductVariation as StoreProductVariation;
 
 if ($products) {
-    echo "<div class='product-list clearfix'>";
+
+    if ($showSortOptions) {?>
+    <div class="clearfix">
+        <select class="product-list-sort" id="product-list-sort-<?=$bID?>">
+            <option value="alpha"<?php echo $sort=='alpha' ? ' selected':''; ?>><?=t("Alphabetical")?></option>
+            <option value="date"<?php echo $sort=='date' ? ' selected':''; ?>><?=t("Recently Added")?></option>
+            <option value="popular"<?php echo $sort=='popular' ? ' selected':''; ?>><?=t("Most Popular")?></option>
+            <option value="pricelth"<?php echo $sort=='pricelth' ? ' selected':''; ?>><?=t("Price: Low to High")?></option>
+            <option value="pricehtl"<?php echo $sort=='pricehtl' ? ' selected':''; ?>><?=t("Price: High to Low")?></option>
+        </select>
+    </div>
+    <?php }
+
+    echo '<div class="product-list clearfix" id="product-list-'.$bID.'">';
 
     $i=1;
     foreach ($products as $product) {

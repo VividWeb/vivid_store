@@ -106,6 +106,12 @@ class ProductList extends AttributedItemList
             case "date":
                 $query->orderBy('pDateAdded', 'DESC');
                 break;
+            case "pricelth":
+                $query->orderBy('pPrice','ASC');
+                break;
+            case "pricehtl":
+                $query->orderBy('pPrice','DESC');
+                break;
             case "popular":
                 $pr = new StoreProductReport();
                 $pr->sortByPopularity();
