@@ -359,7 +359,8 @@ class Installer
 
             $orderCustSet = $oakc->addSet('order_customer', t('Store Customer Info'), $pkg);
         }
-        
+        $oakc->associateAttributeKeyType(AttributeType::getByHandle('select'));
+
         $text = AttributeType::getByHandle('text');
         $address = AttributeType::getByHandle('address');
         
@@ -401,6 +402,7 @@ class Installer
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('boolean'));
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('date_time'));
         }
+        $pakc->associateAttributeKeyType(AttributeType::getByHandle('select'));
     }
     
     public static function createDDFileset(Package $pkg)
