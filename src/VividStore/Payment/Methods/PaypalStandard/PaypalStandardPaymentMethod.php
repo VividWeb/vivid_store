@@ -1,6 +1,7 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard;
 
+use Controller;
 use Core;
 use URL;
 use Config;
@@ -12,7 +13,7 @@ use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustom
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
-class PaypalStandardPaymentMethod extends StorePaymentMethod
+class PaypalStandardPaymentMethod extends Controller
 {
     public $external = true;
     

@@ -3,12 +3,13 @@ namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\AuthNet;
 
 use Core;
 use Config;
+use Controller;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Omnipay\Omnipay;
 
-class AuthNetPaymentMethod extends StorePaymentMethod
+class AuthNetPaymentMethod extends Controller
 {
     public function dashboardForm()
     {
@@ -17,8 +18,6 @@ class AuthNetPaymentMethod extends StorePaymentMethod
         //$this->set('authnetCurrency',Config::get('vividstore.authnetCurrency'));
         $this->set('authnetTestmode', Config::get('vividstore.authnetTestmode'));
         $this->set('form', Core::make("helper/form"));
-        $form = Core::make("helper/form");
-        $authnetLoginID = Config::get('vividstore.authnetLoginID');
     }
     
     public function save($data)

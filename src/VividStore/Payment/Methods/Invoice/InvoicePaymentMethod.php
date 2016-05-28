@@ -3,9 +3,9 @@ namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\Invoice;
 
 use Core;
 use Config;
-use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use Controller;
 
-class InvoicePaymentMethod extends StorePaymentMethod
+class InvoicePaymentMethod extends Controller
 {
     public function dashboardForm()
     {
