@@ -8,12 +8,13 @@ use Config;
 use Session;
 use Log;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\MethodInterface as StorePaymentMethodInterface;
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
-class PaypalStandardPaymentMethod extends Controller
+class PaypalStandardPaymentMethod extends Controller implements StorePaymentMethodInterface
 {
     public $external = true;
     

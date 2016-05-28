@@ -5,11 +5,12 @@ use Core;
 use Config;
 use Controller;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\MethodInterface as StorePaymentMethodInterface;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Omnipay\Omnipay;
 
-class AuthNetPaymentMethod extends Controller
+class AuthNetPaymentMethod extends Controller implements StorePaymentMethodInterface
 {
     public function dashboardForm()
     {
