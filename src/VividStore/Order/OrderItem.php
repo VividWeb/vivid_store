@@ -46,12 +46,12 @@ class OrderItem
     protected $oiPricePaid;
 
     /**
-     * @Column(type="decimal", precision=10, scale=4)
+     * @Column(type="string")
      */
     protected $oiTax;
 
     /**
-     * @Column(type="decimal", precision=10, scale=4)
+     * @Column(type="string")
      */
     protected $oiTaxIncluded;
 

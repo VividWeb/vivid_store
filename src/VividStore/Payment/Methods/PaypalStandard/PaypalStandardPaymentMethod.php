@@ -200,4 +200,9 @@ class PaypalStandardPaymentMethod extends Controller implements StorePaymentMeth
     {
         return 0.03;
     }
+
+    public function getPaymentMaximum()
+    {
+        return 1000000000;
+    }
 }

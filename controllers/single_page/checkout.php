@@ -106,6 +106,13 @@ class checkout extends PageController
     public function failed()
     {
         $this->set('paymentErrors', Session::get('paymentErrors'));
+        $this->addFooterItem("
+            <script type=\"text/javascript\">
+                $(function(){
+                    vividStore.loadViaHash();
+                });
+            </script>
+        ");
         $this->view();
     }
     public function submit()

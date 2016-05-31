@@ -85,4 +85,22 @@ class AuthNetPaymentMethod extends Controller implements StorePaymentMethodInter
             return array('error'=>1, 'errorMessage'=>$response->getMessage());
         }
     }
+
+    public function getPaymentMinimum()
+    {
+        $defaultMin  = 0;
+
+        $minconfig = trim(Config::get('vividstore.authnetMinimum'));
+
+        if ($minconfig == '') {
+            return $defaultMin;
+        } else {
+            return max($minconfig, $defaultMin);
+        }
+    }
+
+    public function getPaymentMaximum()
+    {
+        return 1000000000;
+    }
 }

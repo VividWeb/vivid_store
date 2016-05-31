@@ -12,7 +12,7 @@ class ProductLocation
 {
     /** 
      * @Id @Column(type="integer") 
-     * @GeneratedValue(strategy="UUID")
+     * @GeneratedValue(strategy="AUTO")
      */
     protected $id;
     
