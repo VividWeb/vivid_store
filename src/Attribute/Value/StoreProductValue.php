@@ -13,7 +13,7 @@ class StoreProductValue extends Value
     /**
      * @Id @Column(type="integer")
      */
-    protected $oID;
+    protected $pID;
 
     /**
      * @Id @Column(type="integer")
