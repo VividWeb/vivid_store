@@ -33,7 +33,7 @@ class StoreOrderKey extends Key
         return $avl;
     }
     
-    public function load($akID)
+    public function load($akID,$loadBy = "akID")
     {
         parent::load($akID);
         $db = Database::get();

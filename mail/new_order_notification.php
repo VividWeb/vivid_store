@@ -29,8 +29,8 @@ ob_start();
                             <?=$order->getAttribute("billing_first_name"). " " . $order->getAttribute("billing_last_name")?><br>
                             <?=$order->getAttribute("billing_address")->address1?><br>
                             <?php if ($order->getAttribute("billing_address")->address2) {
-    echo $order->getAttribute("billing_address")->address2 . "<br>";
-} ?>
+                                echo $order->getAttribute("billing_address")->address2 . "<br>";
+                            } ?>
                             <?=$order->getAttribute("billing_address")->city?>, <?=$order->getAttribute("billing_address")->state_province?> <?=$order->getAttribute("billing_address")->postal_code?><br><br>
                             <strong><?=t('Email')?></strong>: <a href="mailto:<?=$order->getAttribute("email"); ?>"><?=$order->getAttribute("email"); ?></a><br>
                             <strong><?=t('Phone')?></strong>: <?=$order->getAttribute("billing_phone")?><br>
@@ -38,21 +38,18 @@ ob_start();
                     </td>
                     <td valign="top">
                     <td>
-                        <?php if ($order->isShippable()) {
-    ?>
+                        <?php if ($order->isShippable()) { ?>
                         <strong><?=t('Shipping Information')?></strong>
                         <p>
                             <?=$order->getAttribute("shipping_first_name"). " " . $order->getAttribute("shipping_last_name")?><br>
                             <?=$order->getAttribute("shipping_address")->address1?><br>
                             <?php if ($order->getAttribute("shipping_address")->address2) {
-    echo $order->getAttribute("shipping_address")->address2 . "<br>";
-}
-    ?>
+                                echo $order->getAttribute("shipping_address")->address2 . "<br>";
+                            }?>
                             <?=$order->getAttribute("shipping_address")->city?>, <?=$order->getAttribute("shipping_address")->state_province?> <?=$order->getAttribute("shipping_address")->postal_code?><br>
                             
                         </p>
-                        <?php 
-} ?>
+                        <?php } ?>
                     </td>
                 </tr>
             </table>
@@ -104,17 +101,13 @@ ob_start();
             </table>
             
             <p>
-                <?php if ($order->isShippable()) {
-    ?>
+                <?php if ($order->isShippable()) { ?>
                 <strong><?=t("Shipping")?>:</strong>  <?=Price::format($order->getShippingTotal())?><br>
-                <?php 
-} ?>
+                <?php } ?>
 
-                <?php foreach ($order->getTaxes() as $tax) {
-    ?>
+                <?php foreach ($order->getTaxes() as $tax) { ?>
                     <strong><?=$tax['label']?>:</strong> <?=Price::format($tax['amount'] ? $tax['amount'] : $tax['amountIncluded'])?><br>
-                <?php 
-} ?>
+                <?php } ?>
 
                 <strong class="text-large"><?=t("Total")?>:</strong>  <?=Price::format($order->getTotal())?>
             </p>

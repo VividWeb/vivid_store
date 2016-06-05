@@ -14,4 +14,8 @@
             .product-list-item .product-list-name {  }
             .product-list-item .product-list-price { display: block; font-size: 22px; color: #888; margin: 10px 0; } 
             	.product-list-item .product-list-price .original-price { opacity: 0.6; text-decoration: line-through; font-size: 60%; }
+            .product-list-item .product-option-groups { margin: 0 -5px; }
+                .product-list-item .product-option-group { -moz-box-sizing: border-box; box-sizing: border-box; float: left; width: 50%; padding: 0 5px 5px; }
+                .product-list-item .product-option-group label { display: block; font-size: 80%; }
+                .product-list-item .product-option-group select { display: block; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; padding: 4px 10px; border: 2px solid #aaa; height: 35px;}
             .product-list-item .btn-more-details { margin: 5px 0; }

@@ -13,7 +13,7 @@ if (in_array($controller->getTask(), $listViews)) {
     </div>
     
     <div class="alert alert-info">
-        <?=t("The Shipping Clerk allows you to define boxes that you will use in your shipping process. Shipping Method Types that use calculated shipping (e.g. USPS add-on) use this to estimate postage. NOTE: If you have an item that exceeds the boxes defined, the Shipping Clerk will assume it will go in its own box.")?>
+        <?=t("The Shipping Clerk allows you to define boxes that you will use in your shipping process. Shipping Method Types that use calculated shipping (e.g. USPS add-on) use this to estimate postage. <strong>NOTE: If you're going to use Shipping Clerk, all shippable items must fit in at least one box</strong>.")?>
     </div>
     
     <?php if (count($packages)>0) {

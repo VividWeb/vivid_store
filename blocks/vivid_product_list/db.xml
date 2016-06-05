@@ -10,6 +10,7 @@
 		<field name="filter" type="C" size="30"></field>
 		<field name="filterCID" type="I"><unsigned/></field>
 		<field name="groupMatchAny" type="L"></field>
+		<field name="showSortOptions" type="I"></field>
 		<field name="maxProducts" type="I"><unsigned/></field>
 		<field name="showOutOfStock" type="I"><unsigned/></field>
 		<field name="productsPerRow" type="I"><unsigned/></field>

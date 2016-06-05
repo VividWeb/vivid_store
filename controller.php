@@ -5,6 +5,8 @@ use Package;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as PaymentMethod;
 use \Concrete\Package\VividStore\Src\VividStore\Shipping\ShippingMethodType as ShippingMethodType;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Installer;
+use Illuminate\Filesystem\FileNotFoundException;
+use Illuminate\Filesystem\Filesystem;
 use Whoops\Exception\ErrorException;
 use Route;
 use Asset;
@@ -15,7 +17,7 @@ class controller extends Package
 {
     protected $pkgHandle = 'vivid_store';
     protected $appVersionRequired = '5.7.5.7';
-    protected $pkgVersion = '3.1.1';
+    protected $pkgVersion = '3.1.3';
     public function getPackageDescription()
     {
         return t("Add a Store to your Site");
@@ -65,6 +67,7 @@ class controller extends Package
         if (!class_exists("SOAPClient")) {
             throw new ErrorException(t('This package requires that the SOAP client for PHP is installed'));
         } else {
+            $this->on_start();
             parent::install();
             $this->installStore();
         }
@@ -73,7 +76,10 @@ class controller extends Package
     public function upgrade()
     {
         $pkg = Package::getByHandle('vivid_store');
-        Installer::upgrade($pkg);
+        if (version_compare($pkg->getPackageVersion(), '3.1.2', '<')) {
+            Installer::upgrade($pkg);
+        }
+        parent::upgrade();
         $this->installStore();
     }
 
@@ -98,9 +104,11 @@ class controller extends Package
     }
     public function on_start()
     {
-        $this->registerRoutes();
+        // Initialize composer
+        $filesystem = new Filesystem();
+        $filesystem->getRequire(__DIR__ . '/vendor/autoload.php');
 
-        require_once __DIR__ . '/vendor/autoload.php';
+        $this->registerRoutes();
 
         $al = AssetList::getInstance();
         $al->register('css', 'vivid-store', 'css/vivid-store.css', array('version' => '1', 'position' => Asset::ASSET_POSITION_HEADER, 'minify' => false, 'combine' => false), $this);

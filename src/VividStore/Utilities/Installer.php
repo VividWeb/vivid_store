@@ -359,7 +359,8 @@ class Installer
 
             $orderCustSet = $oakc->addSet('order_customer', t('Store Customer Info'), $pkg);
         }
-        
+        $oakc->associateAttributeKeyType(AttributeType::getByHandle('select'));
+
         $text = AttributeType::getByHandle('text');
         $address = AttributeType::getByHandle('address');
         
@@ -401,6 +402,7 @@ class Installer
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('boolean'));
             $pakc->associateAttributeKeyType(AttributeType::getByHandle('date_time'));
         }
+        $pakc->associateAttributeKeyType(AttributeType::getByHandle('select'));
     }
     
     public static function createDDFileset(Package $pkg)
@@ -477,53 +479,14 @@ class Installer
             $db->Query("UPDATE VividStoreProducts SET pTaxClass=? WHERE pID = ?", array($tcID, $p['pID']));
         }
     }
-
-    //The following is copied from 7.5.1's upgrade method. 
-    //upgradeDatabase() has been changed to not drop tables unrelated to ORM.
-    public function upgrade(Package $pkg)
+    public static function upgrade($pkg)
     {
-        $this->upgradeDatabase($pkg);
-
-        // now we refresh all blocks
-        $items = $pkg->getPackageItems();
-        if (is_array($items['block_types'])) {
-            foreach ($items['block_types'] as $item) {
-                $item->refresh();
+        $db = Database::get();
+        $results = $db->GetAll("SELECT * FROM VividStoreProductLocations");
+        if(count($results) > 0){
+            if(!$results[0]['id']){
+                $db->Execute("ALTER TABLE VividStoreProductLocations ADD id INT PRIMARY KEY AUTO_INCREMENT");
             }
-        }
-        Localization::clearCache();
-    }
-    
-    public static function upgradeDatabase($pkg)
-    {
-        $dbm = $pkg->getDatabaseStructureManager();
-        $pkg->destroyProxyClasses();
-        if ($dbm->hasEntities()) {
-            $dbm->generateProxyClasses();
-            //$dbm->dropObsoleteDatabaseTables(camelcase($this->getPackageHandle()));
-            $dbm->installDatabase();
-        }
-
-        if (file_exists($pkg->getPackagePath() . '/' . FILENAME_PACKAGE_DB)) {
-            // Legacy db.xml
-            // currently this is just done from xml
-            $db = Database::get();
-            $db->beginTransaction();
-
-            $parser = Schema::getSchemaParser(simplexml_load_file($pkg->getPackagePath() . '/' . FILENAME_PACKAGE_DB));
-            $parser->setIgnoreExistingTables(false);
-            $toSchema = $parser->parse($db);
-
-            $fromSchema = $db->getSchemaManager()->createSchema();
-            $comparator = new \Doctrine\DBAL\Schema\Comparator();
-            $schemaDiff = $comparator->compare($fromSchema, $toSchema);
-            $saveQueries = $schemaDiff->toSaveSql($db->getDatabasePlatform());
-
-            foreach ($saveQueries as $query) {
-                $db->query($query);
-            }
-
-            $db->commit();
         }
     }
 }

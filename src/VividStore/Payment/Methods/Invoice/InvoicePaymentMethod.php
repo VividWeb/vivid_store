@@ -3,9 +3,11 @@ namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\Invoice;
 
 use Core;
 use Config;
+use Controller;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\MethodInterface as StorePaymentMethodInterface;
 
-class InvoicePaymentMethod extends StorePaymentMethod
+class InvoicePaymentMethod extends Controller implements StorePaymentMethodInterface
 {
     public function dashboardForm()
     {
@@ -34,7 +36,8 @@ class InvoicePaymentMethod extends StorePaymentMethod
     {
         
         //nothing to do except return success
-        return array('error'=>0, 'transactionReference'=>'');
+        return array('error'=>true,'errorMessage'=>"Bad Stuff happened");
+        //return array('error'=>0, 'transactionReference'=>'');
     }
 
     public function getPaymentMinimum()

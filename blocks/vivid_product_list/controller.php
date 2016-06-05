@@ -66,7 +66,11 @@ class controller extends BlockController
     public function view()
     {
         $products = new StoreProductList();
-        $products->setSortBy($this->sortOrder);
+        $sort = $this->sortOrder;
+        if ($_GET['sort'.$this->bID]){
+            $sort = $_GET['sort'.$this->bID];
+        }
+        $products->setSortBy($sort);
 
         if ($this->filter == 'current' || $this->filter == 'current_children') {
             $page = Page::getCurrentPage();
@@ -90,8 +94,6 @@ class controller extends BlockController
                 }
             }
         }
-
-
         $products->setItemsPerPage($this->maxProducts);
         $products->setGroupIDs($this->getGroupFilters());
         $products->setFeatureType($this->showFeatured);
@@ -105,6 +107,7 @@ class controller extends BlockController
             $product->setInitialVariation();
         }
 
+        $this->set('sort',$sort);
         $this->set('products', $products);
         $this->set('pagination', $pagination);
         $this->set('paginator', $paginator);
@@ -132,6 +135,7 @@ class controller extends BlockController
         $args['showButton'] = isset($args['showButton']) ? 1 : 0;
         $args['truncateEnabled'] = isset($args['truncateEnabled']) ? 1 : 0;
         $args['showPagination'] = isset($args['showPagination']) ? 1 : 0;
+        $args['showSortOptions'] = isset($args['showSortOptions']) ? 1 : 0;
 
         $filtergroups = $args['filtergroups'];
         unset($args['filtergroups']);
@@ -167,5 +171,10 @@ class controller extends BlockController
             $e->add(t('Max Product must be a whole number'));
         }
         return $e;
+    }
+
+    public function action_update_sort()
+    {
+        $sortOrder = $this->post('sortOrder');
     }
 }

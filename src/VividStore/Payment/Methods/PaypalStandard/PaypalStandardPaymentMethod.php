@@ -1,18 +1,20 @@
 <?php
 namespace Concrete\Package\VividStore\Src\VividStore\Payment\Methods\PaypalStandard;
 
+use Controller;
 use Core;
 use URL;
 use Config;
 use Session;
 use Log;
 use \Concrete\Package\VividStore\Src\VividStore\Payment\Method as StorePaymentMethod;
+use \Concrete\Package\VividStore\Src\VividStore\Payment\MethodInterface as StorePaymentMethodInterface;
 use \Concrete\Package\VividStore\Src\VividStore\Order\Order as StoreOrder;
 use \Concrete\Package\VividStore\Src\VividStore\Customer\Customer as StoreCustomer;
 use \Concrete\Package\VividStore\Src\VividStore\Order\OrderStatus\OrderStatus as StoreOrderStatus;
 use \Concrete\Package\VividStore\Src\VividStore\Utilities\Calculator as StoreCalculator;
 
-class PaypalStandardPaymentMethod extends StorePaymentMethod
+class PaypalStandardPaymentMethod extends Controller implements StorePaymentMethodInterface
 {
     public $external = true;
     
@@ -197,5 +199,10 @@ class PaypalStandardPaymentMethod extends StorePaymentMethod
     public function getPaymentMinimum()
     {
         return 0.03;
+    }
+
+    public function getPaymentMaximum()
+    {
+        return 1000000000;
     }
 }
