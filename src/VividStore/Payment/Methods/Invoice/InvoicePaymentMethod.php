@@ -36,8 +36,7 @@ class InvoicePaymentMethod extends Controller implements StorePaymentMethodInter
     {
         
         //nothing to do except return success
-        return array('error'=>true,'errorMessage'=>"Bad Stuff happened");
-        //return array('error'=>0, 'transactionReference'=>'');
+        return array('error'=>0, 'transactionReference'=>'');
     }
 
     public function getPaymentMinimum()
