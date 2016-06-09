@@ -398,20 +398,23 @@ class ProductVariation
                 $variation = self::getByOptionItemIDs($optioncombo);
 
                 if (!$variation) {
+					$pSalePrice = ($data['pSalePrice'] !='' ? $data['pSalePrice'] : null);
+					$pQty = $data['pQty'] ? $data['pQty'] : 0;
+					$pQtyUnlim = (!is_null($data[pQtyUnlim]) ? $data[pQtyUnlim] : false);
+		
                     $variation = self::add(
                         $product->getProductID(),
                         array(
-                        'pvSKU' => '',
-                        'pvPrice' => '',
-                        'pvSalePrice'=>'',
-                        'pvQty'=>'',
-                        'pvQtyUnlim'=>'',
-                        'pvfID'=>'',
-                        'pvWeight'=>'',
-                        'pvNumberItems'=>'',
-                        'pvWidth'=>'',
-                        'pvHeight'=>'',
-                        'pvLength'=>'')
+                        'pvSKU' => "$data[pSKU]",
+                        'pvPrice' => "$data[pPrice]",
+                        'pvSalePrice'=>"$pSalePrice",
+                        'pvQty'=>"$pQty",
+                        'pvQtyUnlim'=>"$pQtyUnlim",
+                        'pvfID'=>"$data[pfID]",
+                        'pvWeight'=>"$data[pWeight]",
+                        'pvWidth'=>"$data[pWidth]",
+                        'pvHeight'=>"$data[pHeight]",
+                        'pvLength'=>"$data[pLength]")
                     );
 
                     foreach ($optioncombo as $optionvalue) {
