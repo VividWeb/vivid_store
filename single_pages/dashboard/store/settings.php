@@ -59,7 +59,7 @@
                             <div class="form-group">
                                 <?php echo $form->label('weightUnit', t('Units for Weight'));?>
                                 <?php // do not add other units to this list. these are specific to making calculated shipping work ?>
-                                <?php echo $form->select('weightUnit', array('lb'=>t('lb'), 'kg'=>t('kg'), 'g'=>t('g')), Config::get('vividstore.weightUnit'));?>
+                                <?php echo $form->select('weightUnit', array('lb'=>t('lb'), 'kg'=>t('kg'), 'g'=>t('g'), 'oz'=>t('oz')), Config::get('vividstore.weightUnit'));?>
                             </div>
                         </div> 
                         <div class="col-xs-6">

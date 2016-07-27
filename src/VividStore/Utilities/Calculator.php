@@ -143,6 +143,9 @@ class Calculator
             case "g":
                 $grams = $weight;
                 break;
+            case "oz":
+                $grams = $weight / 0.0352736;
+                break;
         }
         return $grams;
     }
@@ -159,6 +162,9 @@ class Calculator
                 break;
             case "g":
                 $weight = $grams;
+                break;
+            case "oz":
+                $grams = $weight * 0.0352736;
                 break;
         }
         return $weight;
