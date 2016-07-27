@@ -164,7 +164,7 @@ class Calculator
                 $weight = $grams;
                 break;
             case "oz":
-                $grams = $weight * 0.0352736;
+                $weight = $grams * 0.0352736;
                 break;
         }
         return $weight;
