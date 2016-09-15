@@ -28,17 +28,17 @@ use \Concrete\Package\VividStore\Src\VividStore\Utilities\Price as StorePrice;
  */
 class Product
 {
-    /** 
+    /**
      * @Id @Column(type="integer", options={"unsigned"=true})
-     * @GeneratedValue 
+     * @GeneratedValue
      */
     protected $pID;
-    
+
     /**
      * @Column(type="integer",nullable=true)
      */
     protected $cID;
-    
+
     /**
      * @Column(type="string")
      */
@@ -53,87 +53,87 @@ class Product
      * @Column(type="text",nullable=true)
      */
     protected $pDesc;
-    
+
     /**
      * @Column(type="text",nullable=true)
      */
     protected $pDetail;
-    
+
     /**
      * @Column(type="decimal", precision=10, scale=2)
      */
     protected $pPrice;
-    
+
     /**
      * @Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     protected $pSalePrice;
-    
+
     /**
      * @Column(type="boolean")
      */
     protected $pFeatured;
-    
+
     /**
      * @Column(type="integer")
      */
     protected $pQty;
-    
+
     /**
      * @Column(type="boolean",nullable=true)
      */
     protected $pQtyUnlim;
-    
+
     /**
      * @Column(type="boolean")
      */
     protected $pNoQty;
-    
+
     /**
      * @Column(type="integer")
      */
     protected $pTaxClass;
-    
+
     /**
      * @Column(type="boolean")
      */
     protected $pTaxable;
-    
+
     /**
      * @Column(type="integer")
      */
     protected $pfID;
-    
+
     /**
      * @Column(type="boolean")
      */
     protected $pActive;
-    
+
     /**
      * @Column(type="datetime")
      */
     protected $pDateAdded;
-    
+
     /**
      * @Column(type="boolean")
      */
     protected $pShippable;
-    
+
     /**
      * @Column(type="integer")
      */
     protected $pWidth;
-    
+
     /**
      * @Column(type="integer")
      */
     protected $pHeight;
-    
+
     /**
      * @Column(type="integer")
      */
     protected $pLength;
-    
+
     /**
      * @Column(type="integer")
      */
@@ -143,12 +143,12 @@ class Product
      * @Column(type="boolean")
      */
     protected $pCreateUserAccount;
-    
+
     /**
      * @Column(type="boolean")
      */
     protected $pAutoCheckout;
-    
+
     /**
      * @Column(type="integer")
      */
@@ -465,7 +465,6 @@ class Product
     }
     public function getFormattedSalePrice()
     {
-        return
         $saleprice = $this->getProductSalePrice();
 
         if ($saleprice != '') {
@@ -494,7 +493,7 @@ class Product
     {
         return StoreTaxClass::getByID($this->pTaxClass);
     }
-    
+
     public function isTaxable()
     {
         if ($this->pTaxable == "1") {
@@ -664,7 +663,7 @@ class Product
             return $this->pQty;
         }
     }
-    
+
     public function isSellable()
     {
         if ($this->hasVariations() && $variation = $this->getVariation()) {
@@ -681,7 +680,7 @@ class Product
             }
         }
     }
-    
+
     public function getProductImages()
     {
         return StoreProductImage::getImagesForProduct($this);
@@ -721,7 +720,7 @@ class Product
         $em->persist($this);
         $em->flush();
     }
-    
+
     public function remove()
     {
         StoreProductImage::removeImagesForProduct($this);
@@ -740,7 +739,7 @@ class Product
             $page->delete();
         }
     }
-    
+
     public function generatePage($templateID=null)
     {
         $pkg = Package::getByHandle('vivid_store');
@@ -787,8 +786,8 @@ class Product
         $this->setCollectionID($cID);
         $this->save();
     }
-    
-    
+
+
 
     /* TO-DO
      * This isn't completely accurate as an order status may be incomplete and never change,
