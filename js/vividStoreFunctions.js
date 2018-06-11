@@ -76,12 +76,14 @@ StoreDashboard.ProductGroup = {
         });
     },
     edit: function(groupID){
-        $("li['data-group-id="+groupID+"']").find(".btn-edit-group-name, .group-name").hide();
-        $("li['data-group-id="+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: inline-block !important");
+        console.log('groupID: ' + groupID);
+        console.log('li[data-group-id="' + groupID + ']"')
+        $("li[data-group-id='"+groupID+"']").find('.btn-edit-group-name, .group-name').hide();
+        $("li[data-group-id='"+groupID+"']").find('.edit-group-name, .btn-cancel-edit, .btn-save-group-name').attr('style','display: inline-block !important');
     },
     cancel: function(groupID){
-        $("li['data-group-id="+groupID+"']").find(".btn-edit-group-name, .group-name").show();
-        $("li['data-group-id="+groupID+"']").find(".edit-group-name, .btn-cancel-edit, .btn-save-group-name").attr("style","display: none");
+        $("li[data-group-id='"+groupID+"']").find('.btn-edit-group-name, .group-name').show();
+        $("li[data-group-id='"+groupID+"']").find('.edit-group-name, .btn-cancel-edit, .btn-save-group-name').attr('style','display: none');
     }
 }
 

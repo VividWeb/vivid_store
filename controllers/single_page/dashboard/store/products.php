@@ -344,6 +344,7 @@ class products extends DashboardPageController
     {
         $grouplist = StoreGroupList::getGroupList();
         $this->set("grouplist", $grouplist);
+        $this->getAssets();
         $this->requireAsset('css', 'vividStoreDashboard');
         $this->requireAsset('javascript', 'vividStoreFunctions');
     }

@@ -59,7 +59,11 @@ class ProductGroup
         $groups = $em->getRepository('Concrete\Package\VividStore\Src\VividStore\Product\ProductGroup')->findBy(array('pID' => $product->getProductID()));
         foreach ($groups as $key => $value) {
             $group = new StoreGroup\Group;
-            $groups[$key]->gName = $group->getByID($groups[$key]->gID)->getGroupName();
+            if ($group->getByID($groups[$key]->gID)) {
+                $groups[$key]->gName = $group->getByID($groups[$key]->gID)->getGroupName();
+            } else {
+                $groups[$key]->gName = 'undefined';
+            }
         }
         return $groups;
     }
